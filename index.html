@@ -140,7 +140,7 @@ h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.03em;li
 .card p{font-size:.93rem;color:var(--muted);line-height:1.72}
 
 /* 타임라인 */
-.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;margin-top:8px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:8px}
 .flow::before{content:"";position:absolute;left:0;right:0;top:7px;height:1px;background:var(--line)}
 .step{padding-right:20px;position:relative}
 .step::before{content:"";position:absolute;left:0;top:2px;width:11px;height:11px;border-radius:50%;background:var(--canvas);border:2px solid var(--navy)}
@@ -149,13 +149,43 @@ h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.03em;li
 .step .d{margin-top:6px;font-size:.88rem;color:var(--muted);line-height:1.6}
 
 /* 참가비 */
-.fee{display:grid;grid-template-columns:repeat(3,1fr);background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.fee{display:grid;grid-template-columns:repeat(2,1fr);background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .fee > div{padding:38px 32px;border-right:1px solid var(--line-2)}
 .fee > div:last-child{border-right:0}
 .fee .who{font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:12px}
+.calc{font-size:.88rem;color:var(--muted);margin-bottom:14px}
+.calc em{font-style:normal;color:var(--gold);font-weight:700;margin:0 .5em}
 .fee .amt{font-size:2.3rem;font-weight:800;letter-spacing:-.04em;line-height:1.1}
 .fee .amt small{font-size:.9rem;font-weight:500;color:var(--muted);letter-spacing:0;margin-left:.35em}
-.fee-note{margin-top:20px;font-size:.87rem;color:var(--muted)}
+.fee-note{margin-top:16px;font-size:.87rem;color:var(--muted)}
+.deposit{margin-top:20px;background:#FDF8EC;border:1px solid #EBD9AE;border-radius:14px;padding:26px 30px}
+.deposit .dep-tag{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#A97A19;margin-bottom:10px}
+.deposit p{font-size:.93rem;line-height:1.8;color:#4A3A16}
+.deposit b{color:#2E2308}
+
+/* 지도 */
+.map{display:grid;grid-template-columns:1.6fr .9fr;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.gmap{position:relative;background:#EFF0EB;overflow:hidden}
+.gmap iframe{width:100%;height:100%;position:absolute;inset:0;border:0;display:block;filter:grayscale(.15)}
+.gmap-fb{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:30px;background:#EFF0EB}
+.gmap.failed .gmap-fb{display:flex}
+.gmap.failed iframe{display:none}
+.gmap-fb svg{width:34px;height:34px;stroke:var(--navy);stroke-width:1.6;fill:none;opacity:.7}
+.gmap-fb .fb-a{font-size:.95rem;font-weight:600;color:var(--ink)}
+.fb-links{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.fb-links a{font-size:.84rem;font-weight:600;color:var(--navy);text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:999px;padding:.55em 1.1em;transition:border-color .18s}
+.fb-links a:hover{border-color:var(--navy)}
+.map-side{padding:34px 32px;border-left:1px solid var(--line-2)}
+.mlabel{font-weight:700;font-size:1.06rem;margin-bottom:10px;letter-spacing:-.015em}
+.mtext{font-size:.92rem;color:var(--muted);line-height:1.7}
+.mlinks{margin-top:24px;display:flex;flex-direction:column;gap:2px}
+.mlinks a{font-size:.89rem;font-weight:600;color:var(--navy);text-decoration:none;border-bottom:1px solid var(--line-2);padding:11px 0;transition:color .18s ease}
+.mlinks a:hover{color:var(--gold)}
+
+/* 제휴 배너 */
+.sponsor{display:flex;flex-wrap:wrap;gap:28px;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:36px 40px}
+.sponsor h3{font-size:1.2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+.sponsor p{font-size:.92rem;color:var(--muted);max-width:56ch}
 
 /* 가나 연습 패널 */
 .kana{
@@ -218,6 +248,18 @@ details[open] summary::after{transform:rotate(225deg) translate(-3px,-3px)}
 .field textarea{resize:vertical;min-height:92px}
 .form-foot{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:18px;justify-content:space-between;border-top:1px solid var(--line-2);padding-top:22px}
 .draft{font-size:.8rem;color:#B0761F;max-width:44ch}
+.thanks{display:none}
+#done{display:none;background:var(--card);border-radius:22px;overflow:hidden}
+#done.show{display:block}
+.done-top{padding:44px 40px 34px;text-align:center;border-bottom:1px solid var(--line-2)}
+.done-check{width:52px;height:52px;margin:0 auto 20px;border-radius:50%;background:#E8F4EC;display:grid;place-items:center}
+.done-check svg{width:24px;height:24px;stroke:#1C7A50;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.done-top h3{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:12px}
+.done-top p{color:var(--muted);font-size:.95rem;max-width:46ch;margin:0 auto;line-height:1.75}
+.done-map{display:grid;grid-template-columns:1.5fr 1fr}
+
+.done-info{padding:30px 32px;border-left:1px solid var(--line-2)}
+.done-info .mlabel{font-weight:700;margin-bottom:10px}
 
 /* 푸터 */
 footer{background:var(--canvas);border-top:1px solid var(--line);padding:52px 0 60px}
@@ -256,6 +298,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .fee{grid-template-columns:1fr}
   .fee > div{border-right:0;border-bottom:1px solid var(--line-2)}
   .fee > div:last-child{border-bottom:0}
+  .map,.done-map{grid-template-columns:1fr}
+  .done-map .gmap{min-height:230px!important}
+  .done-info{border-left:0;border-top:1px solid var(--line-2);padding:24px}
+  .done-top{padding:34px 24px 28px}
+  .map .gmap{min-height:260px!important}
+  .map-side{border-left:0;border-top:1px solid var(--line-2);padding:26px}
+  .sponsor{padding:28px 24px}
   .kana{grid-template-columns:1fr;padding:44px 30px;gap:34px}
   .rules{grid-template-columns:1fr}
   .form{grid-template-columns:1fr;padding:28px}
@@ -280,6 +329,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <a href="#about" class="ko">모임 소개</a><a href="#about" class="ja">交流会について</a>
       <a href="#flow" class="ko">당일 흐름</a><a href="#flow" class="ja">当日の流れ</a>
       <a href="#fee" class="ko">참가비</a><a href="#fee" class="ja">参加費</a>
+      <a href="#place" class="ko">오시는 길</a><a href="#place" class="ja">アクセス</a>
       <a href="#kana" class="ko">가나 연습</a><a href="#kana" class="ja">かな練習</a>
       <a href="#faq" class="ko">FAQ</a><a href="#faq" class="ja">FAQ</a>
     </nav>
@@ -304,8 +354,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <span class="pill ja"><i></i>毎週日曜 15:00 · ソウル宣陵</span>
         <h1 class="ko">매주 일요일,<br>일본어로 이야기하는<br>세 시간</h1>
         <h1 class="ja">毎週日曜、<br>韓国語で話す<br>3時間</h1>
-        <p class="lead ko">선정릉역 근처 카페에서, 일본인 참가자들과 같은 테이블에 앉아 이야기합니다. 일본어가 서툴러도 괜찮습니다. 대부분 혼자 오시고, 자리는 저희가 정해 드립니다.</p>
-        <p class="lead ja">宣陵（ソンジョンヌン）駅近くのカフェで、韓国の方と同じテーブルで話します。韓国語が話せなくても大丈夫です。ほとんどの方がおひとりで来られ、席はこちらで決めています。</p>
+        <p class="lead ko">선정릉역에서 도보 5분 거리의 카페에서, 일본인 참가자들과 같은 테이블에 앉아 이야기합니다. 일본어로 간단한 일상회화가 가능하시면 충분합니다. 대부분 혼자 오시고, 자리는 랜덤으로 배정됩니다.</p>
+        <p class="lead ja">宣陵（ソンジョンヌン）駅から徒歩5分のカフェで、韓国人の参加者と同じテーブルを囲みます。韓国語が話せなくても大丈夫です。ほとんどの方がおひとりで参加されていて、席順はこちらでランダムに決めています。</p>
         <div class="hero-cta">
           <a class="btn btn-primary btn-lg ko" href="#apply">신청하기</a>
           <a class="btn btn-primary btn-lg ja" href="#apply">申し込む</a>
@@ -329,13 +379,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
       <div>
         <dt>場所</dt>
-        <dd class="ko">카페 레꼴뜨<br>선정릉역 도보 5분</dd>
-        <dd class="ja">カフェ・レコルト<br>宣陵駅から徒歩5分</dd>
+        <dd class="ko">카페 레꼴뜨<br>봉은사로50길 10, 1층</dd>
+        <dd class="ja">カフェ・レコルト<br>峰恩寺路50ギル10, 1階</dd>
       </div>
       <div>
         <dt>参加費</dt>
-        <dd class="ko">한국인 10,000원<br>일본인 무료</dd>
-        <dd class="ja">韓国人 10,000ウォン<br>日本人 無料</dd>
+        <dd class="ko">한국인 15,000원<br>일본인 5,000원</dd>
+        <dd class="ja">韓国人 15,000ウォン<br>日本人 5,000ウォン</dd>
       </div>
       <div>
         <dt>申込</dt>
@@ -351,27 +401,27 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <p class="eyebrow">About</p>
       <h2 class="ko">이런 모임입니다</h2>
       <h2 class="ja">こんな会です</h2>
-      <p class="ko">일본어를 잘하지 못해도 괜찮습니다. 통역이 붙는 자리가 아니라, 서로 아는 만큼 천천히 이야기하는 자리입니다.</p>
-      <p class="ja">韓国語がうまく話せなくても大丈夫です。通訳がつく場ではなく、お互い分かる範囲でゆっくり話す場です。</p>
+      <p class="ko">통역이 붙는 자리가 아니라, 서로 아는 만큼 천천히 이야기하는 자리입니다. 일본어가 유창하지 않아도 초급 이상이면 충분히 어울리실 수 있습니다.</p>
+      <p class="ja">通訳がつくわけではありませんが、みなさん分かる範囲でゆっくり話しています。韓国側の参加者は日本語を話せる方がほとんどですので、どうぞ気軽にお越しください。</p>
     </div>
     <div class="cards reveal">
       <article class="card">
         <h3 class="ko">네다섯 명이 한 테이블에 앉습니다</h3>
         <h3 class="ja">4〜5人でひとつのテーブルに</h3>
-        <p class="ko">자리는 저희가 미리 나눠 둡니다. 한국어와 일본어를 섞어 쓰셔도 되고, 번역 앱을 꺼내는 분도 많습니다.</p>
-        <p class="ja">席はこちらであらかじめ決めています。韓国語と日本語を混ぜても構いませんし、翻訳アプリを使う方も多いです。</p>
+        <p class="ko">자리는 랜덤으로 정해집니다. 한국어와 일본어를 섞어 쓰셔도 되고, 번역 앱을 꺼내는 분도 많습니다.</p>
+        <p class="ja">席順はこちらでランダムに決めています。韓国語と日本語が混ざっても構いませんし、翻訳アプリを使う方も多くいらっしゃいます。</p>
       </article>
       <article class="card">
         <h3 class="ko">한 시간마다 자리를 바꿉니다</h3>
         <h3 class="ja">1時間ごとに席を替えます</h3>
         <p class="ko">16시와 17시에 테이블을 교체합니다. 세 시간 동안 여러 사람과 이야기하실 수 있습니다.</p>
-        <p class="ja">16時と17時にテーブルを入れ替えます。3時間のあいだに、いろいろな方と話していただけます。</p>
+        <p class="ja">16時と17時に席替えをします。3時間のあいだに、いろいろな方とお話しいただけます。</p>
       </article>
       <article class="card">
         <h3 class="ko">2차는 자유 참가입니다</h3>
         <h3 class="ja">二次会は自由参加です</h3>
         <p class="ko">모임이 끝나면 근처에서 저녁을 먹습니다. 자유 참가이고, 비용은 각자 부담입니다.</p>
-        <p class="ja">会が終わったあと、近くで夕食に行きます。自由参加で、費用は各自負担です。</p>
+        <p class="ja">会のあとは、近くのお店で夕食をご一緒します。自由参加で、費用は各自負担です。</p>
       </article>
     </div>
   </section>
@@ -387,8 +437,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="step"><p class="t">15:00</p><p class="d ko">모임 시작<br>자기소개</p><p class="d ja">開始<br>自己紹介</p></div>
       <div class="step"><p class="t">16:00</p><p class="d ko">첫 번째<br>테이블 교체</p><p class="d ja">1回目の<br>席替え</p></div>
       <div class="step"><p class="t">17:00</p><p class="d ko">두 번째 테이블 교체<br>2차 안내</p><p class="d ja">2回目の席替え<br>二次会のご案内</p></div>
-      <div class="step"><p class="t">18:00</p><p class="d ko">모임 종료</p><p class="d ja">終了</p></div>
-      <div class="step"><p class="t">18:00~</p><p class="d ko">2차<br>자유 참가</p><p class="d ja">二次会<br>自由参加</p></div>
+      <div class="step"><p class="t">18:00</p><p class="d ko">모임 종료<br>이후 2차 (자유 참가)</p><p class="d ja">終了<br>そのあと二次会（自由参加）</p></div>
     </div>
   </section>
 
@@ -402,19 +451,62 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <div class="fee reveal">
       <div>
         <p class="who ko">한국인 참가자</p><p class="who ja">韓国人の方</p>
-        <p class="amt">10,000<small>원</small></p>
+        <p class="calc"><span class="ko">참가비 10,000원</span><span class="ja">参加費 10,000ウォン</span><em>+</em><span class="ko">음료비 5,000원</span><span class="ja">ドリンク代 5,000ウォン</span></p>
+        <p class="amt">15,000<small>원 / ウォン</small></p>
       </div>
       <div>
         <p class="who ko">일본인 참가자</p><p class="who ja">日本人の方</p>
-        <p class="amt ko">무료</p><p class="amt ja">無料</p>
-      </div>
-      <div>
-        <p class="who ko">음료비 · 공통 별도</p><p class="who ja">ドリンク代・共通別途</p>
-        <p class="amt">5,000<small>원</small></p>
+        <p class="calc"><span class="ko">참가비 무료</span><span class="ja">参加費 無料</span><em>+</em><span class="ko">음료비 5,000원</span><span class="ja">ドリンク代 5,000ウォン</span></p>
+        <p class="amt">5,000<small>원 / ウォン</small></p>
       </div>
     </div>
-    <p class="fee-note ko">음료비는 국적과 관계없이 모든 분께 별도로 받습니다. 현금 또는 계좌이체로 현장에서 결제합니다.</p>
-    <p class="fee-note ja">ドリンク代は国籍にかかわらず、全員から別途いただいております。現金またはお振込で、当日会場にてお支払いください。</p>
+    <div class="deposit reveal">
+      <p class="dep-tag ko">예약금</p><p class="dep-tag ja">予約金</p>
+      <p class="ko"><b>신청하실 때 예약금으로 5,000원(음료비)을 먼저 입금해 주세요.</b> 입금이 확인되어야 자리가 확정됩니다. 남은 금액은 당일 현장에서 결제하시면 됩니다.<br>당일 취소 시에는 예약금이 환급되지 않습니다. 취소하실 때는 인스타그램 DM으로 미리 연락해 주세요.</p>
+      <p class="ja"><b>お申し込みの際に、予約金としてドリンク代5,000ウォンを先にお振込みください。</b>ご入金の確認をもって席が確定します。残りの金額は当日会場でお支払いください。<br>当日のキャンセルにつきましては、予約金の返金はいたしかねます。キャンセルの際は、InstagramのDMで事前にご連絡ください。</p>
+    </div>
+    <p class="fee-note ko">음료비는 국적과 관계없이 모두 동일합니다. 결제는 계좌 입금 또는 현금으로 받습니다.</p>
+    <p class="fee-note ja">ドリンク代は国籍にかかわらず一律です。お支払いはお振込、または現金で承っております。</p>
+  </section>
+
+  <!-- 오시는 길 -->
+  <section id="place" class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Location</p>
+      <h2 class="ko">오시는 길</h2>
+      <h2 class="ja">アクセス</h2>
+      <p class="ko">지하철 9호선 · 수인분당선 선정릉역에서 도보 5분입니다. 건물 1층에 있습니다.</p>
+      <p class="ja">地下鉄9号線・水仁盆唐線の宣陵（ソンジョンヌン）駅から徒歩5分。ビルの1階です。</p>
+    </div>
+    <div class="map reveal">
+<!-- ══ 지도 ══════════════════════════════════════════════════
+             구글 지도가 "차단되었습니다"로 뜬다면, 실제 도메인에 올린 뒤에도
+             같은 증상이면 아래 src 를 공식 임베드 코드로 바꾸세요.
+             Google 지도에서 장소 검색 > [공유] > [지도 퍼가기] > HTML 복사
+             → https://www.google.com/maps/embed?pb=... 형태의 주소가 나옵니다.
+             ═══════════════════════════════════════════════════════ -->
+        <div class="gmap" data-gmap style="min-height:360px">
+          <iframe title="모임 장소 지도" allowfullscreen referrerpolicy="no-referrer-when-downgrade" data-src="default"></iframe>
+          <div class="gmap-fb">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
+            <p class="fb-a ko">서울 강남구 봉은사로50길 10, 1층</p>
+            <p class="fb-a ja">ソウル市江南区 峰恩寺路50ギル 10, 1階</p>
+            <div class="fb-links">
+              <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">네이버 지도</a>
+              <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Maps</a>
+            </div>
+          </div>
+        </div>
+      <div class="map-side">
+        <p class="mlabel">카페 레꼴뜨 · カフェ・レコルト</p>
+        <p class="mtext ko">서울 강남구 봉은사로50길 10, 1층<br>선정릉역 도보 5분 (9호선 · 수인분당선)</p>
+        <p class="mtext ja">ソウル市江南区 峰恩寺路50ギル 10, 1階<br>宣陵駅から徒歩5分（9号線・水仁盆唐線）</p>
+        <div class="mlinks">
+          <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">네이버 지도에서 열기</a>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Maps で開く</a>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- 가나 연습 -->
@@ -425,7 +517,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <h2 class="ko">가나 쓰기 연습</h2>
         <h2 class="ja">かなの書き取り練習</h2>
         <p class="ko">히라가나와 가타카나를 획순대로 직접 따라 쓰는 연습 도구입니다. 모임에 오시기 전에 한 번 훑어보셔도 좋고, 휴대폰에서 바로 쓰실 수 있습니다.</p>
-        <p class="ja">ひらがなとカタカナを、書き順どおりになぞって練習できるツールです。スマートフォンでそのまま書けます。</p>
+        <p class="ja">ひらがなとカタカナを、書き順どおりになぞって練習できるツールです。スマートフォンでも、指でそのまま書けます。</p>
         <div class="kana-cta">
           <button class="btn btn-gold btn-lg ko" id="open-kana">연습 시작하기</button>
           <button class="btn btn-gold btn-lg ja" id="open-kana-ja">練習をはじめる</button>
@@ -449,16 +541,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <h2 class="ja">ご参加の前にお読みください</h2>
     </div>
     <ul class="rules reveal">
-      <li class="ko">참가자끼리 개인 연락처를 교환하는 것은 금지하고 있습니다.</li>
-      <li class="ja">参加者同士での個人的な連絡先の交換は禁止しております。</li>
+      <li class="ko">짧은 시간 안에 연락처를 주고받는 분위기를 만드는 것은 삼가 주세요.</li>
+      <li class="ja">短時間で連絡先を交換するような雰囲気づくりはご遠慮ください。</li>
       <li class="ko">연애나 이성 만남을 목적으로 한 참가는 사양하고 있습니다.</li>
       <li class="ja">恋愛・異性との出会いを目的としたご参加はお断りしています。</li>
-      <li class="ko">사전 신청 없이 당일 오시는 것은 받지 않습니다. 자리 배치를 미리 짜기 때문입니다.</li>
-      <li class="ja">事前のお申し込みがない当日参加は受け付けておりません。席の配置を事前に組んでいるためです。</li>
+      <li class="ko">사전 신청 없이 당일 오시는 것은 받지 않습니다.</li>
+      <li class="ja">事前のお申し込みがない当日参加は受け付けておりません。</li>
       <li class="ko">모임 사진은 참가자 얼굴을 가린 뒤 SNS에 올립니다. 촬영을 원하지 않으시면 현장에서 말씀해 주세요.</li>
-      <li class="ja">会の写真は、参加者のお顔を隠したうえでSNSに掲載しています。撮影をご希望されない場合は、当日お知らせください。</li>
+      <li class="ja">会の写真は、参加者のお顔を隠したうえでSNSに掲載しています。掲載を希望されない方は、当日お知らせください。</li>
       <li class="ko">영업이나 권유를 목적으로 한 참가는 사양하고 있습니다.</li>
       <li class="ja">勧誘・営業を目的としたご参加はお断りしています。</li>
+      <li class="ko">예약금은 당일 취소 시 환급되지 않습니다. 취소하실 때는 인스타그램 DM으로 미리 연락해 주세요.</li>
+      <li class="ja">予約金は、当日のキャンセルの場合、返金いたしかねます。キャンセルの際は、InstagramのDMで事前にご連絡ください。</li>
     </ul>
   </section>
 
@@ -471,22 +565,22 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
     <div class="faq reveal">
       <details>
-        <summary class="ko">일본어를 잘 못해도 괜찮나요?</summary>
+        <summary class="ko">일본어를 어느 정도 해야 하나요?</summary>
         <summary class="ja">韓国語が話せなくても大丈夫ですか？</summary>
-        <div class="answer ko">괜찮습니다. 번역 앱을 쓰셔도 되고, 한국어와 일본어를 섞어 쓰셔도 됩니다. 처음 오시는 분도 많습니다.</div>
-        <div class="answer ja">大丈夫です。翻訳アプリを使っていただいても、韓国語と日本語を混ぜていただいても構いません。初めての方も多くいらっしゃいます。</div>
+        <div class="answer ko">유창할 필요는 없지만, 간단한 일상회화가 가능한 초급 이상이면 좋겠습니다. 세 시간 동안 대화가 이어지는 자리라, 인사 정도만 가능한 상태에서는 아쉬움이 남으실 수 있습니다. 모르는 표현은 번역 앱을 쓰셔도 되고, 한국어를 섞어 쓰셔도 괜찮습니다.</div>
+        <div class="answer ja">ご心配いりません。韓国側の参加者は日本語を話せる方がほとんどですので、韓国語に自信がなくても問題ありません。分からないときは日本語でそのままお話しいただいて大丈夫です。</div>
       </details>
       <details>
         <summary class="ko">혼자 참가해도 되나요?</summary>
         <summary class="ja">一人でも参加できますか？</summary>
         <div class="answer ko">대부분 혼자 오십니다. 자리는 저희가 정해 드리기 때문에 처음 오셔도 자연스럽게 어울리실 수 있습니다.</div>
-        <div class="answer ja">ほとんどの方がおひとりでいらっしゃいます。テーブル分けはこちらで行いますので、初めての方でも自然に馴染んでいただけます。</div>
+        <div class="answer ja">ほとんどの方がおひとりでいらっしゃいます。席順はこちらで決めますので、初めての方でも自然に輪に入っていただけます。</div>
       </details>
       <details>
         <summary class="ko">중간에 먼저 가도 되나요?</summary>
         <summary class="ja">途中で帰っても大丈夫ですか？</summary>
-        <div class="answer ko">괜찮습니다. 신청하실 때 미리 알려주시면 자리 배치에 반영하겠습니다.</div>
-        <div class="answer ja">問題ありません。お申し込みの際にあらかじめお知らせいただければ、席の配置に反映いたします。</div>
+        <div class="answer ko">괜찮습니다. 신청하실 때 미리 알려주시면 자리 배정에 반영하겠습니다.</div>
+        <div class="answer ja">問題ありません。お申し込みの際にあらかじめお知らせいただければ、席順を決める際に考慮いたします。</div>
       </details>
       <details>
         <summary class="ko">신청은 어떻게 하나요?</summary>
@@ -504,44 +598,109 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <p class="eyebrow">Apply</p>
         <h2 class="ko">신청하기</h2>
         <h2 class="ja">お申し込み</h2>
-        <p class="ko">신청을 확인한 뒤, 확정 안내와 상세 장소를 이메일로 보내드립니다.</p>
-        <p class="ja">お申し込みを確認しましたら、確定のご案内と詳しい場所をメールでお送りします。</p>
+        <p class="ko">신청하시면 안내 메일을 바로 보내드립니다. 예약금 입금이 확인되면 참가가 확정됩니다.</p>
+        <p class="ja">お申し込みいただくと、すぐにご案内メールをお送りします。予約金のご入金を確認しましたら、ご参加が確定となります。</p>
       </div>
-      <div class="form reveal">
+      <!-- ══════════════════════════════════════════════════════════════
+           구글 폼 연결 방법
+           1. 구글 폼을 만들고 [보내기] > 링크 아이콘에서 폼 주소를 확인
+           2. 폼 미리보기에서 마우스 우클릭 > [페이지 소스 보기] > entry. 검색
+              → 항목마다 entry.123456789 형태의 번호가 나옵니다
+           3. 아래 action 의 FORM_ID 를 실제 폼 ID 로 바꾸고
+              각 입력칸의 name="entry.____" 를 2번에서 찾은 번호로 바꾸세요
+           ══════════════════════════════════════════════════════════════ -->
+      <form class="form reveal" id="apply-form" method="post" target="gform-sink"
+            action="https://docs.google.com/forms/d/e/FORM_ID/formResponse">
         <div class="field">
           <label for="f-name" class="ko">이름</label><label for="f-name" class="ja">お名前</label>
-          <input id="f-name" type="text" autocomplete="name">
+          <input id="f-name" name="entry.1000000001" required type="text" autocomplete="name">
         </div>
         <div class="field">
           <label for="f-nat" class="ko">국적</label><label for="f-nat" class="ja">国籍</label>
-          <select id="f-nat"><option>한국 / 韓国</option><option>일본 / 日本</option><option>그 외 / その他</option></select>
+          <select id="f-nat" name="entry.1000000002" required><option>한국 / 韓国</option><option>일본 / 日本</option><option>그 외 / その他</option></select>
         </div>
         <div class="field">
           <label for="f-mail" class="ko">이메일</label><label for="f-mail" class="ja">メールアドレス</label>
-          <input id="f-mail" type="email" autocomplete="email">
+          <input id="f-mail" name="entry.1000000003" required type="email" autocomplete="email">
         </div>
         <div class="field">
           <label for="f-date" class="ko">참가 희망일 (일요일)</label><label for="f-date" class="ja">参加希望日（日曜）</label>
-          <input id="f-date" type="date">
+          <input id="f-date" name="entry.1000000004" required type="date">
         </div>
         <div class="field">
           <label for="f-sns" class="ko">SNS 계정 (선택)</label><label for="f-sns" class="ja">SNSアカウント（任意）</label>
-          <input id="f-sns" type="text" placeholder="@">
+          <input id="f-sns" name="entry.1000000005" type="text" placeholder="@">
         </div>
         <div class="field">
           <label for="f-src" class="ko">어떻게 알게 되셨나요?</label><label for="f-src" class="ja">何で知りましたか？</label>
-          <select id="f-src"><option>Instagram</option><option>Threads</option><option>X (Twitter)</option><option>소모임 앱</option><option>지인 소개 / 知人の紹介</option><option>검색 / 検索</option></select>
+          <select id="f-src" name="entry.1000000006"><option>Instagram</option><option>Threads</option><option>X (Twitter)</option><option>소모임 앱</option><option>지인 소개 / 知人の紹介</option><option>검색 / 検索</option></select>
         </div>
         <div class="field full">
           <label for="f-msg" class="ko">하고 싶은 말 (선택)</label><label for="f-msg" class="ja">ご連絡事項（任意）</label>
-          <textarea id="f-msg"></textarea>
+          <textarea id="f-msg" name="entry.1000000007"></textarea>
         </div>
         <div class="form-foot">
           <p class="draft" id="note">※ 초안: 이 폼은 아직 접수처와 연결되어 있지 않습니다. Tally · Google Forms 등에 연결한 뒤 이 문구를 지워 주세요.</p>
           <button class="btn btn-primary btn-lg ko" id="submit">신청 보내기</button>
           <button class="btn btn-primary btn-lg ja" id="submit-ja">申し込む</button>
         </div>
+      </form>
+      <iframe name="gform-sink" title="submit target" style="display:none" aria-hidden="true"></iframe>
+
+      <!-- 신청 완료 화면 -->
+      <div id="done">
+        <div class="done-top">
+          <div class="done-check"><svg viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6.5"></polyline></svg></div>
+          <h3 class="ko">신청해 주셔서 감사합니다</h3>
+          <h3 class="ja">お申し込みありがとうございます</h3>
+          <p class="ko">입력하신 이메일로 안내 메일을 보내드렸습니다. 예약금 5,000원 입금이 확인되면 참가가 확정됩니다. 메일이 오지 않으면 스팸함을 확인해 주세요.</p>
+          <p class="ja">ご入力のメールアドレス宛にご案内メールをお送りしました。予約金5,000ウォンのご入金を確認しましたら、ご参加が確定となります。届かない場合は迷惑メールフォルダをご確認ください。</p>
+        </div>
+        <div class="done-map">
+<!-- ══ 지도 ══════════════════════════════════════════════════
+             구글 지도가 "차단되었습니다"로 뜬다면, 실제 도메인에 올린 뒤에도
+             같은 증상이면 아래 src 를 공식 임베드 코드로 바꾸세요.
+             Google 지도에서 장소 검색 > [공유] > [지도 퍼가기] > HTML 복사
+             → https://www.google.com/maps/embed?pb=... 형태의 주소가 나옵니다.
+             ═══════════════════════════════════════════════════════ -->
+        <div class="gmap" data-gmap style="min-height:280px">
+          <iframe title="모임 장소 지도 (신청 완료)" allowfullscreen referrerpolicy="no-referrer-when-downgrade" data-src="default"></iframe>
+          <div class="gmap-fb">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
+            <p class="fb-a ko">서울 강남구 봉은사로50길 10, 1층</p>
+            <p class="fb-a ja">ソウル市江南区 峰恩寺路50ギル 10, 1階</p>
+            <div class="fb-links">
+              <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">네이버 지도</a>
+              <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Maps</a>
+            </div>
+          </div>
+        </div>
+          <div class="done-info">
+            <p class="mlabel">카페 레꼴뜨 · カフェ・レコルト</p>
+            <p class="mtext ko">서울 강남구 봉은사로50길 10, 1층<br>일요일 15:00 – 18:00</p>
+            <p class="mtext ja">ソウル市江南区 峰恩寺路50ギル 10, 1階<br>日曜 15:00 – 18:00</p>
+            <div class="mlinks">
+              <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">네이버 지도에서 열기</a>
+              <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Maps で開く</a>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+  </section>
+
+  <!-- 제휴 · 스폰서 -->
+  <section class="wrap" id="sponsor">
+    <div class="sponsor reveal">
+      <div>
+        <p class="eyebrow">Partnership</p>
+        <h3 class="ko">제휴 · 스폰서 문의</h3>
+        <h3 class="ja">提携・スポンサーのお問い合わせ</h3>
+        <p class="ko">이로토모는 매주 서울에서 한국인과 일본인이 만나는 자리입니다. 재한 일본인이나 일본어를 쓰는 고객에게 닿고 싶은 기업·매장이라면 연락 주세요.</p>
+        <p class="ja">いろともは、毎週ソウルで韓国人と日本人が集まる場です。在韓日本人や日本語話者のお客様に届けたい企業・店舗の方は、お気軽にご連絡ください。</p>
+      </div>
+      <a class="btn btn-ghost ko" href="mailto:hello@irotomo.kr">문의하기</a>
+      <a class="btn btn-ghost ja" href="mailto:hello@irotomo.kr">お問い合わせ</a>
     </div>
   </section>
 
@@ -625,14 +784,44 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   document.getElementById('close-kana').addEventListener('click', closeKana);
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeKana(); });
 
-  /* 폼 초안 안내 */
-  ['submit','submit-ja'].forEach(function(id){
-    var el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('click', function(e){
+  /* ══════════════════════════════════════════════════════════════
+     지도 임베드 주소 — 딱 이 한 줄만 바꾸면 두 지도 모두 바뀝니다.
+     "이 콘텐츠는 차단되었습니다" 가 뜨면 아래 순서로 교체하세요.
+       Google 지도에서 주소 검색 > [공유] > [지도 퍼가기] > HTML 복사
+       → <iframe src="https://www.google.com/maps/embed?pb=..."> 중
+         src 안의 주소만 따다 아래 MAP_EMBED 에 넣으면 됩니다.
+     ══════════════════════════════════════════════════════════════ */
+  var MAP_EMBED = 'https://maps.google.com/maps?q=37.5091435,127.0425545&hl=ko&z=17&ie=UTF8&output=embed';
+
+  /* 지도 — 임베드가 차단되면 주소 카드로 대체 */
+  document.querySelectorAll('[data-gmap]').forEach(function(box){
+    box.querySelector('iframe').src = MAP_EMBED;
+    var f = box.querySelector('iframe'), ok = false;
+    f.addEventListener('load', function(){ ok = true; box.classList.remove('failed'); });
+    var start = function(){ setTimeout(function(){ if (!ok) box.classList.add('failed'); }, 4500); };
+    if (box.offsetParent !== null) { start(); }
+    else {
+      var iv = setInterval(function(){
+        if (box.offsetParent !== null) { clearInterval(iv); start(); }
+      }, 700);
+    }
+  });
+
+  /* 신청 폼 — 구글 폼으로 전송 */
+  var form = document.getElementById('apply-form');
+  var note = document.getElementById('note');
+  form.addEventListener('submit', function(e){
+    if (form.getAttribute('action').indexOf('FORM_ID') !== -1) {
       e.preventDefault();
-      document.getElementById('note').textContent = '※ 접수처가 연결되지 않아 전송되지 않았습니다. 폼 서비스에 연결해 주세요.';
-    });
+      note.textContent = '※ 아직 구글 폼에 연결되지 않았습니다. form 태그의 action 주소와 각 입력칸의 name="entry.____" 값을 실제 값으로 바꿔 주세요.';
+      return;
+    }
+    setTimeout(function(){
+      form.reset();
+      form.style.display = 'none';
+      document.getElementById('done').classList.add('show');
+      document.getElementById('done').scrollIntoView({block:'center'});
+    }, 700);
   });
 })();
 </script>
