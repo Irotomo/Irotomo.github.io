@@ -247,7 +247,7 @@ details[open] summary::after{transform:rotate(225deg) translate(-3px,-3px)}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--navy);background:#fff;outline:none}
 .field textarea{resize:vertical;min-height:92px}
 .form-foot{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:18px;justify-content:space-between;border-top:1px solid var(--line-2);padding-top:22px}
-.draft{font-size:.8rem;color:#B0761F;max-width:44ch}
+.draft{font-size:.8rem;color:var(--muted);max-width:46ch;line-height:1.6}
 .thanks{display:none}
 #done{display:none;background:var(--card);border-radius:22px;overflow:hidden}
 #done.show{display:block}
@@ -602,45 +602,48 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <p class="ja">お申し込みいただくと、すぐにご案内メールをお送りします。予約金のご入金を確認しましたら、ご参加が確定となります。</p>
       </div>
       <!-- ══════════════════════════════════════════════════════════════
-           구글 폼 연결 방법
-           1. 구글 폼을 만들고 [보내기] > 링크 아이콘에서 폼 주소를 확인
-           2. 폼 미리보기에서 마우스 우클릭 > [페이지 소스 보기] > entry. 검색
-              → 항목마다 entry.123456789 형태의 번호가 나옵니다
-           3. 아래 action 의 FORM_ID 를 실제 폼 ID 로 바꾸고
-              각 입력칸의 name="entry.____" 를 2번에서 찾은 번호로 바꾸세요
+           구글 폼 '이로토모 참가' 에 연결 완료.
+             이름   entry.438119434    국적       entry.191201283
+             이메일 entry.368752480    희망일     entry.155561832
+             SNS    entry.198244550    알게된경로 entry.786866204
+             메모   entry.1969802111
+           ※ 폼에서 질문을 추가·삭제하면 번호가 바뀔 수 있습니다.
+             그때는 ⋮ > [양식 미리 작성] 으로 번호를 다시 확인하세요.
+           ※ 폼 설정의 [응답자 로그인 필요] · [이메일 주소 수집] 은 꺼져 있어야
+             이 페이지에서 전송이 됩니다.
            ══════════════════════════════════════════════════════════════ -->
       <form class="form reveal" id="apply-form" method="post" target="gform-sink"
-            action="https://docs.google.com/forms/d/e/FORM_ID/formResponse">
+            action="https://docs.google.com/forms/d/e/1FAIpQLSd1cwvZAfZUWch83WdBAVM0Vph-qLkhbUmVEFUt7v9Z1wA_GA/formResponse">
         <div class="field">
           <label for="f-name" class="ko">이름</label><label for="f-name" class="ja">お名前</label>
-          <input id="f-name" name="entry.1000000001" required type="text" autocomplete="name">
+          <input id="f-name" name="entry.438119434" required type="text" autocomplete="name">
         </div>
         <div class="field">
           <label for="f-nat" class="ko">국적</label><label for="f-nat" class="ja">国籍</label>
-          <select id="f-nat" name="entry.1000000002" required><option>한국 / 韓国</option><option>일본 / 日本</option><option>그 외 / その他</option></select>
+          <select id="f-nat" name="entry.191201283" required><option>한국 / 韓国</option><option>일본 / 日本</option><option>그 외 / その他</option></select>
         </div>
         <div class="field">
           <label for="f-mail" class="ko">이메일</label><label for="f-mail" class="ja">メールアドレス</label>
-          <input id="f-mail" name="entry.1000000003" required type="email" autocomplete="email">
+          <input id="f-mail" name="entry.368752480" required type="email" autocomplete="email">
         </div>
         <div class="field">
-          <label for="f-date" class="ko">참가 희망일 (일요일)</label><label for="f-date" class="ja">参加希望日（日曜）</label>
-          <input id="f-date" name="entry.1000000004" required type="date">
+          <label for="f-date" class="ko">희망일 (일요일)</label><label for="f-date" class="ja">参加希望日（日曜）</label>
+          <input id="f-date" name="entry.155561832" required type="date">
         </div>
         <div class="field">
           <label for="f-sns" class="ko">SNS 계정 (선택)</label><label for="f-sns" class="ja">SNSアカウント（任意）</label>
-          <input id="f-sns" name="entry.1000000005" type="text" placeholder="@">
+          <input id="f-sns" name="entry.198244550" type="text" placeholder="@">
         </div>
         <div class="field">
           <label for="f-src" class="ko">어떻게 알게 되셨나요?</label><label for="f-src" class="ja">何で知りましたか？</label>
-          <select id="f-src" name="entry.1000000006"><option>Instagram</option><option>Threads</option><option>X (Twitter)</option><option>소모임 앱</option><option>지인 소개 / 知人の紹介</option><option>검색 / 検索</option></select>
+          <select id="f-src" name="entry.786866204"><option>Instagram</option><option>Threads</option><option>X (Twitter)</option><option>소모임 앱</option><option>지인 소개 / 知人の紹介</option><option>검색 / 検索</option></select>
         </div>
         <div class="field full">
           <label for="f-msg" class="ko">하고 싶은 말 (선택)</label><label for="f-msg" class="ja">ご連絡事項（任意）</label>
-          <textarea id="f-msg" name="entry.1000000007"></textarea>
+          <textarea id="f-msg" name="entry.1969802111"></textarea>
         </div>
         <div class="form-foot">
-          <p class="draft" id="note">※ 초안: 이 폼은 아직 접수처와 연결되어 있지 않습니다. Tally · Google Forms 등에 연결한 뒤 이 문구를 지워 주세요.</p>
+          <p class="draft" id="note"><span class="ko">신청하시면 입력하신 주소로 안내 메일이 발송됩니다. 메일이 오지 않으면 스팸함을 확인해 주세요.</span><span class="ja">お申し込み後、ご入力のアドレスにご案内メールをお送りします。届かない場合は迷惑メールフォルダをご確認ください。</span></p>
           <button class="btn btn-primary btn-lg ko" id="submit">신청 보내기</button>
           <button class="btn btn-primary btn-lg ja" id="submit-ja">申し込む</button>
         </div>
@@ -811,9 +814,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   var form = document.getElementById('apply-form');
   var note = document.getElementById('note');
   form.addEventListener('submit', function(e){
-    if (form.getAttribute('action').indexOf('FORM_ID') !== -1) {
+    if (document.getElementById('f-name').name.indexOf('entry.10000000') === 0) {
       e.preventDefault();
-      note.textContent = '※ 아직 구글 폼에 연결되지 않았습니다. form 태그의 action 주소와 각 입력칸의 name="entry.____" 값을 실제 값으로 바꿔 주세요.';
+      note.textContent = '※ 항목 번호가 아직 임시값입니다. 구글 폼 ⋮ > [양식 미리 작성] 으로 번호를 확인해 바꿔 주세요.';
       return;
     }
     setTimeout(function(){
