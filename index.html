@@ -174,6 +174,13 @@ h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.03em;li
 .astep .an{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:.8rem;font-weight:700;margin-bottom:12px}
 .astep p{font-size:.92rem;font-weight:600;line-height:1.5;color:var(--ink)}
 .apply-cta{display:flex;gap:12px;flex-wrap:wrap}
+.consent{margin-top:24px;background:#FAFAF7;border:1px solid var(--line);border-radius:12px;padding:17px 19px}
+.consent label{display:flex;gap:11px;align-items:flex-start;font-size:.87rem;line-height:1.65;cursor:pointer}
+.consent input{margin-top:.3em;width:17px;height:17px;flex:none;accent-color:var(--navy)}
+.consent a{color:var(--navy);font-weight:600}
+.consent .req{color:#A6382E;font-weight:700}
+.consent .sub{margin:10px 0 0 28px;font-size:.79rem;color:var(--muted);line-height:1.65}
+.lab-note{font-weight:400;color:var(--muted)}
 .apply-bank{margin-top:22px;font-size:.86rem;color:var(--muted);background:#FDF8EC;border:1px solid #EBD9AE;border-radius:10px;padding:12px 18px;display:inline-block}
 
 /* 활동 사진 */
@@ -839,7 +846,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <input id="f-name" name="entry.347162766" required type="text" autocomplete="name">
           </div>
           <div class="field">
-            <label for="f-nat">国籍</label>
+            <label for="f-nat">国籍 <span class="lab-note">— 参加費の区分にのみ使用します</span></label>
             <select id="f-nat" name="entry.2086369190" required><option value="日本 / 일본">日本</option><option value="韓国 / 한국">韓国</option><option value="その他 / 그 외">その他</option></select>
           </div>
           <div class="field">
@@ -867,6 +874,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           </div>
           <div class="form-foot">
             <p class="draft" id="note">お申し込み後、ご入力のメールアドレス宛にご案内をお送りします。届かない場合は迷惑メールフォルダをご確認ください。</p>
+            <div class="consent">
+              <label>
+                <input type="checkbox" id="f-agree" required>
+                <span>個人情報の取得・利用に同意します <span class="req">[必須]</span><br>
+                お名前・国籍・メールアドレス・ご参加日・振込名義を、参加受付と参加費の区分のために取得します。情報は韓国および米国（Google）のサーバーに保管されます。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。</span>
+              </label>
+              <p class="sub">同意はいつでも撤回でき、削除をご希望の場合は irotomokor@gmail.com までご連絡ください。取り消しによる不利益はありません。</p>
+            </div>
             <button class="btn btn-primary btn-lg" id="submit" type="submit">申し込む</button>
           </div>
         </form>
@@ -901,7 +916,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             </div>
           </div>
         </div>
-        <p class="apply-bank">予約金の振込先 · カカオバンク 7979-94-33566（口座名義 배상원）</p>
+        <p class="apply-bank">予約金の振込先 · カカオバンク 7979-94-33566（口座名義 배상원）<br><span style="font-size:.92em">入金確認のため、お振り込み時の名義とご入金額を確認いたします。</span></p>
       </div>
 
     </div>
@@ -935,6 +950,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <a href="https://www.threads.net/@irotomokr">Threads</a>
       <a href="https://x.com/irotomokr">X</a>
       <a href="mailto:irotomokor@gmail.com">Contact</a>
+      <a class="ko" href="privacy.html">개인정보처리방침</a><a class="ja" href="privacy.html#ja">プライバシーポリシー</a>
     </div>
   </div>
 </footer>

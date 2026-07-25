@@ -138,6 +138,11 @@ textarea{resize:vertical;min-height:150px}
 .thumbs figure{position:relative;width:88px;height:88px;border-radius:10px;overflow:hidden;background:#EFF0EB}
 .thumbs img{width:100%;height:100%;object-fit:cover}
 .thumbs button{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(20,27,46,.72);color:#fff;font-size:.72rem;cursor:pointer;line-height:1}
+.consent{margin-top:6px;background:#FAFAF7;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.consent label{display:flex;gap:11px;align-items:flex-start;font-size:.85rem;line-height:1.6;cursor:pointer}
+.consent input{margin-top:.3em;width:17px;height:17px;flex:none;accent-color:var(--navy)}
+.consent a{color:var(--navy);font-weight:600}
+.consent .req{color:#A6382E;font-weight:700}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .formfoot{margin-top:26px;padding-top:22px;border-top:1px solid var(--line-2);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .formfoot .btn{margin-left:auto}
@@ -237,6 +242,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
       <a href="https://instagram.com/irotomokr">Instagram</a>
       <a href="https://www.threads.net/@irotomokr">Threads</a>
       <a href="mailto:irotomokor@gmail.com">Contact</a>
+      <a href="privacy.html" data-t="privacy">개인정보처리방침</a>
     </div>
   </div>
 </footer>
@@ -323,6 +329,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
         <input type="text" id="w-pw" inputmode="numeric" maxlength="4" placeholder="0000">
         <p class="hint" data-t="hPw">나중에 글을 지울 때 필요합니다. 꼭 기억해 주세요.</p>
       </div>
+      <div class="consent">
+        <label><input type="checkbox" id="w-agree">
+          <span data-t="agree"></span></label>
+      </div>
       <input type="text" class="hp" id="w-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <p class="err" id="w-err"></p>
       <div class="formfoot">
@@ -379,7 +389,10 @@ var T = {
     posted:'글이 올라갔습니다.',
     askPw:'삭제 비밀번호 4자리를 입력하세요.',
     deleted:'글을 삭제했습니다.', eDelPw:'비밀번호가 맞지 않습니다.',
-    reportSubj:'[이로토모 게시판] 신고'
+    reportSubj:'[이로토모 게시판] 신고',
+    privacy:'개인정보처리방침',
+    agree:'개인정보 수집·이용에 동의합니다 <span class="req">[필수]</span><br>이메일은 본인 확인에만 쓰이며 공개되지 않습니다. 글 내용·연락 방법·사진은 게시판에 공개됩니다. 자세한 내용은 <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>을 확인해 주세요.',
+    eAgree:'개인정보 수집·이용에 동의해 주세요.'
   },
   ja:{
     navAbout:'交流会について', navFee:'参加費', navPlace:'アクセス', navBoard:'中古・おゆずり',
@@ -414,7 +427,10 @@ var T = {
     posted:'投稿しました。',
     askPw:'削除用パスワード（4桁）をご入力ください。',
     deleted:'投稿を削除しました。', eDelPw:'パスワードが違います。',
-    reportSubj:'【いろとも掲示板】通報'
+    reportSubj:'【いろとも掲示板】通報',
+    privacy:'プライバシーポリシー',
+    agree:'個人情報の取得・利用に同意します <span class="req">[必須]</span><br>メールアドレスは本人確認にのみ使用し、公開されません。投稿内容・連絡方法・写真は掲示板に公開されます。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。',
+    eAgree:'個人情報の取得・利用にご同意ください。'
   }
 };
 var lang = 'ko';
@@ -425,7 +441,7 @@ function applyLang(){
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-t]').forEach(function(el){
     var v = t(el.dataset.t);
-    if (v.indexOf('<br>') >= 0) el.innerHTML = v; else el.textContent = v;
+    if (/<(br|a|span)\b/.test(v)) el.innerHTML = v; else el.textContent = v;
   });
   document.querySelectorAll('[data-tp]').forEach(function(el){ el.placeholder = t(el.dataset.tp); });
   setBrand();
@@ -679,6 +695,7 @@ $('#w-submit').addEventListener('click', function(){
   if (!payload.title || !payload.body || !payload.contact) return err(t('eFill'));
   if (!/^\d{4}$/.test(payload.pw)) return err(t('ePw'));
   if (!/^\d{6}$/.test(payload.code)) return err(t('eCode'));
+  if (!$('#w-agree').checked) return err(t('eAgree'));
   err('');
 
   var btn = this;
