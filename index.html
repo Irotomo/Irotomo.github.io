@@ -177,7 +177,7 @@ h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.03em;li
 .apply-bank{margin-top:22px;font-size:.86rem;color:var(--muted);background:#FDF8EC;border:1px solid #EBD9AE;border-radius:10px;padding:12px 18px;display:inline-block}
 
 /* 활동 사진 */
-.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px;position:relative}
 .gal figure{position:relative;margin:0;aspect-ratio:4/5;border-radius:16px;overflow:hidden;
   background:#EDEDE7;border:1px solid var(--line)}
 .gal img{width:100%;height:100%;object-fit:cover;display:block;
@@ -400,6 +400,11 @@ body.admin-on #logo-tools{display:flex}
 #logo-size{-webkit-appearance:none;appearance:none;width:104px;height:4px;border-radius:999px;background:var(--line);outline:none;cursor:pointer}
 #logo-size::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--navy);cursor:pointer}
 #logo-size::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;background:var(--navy);cursor:pointer}
+#logo-state,#gal-state{font:600 .72rem var(--font);color:var(--muted);display:none}
+#logo-state.on,#gal-state.on{display:inline-block}
+#logo-state.err,#gal-state.err{color:#A6382E}
+#gal-state{position:absolute;left:50%;top:-26px;transform:translateX(-50%);white-space:nowrap;
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:.4em .95em;z-index:6}
 body.admin-on .hero-logo{outline:1px dashed rgba(223,165,58,.6);outline-offset:8px;border-radius:10px;animation:none}
 #logo-tools button{font:600 .74rem var(--font);border-radius:999px;padding:.48em .95em;cursor:pointer;
   border:1px solid var(--navy-900);background:var(--navy-900);color:#fff;box-shadow:0 4px 14px -6px rgba(20,27,46,.5)}
@@ -527,6 +532,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <button type="button" id="logo-pick">이미지</button>
             <input type="range" id="logo-size" min="140" max="620" step="10" aria-label="로고 크기">
             <button type="button" class="sub" id="logo-reset">기본</button>
+            <span id="logo-state"></span>
           </span>
         </div>
         <input type="file" id="logo-file" accept="image/*" hidden>
@@ -615,6 +621,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <p class="ja" data-c="g2">会の様子から数枚。参加者のお顔は隠したうえで掲載しています。</p>
     </div>
     <div class="gal reveal">
+      <span id="gal-state"></span>
       <figure class="empty" data-ph="0"><img alt="" loading="lazy" hidden>
         <span class="gal-tools"><button type="button" data-gal-pick="0">사진</button><button type="button" class="sub" data-gal-del="0">✕</button></span>
       </figure>
@@ -1199,6 +1206,59 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     sec.hidden = !any && !editing;
   }
 
+  /* 사진 열기 — createImageBitmap 이 안 되는 브라우저·형식 대비 */
+  function loadImage(file){
+    var viaImg = function(){
+      return new Promise(function(res, rej){
+        var url = URL.createObjectURL(file), im = new Image();
+        im.onload = function(){ URL.revokeObjectURL(url); res(im); };
+        im.onerror = function(){ URL.revokeObjectURL(url); rej(new Error('decode')); };
+        im.src = url;
+      });
+    };
+    if (window.createImageBitmap) {
+      return createImageBitmap(file, { imageOrientation:'from-image' }).catch(viaImg);
+    }
+    return viaImg();
+  }
+
+  /* 정해진 용량 안에 들어올 때까지 단계적으로 줄인다 */
+  function fitImage(file, steps, limit, keepAlpha){
+    return loadImage(file).then(function(img){
+      var w0 = img.width || img.naturalWidth, h0 = img.height || img.naturalHeight;
+      var best = null;
+      for (var i = 0; i < steps.length; i++) {
+        best = drawTo(img, w0, h0, steps[i][0], steps[i][1], keepAlpha);
+        if (best.uri.length <= limit) break;
+      }
+      return best;
+    }).catch(function(){ return { uri:'', ar:'' }; });
+  }
+
+  function drawTo(img, w0, h0, max, q, keepAlpha){
+    var k = Math.min(1, max / Math.max(w0, h0));
+    var w = Math.max(1, Math.round(w0 * k)), h = Math.max(1, Math.round(h0 * k));
+    var c = document.createElement('canvas'); c.width = w; c.height = h;
+    var x = c.getContext('2d');
+    var alpha = false;
+    if (keepAlpha) {
+      x.drawImage(img, 0, 0, w, h);
+      try {
+        var px = x.getImageData(0, 0, w, h).data;
+        for (var i = 3; i < px.length; i += 148) { if (px[i] < 250) { alpha = true; break; } }
+      } catch (err) { alpha = false; }
+    }
+    if (!alpha) {
+      x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
+      x.drawImage(img, 0, 0, w, h);
+    }
+    var uri = alpha ? c.toDataURL('image/png') : c.toDataURL('image/jpeg', q);
+    if (alpha && uri.length > 300000) uri = c.toDataURL('image/jpeg', q);
+    return { uri: uri, ar: w + '/' + h };
+  }
+
+  function kb(uri){ return Math.round(uri.length / 1365) + 'KB'; }
+
   function applyLogo(){
     var hero = document.querySelector('.hero-logo');
     if (!hero) return;
@@ -1333,7 +1393,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     return n;
   }
   function count(){
-    var n = dirty() + (logoChanged ? 1 : 0) + (galChanged ? 1 : 0);
+    var n = dirty();
     var L = document.body.dataset.lang === 'ja' ? '일본어' : '한국어';
     $a('adm-state').textContent = (n ? '고친 곳 ' + n + '군데 · ' : '') + L + ' 화면 편집 중';
   }
@@ -1422,94 +1482,117 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     wrap.appendChild(note);
   }
 
-  /* 로고 교체 (히어로 전용) */
-  var logoChanged = false;
+  /* ── 로고: 고르는 즉시 따로 저장한다 ─────────────────────── */
+  function setState(id, msg, isErr){
+    var el = $a(id); if (!el) return;
+    el.textContent = msg || '';
+    el.classList.toggle('on', !!msg);
+    el.classList.toggle('err', !!isErr);
+    if (msg && !isErr && /저장|완료/.test(msg)) setTimeout(function(){ setState(id, ''); }, 1800);
+  }
+  function fail(err){ return String((err && err.message) || err || '알 수 없는 오류'); }
 
-  $a('logo-size').addEventListener('input', function(){
-    LOGO_SIZE = this.value; applyLogo(); count();
-  });
+  function pushLogo(uri){
+    var body = { action:'logo', id:ADMIN.id, pw:ADMIN.pw, logoAr:LOGO_AR, logoSize:LOGO_SIZE };
+    if (typeof uri === 'string') body.logo = uri;
+    return apiPost(body).then(function(d){
+      if (!d || !d.ok) throw new Error((d && d.error) || '서버가 응답하지 않았습니다');
+      return d;
+    });
+  }
+
   $a('logo-size').addEventListener('click', function(e){ e.stopPropagation(); });
+  $a('logo-size').addEventListener('input', function(){ LOGO_SIZE = this.value; applyLogo(); });
+  $a('logo-size').addEventListener('change', function(){
+    setState('logo-state', '크기 저장 중…');
+    pushLogo().then(function(){ setState('logo-state', '저장됨'); })
+      .catch(function(e){ setState('logo-state', fail(e).slice(0, 50), true); });
+  });
 
   $a('logo-pick').addEventListener('click', function(e){ e.stopPropagation(); $a('logo-file').click(); });
+
   $a('logo-reset').addEventListener('click', function(e){
     e.stopPropagation();
+    if (!confirm('기본 로고로 되돌릴까요?')) return;
     LOGO = ''; LOGO_AR = ''; LOGO_SIZE = '';
-    logoChanged = true; applyLogo(); syncSizeInput(); count();
+    applyLogo(); syncSizeInput();
+    setState('logo-state', '되돌리는 중…');
+    pushLogo('').then(function(){ setState('logo-state', '완료'); })
+      .catch(function(e2){ setState('logo-state', fail(e2).slice(0, 50), true); });
   });
+
   $a('logo-file').addEventListener('change', function(e){
     var file = e.target.files && e.target.files[0];
-    e.target.value = '';
     if (!file) return;
-    shrinkLogo(file, 640).then(function(r){
-      if (r.uri && r.uri.length > 900000) return shrinkLogo(file, 400);
-      return r;
-    }).then(function(r){
-      if (!r || !r.uri) { alert('이미지를 읽지 못했습니다.'); return; }
-      if (r.uri.length > 900000) { alert('이미지가 너무 큽니다. 더 작은 파일로 올려 주세요.'); return; }
+    setState('logo-state', '사진 여는 중…');
+    fitImage(file, [[560,0.86],[440,0.82],[340,0.78],[260,0.72]], 300000, true).then(function(r){
+      if (!r.uri) throw new Error('이 사진은 열 수 없습니다. JPG 나 PNG 로 저장한 뒤 다시 시도해 주세요.');
       LOGO = r.uri; LOGO_AR = r.ar;
       if (!LOGO_SIZE) LOGO_SIZE = '380';
-      logoChanged = true; applyLogo(); syncSizeInput(); count();
-    });
+      applyLogo(); syncSizeInput();
+      setState('logo-state', '올리는 중… ' + kb(r.uri));
+      return pushLogo(r.uri);
+    }).then(function(){
+      setState('logo-state', '저장됨');
+    }).catch(function(err){
+      setState('logo-state', fail(err).slice(0, 50), true);
+      alert('로고를 저장하지 못했습니다.\n\n' + fail(err));
+    }).then(function(){ $a('logo-file').value = ''; });
   });
 
   function syncSizeInput(){
     $a('logo-size').value = parseInt(LOGO_SIZE, 10) || 380;
   }
 
-  function shrinkLogo(file, max){
-    return createImageBitmap(file, { imageOrientation:'from-image' }).then(function(img){
-      var s2 = Math.min(1, max / Math.max(img.width, img.height));
-      var w = Math.round(img.width * s2), h = Math.round(img.height * s2);
-      var c = document.createElement('canvas'); c.width = w; c.height = h;
-      var x = c.getContext('2d');
-      x.drawImage(img, 0, 0, w, h);
-      var hasAlpha = false;                       /* 투명한 로고면 PNG, 사진이면 JPEG */
-      try {
-        var px = x.getImageData(0, 0, w, h).data;
-        for (var i = 3; i < px.length; i += 148) { if (px[i] < 250) { hasAlpha = true; break; } }
-      } catch (err) { hasAlpha = true; }
-      return {
-        uri: hasAlpha ? c.toDataURL('image/png') : c.toDataURL('image/jpeg', 0.86),
-        ar: w + '/' + h
-      };
-    }).catch(function(){ return { uri:'', ar:'' }; });
+  /* ── 활동 사진: 고르는 즉시 한 장씩 올린다 ────────────────── */
+  var galSlot = 0;
+
+  function pushGallery(){
+    var list = GALLERY.filter(function(x){ return x && (x.id || x.b64); })
+      .map(function(x){ return x.id ? { id:x.id } : { b64:x.b64 }; });
+    return apiPost({ action:'gallery', id:ADMIN.id, pw:ADMIN.pw, gallery:list }).then(function(d){
+      if (!d || !d.ok) throw new Error((d && d.error) || '서버가 응답하지 않았습니다');
+      GALLERY = (d.ids || []).map(function(id){ return { id:id }; });   /* 다음엔 다시 안 올리도록 */
+      renderGallery();
+      return d;
+    });
   }
 
-  /* 활동 사진 교체 */
-  var galChanged = false, galSlot = 0;
-  document.querySelectorAll('[data-gal-pick]').forEach(function(b){
-    b.addEventListener('click', function(e){
-      e.stopPropagation(); galSlot = +b.dataset.galPick; $a('gal-file').click();
+  document.querySelectorAll('[data-gal-pick]').forEach(function(b2){
+    b2.addEventListener('click', function(e){
+      e.stopPropagation(); galSlot = +b2.dataset.galPick; $a('gal-file').click();
     });
   });
-  document.querySelectorAll('[data-gal-del]').forEach(function(b){
-    b.addEventListener('click', function(e){
+
+  document.querySelectorAll('[data-gal-del]').forEach(function(b2){
+    b2.addEventListener('click', function(e){
       e.stopPropagation();
-      GALLERY[+b.dataset.galDel] = null;
-      galChanged = true; renderGallery(); count();
+      if (!confirm('이 사진을 지울까요?')) return;
+      GALLERY[+b2.dataset.galDel] = null;
+      renderGallery();
+      setState('gal-state', '지우는 중…');
+      pushGallery().then(function(){ setState('gal-state', '완료'); })
+        .catch(function(err){ setState('gal-state', fail(err).slice(0, 50), true); });
     });
   });
+
   $a('gal-file').addEventListener('change', function(e){
     var file = e.target.files && e.target.files[0];
-    e.target.value = '';
     if (!file) return;
-    shrinkPhoto(file, 1400).then(function(uri){
-      if (!uri) { alert('이미지를 읽지 못했습니다.'); return; }
-      GALLERY[galSlot] = { b64: uri.split(',')[1], uri: uri };
-      galChanged = true; renderGallery(); count();
-    });
+    setState('gal-state', '사진 여는 중…');
+    fitImage(file, [[1100,0.74],[900,0.72],[700,0.7],[520,0.66]], 300000, false).then(function(r){
+      if (!r.uri) throw new Error('이 사진은 열 수 없습니다. JPG 나 PNG 로 저장한 뒤 다시 시도해 주세요.');
+      GALLERY[galSlot] = { b64: r.uri.split(',')[1], uri: r.uri };
+      renderGallery();
+      setState('gal-state', '올리는 중… ' + kb(r.uri));
+      return pushGallery();
+    }).then(function(){
+      setState('gal-state', '저장됨');
+    }).catch(function(err){
+      setState('gal-state', fail(err).slice(0, 50), true);
+      alert('사진을 저장하지 못했습니다.\n\n' + fail(err));
+    }).then(function(){ $a('gal-file').value = ''; });
   });
-  function shrinkPhoto(file, max){
-    return createImageBitmap(file, { imageOrientation:'from-image' }).then(function(img){
-      var k = Math.min(1, max / Math.max(img.width, img.height));
-      var w = Math.round(img.width * k), h = Math.round(img.height * k);
-      var c = document.createElement('canvas'); c.width = w; c.height = h;
-      var x = c.getContext('2d');
-      x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
-      x.drawImage(img, 0, 0, w, h);
-      return c.toDataURL('image/jpeg', 0.78);
-    }).catch(function(){ return ''; });
-  }
 
   /* 저장 */
   $a('adm-save').addEventListener('click', function(){
@@ -1520,20 +1603,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       out[k] = out[k] || { ko:'', ja:'' };
       out[k][L] = v;
     });
-    var body = { action:'save', id:ADMIN.id, pw:ADMIN.pw, content:out, schedule:SCHED,
-                 logoAr: LOGO_AR, logoSize: LOGO_SIZE };
-    body.gallery = GALLERY.filter(function(g){ return g && (g.id || g.b64); })
-      .map(function(g){ return g.id ? { id:g.id } : { b64:g.b64 }; });
-    if (logoChanged) body.logo = LOGO;           /* 안 바꿨으면 보내지 않아 기존 로고를 지킨다 */
+    var body = { action:'save', id:ADMIN.id, pw:ADMIN.pw, content:out, schedule:SCHED };
     var btn = this; btn.disabled = true; btn.textContent = '저장 중…';
     apiPost(body)
       .then(function(d){
         if (!d.ok) throw new Error(d.error || 'fail');
-        logoChanged = false; galChanged = false;
         btn.textContent = '저장됨';
         setTimeout(function(){ btn.textContent = '저장'; }, 1800);
       })
-      .catch(function(){ alert('저장하지 못했습니다. 이미지가 너무 크거나 연결이 끊겼을 수 있습니다.'); btn.textContent = '저장'; })
+      .catch(function(err){ alert('저장하지 못했습니다.\n\n' + fail(err)); btn.textContent = '저장'; })
       .then(function(){ btn.disabled = false; });
   });
 
