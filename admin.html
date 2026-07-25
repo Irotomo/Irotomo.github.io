@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>관리자 — いろとも</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy-900:#141B2E;--navy:#242D50;--navy-2:#37406B;--gold:#DFA53A;--canvas:#F7F7F4;--card:#fff;
+--ink:#141B2E;--muted:#6E7691;--line:#E3E3DD;--line-2:#EFEFEA;
+--font:'Schibsted Grotesk','Zen Kaku Gothic New','IBM Plex Sans KR',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--canvas);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font-family:inherit}
+
+/* 로그인 */
+#login{min-height:100vh;display:grid;place-items:center;padding:24px}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:40px 36px;width:min(100%,400px)}
+.lcard .eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.lcard h1{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.lcard .sub{color:var(--muted);font-size:.9rem;margin-bottom:28px}
+
+.f{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.f label{font-size:.79rem;font-weight:600;color:var(--muted)}
+input[type=text],input[type=password],input[type=date],textarea,select{
+  width:100%;font-size:.94rem;line-height:1.6;color:var(--ink);background:#FBFBF9;
+  border:1px solid var(--line);border-radius:10px;padding:.75em .9em;transition:border-color .15s,background .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--navy);background:#fff;outline:none}
+textarea{resize:vertical;min-height:60px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45em;font-weight:600;font-size:.92rem;
+  cursor:pointer;padding:.78em 1.4em;border-radius:999px;border:1px solid transparent;transition:background .15s,border-color .15s,transform .12s}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--navy-2)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover:not(:disabled){border-color:var(--ink);background:#fff}
+.btn-sm{padding:.5em 1em;font-size:.82rem}
+.btn-block{width:100%}
+.msg{font-size:.85rem;font-weight:600;color:#A6382E;margin-top:12px;min-height:1.2em}
+
+/* 본체 */
+#app{display:none}
+.top{position:sticky;top:0;z-index:30;background:rgba(247,247,244,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1180px;margin:0 auto;padding:0 22px;height:62px;display:flex;align-items:center;gap:14px}
+.top b{font-size:.98rem;letter-spacing:-.02em}
+.top .sp{margin-left:auto;display:flex;gap:8px}
+.tabs{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:62px;z-index:29}
+.tabs-in{max-width:1180px;margin:0 auto;padding:0 22px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs-in::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;font-size:.88rem;font-weight:600;color:var(--muted);background:none;border:0;
+  padding:15px 14px;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold)}
+.tab .n{display:inline-block;min-width:18px;margin-left:5px;font-size:.7rem;color:var(--gold)}
+
+main{max-width:1180px;margin:0 auto;padding:26px 22px 140px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.row.dirty{border-color:var(--gold);box-shadow:0 0 0 3px rgba(223,165,58,.12)}
+.rhead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.rhead .k{font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums}
+.rhead .reset{margin-left:auto;font-size:.76rem;color:var(--muted);background:none;border:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.rhead .reset:hover{color:var(--ink)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pair .cell{display:flex;flex-direction:column;gap:6px}
+.pair .cell > span{font-size:.7rem;font-weight:700;letter-spacing:.1em;color:var(--muted)}
+.pair textarea:disabled{background:#F4F4F0;color:#A5A9B8}
+
+/* 일정 */
+.sched{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 22px}
+.sched h2{font-size:1.05rem;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.sched .desc{font-size:.88rem;color:var(--muted);margin-bottom:22px}
+.modes{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:22px}
+.modes button{font-size:.88rem;font-weight:600;color:var(--muted);background:#FBFBF9;border:1px solid var(--line);
+  border-radius:10px;padding:.7em 1.2em;cursor:pointer}
+.modes button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.addrow{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.addrow input[type=date]{max-width:210px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{display:inline-flex;align-items:center;gap:9px;background:#FBF4E6;border:1px solid #EBD9AE;color:#5C4A20;
+  border-radius:999px;padding:.5em .7em .5em 1.05em;font-size:.87rem;font-weight:600;font-variant-numeric:tabular-nums}
+.chip small{color:#A97A19;font-weight:700}
+.chip button{border:0;background:rgba(20,27,46,.1);width:20px;height:20px;border-radius:50%;cursor:pointer;
+  font-size:.68rem;line-height:1;color:#5C4A20}
+.chip button:hover{background:rgba(20,27,46,.2)}
+.empty{color:var(--muted);font-size:.88rem;margin-top:16px}
+.hint{margin-top:20px;background:#FDF8EC;border:1px solid #EBD9AE;border-radius:11px;padding:14px 17px;font-size:.84rem;color:#4A3A16;line-height:1.7}
+
+/* 저장 바 */
+.savebar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.94);
+  backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:14px 22px}
+.savebar-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:14px}
+.savebar .st{font-size:.86rem;color:var(--muted)}
+.savebar .st b{color:var(--gold)}
+.savebar .btn{margin-left:auto}
+#toast{position:fixed;left:50%;bottom:88px;transform:translate(-50%,14px);background:var(--navy-900);color:#fff;
+  font-size:.89rem;font-weight:600;padding:.85em 1.5em;border-radius:999px;z-index:60;opacity:0;pointer-events:none;
+  transition:opacity .22s,transform .22s}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+@media (max-width:760px){
+  .pair{grid-template-columns:1fr}
+  main{padding:18px 16px 150px}
+  .top-in,.tabs-in{padding:0 16px}
+  .row{padding:16px}
+  .savebar{padding:12px 16px}
+  .savebar .st{font-size:.8rem}
+}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="lcard">
+    <p class="eyebrow">Admin</p>
+    <h1>이로토모 관리자</h1>
+    <p class="sub">사이트에 실린 문구와 모임 날짜를 고칠 수 있습니다.</p>
+    <div class="f">
+      <label for="l-id">아이디</label>
+      <input type="text" id="l-id" autocomplete="username" autocapitalize="off">
+    </div>
+    <div class="f">
+      <label for="l-pw">비밀번호</label>
+      <input type="password" id="l-pw" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary btn-block" id="l-go">로그인</button>
+    <p class="msg" id="l-msg"></p>
+  </div>
+</div>
+
+<div id="app">
+  <div class="top">
+    <div class="top-in">
+      <b>이로토모 관리자</b>
+      <div class="sp">
+        <a class="btn btn-ghost btn-sm" href="index.html" target="_blank" rel="noopener">사이트 보기</a>
+        <button class="btn btn-ghost btn-sm" id="logout">로그아웃</button>
+      </div>
+    </div>
+  </div>
+  <div class="tabs"><div class="tabs-in" id="tabs"></div></div>
+  <main id="panel"></main>
+  <div class="savebar">
+    <div class="savebar-in">
+      <p class="st" id="status">고친 곳 없음</p>
+      <button class="btn btn-primary" id="save">저장하기</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+var API = 'https://script.google.com/macros/s/AKfycbwfwRddswWGWx-LoeJR0y6YWGWkhOCLeEwlWG1Fnp0TWmsRoOPiT7anQmplO_jV8NXZ/exec';
+var FIELDS = [{"key":"c01","group":"상단 메뉴","ko":"이로토모","ja":"いろとも"},{"key":"c02","group":"상단 메뉴","ko":"모임 소개","ja":"交流会について"},{"key":"c03","group":"상단 메뉴","ko":"당일 흐름","ja":"当日の流れ"},{"key":"c04","group":"상단 메뉴","ko":"참가비","ja":"参加費"},{"key":"c05","group":"상단 메뉴","ko":"오시는 길","ja":"アクセス"},{"key":"c06","group":"상단 메뉴","ko":"FAQ","ja":"FAQ"},{"key":"c07","group":"상단 메뉴","ko":"중고 · 나눔","ja":"中古・おゆずり"},{"key":"c08","group":"상단 메뉴","ko":"신청하기","ja":"申し込む"},{"key":"c09","group":"첫 화면","ko":"매주 일요일,\n일본어로 이야기하는\n세 시간","ja":"毎週日曜、\n韓国語で話す\n3時間"},{"key":"c10","group":"첫 화면","ko":"선정릉역에서 도보 5분 거리의 카페에서, 일본인 참가자들과 같은 테이블에 앉아 이야기합니다. 일본어는 간단한 일상 회화가 가능한 정도면 충분합니다. 혼자 오시는 분이 대부분이고, 자리는 저희가 랜덤으로 배정합니다.","ja":"ソンジョンヌン駅から徒歩5分のカフェで、韓国人の参加者と同じテーブルを囲みます。韓国語が話せなくても大丈夫です。おひとりでいらっしゃる方がほとんどで、席順はこちらでランダムに決めています。"},{"key":"c11","group":"첫 화면","ko":"신청 안내 보기","ja":"申し込みへ"},{"key":"c12","group":"첫 화면","ko":"모임 소개","ja":"交流会について"},{"key":"c13","group":"첫 화면","ko":"사전 신청제입니다. 당일 참가는 받지 않습니다.","ja":"事前申込制です。当日参加は受け付けておりません。"},{"key":"c14","group":"요약 카드","ko":"일시","ja":"日時"},{"key":"c15","group":"요약 카드","ko":"장소","ja":"場所"},{"key":"c16","group":"요약 카드","ko":"카페 레꼴뜨\n봉은사로50길 10, 1층","ja":"カフェ・レコルト\n봉은사로50길 10, 1층"},{"key":"c17","group":"요약 카드","ko":"참가비","ja":"参加費"},{"key":"c18","group":"요약 카드","ko":"한국인 15,000원\n일본인 5,000원","ja":"韓国人 15,000ウォン\n日本人 5,000ウォン"},{"key":"c19","group":"요약 카드","ko":"신청","ja":"申込"},{"key":"c20","group":"요약 카드","ko":"사전 신청제\n당일 참가 불가","ja":"事前申込制\n当日参加は不可"},{"key":"c21","group":"모임 소개","ko":"이런 모임입니다","ja":"こんな会です"},{"key":"c22","group":"모임 소개","ko":"통역이 있는 자리는 아니지만, 서로 아는 만큼 천천히 이야기하면 됩니다. 일본어가 유창하지 않아도 초급 이상이면 충분히 어울리실 수 있습니다.","ja":"通訳がつくわけではありませんが、みなさん分かる範囲でゆっくり話しています。韓国側の参加者は日本語を話せる方がほとんどですので、どうぞお気軽にお越しください。"},{"key":"c23","group":"모임 소개","ko":"4~6명이 한 테이블에 앉습니다","ja":"4〜6人でひとつのテーブルを囲みます"},{"key":"c24","group":"모임 소개","ko":"자리는 저희가 랜덤으로 배정합니다. 한국어와 일본어를 섞어 쓰셔도 되고, 번역 앱을 꺼내는 분도 많습니다.","ja":"席順はこちらでランダムに決めています。韓国語と日本語が混ざっても構いませんし、翻訳アプリを使う方も多くいらっしゃいます。"},{"key":"c25","group":"모임 소개","ko":"한 시간마다 자리를 바꿉니다","ja":"1時間ごとに席を替えます"},{"key":"c26","group":"모임 소개","ko":"16시와 17시에 테이블을 교체합니다. 세 시간 동안 여러 사람과 이야기하실 수 있습니다.","ja":"16時と17時に席替えをします。3時間のあいだに、いろいろな方とお話しいただけます。"},{"key":"c27","group":"모임 소개","ko":"2차는 자유 참가입니다","ja":"二次会は自由参加です"},{"key":"c28","group":"모임 소개","ko":"모임이 끝나면 근처에서 저녁을 먹습니다. 자유 참가이고, 비용은 각자 부담입니다.","ja":"会が終わったあとは、近くのお店へ夕食に行きます。自由参加で、費用は各自のご負担となります。"},{"key":"c29","group":"당일 흐름","ko":"당일 흐름","ja":"当日の流れ"},{"key":"c30","group":"당일 흐름","ko":"모임 시작\n자기소개","ja":"開始\n自己紹介"},{"key":"c31","group":"당일 흐름","ko":"첫 번째\n테이블 교체","ja":"1回目の\n席替え"},{"key":"c32","group":"당일 흐름","ko":"두 번째 테이블 교체\n2차 안내","ja":"2回目の席替え\n二次会のご案内"},{"key":"c33","group":"당일 흐름","ko":"모임 종료\n이후 2차 (자유 참가)","ja":"終了\nそのあと二次会（自由参加）"},{"key":"c34","group":"참가비","ko":"참가비","ja":"参加費"},{"key":"c35","group":"참가비","ko":"한국인 참가자","ja":"韓国人の方"},{"key":"c36","group":"참가비","ko":"참가비 10,000원","ja":"参加費 10,000ウォン"},{"key":"c37","group":"참가비","ko":"음료비 5,000원","ja":"ドリンク代 5,000ウォン"},{"key":"c38","group":"참가비","ko":"원","ja":"ウォン"},{"key":"c39","group":"참가비","ko":"일본인 참가자","ja":"日本人の方"},{"key":"c40","group":"참가비","ko":"참가비 무료","ja":"参加費 無料"},{"key":"c41","group":"참가비","ko":"음료비 5,000원","ja":"ドリンク代 5,000ウォン"},{"key":"c42","group":"참가비","ko":"원","ja":"ウォン"},{"key":"c43","group":"오시는 길","ko":"오시는 길","ja":"アクセス"},{"key":"c44","group":"오시는 길","ko":"지하철 9호선 · 수인분당선 선정릉역에서 도보 5분입니다. 건물 1층에 있습니다.","ja":"地下鉄9号線・水仁盆唐線のソンジョンヌン駅から徒歩5分。ビルの1階です。"},{"key":"c45","group":"오시는 길","ko":"카페 레꼴뜨","ja":"カフェ・レコルト"},{"key":"c46","group":"오시는 길","ko":"서울 강남구 봉은사로50길 10, 1층\n선정릉역 도보 5분 (9호선 · 수인분당선)","ja":"서울 강남구 봉은사로50길 10, 1층\nソンジョンヌン駅から徒歩5分（9号線・水仁盆唐線）"},{"key":"c47","group":"오시는 길","ko":"네이버 지도에서 열기","ja":"NAVER マップで開く"},{"key":"c48","group":"오시는 길","ko":"구글 지도에서 열기","ja":"Google マップで開く"},{"key":"c49","group":"방침","ko":"참가 전에 확인해 주세요","ja":"ご参加の前にお読みください"},{"key":"c50","group":"방침","ko":"짧은 시간 안에 연락처를 주고받는 분위기는 삼가 주세요.","ja":"短時間で連絡先を交換するような雰囲気づくりはご遠慮ください。"},{"key":"c51","group":"방침","ko":"연애나 이성 만남을 목적으로 한 참가는 사양하고 있습니다.","ja":"恋愛・異性との出会いを目的としたご参加はお断りしています。"},{"key":"c52","group":"방침","ko":"사전 신청 없이 당일 오시는 것은 받지 않습니다.","ja":"事前のお申し込みがない当日参加は受け付けておりません。"},{"key":"c53","group":"방침","ko":"모임 사진은 참가자 얼굴을 가린 뒤 SNS에 올립니다. 게재를 원하지 않으시면 당일 현장에서 말씀해 주세요.","ja":"会の写真は、参加者のお顔を隠したうえでSNSに掲載しています。掲載を希望されない方は、当日お知らせください。"},{"key":"c54","group":"방침","ko":"영업이나 권유를 목적으로 한 참가는 사양하고 있습니다.","ja":"勧誘・営業を目的としたご参加はお断りしています。"},{"key":"c55","group":"FAQ","ko":"자주 묻는 질문","ja":"よくあるご質問"},{"key":"c56","group":"FAQ","ko":"일본어를 어느 정도 해야 하나요?","ja":"韓国語が話せなくても大丈夫ですか？"},{"key":"c57","group":"FAQ","ko":"혼자 참가해도 되나요?","ja":"ひとりでも参加できますか？"},{"key":"c58","group":"FAQ","ko":"아는 사람 없이 가면 어색하지 않을까요?","ja":"初めてなので不安です。"},{"key":"c59","group":"FAQ","ko":"중간에 먼저 가도 되나요?","ja":"途中で帰っても大丈夫ですか？"},{"key":"c60","group":"FAQ","ko":"신청은 어떻게 하나요?","ja":"申し込み方法を教えてください。"},{"key":"c61","group":"FAQ","ko":"예약금을 낸 뒤 취소하면 환급되나요?","ja":"予約金は返金されますか？"},{"key":"c62","group":"게시판 안내","ko":"게시판","ja":"掲示板"},{"key":"c63","group":"게시판 안내","ko":"중고 · 나눔 게시판","ja":"中古・おゆずり掲示板"},{"key":"c64","group":"게시판 안내","ko":"이사나 귀국으로 두고 갈 물건, 다 본 교재, 몇 번 쓰지 않은 생활용품. 모임 날 직접 주고받으니 택배비도 들지 않습니다.","ja":"帰国のときに置いていくもの、読み終えた教材、数回しか使わなかった生活用品。会の当日に手渡しできるので、送料もかかりません。"},{"key":"c65","group":"게시판 안내","ko":"게시판 보기","ja":"掲示板を見る"},{"key":"c66","group":"가나 연습","ko":"부가 도구","ja":"おまけ"},{"key":"c67","group":"가나 연습","ko":"가나 쓰기 연습","ja":"かなの書き取り練習"},{"key":"c68","group":"가나 연습","ko":"히라가나·가타카나를 획순대로 따라 쓰는 도구입니다. 휴대폰에서도 손가락으로 바로 쓸 수 있습니다.","ja":"ひらがな・カタカナを書き順どおりになぞる練習ツールです。スマホでも指でそのまま書けます。"},{"key":"c69","group":"가나 연습","ko":"연습 열기","ja":"練習を開く"},{"key":"c70","group":"신청","ko":"신청하기","ja":"お申し込み"},{"key":"c71","group":"신청","ko":"신청은 소모임 앱에서 받고 있습니다. 아래 버튼으로 이동해 모임에 가입하신 뒤, 예약금 5,000원을 입금해 주시면 신청이 완료됩니다.","ja":"下のフォームからお申し込みください。ご入力のメールアドレスにご案内メールをお送りします。予約金のご入金を確認しましたら、ご参加が確定となります。"},{"key":"c72","group":"제휴","ko":"제휴 · 스폰서 문의","ja":"提携・スポンサーのお問い合わせ"},{"key":"c73","group":"제휴","ko":"이로토모에는 매주 서울에 사는 일본인들이 모입니다. 일본인 손님을 만나고 싶은 가게나 브랜드가 있다면 편하게 연락 주세요.","ja":"いろともには、毎週ソウル在住の日本人が集まります。日本人のお客様に知っていただきたいお店やブランドがありましたら、お気軽にご連絡ください。"},{"key":"c74","group":"제휴","ko":"문의하기","ja":"お問い合わせ"},{"key":"c75","group":"제휴","ko":"이로토모\n매주 일요일 15:00 – 18:00","ja":"いろとも\n毎週日曜 15:00 – 18:00"}];
+
+var $ = function(s){ return document.querySelector(s); };
+var cred = { id:'', pw:'' };
+var vals = {};            /* key -> {ko, ja} 현재 입력값 */
+var sched = { mode:'weekly', time:'15:00 – 18:00', dates:[] };
+var groups = [];
+var active = '';
+
+FIELDS.forEach(function(f){
+  vals[f.key] = { ko:f.ko, ja:f.ja };
+  if (groups.indexOf(f.group) < 0) groups.push(f.group);
+});
+groups.push('일정');
+
+var toastEl = $('#toast'), tt;
+function toast(m){ toastEl.textContent = m; toastEl.classList.add('show'); clearTimeout(tt); tt = setTimeout(function(){ toastEl.classList.remove('show'); }, 2600); }
+
+function post(payload){
+  return fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload), redirect:'follow' }).then(function(r){ return r.json(); });
+}
+
+/* ── 로그인 ─────────────────────────────────────────────── */
+function login(){
+  var id = $('#l-id').value.trim(), pw = $('#l-pw').value.trim();
+  if (!id || !pw){ $('#l-msg').textContent = '아이디와 비밀번호를 입력해 주세요.'; return; }
+  $('#l-go').disabled = true; $('#l-msg').textContent = '';
+  post({ action:'login', id:id, pw:pw }).then(function(d){
+    if (!d.ok){ $('#l-msg').textContent = '아이디 또는 비밀번호가 맞지 않습니다.'; return; }
+    cred = { id:id, pw:pw };
+    $('#login').style.display = 'none';
+    $('#app').style.display = 'block';
+    loadSaved();
+  }).catch(function(){
+    $('#l-msg').textContent = '서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
+  }).then(function(){ $('#l-go').disabled = false; });
+}
+$('#l-go').addEventListener('click', login);
+$('#l-pw').addEventListener('keydown', function(e){ if (e.key === 'Enter') login(); });
+$('#logout').addEventListener('click', function(){ location.reload(); });
+
+/* ── 저장된 값 불러오기 ─────────────────────────────────── */
+function loadSaved(){
+  buildTabs(); show(groups[0]);
+  fetch(API + '?action=content&t=' + Date.now(), { redirect:'follow' })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (!d.ok) return;
+      Object.keys(d.content || {}).forEach(function(k){
+        if (!vals[k]) return;
+        if (d.content[k].ko) vals[k].ko = d.content[k].ko;
+        if (d.content[k].ja) vals[k].ja = d.content[k].ja;
+      });
+      if (d.schedule) sched = d.schedule;
+      show(active); refreshStatus();
+    }).catch(function(){ toast('저장된 내용을 불러오지 못했습니다'); });
+}
+
+/* ── 탭 ─────────────────────────────────────────────────── */
+function buildTabs(){
+  var box = $('#tabs'); box.innerHTML = '';
+  groups.forEach(function(g){
+    var b = document.createElement('button');
+    b.className = 'tab'; b.type = 'button'; b.dataset.g = g;
+    b.innerHTML = g + '<span class="n" data-cnt="' + g + '"></span>';
+    b.addEventListener('click', function(){ show(g); });
+    box.appendChild(b);
+  });
+}
+
+function dirtyOf(key){
+  var f = byKey(key);
+  return (vals[key].ko !== f.ko) || (vals[key].ja !== f.ja);
+}
+function byKey(k){ for (var i=0;i<FIELDS.length;i++) if (FIELDS[i].key === k) return FIELDS[i]; }
+
+function refreshStatus(){
+  var n = 0;
+  var per = {};
+  FIELDS.forEach(function(f){ if (dirtyOf(f.key)){ n++; per[f.group] = (per[f.group]||0)+1; } });
+  document.querySelectorAll('[data-cnt]').forEach(function(el){
+    var c = per[el.dataset.cnt];
+    el.textContent = c ? '●' : '';
+  });
+  $('#status').innerHTML = n ? ('고친 곳 <b>' + n + '군데</b> — 저장해야 사이트에 반영됩니다') : '고친 곳 없음';
+}
+
+function show(g){
+  active = g;
+  document.querySelectorAll('.tab').forEach(function(t){ t.setAttribute('aria-selected', String(t.dataset.g === g)); });
+  var panel = $('#panel'); panel.innerHTML = '';
+  if (g === '일정'){ renderSchedule(panel); return; }
+  FIELDS.filter(function(f){ return f.group === g; }).forEach(function(f){
+    panel.appendChild(rowFor(f));
+  });
+  refreshStatus();
+}
+
+function rowFor(f){
+  var row = document.createElement('div');
+  row.className = 'row' + (dirtyOf(f.key) ? ' dirty' : '');
+
+  var head = document.createElement('div'); head.className = 'rhead';
+  var k = document.createElement('span'); k.className = 'k'; k.textContent = f.key.toUpperCase();
+  var reset = document.createElement('button'); reset.className = 'reset'; reset.type = 'button'; reset.textContent = '기본값으로';
+  head.appendChild(k); head.appendChild(reset);
+  row.appendChild(head);
+
+  var pair = document.createElement('div'); pair.className = 'pair';
+  var areas = {};
+  [['ko','한국어'],['ja','일본어']].forEach(function(p){
+    var cell = document.createElement('div'); cell.className = 'cell';
+    var lb = document.createElement('span'); lb.textContent = p[1];
+    var ta = document.createElement('textarea');
+    ta.value = vals[f.key][p[0]];
+    ta.rows = Math.min(6, Math.max(2, Math.ceil((ta.value.length || 1) / 34)));
+    if (!f[p[0]]) { ta.disabled = true; ta.placeholder = '이 언어에는 없는 항목입니다'; }
+    ta.addEventListener('input', function(){
+      vals[f.key][p[0]] = ta.value;
+      row.classList.toggle('dirty', dirtyOf(f.key));
+      refreshStatus();
+    });
+    areas[p[0]] = ta;
+    cell.appendChild(lb); cell.appendChild(ta); pair.appendChild(cell);
+  });
+  row.appendChild(pair);
+
+  reset.addEventListener('click', function(){
+    vals[f.key] = { ko:f.ko, ja:f.ja };
+    areas.ko.value = f.ko; areas.ja.value = f.ja;
+    row.classList.remove('dirty'); refreshStatus();
+  });
+  return row;
+}
+
+/* ── 일정 ───────────────────────────────────────────────── */
+function renderSchedule(panel){
+  var box = document.createElement('div'); box.className = 'sched';
+  box.innerHTML =
+    '<h2>모임 날짜</h2>' +
+    '<p class="desc">매주 여는 경우와, 특정 날짜만 여는 경우 중에서 고르시면 됩니다. 여기서 정한 날짜가 요약 카드의 일시와 일본어 신청 폼의 참가일 선택지에 함께 반영됩니다.</p>' +
+    '<div class="modes">' +
+      '<button type="button" data-m="weekly">매주 일요일</button>' +
+      '<button type="button" data-m="dates">지정한 날짜만</button>' +
+    '</div>' +
+    '<div class="f" style="max-width:260px"><label for="s-time">시간</label>' +
+      '<input type="text" id="s-time" placeholder="15:00 – 18:00"></div>' +
+    '<div id="s-dates"></div>';
+  panel.appendChild(box);
+
+  $('#s-time').value = sched.time || '';
+  $('#s-time').addEventListener('input', function(){ sched.time = this.value; });
+
+  function paintModes(){
+    box.querySelectorAll('.modes button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.m === sched.mode));
+    });
+    paintDates();
+  }
+  box.querySelectorAll('.modes button').forEach(function(b){
+    b.addEventListener('click', function(){ sched.mode = b.dataset.m; paintModes(); });
+  });
+
+  function paintDates(){
+    var wrap = $('#s-dates'); wrap.innerHTML = '';
+    if (sched.mode !== 'dates'){
+      var p = document.createElement('p'); p.className = 'hint';
+      p.textContent = '매주 일요일로 표시되고, 신청 폼에는 다가오는 일요일 12주치가 자동으로 들어갑니다.';
+      wrap.appendChild(p); return;
+    }
+    var add = document.createElement('div'); add.className = 'addrow';
+    var inp = document.createElement('input'); inp.type = 'date';
+    var btn = document.createElement('button'); btn.className = 'btn btn-ghost btn-sm'; btn.type = 'button'; btn.textContent = '날짜 추가';
+    add.appendChild(inp); add.appendChild(btn); wrap.appendChild(add);
+
+    btn.addEventListener('click', function(){
+      var v = inp.value;
+      if (!v) return;
+      if (sched.dates.indexOf(v) >= 0){ toast('이미 들어 있는 날짜입니다'); return; }
+      sched.dates.push(v); sched.dates.sort(); inp.value = ''; paintDates();
+    });
+
+    var chips = document.createElement('div'); chips.className = 'chips';
+    var WD = ['일','월','화','수','목','금','토'];
+    var today = new Date(); today.setHours(0,0,0,0);
+    sched.dates.slice().sort().forEach(function(d){
+      var dt = new Date(d + 'T00:00:00');
+      var c = document.createElement('span'); c.className = 'chip';
+      var past = dt < today;
+      c.innerHTML = d.replace(/-/g,'.') + ' <small>' + WD[dt.getDay()] + (past ? ' 지남' : '') + '</small> ';
+      var x = document.createElement('button'); x.type = 'button'; x.textContent = '✕';
+      x.addEventListener('click', function(){
+        sched.dates = sched.dates.filter(function(v){ return v !== d; }); paintDates();
+      });
+      c.appendChild(x); chips.appendChild(c);
+    });
+    wrap.appendChild(chips);
+    if (!sched.dates.length){
+      var e = document.createElement('p'); e.className = 'empty';
+      e.textContent = '날짜를 하나도 넣지 않으면 매주 일요일로 표시됩니다.';
+      wrap.appendChild(e);
+    }
+    var h = document.createElement('p'); h.className = 'hint';
+    h.textContent = '요약 카드에는 다가오는 날짜 3개까지 보이고, 지난 날짜는 자동으로 빠집니다. 목록에서 지우지 않아도 됩니다.';
+    wrap.appendChild(h);
+  }
+
+  paintModes();
+}
+
+/* ── 저장 ───────────────────────────────────────────────── */
+$('#save').addEventListener('click', function(){
+  var out = {};
+  FIELDS.forEach(function(f){
+    var v = vals[f.key];
+    var ko = (v.ko === f.ko) ? '' : v.ko;
+    var ja = (v.ja === f.ja) ? '' : v.ja;
+    if (ko || ja) out[f.key] = { ko:ko, ja:ja };
+  });
+  var btn = this; btn.disabled = true; btn.textContent = '저장 중…';
+  post({ action:'save', id:cred.id, pw:cred.pw, content:out, schedule:sched })
+    .then(function(d){
+      if (!d.ok) throw new Error(d.error || 'fail');
+      toast('저장했습니다. 사이트를 새로고침하면 반영됩니다.');
+    })
+    .catch(function(){ toast('저장하지 못했습니다. 잠시 뒤 다시 시도해 주세요.'); })
+    .then(function(){ btn.disabled = false; btn.textContent = '저장하기'; });
+});
+
+window.addEventListener('beforeunload', function(e){
+  var n = FIELDS.filter(function(f){ return dirtyOf(f.key); }).length;
+  if (n){ e.preventDefault(); e.returnValue = ''; }
+});
+})();
+</script>
+</body>
+</html>
