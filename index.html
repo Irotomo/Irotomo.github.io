@@ -386,6 +386,8 @@ body.admin-on #admin-bar{display:flex}
 #admin-bar button:hover{background:rgba(255,255,255,.12)}
 #admin-bar button.pri{background:var(--gold);border-color:var(--gold);color:#2E2308}
 #admin-bar button.pri:hover{background:#E9B65A}
+#admin-bar .warn{font-size:.76rem;font-weight:700;color:#2E2308;background:var(--gold);
+  border-radius:999px;padding:.35em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
 
 body.admin-on [data-c]{outline:1px dashed rgba(223,165,58,.6);outline-offset:3px;border-radius:3px;cursor:text}
 body.admin-on [data-c]:hover{outline-color:var(--gold);background:rgba(223,165,58,.08)}
@@ -1109,9 +1111,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
   /* ── 관리자 페이지에서 고친 문구·일정 불러오기 ─────────────────
      주소는 board.html 과 같은 Apps Script 웹앱입니다. */
-  var API = 'https://script.google.com/macros/s/AKfycbxhR8qB3127-OUEsCA1HKhssk-cLQJVlu1OUXjzUQmB3FSlPouQDp7Z4YRpoYIuuIkA/exec';
+  var API = 'https://script.google.com/macros/s/AKfycbyjvp9p5e4MCPGXYBvwKXGdFDwxmYHq4sWc_t8yxj8G_upQsf9GP-PMM1gdZZWVR56H/exec';
   var SCHED = { mode:'weekly', time:'15:00 – 18:00', weeks:12, dates:[] };
-  var LOGO = '', LOGO_AR = '', LOGO_SIZE = '';
+  var LOGO = '', LOGO_ID = '', LOGO_AR = '', LOGO_SIZE = '';
 
   function esc(v){
     return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
@@ -1188,15 +1190,19 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   /* 상단 메뉴의 작은 마크는 그대로 두고, 히어로의 큰 로고만 바꾼다 */
   /* ── 활동 사진 ────────────────────────────────────────────── */
   var GALLERY = [];
-  function driveUrl(id, w){ return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w || 900); }
+  function driveUrl(id, w){ return 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || 1600); }
+  function driveAlt(id, w){ return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w || 1600); }
   function renderGallery(){
     var sec = document.getElementById('gallery');
     if (!sec) return;
     sec.querySelectorAll('.gal figure').forEach(function(fig, i){
       var g = GALLERY[i], img = fig.querySelector('img');
       if (g && (g.uri || g.id)) {
-        img.onerror = function(){ img.hidden = true; fig.classList.add('empty'); };
-        img.src = g.uri || driveUrl(g.id, 900);
+        img.onerror = function(){
+          if (g.id && img.src.indexOf('lh3.') >= 0) { img.src = driveAlt(g.id, 1600); return; }
+          img.hidden = true; fig.classList.add('empty');
+        };
+        img.src = g.uri || driveUrl(g.id, 1600);
         img.hidden = false; fig.classList.remove('empty');
       } else {
         img.removeAttribute('src'); img.hidden = true; fig.classList.add('empty');
@@ -1262,9 +1268,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   function applyLogo(){
     var hero = document.querySelector('.hero-logo');
     if (!hero) return;
-    hero.style.backgroundImage = LOGO ? 'url("' + LOGO + '")' : '';
+    var src = LOGO || (LOGO_ID ? driveUrl(LOGO_ID, 1200) : '');
+    hero.style.backgroundImage = src ? 'url("' + src + '")' : '';
+    if (LOGO_ID && !LOGO) {                      /* 주소가 막히면 대체 주소로 */
+      var probe = new Image();
+      probe.onerror = function(){ hero.style.backgroundImage = 'url("' + driveAlt(LOGO_ID, 1200) + '")'; };
+      probe.src = driveUrl(LOGO_ID, 1200);
+    }
     var r = document.documentElement.style;
-    if (LOGO && LOGO_AR) r.setProperty('--logo-ar', LOGO_AR); else r.removeProperty('--logo-ar');
+    if (src && LOGO_AR) r.setProperty('--logo-ar', LOGO_AR); else r.removeProperty('--logo-ar');
     if (LOGO_SIZE) r.setProperty('--logo-w', LOGO_SIZE + 'px'); else r.removeProperty('--logo-w');
   }
 
@@ -1275,10 +1287,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     .then(function(d){
       if (!d || !d.ok) return;
       if (d.content) applyContent(d.content);
-      if (d.logo) LOGO = d.logo;
+      if (d.logo) LOGO = d.logo;                 /* 예전 방식(시트 저장)도 계속 지원 */
+      if (d.logoId) LOGO_ID = d.logoId;
       if (d.logoAr) LOGO_AR = d.logoAr;
       if (d.logoSize) LOGO_SIZE = d.logoSize;
-      if (d.logo || d.logoSize) applyLogo();
+      if (d.logo || d.logoId || d.logoSize) applyLogo();
       if (d.gallery && d.gallery.length) {
         GALLERY = d.gallery.map(function(id){ return { id:id }; });
         renderGallery();
@@ -1347,12 +1360,30 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       closeDim($a('adm-login'));
       $a('adm-pw').value = '';
       startEdit();
+      checkDeploy();
     }).catch(function(){
       $a('adm-msg').textContent = '서버에 연결하지 못했습니다.';
     }).then(function(){ $a('adm-go').disabled = false; });
   }
   $a('adm-go').addEventListener('click', tryLogin);
   $a('adm-pw').addEventListener('keydown', function(e){ if (e.key === 'Enter') tryLogin(); });
+
+  /* 배포된 스크립트가 최신인지 확인 — 사진 업로드가 안 될 때 원인이 바로 보이도록 */
+  function checkDeploy(){
+    fetch(API + '?action=ping&t=' + Date.now(), { redirect:'follow' })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (d && d.ok && d.actions && d.actions.indexOf('gallery') >= 0) return;
+        throw new Error('old');
+      })
+      .catch(function(){
+        var b = $a('admin-bar');
+        var w = document.createElement('span');
+        w.className = 'warn';
+        w.textContent = '⚠ Apps Script 가 옛 버전입니다 — 새 버전으로 다시 배포해야 사진이 올라갑니다';
+        b.insertBefore(w, b.querySelector('.sp'));
+      });
+  }
 
   /* 편집 모드 */
   function fitBar(){
@@ -1494,7 +1525,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
   function pushLogo(uri){
     var body = { action:'logo', id:ADMIN.id, pw:ADMIN.pw, logoAr:LOGO_AR, logoSize:LOGO_SIZE };
-    if (typeof uri === 'string') body.logo = uri;
+    if (typeof uri === 'string') {
+      body.b64 = uri ? uri.split(',')[1] : '';
+      body.mime = uri.indexOf('image/png') >= 0 ? 'image/png' : 'image/jpeg';
+    }
     return apiPost(body).then(function(d){
       if (!d || !d.ok) throw new Error((d && d.error) || '서버가 응답하지 않았습니다');
       return d;
@@ -1514,7 +1548,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   $a('logo-reset').addEventListener('click', function(e){
     e.stopPropagation();
     if (!confirm('기본 로고로 되돌릴까요?')) return;
-    LOGO = ''; LOGO_AR = ''; LOGO_SIZE = '';
+    LOGO = ''; LOGO_ID = ''; LOGO_AR = ''; LOGO_SIZE = '';
     applyLogo(); syncSizeInput();
     setState('logo-state', '되돌리는 중…');
     pushLogo('').then(function(){ setState('logo-state', '완료'); })
@@ -1525,14 +1559,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     var file = e.target.files && e.target.files[0];
     if (!file) return;
     setState('logo-state', '사진 여는 중…');
-    fitImage(file, [[560,0.86],[440,0.82],[340,0.78],[260,0.72]], 300000, true).then(function(r){
+    fitImage(file, [[1200,0.92],[900,0.88],[700,0.84]], 1000000, true).then(function(r){
       if (!r.uri) throw new Error('이 사진은 열 수 없습니다. JPG 나 PNG 로 저장한 뒤 다시 시도해 주세요.');
       LOGO = r.uri; LOGO_AR = r.ar;
       if (!LOGO_SIZE) LOGO_SIZE = '380';
       applyLogo(); syncSizeInput();
       setState('logo-state', '올리는 중… ' + kb(r.uri));
       return pushLogo(r.uri);
-    }).then(function(){
+    }).then(function(d){
+      if (d && d.id) { LOGO_ID = d.id; LOGO = ''; applyLogo(); }
       setState('logo-state', '저장됨');
     }).catch(function(err){
       setState('logo-state', fail(err).slice(0, 50), true);
@@ -1580,7 +1615,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     var file = e.target.files && e.target.files[0];
     if (!file) return;
     setState('gal-state', '사진 여는 중…');
-    fitImage(file, [[1100,0.74],[900,0.72],[700,0.7],[520,0.66]], 300000, false).then(function(r){
+    fitImage(file, [[1800,0.84],[1400,0.8],[1100,0.76]], 1000000, false).then(function(r){
       if (!r.uri) throw new Error('이 사진은 열 수 없습니다. JPG 나 PNG 로 저장한 뒤 다시 시도해 주세요.');
       GALLERY[galSlot] = { b64: r.uri.split(',')[1], uri: r.uri };
       renderGallery();
