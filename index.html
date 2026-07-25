@@ -53,7 +53,7 @@ body[data-lang="ja"] .ko{display:none!important}
 .nav-links{display:flex;gap:26px;margin-left:auto}
 .nav-links a{
   text-decoration:none;color:var(--muted);font-size:.9rem;font-weight:500;
-  position:relative;transition:color .18s ease;
+  position:relative;white-space:nowrap;transition:color .18s ease;
 }
 .nav-links a:hover{color:var(--ink)}
 .nav-links a::after{
@@ -175,6 +175,15 @@ h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.03em;li
 .astep p{font-size:.92rem;font-weight:600;line-height:1.5;color:var(--ink)}
 .apply-cta{display:flex;gap:12px;flex-wrap:wrap}
 .apply-bank{margin-top:22px;font-size:.86rem;color:var(--muted);background:#FDF8EC;border:1px solid #EBD9AE;border-radius:10px;padding:12px 18px;display:inline-block}
+
+/* 게시판 안내 밴드 */
+.board-sec{background:#FBF4E6;border-top:1px solid #EFE0C2;border-bottom:1px solid #EFE0C2;padding:66px 0}
+.board-band{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
+.bb-text{flex:1;min-width:250px}
+.bb-tag{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A97A19;margin-bottom:9px}
+.bb-title{font-size:1.32rem;font-weight:800;letter-spacing:-.025em;margin-bottom:9px;color:#2E2308}
+.bb-desc{font-size:.93rem;color:#5C4A20;line-height:1.72;max-width:54ch}
+.board-band .btn{flex:none}
 
 /* 가나 연습 스트립 */
 .kana-sec{background:linear-gradient(180deg,#1E2749 0%,#171E38 100%);color:#EDEFF6;padding:78px 0}
@@ -323,6 +332,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .apply-lead{margin-left:auto;margin-right:auto}
   .kana-sec{padding:56px 0}
   .kana-strip{flex-direction:column;align-items:flex-start;gap:18px}
+  .board-sec{padding:48px 0}
+  .board-band{flex-direction:column;align-items:stretch;gap:20px;text-align:left}
+  .board-band .btn{width:100%;justify-content:center}
   .facts{grid-template-columns:repeat(2,1fr)}
   .facts > div:nth-child(2n){border-right:0}
   .facts > div:nth-child(-n+2){border-bottom:1px solid var(--line-2)}
@@ -381,7 +393,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <a href="#place" class="ko">오시는 길</a><a href="#place" class="ja">アクセス</a>
       <a href="#kana" class="ko" data-open-kana>가나 연습</a>
       <a href="#faq" class="ko">FAQ</a><a href="#faq" class="ja">FAQ</a>
-      <a href="board.html" class="ko">게시판</a><a href="board.html" class="ja">掲示板</a>
+      <a href="board.html" class="ko">중고/나눔 게시판</a><a href="board.html" class="ja">ゆずります掲示板</a>
     </nav>
     <div class="nav-right">
       <div class="lang" role="group" aria-label="언어 선택">
@@ -608,6 +620,22 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="answer ko">예약금 5,000원은 음료비이므로 당일 취소 시에는 환급이 어렵습니다. 사정이 생기셨다면 전날까지 DM으로 미리 연락 주세요.</div>
         <div class="answer ja">予約金5,000ウォンはドリンク代のため、当日のキャンセルは返金いたしかねます。ご都合が悪くなった場合は、前日までにDMでご連絡ください。</div>
       </details>
+    </div>
+  </section>
+
+  <!-- 게시판 안내 -->
+  <section class="board-sec">
+    <div class="wrap">
+      <div class="board-band reveal">
+        <div class="bb-text">
+          <p class="bb-tag ko">게시판</p><p class="bb-tag ja">掲示板</p>
+          <p class="bb-title ko">중고 · 나눔 게시판</p><p class="bb-title ja">中古・ゆずります掲示板</p>
+          <p class="bb-desc ko">귀국하며 두고 갈 물건, 쓰지 않는 교재, 한 번 쓰고 만 생활용품. 모임 당일에 직접 주고받으면 택배비도 들지 않습니다.</p>
+          <p class="bb-desc ja">帰国のときに置いていくもの、使わなくなった教材、一度きりで終わった生活用品。会の当日に手渡しすれば送料もかかりません。</p>
+        </div>
+        <a class="btn btn-primary btn-lg ko" href="board.html">게시판 보기</a>
+        <a class="btn btn-primary btn-lg ja" href="board.html">掲示板を見る</a>
+      </div>
     </div>
   </section>
 
@@ -885,8 +913,16 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       e.preventDefault();
       if (id === '#top') { window.scrollTo({top:0, behavior:'smooth'}); return; }
       goTo(sec);
-      if (history.replaceState) history.replaceState(null, '', id);
     });
+  });
+
+  /* ── 페이지를 열면 항상 맨 위부터 ───────────────────────────── */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.addEventListener('load', function(){
+    var h = location.hash;
+    var sec = (h && h.length > 1) ? document.querySelector(h) : null;
+    if (sec) { goTo(sec); }
+    else { window.scrollTo(0, 0); }
   });
 
   /* ── 참가일: 다가오는 일요일만 선택 가능 ─────────────────────── */
