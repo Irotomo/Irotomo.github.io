@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>いろとも 이로토모 — 서울 한일교류회</title>
-<meta name="description" content="매주 일요일 15시, 서울 선정릉에서 열리는 사전 신청제 한일교류회. 毎週日曜15時、ソウル・宣陵で開かれる事前申込制の日韓交流会。">
+<meta name="description" content="매주 일요일 15시, 서울 선정릉에서 열리는 사전 신청제 한일교류회. 毎週日曜15時、ソウル・宣靖陵で開かれる事前申込制の日韓交流会。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Klee+One:wght@600&display=swap" rel="stylesheet">
@@ -177,12 +177,13 @@ h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.03em;li
 .apply-bank{margin-top:22px;font-size:.86rem;color:var(--muted);background:#FDF8EC;border:1px solid #EBD9AE;border-radius:10px;padding:12px 18px;display:inline-block}
 
 /* 가나 연습 스트립 */
-.kana-strip{display:flex;align-items:center;gap:28px;background:var(--navy-900);color:#EDEFF6;border-radius:18px;padding:26px 34px;flex-wrap:wrap}
+.kana-sec{background:linear-gradient(180deg,#1E2749 0%,#171E38 100%);color:#EDEFF6;padding:78px 0}
+.kana-strip{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
 .kana-strip .ks-text{flex:1;min-width:240px}
-.kana-strip .ks-tag{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.kana-strip .ks-tag{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#E7B75A;margin-bottom:8px}
 .kana-strip .ks-title{font-size:1.12rem;font-weight:700;letter-spacing:-.015em;margin-bottom:6px}
-.kana-strip .ks-desc{font-size:.9rem;color:#A7AFC8;line-height:1.65;max-width:52ch}
-.kana-strip .btn{border-color:rgba(255,255,255,.25);color:#EDEFF6;flex:none}
+.kana-strip .ks-desc{font-size:.9rem;color:#AEB7D0;line-height:1.65;max-width:52ch}
+.kana-strip .btn{border-color:rgba(255,255,255,.28);color:#EDEFF6;flex:none;background:rgba(255,255,255,.05)}
 .kana-strip .btn:hover{border-color:#fff;background:rgba(255,255,255,.08)}
 
 /* 지도 */
@@ -302,6 +303,10 @@ footer{background:var(--canvas);border-top:1px solid var(--line);padding:52px 0 
 #overlay .ostage{flex:1;display:flex;justify-content:center;min-height:0;background:#0E1424}
 #overlay iframe{flex:1;width:100%;max-width:560px;border:0;border-left:1px solid rgba(255,255,255,.08);border-right:1px solid rgba(255,255,255,.08);background:var(--navy-900)}
 
+/* 앵커 스크롤 오프셋 (스티키 네비 높이만큼) */
+section[id],div[id]{scroll-margin-top:92px}
+@media (max-width:960px){section[id],div[id]{scroll-margin-top:84px}}
+
 /* 접근성 · 반응형 */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
 @media (max-width:960px){
@@ -316,7 +321,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .sec-head{margin-left:auto;margin-right:auto;text-align:center}
   .apply-card{padding:36px 24px}
   .apply-lead{margin-left:auto;margin-right:auto}
-  .kana-strip{flex-direction:column;align-items:flex-start;gap:18px;padding:26px 24px}
+  .kana-sec{padding:56px 0}
+  .kana-strip{flex-direction:column;align-items:flex-start;gap:18px}
   .facts{grid-template-columns:repeat(2,1fr)}
   .facts > div:nth-child(2n){border-right:0}
   .facts > div:nth-child(-n+2){border-bottom:1px solid var(--line-2)}
@@ -397,8 +403,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <span class="pill ja"><i></i>毎週日曜 15:00 · ソウル・宣靖陵</span>
         <h1 class="ko">매주 일요일,<br>일본어로 이야기하는<br>세 시간</h1>
         <h1 class="ja">毎週日曜、<br>韓国語で話す<br>3時間</h1>
-        <p class="lead ko">선정릉역에서 도보 5분 거리의 카페에서, 일본인 참가자들과 같은 테이블에 앉아 이야기합니다. 일본어로 간단한 일상회화가 가능하시면 충분합니다. 대부분 혼자 오시고, 자리는 랜덤으로 배정됩니다.</p>
-        <p class="lead ja">宣靖陵（ソンジョンヌン）駅から徒歩5分のカフェで、韓国人の参加者と同じテーブルを囲みます。韓国語が話せなくても大丈夫です。ほとんどの方がおひとりで参加されていて、席順はこちらでランダムに決めています。</p>
+        <p class="lead ko">선정릉역에서 도보 5분 거리의 카페에서, 일본인 참가자들과 같은 테이블에 앉아 이야기합니다. 일본어는 간단한 일상 회화가 가능한 정도면 충분합니다. 혼자 오시는 분이 대부분이고, 자리는 저희가 랜덤으로 배정합니다.</p>
+        <p class="lead ja">宣靖陵（ソンジョンヌン）駅から徒歩5分のカフェで、韓国人の参加者と同じテーブルを囲みます。韓国語が話せなくても大丈夫です。おひとりでいらっしゃる方がほとんどで、席順はこちらでランダムに決めています。</p>
         <div class="hero-cta">
           <a class="btn btn-primary btn-lg ko" href="#apply">신청 안내 보기</a>
           <a class="btn btn-primary btn-lg ja" href="#apply">申し込みへ</a>
@@ -423,7 +429,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div>
         <dt>場所</dt>
         <dd class="ko">카페 레꼴뜨<br>봉은사로50길 10, 1층</dd>
-        <dd class="ja">カフェ・レコルト<br>奉恩寺路50キル10, 1階</dd>
+        <dd class="ja">カフェ・レコルト<br>奉恩寺路50キル10 1階</dd>
       </div>
       <div>
         <dt>参加費</dt>
@@ -444,15 +450,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <p class="eyebrow">About</p>
       <h2 class="ko">이런 모임입니다</h2>
       <h2 class="ja">こんな会です</h2>
-      <p class="ko">통역이 붙는 자리가 아니라, 서로 아는 만큼 천천히 이야기하는 자리입니다. 일본어가 유창하지 않아도 초급 이상이면 충분히 어울리실 수 있습니다.</p>
-      <p class="ja">通訳がつくわけではありませんが、みなさん分かる範囲でゆっくり話しています。韓国側の参加者は日本語を話せる方がほとんどですので、どうぞ気軽にお越しください。</p>
+      <p class="ko">통역이 있는 자리는 아니지만, 서로 아는 만큼 천천히 이야기하면 됩니다. 일본어가 유창하지 않아도 초급 이상이면 충분히 어울리실 수 있습니다.</p>
+      <p class="ja">通訳がつくわけではありませんが、みなさん分かる範囲でゆっくり話しています。韓国側の参加者は日本語を話せる方がほとんどですので、どうぞお気軽にお越しください。</p>
     </div>
     <div class="cards reveal">
       <article class="card">
-        <h3 class="ko">네다섯 명이 한 테이블에 앉습니다</h3>
-        <h3 class="ja">4〜5人でひとつのテーブルに</h3>
-        <p class="ko">자리는 랜덤으로 배정됩니다. 한국어와 일본어를 섞어 쓰셔도 되고, 번역 앱을 꺼내 드는 분도 많습니다.</p>
-        <p class="ja">席順はランダムに決まります。韓国語と日本語が混ざっても構いませんし、翻訳アプリを使う方も多くいらっしゃいます。</p>
+        <h3 class="ko">4~6명이 한 테이블에 앉습니다</h3>
+        <h3 class="ja">4〜6人でひとつのテーブルを囲みます</h3>
+        <p class="ko">자리는 저희가 랜덤으로 배정합니다. 한국어와 일본어를 섞어 쓰셔도 되고, 번역 앱을 꺼내는 분도 많습니다.</p>
+        <p class="ja">席順はこちらでランダムに決めています。韓国語と日本語が混ざっても構いませんし、翻訳アプリを使う方も多くいらっしゃいます。</p>
       </article>
       <article class="card">
         <h3 class="ko">한 시간마다 자리를 바꿉니다</h3>
@@ -464,7 +470,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <h3 class="ko">2차는 자유 참가입니다</h3>
         <h3 class="ja">二次会は自由参加です</h3>
         <p class="ko">모임이 끝나면 근처에서 저녁을 먹습니다. 자유 참가이고, 비용은 각자 부담입니다.</p>
-        <p class="ja">会が終わったあとは、近くのお店へ夕食に行きます。自由参加で、費用は各自負担です。</p>
+        <p class="ja">会が終わったあとは、近くのお店へ夕食に行きます。自由参加で、費用は各自のご負担となります。</p>
       </article>
     </div>
   </section>
@@ -504,7 +510,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
     </div>
     <p class="fee-note ko">신청 시 예약금 5,000원(음료비)을 먼저 입금하시면 자리가 확정됩니다. 자세한 방법은 아래 <a href="#apply" style="color:var(--navy);font-weight:600">신청하기</a>를 확인해 주세요.</p>
-    <p class="fee-note ja">お申し込み時に予約金5,000ウォン（ドリンク代）をお振込みいただくと席が確定します。詳しくは下の<a href="#apply" style="color:var(--navy);font-weight:600">お申し込み</a>をご覧ください。</p>
+    <p class="fee-note ja">お申し込み時に予約金5,000ウォン（ドリンク代）をお振り込みいただくと、お席が確定します。詳しくは下の<a href="#apply" style="color:var(--navy);font-weight:600">お申し込み</a>をご覧ください。</p>
   </section>
 
   <!-- 오시는 길 -->
@@ -555,13 +561,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <h2 class="ja">ご参加の前にお読みください</h2>
     </div>
     <ul class="rules reveal">
-      <li class="ko">짧은 시간 안에 연락처를 주고받는 분위기를 만드는 것은 삼가 주세요.</li>
+      <li class="ko">짧은 시간 안에 연락처를 주고받는 분위기는 삼가 주세요.</li>
       <li class="ja">短時間で連絡先を交換するような雰囲気づくりはご遠慮ください。</li>
       <li class="ko">연애나 이성 만남을 목적으로 한 참가는 사양하고 있습니다.</li>
       <li class="ja">恋愛・異性との出会いを目的としたご参加はお断りしています。</li>
       <li class="ko">사전 신청 없이 당일 오시는 것은 받지 않습니다.</li>
       <li class="ja">事前のお申し込みがない当日参加は受け付けておりません。</li>
-      <li class="ko">모임 사진은 참가자 얼굴을 가린 뒤 SNS에 올립니다. 게재를 원하지 않으시면 현장에서 말씀해 주세요.</li>
+      <li class="ko">모임 사진은 참가자 얼굴을 가린 뒤 SNS에 올립니다. 게재를 원하지 않으시면 당일 현장에서 말씀해 주세요.</li>
       <li class="ja">会の写真は、参加者のお顔を隠したうえでSNSに掲載しています。掲載を希望されない方は、当日お知らせください。</li>
       <li class="ko">영업이나 권유를 목적으로 한 참가는 사양하고 있습니다.</li>
       <li class="ja">勧誘・営業を目的としたご参加はお断りしています。</li>
@@ -577,45 +583,48 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
     <div class="faq reveal">
       <details>
-        <summary class="ko">일본어를 어느 정도 해야 하나요?</summary>
-        <summary class="ja">韓国語が話せなくても大丈夫ですか？</summary>
-        <div class="answer ko">유창할 필요는 없지만, 간단한 일상회화가 가능한 초급 이상이면 좋겠습니다. 세 시간 동안 대화가 이어지는 자리라, 인사 정도만 가능한 상태에서는 아쉬움이 남으실 수 있습니다. 모르는 표현은 번역 앱을 쓰셔도 되고, 한국어를 섞어 쓰셔도 괜찮습니다.</div>
-        <div class="answer ja">ご心配いりません。韓国側の参加者は日本語を話せる方がほとんどですので、韓国語に自信がなくても問題ありません。分からないときは日本語でそのままお話しいただいて大丈夫です。</div>
+        <summary><span class="ko">일본어를 어느 정도 해야 하나요?</span><span class="ja">韓国語が話せなくても大丈夫ですか？</span></summary>
+        <div class="answer ko">유창할 필요는 없지만, 간단한 일상 회화가 가능한 초급 이상이면 좋겠습니다. 세 시간 내내 대화가 이어지는 자리라, 인사 정도만 할 수 있는 수준이라면 아쉬움이 남으실 수 있습니다. 모르는 표현은 번역 앱을 쓰셔도 되고, 한국어를 섞어 쓰셔도 괜찮습니다.</div>
+        <div class="answer ja">ご心配いりません。韓国側の参加者は日本語を話せる方がほとんどですので、韓国語に自信がなくても問題ありません。分からないときは、日本語でそのままお話しいただいて大丈夫です。</div>
       </details>
       <details>
-        <summary class="ko">혼자 참가해도 되나요?</summary>
-        <summary class="ja">一人でも参加できますか？</summary>
-        <div class="answer ko">대부분 혼자 오십니다. 자리가 랜덤으로 배정되기 때문에 처음 오시는 분도 자연스럽게 어울리실 수 있습니다.</div>
+        <summary><span class="ko">혼자 참가해도 되나요?</span><span class="ja">ひとりでも参加できますか？</span></summary>
+        <div class="answer ko">대부분 혼자 오십니다. 자리를 랜덤으로 배정하기 때문에 처음 오시는 분도 자연스럽게 어울리실 수 있습니다.</div>
         <div class="answer ja">ほとんどの方がおひとりでいらっしゃいます。席順はこちらで決めますので、初めての方でも自然に輪に入っていただけます。</div>
       </details>
       <details>
-        <summary class="ko">중간에 먼저 가도 되나요?</summary>
-        <summary class="ja">途中で帰っても大丈夫ですか？</summary>
+        <summary><span class="ko">중간에 먼저 가도 되나요?</span><span class="ja">途中で帰っても大丈夫ですか？</span></summary>
         <div class="answer ko">괜찮습니다. 신청하실 때 미리 알려주시면 자리 배정에 반영하겠습니다.</div>
         <div class="answer ja">問題ありません。お申し込みの際にあらかじめお知らせいただければ、席順を決める際に考慮いたします。</div>
       </details>
       <details>
-        <summary class="ko">신청은 어떻게 하나요?</summary>
-        <summary class="ja">申し込み方法は？</summary>
+        <summary><span class="ko">신청은 어떻게 하나요?</span><span class="ja">申し込み方法を教えてください。</span></summary>
         <div class="answer ko">소모임 앱을 통해 신청 부탁드립니다. 아래 <a href="#apply" style="color:var(--navy);font-weight:600">신청하기</a>에서 소모임으로 바로 이동할 수 있습니다.</div>
-        <div class="answer ja">下のお申し込みフォームで受け付けております。Instagram（@irotomokr）へDMをいただいても構いません。</div>
+        <div class="answer ja">下のお申し込みフォームから受け付けております。Instagram（@irotomokr）へDMをいただいても構いません。</div>
+      </details>
+      <details>
+        <summary><span class="ko">예약금을 낸 뒤 취소하면 환급되나요?</span><span class="ja">予約金は返金されますか？</span></summary>
+        <div class="answer ko">예약금 5,000원은 음료비이므로 당일 취소 시에는 환급이 어렵습니다. 사정이 생기셨다면 전날까지 DM으로 미리 연락 주세요.</div>
+        <div class="answer ja">予約金5,000ウォンはドリンク代のため、当日のキャンセルは返金いたしかねます。ご都合が悪くなった場合は、前日までにDMでご連絡ください。</div>
       </details>
     </div>
   </section>
 
   <!-- 가나 연습 (부가 도구, 한국어 전용) -->
-  <div class="wrap ko" id="kana-wrap">
-    <div class="kana-strip reveal" id="kana">
-      <div class="ks-text">
-        <p class="ks-tag ko">부가 도구</p><p class="ks-tag ja">おまけ</p>
-        <p class="ks-title ko">가나 쓰기 연습</p><p class="ks-title ja">かなの書き取り練習</p>
-        <p class="ks-desc ko">히라가나·가타카나를 획순대로 따라 쓰는 도구입니다. 휴대폰에서도 손가락으로 바로 씁니다.</p>
-        <p class="ks-desc ja">ひらがな・カタカナを書き順どおりになぞる練習ツールです。スマホでも指でそのまま書けます。</p>
+  <section class="kana-sec ko" id="kana">
+    <div class="wrap">
+      <div class="kana-strip reveal">
+        <div class="ks-text">
+          <p class="ks-tag ko">부가 도구</p><p class="ks-tag ja">おまけ</p>
+          <p class="ks-title ko">가나 쓰기 연습</p><p class="ks-title ja">かなの書き取り練習</p>
+          <p class="ks-desc ko">히라가나·가타카나를 획순대로 따라 쓰는 도구입니다. 휴대폰에서도 손가락으로 바로 쓸 수 있습니다.</p>
+          <p class="ks-desc ja">ひらがな・カタカナを書き順どおりになぞる練習ツールです。スマホでも指でそのまま書けます。</p>
+        </div>
+        <button class="btn btn-ghost ko" id="open-kana">연습 열기</button>
+        <button class="btn btn-ghost ja" id="open-kana-ja">練習を開く</button>
       </div>
-      <button class="btn btn-ghost ko" id="open-kana">연습 열기</button>
-      <button class="btn btn-ghost ja" id="open-kana-ja">練習を開く</button>
     </div>
-  </div>
+  </section>
 
   <!-- 신청 -->
   <section id="apply">
@@ -666,23 +675,26 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <input id="f-mail" name="entry.1787738691" required type="email" autocomplete="email">
           </div>
           <div class="field">
-            <label for="f-date">参加日（日曜）</label>
-            <input id="f-date" name="entry.274787881" required type="date">
+            <label for="f-date-pick">ご参加日（日曜日のみ）</label>
+            <select id="f-date-pick" required>
+              <option value="" disabled selected>日付をお選びください</option>
+            </select>
+            <input id="f-date" name="entry.274787881" type="hidden">
           </div>
           <div class="field">
             <label for="f-sns">SNSアカウント（任意）</label>
             <input id="f-sns" name="entry.63495182" type="text" placeholder="@">
           </div>
           <div class="field">
-            <label for="f-src">どちらで知りましたか？</label>
+            <label for="f-src">この会を知ったきっかけ</label>
             <select id="f-src" name="entry.1729227302"><option>Instagram</option><option>Threads</option><option>X (Twitter)</option><option>知人の紹介</option><option>検索</option></select>
           </div>
           <div class="field full">
-            <label for="f-msg">その他（任意）</label>
+            <label for="f-msg">ご質問・ご要望（任意）</label>
             <textarea id="f-msg" name="entry.1088686635"></textarea>
           </div>
           <div class="form-foot">
-            <p class="draft" id="note">お申し込み後、ご入力のアドレスにご案内メールをお送りします。届かない場合は迷惑メールフォルダをご確認ください。</p>
+            <p class="draft" id="note">お申し込み後、ご入力のメールアドレス宛にご案内をお送りします。届かない場合は迷惑メールフォルダをご確認ください。</p>
             <button class="btn btn-primary btn-lg" id="submit" type="submit">申し込む</button>
           </div>
         </form>
@@ -709,7 +721,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             </div>
             <div class="done-info">
               <p class="mlabel">カフェ・レコルト</p>
-              <p class="mtext">ソウル市江南区 奉恩寺路50キル 10, 1階<br>日曜 15:00 – 18:00</p>
+              <p class="mtext">ソウル市江南区 奉恩寺路50キル10 1階<br>毎週日曜 15:00 – 18:00</p>
               <div class="mlinks">
                 <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">NAVER Mapで開く</a>
                 <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Mapsで開く</a>
@@ -730,7 +742,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <p class="eyebrow">Partnership</p>
         <h3 class="ko">제휴 · 스폰서 문의</h3>
         <h3 class="ja">提携・スポンサーのお問い合わせ</h3>
-        <p class="ko">이로토모는 매주 서울에서 한국인과 일본인이 만나는 자리입니다. 재한 일본인이나 일본어를 쓰는 고객에게 닿고 싶은 기업·매장이시라면 연락 주세요.</p>
+        <p class="ko">이로토모는 매주 서울에서 한국인과 일본인이 만나는 자리입니다. 재한 일본인이나 일본어를 쓰는 고객에게 닿고 싶은 기업·매장이라면 편하게 연락 주세요.</p>
         <p class="ja">いろともは、毎週ソウルで韓国人と日本人が集まる場です。在韓日本人や日本語話者のお客様に届けたい企業・店舗の方は、お気軽にご連絡ください。</p>
       </div>
       <a class="btn btn-ghost ko" href="mailto:irotomokor@gmail.com">문의하기</a>
@@ -843,6 +855,56 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       }, 700);
     }
   });
+
+  /* ── 앵커 스크롤: 제목이 네비 아래에 오도록 보정 ───────────────
+     transform(등장 애니메이션)·웹폰트 로딩으로 위치가 밀리는 걸 막기 위해
+     offsetTop 기준으로 계산하고, 스크롤이 끝난 뒤 한 번 더 보정합니다. */
+  function absTop(el){ var t = 0; while (el){ t += el.offsetTop; el = el.offsetParent; } return t; }
+  function navH(){ return (nav && nav.offsetHeight) || 68; }
+  function anchorY(sec){
+    var head = sec.querySelector('.sec-head, .kana-strip') || sec;
+    return Math.max(0, absTop(head) - navH() - 22);
+  }
+  function goTo(sec){
+    var smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({top: anchorY(sec), behavior: smooth ? 'smooth' : 'auto'});
+    var fix = function(){
+      var y = anchorY(sec);
+      if (Math.abs(y - window.pageYOffset) > 6) window.scrollTo({top:y, behavior:'auto'});
+    };
+    setTimeout(fix, 750); setTimeout(fix, 1400);
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      if (a.hasAttribute('data-open-kana')) return;
+      var id = a.getAttribute('href');
+      if (!id || id === '#') return;
+      var sec = document.querySelector(id);
+      if (!sec) return;
+      e.preventDefault();
+      if (id === '#top') { window.scrollTo({top:0, behavior:'smooth'}); return; }
+      goTo(sec);
+      if (history.replaceState) history.replaceState(null, '', id);
+    });
+  });
+
+  /* ── 참가일: 다가오는 일요일만 선택 가능 ─────────────────────── */
+  var dPick = document.getElementById('f-date-pick');
+  var dHidden = document.getElementById('f-date');
+  if (dPick && dHidden) {
+    var d = new Date(); d.setHours(0,0,0,0);
+    d.setDate(d.getDate() + ((7 - d.getDay()) % 7 || 7));   /* 다음 일요일부터 */
+    var pad = function(v){ return (v < 10 ? '0' : '') + v; };
+    for (var i = 0; i < 12; i++) {
+      var y = d.getFullYear(), m = d.getMonth() + 1, day = d.getDate();
+      var o = document.createElement('option');
+      o.value = y + '-' + pad(m) + '-' + pad(day);
+      o.textContent = y + '年' + m + '月' + day + '日（日）';
+      dPick.appendChild(o);
+      d.setDate(d.getDate() + 7);
+    }
+    dPick.addEventListener('change', function(){ dHidden.value = dPick.value; });
+  }
 
   /* 신청 폼(일본어) — 구글 폼으로 전송 후 완료 화면 */
   var form = document.getElementById('apply-form');
