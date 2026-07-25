@@ -138,10 +138,12 @@ textarea{resize:vertical;min-height:150px}
 .thumbs figure{position:relative;width:88px;height:88px;border-radius:10px;overflow:hidden;background:#EFF0EB}
 .thumbs img{width:100%;height:100%;object-fit:cover}
 .thumbs button{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(20,27,46,.72);color:#fff;font-size:.72rem;cursor:pointer;line-height:1}
-.consent{margin-top:6px;background:#FAFAF7;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
-.consent label{display:flex;gap:11px;align-items:flex-start;font-size:.85rem;line-height:1.6;cursor:pointer}
-.consent input{margin-top:.3em;width:17px;height:17px;flex:none;accent-color:var(--navy)}
-.consent a{color:var(--navy);font-weight:600}
+.consent{margin-top:6px;background:#FAFAF7;border:1px solid #D8D8D0;border-radius:12px;padding:17px 19px;color:var(--ink)}
+.consent label{display:flex;gap:12px;align-items:flex-start;font-size:.88rem;line-height:1.7;color:var(--ink);cursor:pointer}
+.consent label span,.consent label b{color:var(--ink)}
+.consent input{margin-top:.34em;width:18px;height:18px;flex:none;accent-color:var(--navy)}
+.consent a{color:var(--navy);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.consent a:hover{color:#8A6416}
 .consent .req{color:#A6382E;font-weight:700}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .formfoot{margin-top:26px;padding-top:22px;border-top:1px solid var(--line-2);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -391,7 +393,7 @@ var T = {
     deleted:'글을 삭제했습니다.', eDelPw:'비밀번호가 맞지 않습니다.',
     reportSubj:'[이로토모 게시판] 신고',
     privacy:'개인정보처리방침',
-    agree:'개인정보 수집·이용에 동의합니다 <span class="req">[필수]</span><br>이메일은 본인 확인에만 쓰이며 공개되지 않습니다. 글 내용·연락 방법·사진은 게시판에 공개됩니다. 자세한 내용은 <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>을 확인해 주세요.',
+    agree:'<b>개인정보 수집·이용에 동의합니다</b> <span class="req">[필수]</span><br>이메일은 본인 확인에만 쓰이며 공개되지 않습니다. 글 내용·연락 방법·사진은 게시판에 공개됩니다. 자세한 내용은 <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>을 확인해 주세요.',
     eAgree:'개인정보 수집·이용에 동의해 주세요.'
   },
   ja:{
@@ -429,7 +431,7 @@ var T = {
     deleted:'投稿を削除しました。', eDelPw:'パスワードが違います。',
     reportSubj:'【いろとも掲示板】通報',
     privacy:'プライバシーポリシー',
-    agree:'個人情報の取得・利用に同意します <span class="req">[必須]</span><br>メールアドレスは本人確認にのみ使用し、公開されません。投稿内容・連絡方法・写真は掲示板に公開されます。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。',
+    agree:'<b>個人情報の取得・利用に同意します</b> <span class="req">[必須]</span><br>メールアドレスは本人確認にのみ使用し、公開されません。投稿内容・連絡方法・写真は掲示板に公開されます。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。',
     eAgree:'個人情報の取得・利用にご同意ください。'
   }
 };
@@ -441,7 +443,7 @@ function applyLang(){
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-t]').forEach(function(el){
     var v = t(el.dataset.t);
-    if (/<(br|a|span)\b/.test(v)) el.innerHTML = v; else el.textContent = v;
+    if (/<(br|a|span|b)\b/.test(v)) el.innerHTML = v; else el.textContent = v;
   });
   document.querySelectorAll('[data-tp]').forEach(function(el){ el.placeholder = t(el.dataset.tp); });
   setBrand();

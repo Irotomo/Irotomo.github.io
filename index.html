@@ -174,12 +174,14 @@ h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.03em;li
 .astep .an{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:.8rem;font-weight:700;margin-bottom:12px}
 .astep p{font-size:.92rem;font-weight:600;line-height:1.5;color:var(--ink)}
 .apply-cta{display:flex;gap:12px;flex-wrap:wrap}
-.consent{margin-top:24px;background:#FAFAF7;border:1px solid var(--line);border-radius:12px;padding:17px 19px}
-.consent label{display:flex;gap:11px;align-items:flex-start;font-size:.87rem;line-height:1.65;cursor:pointer}
-.consent input{margin-top:.3em;width:17px;height:17px;flex:none;accent-color:var(--navy)}
-.consent a{color:var(--navy);font-weight:600}
+.consent{margin-top:24px;background:#fff;border:1px solid #D8D8D0;border-radius:12px;padding:18px 20px;color:var(--ink)}
+.consent label{display:flex;gap:12px;align-items:flex-start;font-size:.9rem;line-height:1.72;color:var(--ink);cursor:pointer}
+.consent label span,.consent label b{color:var(--ink)}
+.consent input{margin-top:.34em;width:18px;height:18px;flex:none;accent-color:var(--navy)}
+.consent a{color:var(--navy);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.consent a:hover{color:#8A6416}
 .consent .req{color:#A6382E;font-weight:700}
-.consent .sub{margin:10px 0 0 28px;font-size:.79rem;color:var(--muted);line-height:1.65}
+.consent .sub{margin:11px 0 0 30px;font-size:.82rem;color:#5C6480;line-height:1.7}
 .lab-note{font-weight:400;color:var(--muted)}
 .apply-bank{margin-top:22px;font-size:.86rem;color:var(--muted);background:#FDF8EC;border:1px solid #EBD9AE;border-radius:10px;padding:12px 18px;display:inline-block}
 
@@ -877,7 +879,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
             <div class="consent">
               <label>
                 <input type="checkbox" id="f-agree" required>
-                <span>個人情報の取得・利用に同意します <span class="req">[必須]</span><br>
+                <span><b>個人情報の取得・利用に同意します</b> <span class="req">[必須]</span><br>
                 お名前・国籍・メールアドレス・ご参加日・振込名義を、参加受付と参加費の区分のために取得します。情報は韓国および米国（Google）のサーバーに保管されます。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。</span>
               </label>
               <p class="sub">同意はいつでも撤回でき、削除をご希望の場合は irotomokor@gmail.com までご連絡ください。取り消しによる不利益はありません。</p>
