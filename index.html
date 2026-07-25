@@ -48,7 +48,7 @@ body[data-lang="ja"] .ko{display:none!important}
 .nav.stuck{border-bottom-color:var(--line)}
 .nav-in{display:flex;align-items:center;gap:28px;height:68px}
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);flex:none}
-.brand-mark{width:32px;height:32px;background-image:var(--logo);background-size:contain;background-position:center;background-repeat:no-repeat}
+.brand-mark{width:30px;height:30px;flex:none;background-image:var(--logo);background-size:contain;background-position:center;background-repeat:no-repeat}
 .brand-name{font-weight:700;font-size:1.02rem;letter-spacing:-.01em}
 .nav-links{display:flex;gap:26px;margin-left:auto}
 .nav-links a{
@@ -85,6 +85,8 @@ body[data-lang="ja"] .ko{display:none!important}
 .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
 .btn-ghost:hover{border-color:var(--ink);background:#fff}
 .btn-gold{background:var(--gold);color:var(--navy-900)}
+.btn-somoim{background:var(--navy);color:#fff;font-weight:700}
+.btn-somoim:hover{background:#37406B}
 .btn-gold:hover{background:#EFB84D}
 .btn-sm{padding:.62em 1.15em;font-size:.86rem}
 .btn-lg{padding:.95em 1.9em;font-size:1rem}
@@ -162,6 +164,26 @@ h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.03em;li
 .deposit .dep-tag{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#A97A19;margin-bottom:10px}
 .deposit p{font-size:.93rem;line-height:1.8;color:#4A3A16}
 .deposit b{color:#2E2308}
+
+/* 신청(소모임) 카드 */
+.apply-card{background:var(--card);color:var(--ink);border-radius:22px;padding:52px 48px;max-width:760px;margin:0 auto;box-shadow:0 20px 50px -30px rgba(20,27,46,.35)}
+.apply-copy .eyebrow{color:var(--gold)}
+.apply-lead{margin-top:16px;font-size:1.02rem;color:var(--muted);line-height:1.8;max-width:52ch}
+.apply-steps{display:flex;gap:14px;margin:32px 0;flex-wrap:wrap}
+.astep{flex:1;min-width:150px;background:#FAFAF7;border:1px solid var(--line);border-radius:14px;padding:20px 18px}
+.astep .an{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:.8rem;font-weight:700;margin-bottom:12px}
+.astep p{font-size:.92rem;font-weight:600;line-height:1.5;color:var(--ink)}
+.apply-cta{display:flex;gap:12px;flex-wrap:wrap}
+.apply-bank{margin-top:22px;font-size:.86rem;color:var(--muted);background:#FDF8EC;border:1px solid #EBD9AE;border-radius:10px;padding:12px 18px;display:inline-block}
+
+/* 가나 연습 스트립 */
+.kana-strip{display:flex;align-items:center;gap:28px;background:var(--navy-900);color:#EDEFF6;border-radius:18px;padding:26px 34px;flex-wrap:wrap}
+.kana-strip .ks-text{flex:1;min-width:240px}
+.kana-strip .ks-tag{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.kana-strip .ks-title{font-size:1.12rem;font-weight:700;letter-spacing:-.015em;margin-bottom:6px}
+.kana-strip .ks-desc{font-size:.9rem;color:#A7AFC8;line-height:1.65;max-width:52ch}
+.kana-strip .btn{border-color:rgba(255,255,255,.25);color:#EDEFF6;flex:none}
+.kana-strip .btn:hover{border-color:#fff;background:rgba(255,255,255,.08)}
 
 /* 지도 */
 .map{display:grid;grid-template-columns:1.6fr .9fr;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
@@ -249,13 +271,13 @@ details[open] summary::after{transform:rotate(225deg) translate(-3px,-3px)}
 .form-foot{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:18px;justify-content:space-between;border-top:1px solid var(--line-2);padding-top:22px}
 .draft{font-size:.8rem;color:var(--muted);max-width:46ch;line-height:1.6}
 .thanks{display:none}
-#done{display:none;background:var(--card);border-radius:22px;overflow:hidden}
+#done{display:none;background:#fff;border-radius:22px;overflow:hidden}
 #done.show{display:block}
 .done-top{padding:44px 40px 34px;text-align:center;border-bottom:1px solid var(--line-2)}
 .done-check{width:52px;height:52px;margin:0 auto 20px;border-radius:50%;background:#E8F4EC;display:grid;place-items:center}
 .done-check svg{width:24px;height:24px;stroke:#1C7A50;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.done-top h3{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:12px}
-.done-top p{color:var(--muted);font-size:.95rem;max-width:46ch;margin:0 auto;line-height:1.75}
+.done-top h3{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:12px;color:var(--ink)}
+.done-top p{color:var(--ink);font-size:.95rem;max-width:46ch;margin:0 auto;line-height:1.85;opacity:.82}
 .done-map{display:grid;grid-template-columns:1.5fr 1fr}
 
 .done-info{padding:30px 32px;border-left:1px solid var(--line-2)}
@@ -284,8 +306,17 @@ footer{background:var(--canvas);border-top:1px solid var(--line);padding:52px 0 
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
 @media (max-width:960px){
   .nav-links{display:none}
-  .hero-grid{grid-template-columns:1fr;gap:40px}
-  .hero-logo{width:min(52%,190px);order:-1;justify-self:start;animation:none}
+  .wrap{padding:0 22px}
+  .hero-grid{grid-template-columns:1fr;gap:30px;text-align:center}
+  .hero-logo{width:min(46%,170px);order:-1;justify-self:center;animation:none}
+  .hero .pill{margin:0 auto}
+  .hero h1{margin-left:auto;margin-right:auto}
+  .hero .lead{margin-left:auto;margin-right:auto}
+  .hero-cta{justify-content:center}
+  .sec-head{margin-left:auto;margin-right:auto;text-align:center}
+  .apply-card{padding:36px 24px}
+  .apply-lead{margin-left:auto;margin-right:auto}
+  .kana-strip{flex-direction:column;align-items:flex-start;gap:18px;padding:26px 24px}
   .facts{grid-template-columns:repeat(2,1fr)}
   .facts > div:nth-child(2n){border-right:0}
   .facts > div:nth-child(-n+2){border-bottom:1px solid var(--line-2)}
@@ -308,8 +339,19 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .kana{grid-template-columns:1fr;padding:44px 30px;gap:34px}
   .rules{grid-template-columns:1fr}
   .form{grid-template-columns:1fr;padding:28px}
-  section{padding:72px 0}
-  .hero{padding:56px 0 60px}
+  section{padding:64px 0}
+  .hero{padding:44px 0 52px}
+  .astep{min-width:100%}
+  .apply-steps{gap:10px}
+}
+@media (max-width:520px){
+  .wrap{padding:0 18px}
+  h1{font-size:1.9rem}
+  .hero .lead{font-size:.98rem}
+  .apply-card{padding:30px 20px;border-radius:18px}
+  .facts{grid-template-columns:1fr}
+  .facts > div{border-right:0!important;border-bottom:1px solid var(--line-2)}
+  .facts > div:last-child{border-bottom:0}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
@@ -323,6 +365,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <header class="nav" id="nav">
   <div class="wrap nav-in">
     <a class="brand" href="#top">
+      <span class="brand-mark" role="img" aria-label="いろとも 로고"></span>
       <span class="brand-name">いろとも</span>
     </a>
     <nav class="nav-links">
@@ -330,7 +373,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <a href="#flow" class="ko">당일 흐름</a><a href="#flow" class="ja">当日の流れ</a>
       <a href="#fee" class="ko">참가비</a><a href="#fee" class="ja">参加費</a>
       <a href="#place" class="ko">오시는 길</a><a href="#place" class="ja">アクセス</a>
-      <a href="#kana" class="ko">가나 연습</a><a href="#kana" class="ja">かな練習</a>
+      <a href="#kana" class="ko" data-open-kana>가나 연습</a>
       <a href="#faq" class="ko">FAQ</a><a href="#faq" class="ja">FAQ</a>
     </nav>
     <div class="nav-right">
@@ -357,10 +400,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <p class="lead ko">선정릉역에서 도보 5분 거리의 카페에서, 일본인 참가자들과 같은 테이블에 앉아 이야기합니다. 일본어로 간단한 일상회화가 가능하시면 충분합니다. 대부분 혼자 오시고, 자리는 랜덤으로 배정됩니다.</p>
         <p class="lead ja">宣靖陵（ソンジョンヌン）駅から徒歩5分のカフェで、韓国人の参加者と同じテーブルを囲みます。韓国語が話せなくても大丈夫です。ほとんどの方がおひとりで参加されていて、席順はこちらでランダムに決めています。</p>
         <div class="hero-cta">
-          <a class="btn btn-primary btn-lg ko" href="#apply">신청하기</a>
-          <a class="btn btn-primary btn-lg ja" href="#apply">申し込む</a>
-          <a class="btn btn-ghost btn-lg ko" href="#kana">가나 연습 열기</a>
-          <a class="btn btn-ghost btn-lg ja" href="#kana">かな練習を開く</a>
+          <a class="btn btn-primary btn-lg ko" href="#apply">신청 안내 보기</a>
+          <a class="btn btn-primary btn-lg ja" href="#apply">申し込みへ</a>
+          <a class="btn btn-ghost btn-lg ko" href="#about">모임 소개</a>
+          <a class="btn btn-ghost btn-lg ja" href="#about">交流会について</a>
         </div>
         <p class="hero-note ko">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
         <p class="hero-note ja">事前申込制です。当日参加は受け付けておりません。</p>
@@ -460,13 +503,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <p class="amt">5,000<small>원 / ウォン</small></p>
       </div>
     </div>
-    <div class="deposit reveal">
-      <p class="dep-tag ko">예약금</p><p class="dep-tag ja">予約金</p>
-      <p class="ko"><b>신청하실 때 예약금으로 5,000원(음료비)을 먼저 입금해 주세요.</b> 입금이 확인되어야 자리가 확정됩니다. 남은 참가비 10,000원은 당일 현장에서 결제하시면 됩니다.<br>당일 취소하시는 경우 예약금은 환급되지 않습니다. 취소하실 때는 인스타그램 DM으로 미리 연락해 주세요.<br><b>입금 계좌</b> 카카오뱅크 7979-94-33566 (예금주 배상원)</p>
-      <p class="ja"><b>お申し込みの際に、予約金としてドリンク代5,000ウォンを先にお振込みください。</b>ご入金の確認をもって席が確定します。日本人の方は予約金のみで、当日のお支払いはございません。<br>当日キャンセルの場合、予約金の返金はいたしかねます。キャンセルの際は、InstagramのDMで事前にご連絡ください。<br><b>お振込先</b> カカオバンク 7979-94-33566（名義 배상원 ペ・サンウォン）</p>
-    </div>
-    <p class="fee-note ko">음료비는 국적과 관계없이 동일합니다. 결제는 계좌 입금 또는 현금으로 받습니다.</p>
-    <p class="fee-note ja">ドリンク代は国籍にかかわらず一律です。お支払いはお振込、または当日の現金で承っております。</p>
+    <p class="fee-note ko">신청 시 예약금 5,000원(음료비)을 먼저 입금하시면 자리가 확정됩니다. 자세한 방법은 아래 <a href="#apply" style="color:var(--navy);font-weight:600">신청하기</a>를 확인해 주세요.</p>
+    <p class="fee-note ja">お申し込み時に予約金5,000ウォン（ドリンク代）をお振込みいただくと席が確定します。詳しくは下の<a href="#apply" style="color:var(--navy);font-weight:600">お申し込み</a>をご覧ください。</p>
   </section>
 
   <!-- 오시는 길 -->
@@ -509,30 +547,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
   </section>
 
-  <!-- 가나 연습 -->
-  <section id="kana" class="wrap">
-    <div class="kana reveal">
-      <div>
-        <p class="eyebrow">Practice</p>
-        <h2 class="ko">가나 쓰기 연습</h2>
-        <h2 class="ja">かなの書き取り練習</h2>
-        <p class="ko">히라가나와 가타카나를 획순대로 직접 따라 쓰는 연습 도구입니다. 모임에 오시기 전에 한 번 훑어보셔도 좋고, 휴대폰에서 바로 쓰실 수 있습니다.</p>
-        <p class="ja">ひらがなとカタカナを、書き順どおりになぞって練習できるツールです。スマートフォンでも、指でそのまま書けます。</p>
-        <div class="kana-cta">
-          <button class="btn btn-gold btn-lg ko" id="open-kana">연습 시작하기</button>
-          <button class="btn btn-gold btn-lg ja" id="open-kana-ja">練習をはじめる</button>
-        </div>
-        <p class="credit">획순 데이터: KanjiVG (© Ulrich Apel) · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a></p>
-      </div>
-      <div class="glyphs" aria-hidden="true">
-        <div class="glyph"><span>HIRA</span>あ</div>
-        <div class="glyph"><span>KATA</span>ア</div>
-        <div class="glyph"><span>HIRA</span>ん</div>
-        <div class="glyph"><span>KATA</span>ン</div>
-      </div>
-    </div>
-  </section>
-
   <!-- 방침 -->
   <section class="wrap">
     <div class="sec-head reveal">
@@ -551,8 +565,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <li class="ja">会の写真は、参加者のお顔を隠したうえでSNSに掲載しています。掲載を希望されない方は、当日お知らせください。</li>
       <li class="ko">영업이나 권유를 목적으로 한 참가는 사양하고 있습니다.</li>
       <li class="ja">勧誘・営業を目的としたご参加はお断りしています。</li>
-      <li class="ko">예약금은 당일 취소 시 환급되지 않습니다. 취소하실 때는 인스타그램 DM으로 미리 연락해 주세요.</li>
-      <li class="ja">当日キャンセルの場合、予約金の返金はいたしかねます。キャンセルの際は、InstagramのDMで事前にご連絡ください。</li>
     </ul>
   </section>
 
@@ -585,11 +597,25 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <details>
         <summary class="ko">신청은 어떻게 하나요?</summary>
         <summary class="ja">申し込み方法は？</summary>
-        <div class="answer ko">아래 신청 폼에서 받고 있습니다. 인스타그램 @irotomokr 로 DM을 주셔도 되고, 소모임 앱에서 '이로토모'를 검색해 신청하셔도 됩니다.</div>
+        <div class="answer ko">소모임 앱을 통해 신청 부탁드립니다. 아래 <a href="#apply" style="color:var(--navy);font-weight:600">신청하기</a>에서 소모임으로 바로 이동할 수 있습니다.</div>
         <div class="answer ja">下のお申し込みフォームで受け付けております。Instagram（@irotomokr）へDMをいただいても構いません。</div>
       </details>
     </div>
   </section>
+
+  <!-- 가나 연습 (부가 도구, 한국어 전용) -->
+  <div class="wrap ko" id="kana-wrap">
+    <div class="kana-strip reveal" id="kana">
+      <div class="ks-text">
+        <p class="ks-tag ko">부가 도구</p><p class="ks-tag ja">おまけ</p>
+        <p class="ks-title ko">가나 쓰기 연습</p><p class="ks-title ja">かなの書き取り練習</p>
+        <p class="ks-desc ko">히라가나·가타카나를 획순대로 따라 쓰는 도구입니다. 휴대폰에서도 손가락으로 바로 씁니다.</p>
+        <p class="ks-desc ja">ひらがな・カタカナを書き順どおりになぞる練習ツールです。スマホでも指でそのまま書けます。</p>
+      </div>
+      <button class="btn btn-ghost ko" id="open-kana">연습 열기</button>
+      <button class="btn btn-ghost ja" id="open-kana-ja">練習を開く</button>
+    </div>
+  </div>
 
   <!-- 신청 -->
   <section id="apply">
@@ -598,97 +624,102 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <p class="eyebrow">Apply</p>
         <h2 class="ko">신청하기</h2>
         <h2 class="ja">お申し込み</h2>
-        <p class="ko">신청하시면 안내 메일을 바로 보내드립니다. 예약금 입금이 확인되면 참가가 확정됩니다.</p>
-        <p class="ja">お申し込みいただくと、すぐにご案内メールをお送りします。予約金のご入金を確認しましたら、ご参加が確定となります。</p>
+        <p class="ko">신청은 소모임 앱에서 받고 있습니다. 아래 버튼에서 모임에 가입하신 뒤, 예약금 5,000원을 입금해 주시면 신청이 완료됩니다.</p>
+        <p class="ja">下のフォームからお申し込みください。ご入力のメールアドレスにご案内メールをお送りします。予約金のご入金を確認しましたら、ご参加が確定となります。</p>
       </div>
-      <!-- ══════════════════════════════════════════════════════════════
-           구글 폼 '이로토모 참가' 에 연결 완료.
-             이름   entry.347162766     국적       entry.2086369190
-             이메일 entry.1787738691    참가일     entry.274787881
-             SNS    entry.63495182      알게된경로 entry.1729227302
-             기타   entry.1088686635
-           ※ 폼에서 질문을 추가·삭제하면 번호가 바뀔 수 있습니다.
-             그때는 ⋮ > [양식 미리 작성] 으로 번호를 다시 확인하세요.
-           ※ 폼 설정의 [응답자 로그인 필요] · [이메일 주소 수집] 은 꺼져 있어야
-             이 페이지에서 전송이 됩니다.
-           ══════════════════════════════════════════════════════════════ -->
-      <form class="form reveal" id="apply-form" method="post" target="gform-sink"
-            action="https://docs.google.com/forms/d/e/1FAIpQLSeXRY8H0cvpJTO9K0ohLT0OMpTncBap0Usg55eI0szKy0PzKA/formResponse">
-        <div class="field">
-          <label for="f-name" class="ko">이름</label><label for="f-name" class="ja">お名前</label>
-          <input id="f-name" name="entry.347162766" required type="text" autocomplete="name">
-        </div>
-        <div class="field">
-          <label for="f-nat" class="ko">국적</label><label for="f-nat" class="ja">国籍</label>
-          <select id="f-nat" name="entry.2086369190" required><option>한국 / 韓国</option><option>일본 / 日本</option><option>그 외 / その他</option></select>
-        </div>
-        <div class="field">
-          <label for="f-mail" class="ko">이메일</label><label for="f-mail" class="ja">メールアドレス</label>
-          <input id="f-mail" name="entry.1787738691" required type="email" autocomplete="email">
-        </div>
-        <div class="field">
-          <label for="f-date" class="ko">참가일 (일요일)</label><label for="f-date" class="ja">参加日（日曜）</label>
-          <input id="f-date" name="entry.274787881" required type="date">
-        </div>
-        <div class="field">
-          <label for="f-sns" class="ko">SNS 계정 (선택)</label><label for="f-sns" class="ja">SNSアカウント（任意）</label>
-          <input id="f-sns" name="entry.63495182" type="text" placeholder="@">
-        </div>
-        <div class="field">
-          <label for="f-src" class="ko">어떻게 알게 되셨나요?</label><label for="f-src" class="ja">どちらで知りましたか？</label>
-          <select id="f-src" name="entry.1729227302"><option>Instagram</option><option>Threads</option><option>X (Twitter)</option><option>소모임 앱</option><option>지인 소개 / 知人の紹介</option><option>검색 / 検索</option></select>
-        </div>
-        <div class="field full">
-          <label for="f-msg" class="ko">기타 (선택)</label><label for="f-msg" class="ja">その他（任意）</label>
-          <textarea id="f-msg" name="entry.1088686635"></textarea>
-        </div>
-        <div class="form-foot">
-          <p class="draft" id="note"><span class="ko">신청하시면 입력하신 주소로 안내 메일이 발송됩니다. 메일이 오지 않으면 스팸함을 확인해 주세요.</span><span class="ja">お申し込み後、ご入力のアドレスにご案内メールをお送りします。届かない場合は迷惑メールフォルダをご確認ください。</span></p>
-          <button class="btn btn-primary btn-lg ko" id="submit">신청 보내기</button>
-          <button class="btn btn-primary btn-lg ja" id="submit-ja">申し込む</button>
-        </div>
-      </form>
-      <iframe name="gform-sink" title="submit target" style="display:none" aria-hidden="true"></iframe>
 
-      <!-- 신청 완료 화면 -->
-      <div id="done">
-        <div class="done-top">
-          <div class="done-check"><svg viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6.5"></polyline></svg></div>
-          <h3 class="ko">신청해 주셔서 감사합니다</h3>
-          <h3 class="ja">お申し込みありがとうございます</h3>
-          <p class="ko">입력하신 이메일로 안내 메일을 보내드렸습니다. 예약금 5,000원 입금이 확인되면 참가가 확정됩니다. 메일이 오지 않으면 스팸함을 확인해 주세요.</p>
-          <p class="ja">ご入力のメールアドレス宛にご案内メールをお送りしました。予約金5,000ウォンのご入金を確認しましたら、ご参加が確定となります。届かない場合は迷惑メールフォルダをご確認ください。</p>
+      <!-- 한국인: 소모임 카드 -->
+      <div class="apply-card ko reveal">
+        <div class="apply-steps">
+          <div class="astep"><span class="an">1</span><p>소모임에서 이로토모 신청</p></div>
+          <div class="astep"><span class="an">2</span><p>예약금 5,000원 입금</p></div>
+          <div class="astep"><span class="an">3</span><p>입금 확인 후 참가 확정</p></div>
         </div>
-        <div class="done-map">
-<!-- ══ 지도 ══════════════════════════════════════════════════
-             구글 지도가 "차단되었습니다"로 뜬다면, 실제 도메인에 올린 뒤에도
-             같은 증상이면 아래 src 를 공식 임베드 코드로 바꾸세요.
-             Google 지도에서 장소 검색 > [공유] > [지도 퍼가기] > HTML 복사
-             → https://www.google.com/maps/embed?pb=... 형태의 주소가 나옵니다.
-             ═══════════════════════════════════════════════════════ -->
-        <div class="gmap" data-gmap style="min-height:280px">
-          <iframe title="모임 장소 지도 (신청 완료)" allowfullscreen referrerpolicy="no-referrer-when-downgrade" data-src="default"></iframe>
-          <div class="gmap-fb">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
-            <p class="fb-a ko">서울 강남구 봉은사로50길 10, 1층</p>
-            <p class="fb-a ja">ソウル市江南区 奉恩寺路50キル 10, 1階</p>
-            <div class="fb-links">
-              <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">네이버 지도</a>
-              <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Maps</a>
-            </div>
-          </div>
+        <div class="apply-cta">
+          <a class="btn btn-somoim btn-lg" href="https://www.somoim.co.kr/b45c43da-0bbf-11e6-958b-22000a7f92f31" target="_blank" rel="noopener">소모임에서 신청하기 →</a>
         </div>
-          <div class="done-info">
-            <p class="mlabel">카페 레꼴뜨 · カフェ・レコルト</p>
-            <p class="mtext ko">서울 강남구 봉은사로50길 10, 1층<br>일요일 15:00 – 18:00</p>
-            <p class="mtext ja">ソウル市江南区 奉恩寺路50キル 10, 1階<br>日曜 15:00 – 18:00</p>
-            <div class="mlinks">
-              <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">네이버 지도에서 열기</a>
-              <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Maps で開く</a>
-            </div>
-          </div>
-        </div>
+        <p class="apply-bank">예약금 입금 계좌 · 카카오뱅크 7979-94-33566 (예금주 배상원)</p>
       </div>
+
+      <!-- 일본인: 구글 폼 직접 표시 -->
+      <div class="ja">
+        <!-- ══════════════════════════════════════════════════════════════
+             구글 폼 '이로토모 참가' 연결.
+               이름 entry.347162766 / 국적 entry.2086369190 / 이메일 entry.1787738691
+               참가일 entry.274787881 / SNS entry.63495182 / 알게된경로 entry.1729227302
+               기타 entry.1088686635
+             ※ 폼 설정의 [응답자 로그인 필요]·[이메일 주소 수집]은 꺼져 있어야
+               이 페이지에서 전송이 됩니다.
+             ══════════════════════════════════════════════════════════════ -->
+        <form class="form reveal" id="apply-form" method="post" target="gform-sink"
+              action="https://docs.google.com/forms/d/e/1FAIpQLSeXRY8H0cvpJTO9K0ohLT0OMpTncBap0Usg55eI0szKy0PzKA/formResponse">
+          <div class="field">
+            <label for="f-name">お名前</label>
+            <input id="f-name" name="entry.347162766" required type="text" autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="f-nat">国籍</label>
+            <select id="f-nat" name="entry.2086369190" required><option>日本 / 일본</option><option>韓国 / 한국</option><option>その他 / 그 외</option></select>
+          </div>
+          <div class="field">
+            <label for="f-mail">メールアドレス</label>
+            <input id="f-mail" name="entry.1787738691" required type="email" autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="f-date">参加日（日曜）</label>
+            <input id="f-date" name="entry.274787881" required type="date">
+          </div>
+          <div class="field">
+            <label for="f-sns">SNSアカウント（任意）</label>
+            <input id="f-sns" name="entry.63495182" type="text" placeholder="@">
+          </div>
+          <div class="field">
+            <label for="f-src">どちらで知りましたか？</label>
+            <select id="f-src" name="entry.1729227302"><option>Instagram</option><option>Threads</option><option>X (Twitter)</option><option>知人の紹介</option><option>検索</option></select>
+          </div>
+          <div class="field full">
+            <label for="f-msg">その他（任意）</label>
+            <textarea id="f-msg" name="entry.1088686635"></textarea>
+          </div>
+          <div class="form-foot">
+            <p class="draft" id="note">お申し込み後、ご入力のアドレスにご案内メールをお送りします。届かない場合は迷惑メールフォルダをご確認ください。</p>
+            <button class="btn btn-primary btn-lg" id="submit" type="submit">申し込む</button>
+          </div>
+        </form>
+        <iframe name="gform-sink" title="submit target" style="display:none" aria-hidden="true"></iframe>
+
+        <!-- 送信完了 -->
+        <div id="done">
+          <div class="done-top">
+            <div class="done-check"><svg viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6.5"></polyline></svg></div>
+            <h3>お申し込みありがとうございます</h3>
+            <p>ご入力のメールアドレス宛にご案内メールをお送りしました。予約金5,000ウォンのご入金を確認しましたら、ご参加が確定となります。届かない場合は迷惑メールフォルダをご確認ください。</p>
+          </div>
+          <div class="done-map">
+            <div class="gmap" data-gmap style="min-height:280px">
+              <iframe title="会場地図" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+              <div class="gmap-fb">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
+                <p class="fb-a">ソウル市江南区 奉恩寺路50キル 10, 1階</p>
+                <div class="fb-links">
+                  <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">NAVER Map</a>
+                  <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Maps</a>
+                </div>
+              </div>
+            </div>
+            <div class="done-info">
+              <p class="mlabel">カフェ・レコルト</p>
+              <p class="mtext">ソウル市江南区 奉恩寺路50キル 10, 1階<br>日曜 15:00 – 18:00</p>
+              <div class="mlinks">
+                <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">NAVER Mapで開く</a>
+                <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Mapsで開く</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="apply-bank">予約金の振込先 · カカオバンク 7979-94-33566（名義 배상원 / ペ・サンウォン）</p>
+      </div>
+
     </div>
   </section>
 
@@ -784,6 +815,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     var el = document.getElementById(id);
     if (el) el.addEventListener('click', openKana);
   });
+  document.querySelectorAll('[data-open-kana]').forEach(function(el){
+    el.addEventListener('click', function(e){ e.preventDefault(); openKana(); });
+  });
   document.getElementById('close-kana').addEventListener('click', closeKana);
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeKana(); });
 
@@ -810,22 +844,20 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     }
   });
 
-  /* 신청 폼 — 구글 폼으로 전송 */
+  /* 신청 폼(일본어) — 구글 폼으로 전송 후 완료 화면 */
   var form = document.getElementById('apply-form');
-  var note = document.getElementById('note');
-  form.addEventListener('submit', function(e){
-    if (document.getElementById('f-name').name.indexOf('entry.10000000') === 0) {
-      e.preventDefault();
-      note.textContent = '※ 항목 번호가 아직 임시값입니다. 구글 폼 ⋮ > [양식 미리 작성] 으로 번호를 확인해 바꿔 주세요.';
-      return;
-    }
-    setTimeout(function(){
-      form.reset();
-      form.style.display = 'none';
-      document.getElementById('done').classList.add('show');
-      document.getElementById('done').scrollIntoView({block:'center'});
-    }, 700);
-  });
+  if (form) {
+    form.addEventListener('submit', function(){
+      setTimeout(function(){
+        form.reset();
+        form.style.display = 'none';
+        var done = document.getElementById('done');
+        done.classList.add('show');
+        done.scrollIntoView({block:'center'});
+      }, 700);
+    });
+  }
+
 })();
 </script>
 </body>
