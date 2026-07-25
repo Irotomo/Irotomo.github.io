@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>나눔 · 중고 게시판 — いろとも 이로토모</title>
+<title>중고 · 나눔 게시판 — いろとも 이로토모</title>
 <meta name="description" content="이로토모 참가자들이 물건을 나누고 주고받는 게시판. いろとも参加者のためのゆずります・売ります掲示板。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -186,13 +186,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
   <div class="wrap nav-in">
     <a class="brand" href="index.html">
       <span class="brand-mark" role="img" aria-label="いろとも"></span>
-      <span class="brand-name">いろとも</span>
+      <span class="brand-name" id="brand-name">이로토모</span>
     </a>
     <nav class="nav-links">
       <a href="index.html#about" data-t="navAbout">모임 소개</a>
       <a href="index.html#fee" data-t="navFee">참가비</a>
       <a href="index.html#place" data-t="navPlace">오시는 길</a>
-      <a href="board.html" aria-current="page" data-t="navBoard">게시판</a>
+      <a href="board.html" aria-current="page" data-t="navBoard">중고 · 나눔</a>
     </nav>
     <div class="nav-right">
       <div class="lang" role="group" aria-label="언어 선택">
@@ -207,8 +207,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
 <main>
   <div class="wrap head">
     <p class="eyebrow">Board</p>
-    <h1 data-t="title">나눔 · 중고 게시판</h1>
-    <p class="lead" data-t="lead">이사 가며 두고 갈 물건, 쓰지 않는 교재, 한 번 쓰고 만 생활용품. 모임에서 만나 직접 주고받으면 택배비도 들지 않습니다.</p>
+    <h1 data-t="title">중고 · 나눔 게시판</h1>
+    <p class="lead" data-t="lead">이사나 귀국으로 두고 갈 물건, 다 본 교재, 몇 번 쓰지 않은 생활용품. 모임 날 직접 주고받으니 택배비도 들지 않습니다.</p>
     <p class="caution" data-t="caution"></p>
   </div>
 
@@ -232,7 +232,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
 
 <footer>
   <div class="wrap foot">
-    <p class="foot-meta" data-t="foot">이로토모 · いろとも<br>서울 강남구 봉은사로50길 10, 1층<br>매주 일요일 15:00 – 18:00</p>
+    <p class="foot-meta" data-t="foot">이로토모<br>매주 일요일 15:00 – 18:00</p>
     <div class="sns">
       <a href="https://instagram.com/irotomokr">Instagram</a>
       <a href="https://www.threads.net/@irotomokr">Threads</a>
@@ -347,10 +347,10 @@ var API = 'https://script.google.com/macros/s/AKfycbwfwRddswWGWx-LoeJR0y6YWGWkhO
 /* ── 문구 ─────────────────────────────────────────────── */
 var T = {
   ko:{
-    navAbout:'모임 소개', navFee:'참가비', navPlace:'오시는 길', navBoard:'게시판',
-    write:'글쓰기', title:'나눔 · 중고 게시판',
-    lead:'이사 가며 두고 갈 물건, 쓰지 않는 교재, 한 번 쓰고 만 생활용품. 모임에서 만나 직접 주고받으면 택배비도 들지 않습니다.',
-    caution:'거래는 글쓴이와 받는 분 사이에서 이루어집니다. 이로토모는 자리만 빌려드릴 뿐 거래에 관여하지 않으며, 분쟁에 책임지지 않습니다. 되도록 모임 당일 직접 주고받으시고, 선입금은 권하지 않습니다.',
+    navAbout:'모임 소개', navFee:'참가비', navPlace:'오시는 길', navBoard:'중고 · 나눔',
+    write:'글쓰기', title:'중고 · 나눔 게시판',
+    lead:'이사나 귀국으로 두고 갈 물건, 다 본 교재, 몇 번 쓰지 않은 생활용품. 모임 날 직접 주고받으니 택배비도 들지 않습니다.',
+    caution:'이로토모는 게시판만 제공할 뿐 거래에는 관여하지 않으며, 문제가 생겨도 책임지지 않습니다. 되도록 모임 날 직접 만나서 주고받으시고, 물건을 받기 전에 돈부터 보내는 일은 피해 주세요.',
     fAll:'전체', fGive:'나눔', fSell:'팝니다', fBuy:'구합니다',
     search:'검색', loading:'불러오는 중…', empty:'아직 올라온 글이 없습니다.',
     noResult:'조건에 맞는 글이 없습니다.',
@@ -367,7 +367,7 @@ var T = {
     sent:'메일로 6자리 코드를 보냈습니다. 10분 안에 입력해 주세요.',
     post:'등록하기', posting:'등록 중…',
     wNote:'거래는 당사자 간 책임이며, 모임은 중개하지 않습니다.',
-    foot:'이로토모 · いろとも<br>서울 강남구 봉은사로50길 10, 1층<br>매주 일요일 15:00 – 18:00',
+    foot:'이로토모<br>매주 일요일 15:00 – 18:00',
     eNoEmail:'이메일 주소를 입력해 주세요.',
     eSoon:'방금 보냈습니다. 1분 뒤에 다시 시도해 주세요.',
     eMail:'메일을 보내지 못했습니다. 주소를 확인해 주세요.',
@@ -382,10 +382,10 @@ var T = {
     reportSubj:'[이로토모 게시판] 신고'
   },
   ja:{
-    navAbout:'交流会について', navFee:'参加費', navPlace:'アクセス', navBoard:'掲示板',
-    write:'投稿する', title:'ゆずります・売ります掲示板',
-    lead:'帰国のときに置いていくもの、使わなくなった教材、一度きりで終わった生活用品。会の当日に手渡しすれば送料もかかりません。',
-    caution:'やり取りは投稿者と受け取る方のあいだで行われます。いろともは場所をお貸ししているだけで、取引には関与せず、トラブルの責任も負いかねます。なるべく会の当日に手渡しでのお受け渡しをおすすめします。先払いはお控えください。',
+    navAbout:'交流会について', navFee:'参加費', navPlace:'アクセス', navBoard:'中古・おゆずり',
+    write:'投稿する', title:'中古・おゆずり掲示板',
+    lead:'帰国のときに置いていくもの、読み終えた教材、数回しか使わなかった生活用品。会の当日に手渡しできるので、送料もかかりません。',
+    caution:'いろともは掲示板をご用意しているだけで、取引には関与せず、トラブルの責任も負いかねます。なるべく会の当日に直接お会いして、手渡しでのお受け渡しをおすすめします。品物を受け取る前のお振り込みはお控えください。',
     fAll:'すべて', fGive:'ゆずります', fSell:'売ります', fBuy:'探しています',
     search:'検索', loading:'読み込み中…', empty:'まだ投稿がありません。',
     noResult:'条件に合う投稿はありません。',
@@ -402,7 +402,7 @@ var T = {
     sent:'6桁のコードをメールでお送りしました。10分以内にご入力ください。',
     post:'投稿する', posting:'送信中…',
     wNote:'取引は当事者間の責任で行われ、交流会は仲介いたしません。',
-    foot:'いろとも · 이로토모<br>ソウル市江南区 奉恩寺路50キル10 1階<br>毎週日曜 15:00 – 18:00',
+    foot:'いろとも<br>毎週日曜 15:00 – 18:00',
     eNoEmail:'メールアドレスをご入力ください。',
     eSoon:'先ほど送信しました。1分後にもう一度お試しください。',
     eMail:'メールを送信できませんでした。アドレスをご確認ください。',
@@ -428,6 +428,7 @@ function applyLang(){
     if (v.indexOf('<br>') >= 0) el.innerHTML = v; else el.textContent = v;
   });
   document.querySelectorAll('[data-tp]').forEach(function(el){ el.placeholder = t(el.dataset.tp); });
+  setBrand();
   render();
 }
 document.querySelectorAll('.lang button').forEach(function(b){
@@ -452,7 +453,9 @@ function fmtDate(iso){
 }
 function photoUrl(id, w){ return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w || 1200); }
 
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 var nav = $('#nav');
+function setBrand(){ $('#brand-name').textContent = (lang === 'ja') ? 'いろとも' : '이로토모'; }
 var onScroll = function(){ nav.classList.toggle('stuck', window.scrollY > 8); };
 onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
@@ -526,7 +529,7 @@ function render(){
       img.loading = 'lazy'; img.alt = ''; img.src = photoUrl(post.photos[0], 600);
       th.appendChild(img);
     } else {
-      var ph = document.createElement('div'); ph.className = 'noimg'; ph.textContent = '色';
+      var ph = document.createElement('div'); ph.className = 'noimg'; ph.textContent = '—';
       th.appendChild(ph);
     }
     c.appendChild(th);
