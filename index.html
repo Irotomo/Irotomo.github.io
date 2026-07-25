@@ -176,6 +176,31 @@ h2{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.03em;li
 .apply-cta{display:flex;gap:12px;flex-wrap:wrap}
 .apply-bank{margin-top:22px;font-size:.86rem;color:var(--muted);background:#FDF8EC;border:1px solid #EBD9AE;border-radius:10px;padding:12px 18px;display:inline-block}
 
+/* 활동 사진 */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.gal figure{position:relative;margin:0;aspect-ratio:4/5;border-radius:16px;overflow:hidden;
+  background:#EDEDE7;border:1px solid var(--line)}
+.gal img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .55s cubic-bezier(.2,.6,.2,1)}
+.gal figure:hover img{transform:scale(1.045)}
+.gal figure::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(20,27,46,0) 62%,rgba(20,27,46,.16));opacity:0;transition:opacity .4s ease}
+.gal figure:hover::after{opacity:1}
+.gal figure.empty{background:#F1F1EC;border-style:dashed;border-color:#D8D8D0}
+.gal-tools{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:none;gap:6px;z-index:3;white-space:nowrap}
+body.admin-on .gal-tools{display:flex}
+body.admin-on .gal figure.empty .gal-tools{bottom:50%;transform:translate(-50%,50%)}
+.gal-tools button{font:600 .74rem var(--font);border-radius:999px;padding:.45em .9em;cursor:pointer;
+  border:1px solid var(--navy-900);background:var(--navy-900);color:#fff;box-shadow:0 6px 18px -8px rgba(20,27,46,.6)}
+.gal-tools button.sub{background:#fff;color:var(--ink);border-color:var(--line)}
+.gal-tools button:hover{background:var(--navy-2);color:#fff;border-color:var(--navy-2)}
+@media (max-width:700px){
+  .gal{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+    margin:34px -22px 0;padding:0 22px 6px;scrollbar-width:none}
+  .gal::-webkit-scrollbar{display:none}
+  .gal figure{flex:0 0 76%;scroll-snap-align:center}
+}
+
 /* 게시판 안내 밴드 */
 .board-sec{background:#FBF4E6;border-top:1px solid #EFE0C2;border-bottom:1px solid #EFE0C2;padding:66px 0}
 .board-band{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
@@ -578,6 +603,29 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="step"><p class="t">17:00</p><p class="d ko" data-c="c33">두 번째 테이블 교체<br>2차 안내</p><p class="d ja" data-c="c33">2回目の席替え<br>二次会のご案内</p></div>
       <div class="step"><p class="t">18:00</p><p class="d ko" data-c="c34">모임 종료<br>이후 2차 (자유 참가)</p><p class="d ja" data-c="c34">終了<br>そのあと二次会（自由参加）</p></div>
     </div>
+  </section>
+
+  <!-- 활동 사진 -->
+  <section class="wrap" id="gallery">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Gallery</p>
+      <h2 class="ko" data-c="g1">이런 분위기입니다</h2>
+      <h2 class="ja" data-c="g1">こんな雰囲気です</h2>
+      <p class="ko" data-c="g2">모임에서 찍은 사진 몇 장입니다. 참가자 얼굴은 가린 뒤에 올립니다.</p>
+      <p class="ja" data-c="g2">会の様子から数枚。参加者のお顔は隠したうえで掲載しています。</p>
+    </div>
+    <div class="gal reveal">
+      <figure class="empty" data-ph="0"><img alt="" loading="lazy" hidden>
+        <span class="gal-tools"><button type="button" data-gal-pick="0">사진</button><button type="button" class="sub" data-gal-del="0">✕</button></span>
+      </figure>
+      <figure class="empty" data-ph="1"><img alt="" loading="lazy" hidden>
+        <span class="gal-tools"><button type="button" data-gal-pick="1">사진</button><button type="button" class="sub" data-gal-del="1">✕</button></span>
+      </figure>
+      <figure class="empty" data-ph="2"><img alt="" loading="lazy" hidden>
+        <span class="gal-tools"><button type="button" data-gal-pick="2">사진</button><button type="button" class="sub" data-gal-del="2">✕</button></span>
+      </figure>
+    </div>
+    <input type="file" id="gal-file" accept="image/*" hidden>
   </section>
 
   <!-- 참가비 -->
@@ -1131,6 +1179,26 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   }
 
   /* 상단 메뉴의 작은 마크는 그대로 두고, 히어로의 큰 로고만 바꾼다 */
+  /* ── 활동 사진 ────────────────────────────────────────────── */
+  var GALLERY = [];
+  function driveUrl(id, w){ return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w || 900); }
+  function renderGallery(){
+    var sec = document.getElementById('gallery');
+    if (!sec) return;
+    sec.querySelectorAll('.gal figure').forEach(function(fig, i){
+      var g = GALLERY[i], img = fig.querySelector('img');
+      if (g && (g.uri || g.id)) {
+        img.onerror = function(){ img.hidden = true; fig.classList.add('empty'); };
+        img.src = g.uri || driveUrl(g.id, 900);
+        img.hidden = false; fig.classList.remove('empty');
+      } else {
+        img.removeAttribute('src'); img.hidden = true; fig.classList.add('empty');
+      }
+    });
+    var any = GALLERY.some(function(g){ return g && (g.uri || g.id); });
+    sec.hidden = !any && !editing;
+  }
+
   function applyLogo(){
     var hero = document.querySelector('.hero-logo');
     if (!hero) return;
@@ -1141,6 +1209,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   }
 
   applySchedule();
+  renderGallery();
   fetch(API + '?action=content&t=' + Date.now(), { redirect:'follow' })
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -1150,6 +1219,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       if (d.logoAr) LOGO_AR = d.logoAr;
       if (d.logoSize) LOGO_SIZE = d.logoSize;
       if (d.logo || d.logoSize) applyLogo();
+      if (d.gallery && d.gallery.length) {
+        GALLERY = d.gallery.map(function(id){ return { id:id }; });
+        renderGallery();
+      }
       if (d.schedule) { SCHED = d.schedule; applySchedule(); }
     })
     .catch(function(){ /* 못 불러오면 페이지에 적힌 기본 문구가 그대로 쓰입니다 */ });
@@ -1238,7 +1311,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       el.setAttribute('spellcheck', 'false');
       mark(el);
     });
-    syncSizeInput();
+    syncSizeInput(); renderGallery();
     fitBar(); count();
   }
   function stopEdit(){
@@ -1260,7 +1333,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     return n;
   }
   function count(){
-    var n = dirty() + (logoChanged ? 1 : 0);
+    var n = dirty() + (logoChanged ? 1 : 0) + (galChanged ? 1 : 0);
     var L = document.body.dataset.lang === 'ja' ? '일본어' : '한국어';
     $a('adm-state').textContent = (n ? '고친 곳 ' + n + '군데 · ' : '') + L + ' 화면 편집 중';
   }
@@ -1402,6 +1475,42 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     }).catch(function(){ return { uri:'', ar:'' }; });
   }
 
+  /* 활동 사진 교체 */
+  var galChanged = false, galSlot = 0;
+  document.querySelectorAll('[data-gal-pick]').forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.stopPropagation(); galSlot = +b.dataset.galPick; $a('gal-file').click();
+    });
+  });
+  document.querySelectorAll('[data-gal-del]').forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      GALLERY[+b.dataset.galDel] = null;
+      galChanged = true; renderGallery(); count();
+    });
+  });
+  $a('gal-file').addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    shrinkPhoto(file, 1400).then(function(uri){
+      if (!uri) { alert('이미지를 읽지 못했습니다.'); return; }
+      GALLERY[galSlot] = { b64: uri.split(',')[1], uri: uri };
+      galChanged = true; renderGallery(); count();
+    });
+  });
+  function shrinkPhoto(file, max){
+    return createImageBitmap(file, { imageOrientation:'from-image' }).then(function(img){
+      var k = Math.min(1, max / Math.max(img.width, img.height));
+      var w = Math.round(img.width * k), h = Math.round(img.height * k);
+      var c = document.createElement('canvas'); c.width = w; c.height = h;
+      var x = c.getContext('2d');
+      x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
+      x.drawImage(img, 0, 0, w, h);
+      return c.toDataURL('image/jpeg', 0.78);
+    }).catch(function(){ return ''; });
+  }
+
   /* 저장 */
   $a('adm-save').addEventListener('click', function(){
     var out = {};
@@ -1413,12 +1522,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     });
     var body = { action:'save', id:ADMIN.id, pw:ADMIN.pw, content:out, schedule:SCHED,
                  logoAr: LOGO_AR, logoSize: LOGO_SIZE };
+    body.gallery = GALLERY.filter(function(g){ return g && (g.id || g.b64); })
+      .map(function(g){ return g.id ? { id:g.id } : { b64:g.b64 }; });
     if (logoChanged) body.logo = LOGO;           /* 안 바꿨으면 보내지 않아 기존 로고를 지킨다 */
     var btn = this; btn.disabled = true; btn.textContent = '저장 중…';
     apiPost(body)
       .then(function(d){
         if (!d.ok) throw new Error(d.error || 'fail');
-        logoChanged = false;
+        logoChanged = false; galChanged = false;
         btn.textContent = '저장됨';
         setTimeout(function(){ btn.textContent = '저장'; }, 1800);
       })
