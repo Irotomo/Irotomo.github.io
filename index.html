@@ -386,6 +386,9 @@ body.admin-on #admin-bar{display:flex}
 #admin-bar button:hover{background:rgba(255,255,255,.12)}
 #admin-bar button.pri{background:var(--gold);border-color:var(--gold);color:#2E2308}
 #admin-bar button.pri:hover{background:#E9B65A}
+#admin-bar .ver{font:600 .72rem var(--font);color:#7D86A3;white-space:nowrap;
+  border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:.3em .8em}
+@media (max-width:760px){#admin-bar .ver{display:none}}
 #admin-bar .warn{font-size:.76rem;font-weight:700;color:#2E2308;background:var(--gold);
   border-radius:999px;padding:.35em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
 
@@ -1373,14 +1376,20 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     fetch(API + '?action=ping&t=' + Date.now(), { redirect:'follow' })
       .then(function(r){ return r.json(); })
       .then(function(d){
-        if (d && d.ok && d.actions && d.actions.indexOf('gallery') >= 0) return;
+        if (d && d.ok && d.actions && d.actions.indexOf('gallery') >= 0) {
+          var ok = document.createElement('span');
+          ok.className = 'ver';
+          ok.textContent = '서버 ' + (d.version || '?') + ' · …' + API.slice(-8);
+          $a('admin-bar').insertBefore(ok, $a('admin-bar').querySelector('.sp'));
+          return;
+        }
         throw new Error('old');
       })
       .catch(function(){
         var b = $a('admin-bar');
         var w = document.createElement('span');
         w.className = 'warn';
-        w.textContent = '⚠ Apps Script 가 옛 버전입니다 — 새 버전으로 다시 배포해야 사진이 올라갑니다';
+        w.textContent = '⚠ 옛 배포에 연결됨 (…' + API.slice(-8) + ') — 파일의 주소를 확인해 주세요';
         b.insertBefore(w, b.querySelector('.sp'));
       });
   }
@@ -1571,7 +1580,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       setState('logo-state', '저장됨');
     }).catch(function(err){
       setState('logo-state', fail(err).slice(0, 50), true);
-      alert('로고를 저장하지 못했습니다.\n\n' + fail(err));
+      alert('로고를 저장하지 못했습니다.\n\n' + fail(err) + '\n\n연결된 서버: …' + API.slice(-10));
     }).then(function(){ $a('logo-file').value = ''; });
   });
 
@@ -1625,7 +1634,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       setState('gal-state', '저장됨');
     }).catch(function(err){
       setState('gal-state', fail(err).slice(0, 50), true);
-      alert('사진을 저장하지 못했습니다.\n\n' + fail(err));
+      alert('사진을 저장하지 못했습니다.\n\n' + fail(err) + '\n\n연결된 서버: …' + API.slice(-10));
     }).then(function(){ $a('gal-file').value = ''; });
   });
 
