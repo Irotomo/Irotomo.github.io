@@ -1476,14 +1476,15 @@ window.IROLANG = (function(){
     openLogin();
   }
   (function(){
-    var tapTarget = document.querySelector('footer .foot-meta') || document.querySelector('footer');
-    if (!tapTarget) return;
+    var foot = document.querySelector('footer');
+    if (!foot) return;
     var n = 0, timer = null;
-    tapTarget.style.cursor = 'default';
-    tapTarget.addEventListener('click', function(){
+    foot.addEventListener('click', function(e){
+      if (e.target.closest('a')) return;               /* SNS 링크는 그냥 이동 */
+      if (e.shiftKey) { openLogin(); return; }         /* PC: Shift + 클릭 한 번 */
       n++;
       clearTimeout(timer);
-      timer = setTimeout(function(){ n = 0; }, 1600);
+      timer = setTimeout(function(){ n = 0; }, 3000);  /* 3초 안에 5번 */
       if (n >= 5) { n = 0; clearTimeout(timer); openLogin(); }
     });
   })();
@@ -1517,7 +1518,7 @@ window.IROLANG = (function(){
     fetch(API + '?action=ping&t=' + Date.now(), { redirect:'follow' })
       .then(function(r){ return r.json(); })
       .then(function(d){
-        if (d && d.ok && d.actions && d.actions.indexOf('gallery') >= 0) {
+        if (d && d.ok && d.actions && d.actions.indexOf('stats') >= 0) {
           var ok = document.createElement('span');
           ok.className = 'ver';
           ok.textContent = '서버 ' + (d.version || '?') + ' · …' + API.slice(-8);
@@ -1527,7 +1528,7 @@ window.IROLANG = (function(){
         throw new Error('old');
       })
       .catch(function(){
-        warnBar('⚠ 옛 배포에 연결됨 (…' + API.slice(-8) + ') — 파일의 주소를 확인해 주세요');
+        warnBar('⚠ Apps Script 가 옛 버전입니다 — 새 버전으로 다시 배포해야 사진·통계가 동작합니다 (…' + API.slice(-8) + ')');
       });
   }
 
@@ -1677,6 +1678,9 @@ window.IROLANG = (function(){
   }
   function fail(err){
     var m = String((err && err.message) || err || '알 수 없는 오류');
+    if (/unknown_action/.test(m)) {
+      return 'Apps Script 가 옛 버전입니다.\n새 Code.gs 를 붙여넣고 저장한 뒤,\n배포 → 배포 관리 → 연필 → 버전 «새 버전» → 배포 를 해주세요.';
+    }
     if (/로그인이 만료/.test(m)) m += '\n페이지를 새로고침한 뒤 다시 로그인해 주세요.';
     return m;
   }
