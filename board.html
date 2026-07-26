@@ -361,10 +361,13 @@ var TRACK_API = 'https://script.google.com/macros/s/AKfycbyjvp9p5e4MCPGXYBvwKXGd
   try {
     var sid=''; try{ sid=sessionStorage.getItem('iro-sid')||''; }catch(e){}
     if(!sid){ sid=Math.random().toString(36).slice(2,10); try{sessionStorage.setItem('iro-sid',sid);}catch(e){} }
-    var nw=0; try{ if(!localStorage.getItem('iro-seen')){ nw=1; localStorage.setItem('iro-seen','1'); } }catch(e){}
+    var vid='', nw=0;
+    try{ vid=localStorage.getItem('iro-vid')||'';
+      if(!vid){ vid=Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); nw=1; localStorage.setItem('iro-vid',vid); }
+    }catch(e){}
     var body=JSON.stringify({action:'hit',page:'board',lang:document.body.dataset.lang,
       ref:document.referrer||'',tz:(window.Intl&&Intl.DateTimeFormat().resolvedOptions().timeZone)||'',
-      device:(window.innerWidth<760?'mobile':'desktop'),w:window.innerWidth,sid:sid,ev:'',nw:nw});
+      device:(window.innerWidth<760?'mobile':'desktop'),w:window.innerWidth,sid:sid,ev:'',nw:nw,vid:vid});
     setTimeout(function(){
       if(navigator.sendBeacon) navigator.sendBeacon(TRACK_API,new Blob([body],{type:'text/plain;charset=utf-8'}));
     },900);

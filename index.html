@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>いろとも 이로토모 — 서울 한일교류회</title>
+<title>こんにちは！日韓交流会『いろとも』です。 이로토모 — 서울 한일교류회</title>
 <meta name="description" content="매주 일요일 15시, 서울 선정릉에서 열리는 사전 신청제 한일교류회. 毎週日曜15時、ソウル・ソンジョンヌンで開かれる事前申込制の日韓交流会。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -406,8 +406,24 @@ body.admin-on #admin-bar{display:flex}
 .st-sec{margin-bottom:26px}
 .st-sec h4{font-size:.76rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
 .st-bars{display:flex;align-items:flex-end;gap:3px;height:120px;padding:0 2px;border-bottom:1px solid var(--line)}
-.st-bars i{flex:1;background:var(--navy);border-radius:3px 3px 0 0;min-height:2px;opacity:.85;position:relative}
-.st-bars i:hover{opacity:1;background:var(--gold)}
+.st-bars i{flex:1;background:#C9CEDE;border-radius:3px 3px 0 0;min-height:2px;display:flex;align-items:flex-end}
+.st-bars i u{display:block;width:100%;background:var(--navy);border-radius:3px 3px 0 0}
+.st-bars i:hover{background:#EBD9AE}
+.st-bars i:hover u{background:var(--gold)}
+.st-legend{display:flex;gap:14px;font-size:.72rem;color:var(--muted);margin-top:8px}
+.st-legend em{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.st-tbl{width:100%;border-collapse:collapse;font-size:.86rem}
+.st-tbl th{text-align:left;font-size:.72rem;letter-spacing:.06em;color:var(--muted);font-weight:700;
+  padding:0 10px 8px 0;border-bottom:1px solid var(--line)}
+.st-tbl td{padding:9px 10px 9px 0;border-bottom:1px solid var(--line-2);vertical-align:middle}
+.st-tbl td:first-child{font-weight:600;color:#2B3247}
+.st-tbl .num{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);width:64px}
+.st-tbl .rate{width:132px}
+.st-tbl .rate span{display:flex;align-items:center;gap:8px}
+.st-tbl .rate i{flex:1;height:7px;background:#EFEFEA;border-radius:999px;overflow:hidden;display:block}
+.st-tbl .rate i b{display:block;height:100%;background:#2A6E4A;border-radius:999px}
+.st-tbl .rate strong{font-size:.82rem;font-weight:700;color:#2A6E4A;width:44px;text-align:right;font-variant-numeric:tabular-nums}
+.st-tbl tr.dim td{color:var(--muted)}
 .st-xlab{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-top:6px}
 .st-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
 .st-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:.86rem}
@@ -1202,14 +1218,17 @@ window.IROLANG = (function(){
       var sid = '';
       try { sid = sessionStorage.getItem('iro-sid') || ''; } catch (e) {}
       if (!sid) { sid = Math.random().toString(36).slice(2, 10); try { sessionStorage.setItem('iro-sid', sid); } catch (e) {} }
-      var nw = 0;
-      try { if (!localStorage.getItem('iro-seen')) { nw = 1; localStorage.setItem('iro-seen', '1'); } } catch (e) {}
+      var vid = '', nw = 0;
+      try {
+        vid = localStorage.getItem('iro-vid') || '';
+        if (!vid) { vid = Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); nw = 1; localStorage.setItem('iro-vid', vid); }
+      } catch (e) {}
       var body = JSON.stringify({
         action:'hit', page: TRACK_PAGE, lang: document.body.dataset.lang,
         ref: document.referrer || '',
         tz: (window.Intl && Intl.DateTimeFormat().resolvedOptions().timeZone) || '',
         device: (window.innerWidth < 760 ? 'mobile' : 'desktop'),
-        w: window.innerWidth, sid: sid, ev: ev || '', nw: nw
+        w: window.innerWidth, sid: sid, ev: ev || '', nw: nw, vid: vid
       });
       if (navigator.sendBeacon) navigator.sendBeacon(API, new Blob([body], { type:'text/plain;charset=utf-8' }));
       else fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: body, keepalive:true });
@@ -1826,11 +1845,30 @@ window.IROLANG = (function(){
     }).join('');
   }
 
+  function convTable(d){
+    var rows = (d.convert || []).filter(function(x){ return x.v >= 1; }).slice(0, 8);
+    if (!rows.length) return '';
+    var maxR = rows.reduce(function(m, x){ return Math.max(m, x.r); }, 0) || 1;
+    return '<div class="st-sec"><h4>유입 경로별 신청 전환</h4><table class="st-tbl">' +
+      '<tr><th>경로</th><th class="num">방문</th><th class="num">신청 클릭</th><th class="rate">전환율</th></tr>' +
+      rows.map(function(x){
+        return '<tr' + (x.v < 5 ? ' class="dim"' : '') + '><td>' + esc2(x.k) + '</td>' +
+          '<td class="num">' + x.v + '</td><td class="num">' + x.c + '</td>' +
+          '<td class="rate"><span><i><b style="width:' + Math.round(x.r / maxR * 100) + '%"></b></i>' +
+          '<strong>' + x.r + '%</strong></span></td></tr>';
+      }).join('') +
+      '</table><p style="font-size:.76rem;color:var(--muted);margin-top:9px">' +
+      '연한 줄은 방문이 5회 미만이라 비율을 믿기 어려운 경로입니다.</p></div>';
+  }
+
   function insight(d){
     if (!d.total) return '아직 쌓인 기록이 없습니다. 방문이 생기면 여기에 요약이 나타납니다.';
     var out = [];
     var avg = (d.total / d.days).toFixed(1);
-    out.push('최근 <b>' + d.days + '일</b> 동안 <b>' + d.total + '회</b> 방문했고, 하루 평균 <b>' + avg + '회</b>입니다.');
+    out.push('최근 <b>' + d.days + '일</b> 동안 <b>' + d.visitors + '명</b>이 <b>' + d.total + '회</b> 방문했고, 하루 평균 <b>' + avg + '회</b>입니다.');
+    if (d.visitors) out.push('이 가운데 <b>' + d.returning + '명</b>이 이틀 이상 다시 찾았습니다(재방문율 <b>' + Math.round(d.returning / d.visitors * 100) + '%</b>).');
+    var best = (d.convert || []).filter(function(x){ return x.v >= 5; }).sort(function(a, b2){ return b2.r - a.r; })[0];
+    if (best) out.push('전환이 가장 좋은 경로는 <b>' + best.k + '</b>로, 방문 ' + best.v + '회 중 ' + best.c + '회가 신청으로 이어졌습니다(<b>' + best.r + '%</b>).');
     if (d.lang.length) {
       var ja = (d.lang.filter(function(x){ return x.k === '일본어'; })[0] || {n:0}).n;
       out.push('일본어 화면 비중은 <b>' + Math.round(ja / d.total * 100) + '%</b>입니다.');
@@ -1840,8 +1878,7 @@ window.IROLANG = (function(){
     var top = 0, ti = 0;
     d.hour.forEach(function(v, i){ if (v > top) { top = v; ti = i; } });
     if (top) out.push('접속이 몰리는 시간대는 <b>' + ti + '시대</b>입니다.');
-    var apply = (d.event.filter(function(x){ return /신청/.test(x.k); })[0] || {n:0}).n;
-    if (apply) out.push('신청 버튼을 누른 횟수는 <b>' + apply + '회</b>, 방문 대비 <b>' + Math.round(apply / d.total * 100) + '%</b>입니다.');
+    if (d.newVisitors) out.push('처음 온 사람은 <b>' + d.newVisitors + '명</b>입니다.');
     return out.join(' ');
   }
 
@@ -1849,7 +1886,10 @@ window.IROLANG = (function(){
     var daily = d.daily || [];
     var maxD = daily.reduce(function(m, x){ return Math.max(m, x.n); }, 1);
     var bars = daily.map(function(x){
-      return '<i style="height:' + Math.max(2, Math.round(x.n / maxD * 100)) + '%" title="' + x.k + ' · ' + x.n + '회"></i>';
+      var h = Math.max(2, Math.round(x.n / maxD * 100));
+      var u = x.n ? Math.round((x.u || 0) / x.n * 100) : 0;
+      return '<i style="height:' + h + '%" title="' + x.k + ' · 방문 ' + x.n + '회 / 순 방문자 ' + (x.u || 0) + '명">' +
+             '<u style="height:' + u + '%"></u></i>';
     }).join('');
     var DOW = ['일','월','화','수','목','금','토'];
     var dowList = (d.dow || []).map(function(n, i){ return { k: DOW[i] + '요일', n: n }; })
@@ -1860,12 +1900,15 @@ window.IROLANG = (function(){
     $a('stats-body').innerHTML =
       '<div class="st-kpi">' +
         '<div><b>' + d.total + '</b><span>방문</span></div>' +
-        '<div><b>' + d.uniq + '</b><span>방문자(세션)</span></div>' +
-        '<div><b>' + d.newVisitors + '</b><span>처음 온 사람</span></div>' +
+        '<div><b>' + d.visitors + '</b><span>순 방문자</span></div>' +
+        '<div><b>' + (d.visitors ? Math.round(d.returning / d.visitors * 100) : 0) + '%</b><span>재방문율</span></div>' +
         '<div><b>' + (d.total / d.days).toFixed(1) + '</b><span>하루 평균</span></div>' +
       '</div>' +
       (daily.length ? '<div class="st-sec"><h4>일별 방문</h4><div class="st-bars">' + bars + '</div>' +
-        '<div class="st-xlab"><span>' + daily[0].k + '</span><span>' + daily[daily.length-1].k + '</span></div></div>' : '') +
+        '<div class="st-xlab"><span>' + daily[0].k + '</span><span>' + daily[daily.length-1].k + '</span></div>' +
+        '<div class="st-legend"><span><em style="background:#C9CEDE"></em>방문</span>' +
+        '<span><em style="background:var(--navy)"></em>순 방문자</span></div></div>' : '') +
+      convTable(d) +
       '<div class="st-sec st-grid">' +
         '<div><h4>언어</h4>' + barRows(d.lang, d.total) + '</div>' +
         '<div><h4>지역(시간대 기준)</h4>' + barRows(d.region, d.total) + '</div>' +
@@ -1899,14 +1942,15 @@ window.IROLANG = (function(){
       '신청은 한국인은 소모임 앱, 일본인은 사이트 안의 구글 폼으로 받습니다.',
       '',
       '기간: 최근 ' + d.days + '일',
-      '총 방문 ' + d.total + '회 / 세션 ' + d.uniq + ' / 처음 온 사람 ' + d.newVisitors,
+      '총 방문 ' + d.total + '회 / 순 방문자 ' + d.visitors + '명 / 처음 온 사람 ' + d.newVisitors + '명 / 이틀 이상 재방문 ' + d.returning + '명',
+      '유입 경로별 (경로: 방문수, 신청클릭수, 전환율%): ' + (d.convert || []).map(function(x){ return x.k + ' ' + x.v + '/' + x.c + '/' + x.r + '%'; }).join(', '),
       fmt('언어', d.lang),
       fmt('지역(브라우저 시간대 기준)', d.region),
       fmt('유입 경로', d.ref),
       fmt('기기', d.device),
       fmt('페이지', d.page),
       fmt('버튼 클릭', d.event),
-      '일별 방문: ' + (d.daily || []).map(function(x){ return x.k + ' ' + x.n; }).join(', '),
+      '일별 (날짜 방문수/순방문자): ' + (d.daily || []).map(function(x){ return x.k + ' ' + x.n + '/' + (x.u || 0); }).join(', '),
       '요일별(일~토): ' + (d.dow || []).join(', '),
       '시간대별(0~23시): ' + (d.hour || []).join(', '),
       '',

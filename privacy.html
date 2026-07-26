@@ -140,9 +140,9 @@ footer a{margin-right:18px;text-decoration:none}
 <section>
   <h2><span class="ko">1-2. 방문 기록</span><span class="ja">1-2. アクセス記録</span></h2>
   <p class="ko">사이트 개선을 위해 방문 기록을 남깁니다. 외부 분석 서비스는 쓰지 않으며, <b>이름·이메일·IP 주소 등 개인을 알아볼 수 있는 정보는 저장하지 않습니다.</b></p>
-  <p class="ko">저장하는 것은 방문 시각, 열어본 페이지, 화면 언어, 유입된 링크의 출처, 브라우저 시간대(한국·일본 구분용), 기기 종류, 화면 너비, 그리고 브라우저를 닫으면 사라지는 임시 번호입니다. 임시 번호는 한 번의 방문에서 몇 페이지를 보셨는지 세기 위한 것이며 다른 정보와 연결되지 않습니다.</p>
+  <p class="ko">저장하는 것은 방문 시각, 열어본 페이지, 화면 언어, 유입된 링크의 출처, 브라우저 시간대(한국·일본 구분용), 기기 종류, 화면 너비, 그리고 브라우저에 저장되는 무작위 번호 두 개입니다. 하나는 브라우저를 닫으면 사라지고(한 번의 방문에서 몇 페이지를 보셨는지 세기 위한 것), 다른 하나는 같은 분이 다시 찾아오셨는지 세기 위해 남아 있습니다. 두 번호 모두 무작위로 만들어지며 이름·이메일 등 다른 정보와 연결되지 않고, 브라우저의 저장 데이터를 지우시면 함께 사라집니다.</p>
   <p class="ja">サイト改善のためアクセス記録を残しています。外部の解析サービスは利用しておらず、<b>お名前・メールアドレス・IPアドレスなど個人を特定できる情報は保存いたしません。</b></p>
-  <p class="ja">保存するのは、訪問日時、ご覧になったページ、表示言語、流入元のリンク、ブラウザのタイムゾーン（韓国・日本の区別のため）、端末の種類、画面の幅、そしてブラウザを閉じると消える一時的な番号です。この番号は一度の訪問で何ページご覧になったかを数えるためだけのもので、他の情報と結び付くことはありません。</p>
+  <p class="ja">保存するのは、訪問日時、ご覧になったページ、表示言語、流入元のリンク、ブラウザのタイムゾーン（韓国・日本の区別のため）、端末の種類、画面の幅、そしてブラウザに保存されるランダムな番号が二つです。一つはブラウザを閉じると消えるもの（一度の訪問で何ページご覧になったかを数えるため）、もう一つは同じ方が再びお越しになったかを数えるために残るものです。いずれも無作為に生成され、お名前やメールアドレスなど他の情報と結び付くことはなく、ブラウザの保存データを削除すれば一緒に消えます。</p>
 </section>
 
 <section>
@@ -241,10 +241,13 @@ var TRACK_API = 'https://script.google.com/macros/s/AKfycbyjvp9p5e4MCPGXYBvwKXGd
   try {
     var sid=''; try{ sid=sessionStorage.getItem('iro-sid')||''; }catch(e){}
     if(!sid){ sid=Math.random().toString(36).slice(2,10); try{sessionStorage.setItem('iro-sid',sid);}catch(e){} }
-    var nw=0; try{ if(!localStorage.getItem('iro-seen')){ nw=1; localStorage.setItem('iro-seen','1'); } }catch(e){}
+    var vid='', nw=0;
+    try{ vid=localStorage.getItem('iro-vid')||'';
+      if(!vid){ vid=Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); nw=1; localStorage.setItem('iro-vid',vid); }
+    }catch(e){}
     var body=JSON.stringify({action:'hit',page:'privacy',lang:document.body.dataset.lang,
       ref:document.referrer||'',tz:(window.Intl&&Intl.DateTimeFormat().resolvedOptions().timeZone)||'',
-      device:(window.innerWidth<760?'mobile':'desktop'),w:window.innerWidth,sid:sid,ev:'',nw:nw});
+      device:(window.innerWidth<760?'mobile':'desktop'),w:window.innerWidth,sid:sid,ev:'',nw:nw,vid:vid});
     setTimeout(function(){
       if(navigator.sendBeacon) navigator.sendBeacon(TRACK_API,new Blob([body],{type:'text/plain;charset=utf-8'}));
     },900);
