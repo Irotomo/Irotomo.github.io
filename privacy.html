@@ -14,6 +14,11 @@
 --font:'Schibsted Grotesk','Zen Kaku Gothic New','IBM Plex Sans KR',system-ui,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--canvas);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+
+/* iOS 사파리 가로 흔들림 방지 */
+html{overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{overflow-x:hidden;max-width:100%;position:relative;overscroll-behavior-x:none}
+img,svg,iframe,video,table{max-width:100%}
 body[data-lang="ko"] .ja{display:none!important}
 body[data-lang="ja"] .ko{display:none!important}
 .wrap{max-width:820px;margin:0 auto;padding:0 26px}
@@ -21,8 +26,8 @@ body[data-lang="ja"] .ko{display:none!important}
 .nav-in{display:flex;align-items:center;height:66px;gap:16px}
 .brand{text-decoration:none;color:var(--ink);font-weight:700;font-size:1rem;letter-spacing:-.01em}
 .lang{margin-left:auto;display:flex;gap:2px;background:#ECECE6;border-radius:999px;padding:3px}
-.lang button{font:600 .74rem/1 var(--font);letter-spacing:.06em;color:var(--muted);border:0;background:transparent;
-  padding:.52em .9em;border-radius:999px;cursor:pointer}
+.lang button{font:600 .78rem/1 var(--font);color:var(--muted);border:0;background:transparent;
+  padding:.5em .82em;border-radius:999px;cursor:pointer;white-space:nowrap}
 .lang button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(20,27,46,.08)}
 header.top{padding:56px 0 34px;border-bottom:1px solid var(--line)}
 .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
@@ -55,13 +60,13 @@ footer a{margin-right:18px;text-decoration:none}
 }
 </style>
 </head>
-<body data-lang="ko">
+<body data-lang="ja">
 
 <div class="nav"><div class="wrap nav-in">
   <a class="brand" href="index.html"><span class="ko">이로토모</span><span class="ja">いろとも</span></a>
   <div class="lang">
-    <button type="button" data-set="ko" aria-pressed="true">KO</button>
-    <button type="button" data-set="ja" aria-pressed="false">JA</button>
+    <button type="button" data-set="ko" aria-pressed="false">한국어</button>
+    <button type="button" data-set="ja" aria-pressed="true">日本語</button>
   </div>
 </div></div>
 
@@ -83,13 +88,12 @@ footer a{margin-right:18px;text-decoration:none}
       <thead><tr><th>항목</th><th>이용 목적</th><th>필수</th></tr></thead>
       <tbody>
         <tr><td>이름</td><td>참가자 확인, 자리 배정</td><td>필수</td></tr>
-        <tr><td>국적</td><td><b>참가비 구분</b> (한국인 15,000원 / 일본인 5,000원)</td><td>필수</td></tr>
+        <tr><td>국적</td><td><b>참가비 구분</b> (한국인 10,000원 / 일본인 무료)</td><td>필수</td></tr>
         <tr><td>이메일</td><td>신청 확인 안내, 일정 변경 연락</td><td>필수</td></tr>
         <tr><td>참가 희망일</td><td>인원 관리, 자리 배정</td><td>필수</td></tr>
         <tr><td>SNS 계정</td><td>연락 수단 보조</td><td>선택</td></tr>
         <tr><td>알게 된 경로</td><td>모임 운영 참고</td><td>선택</td></tr>
         <tr><td>문의 내용</td><td>문의 응대</td><td>선택</td></tr>
-        <tr><td>입금자명·입금 내역</td><td><b>예약금 입금 확인</b></td><td>필수</td></tr>
       </tbody>
     </table>
     <p><b>게시판 이용 시</b></p>
@@ -102,7 +106,7 @@ footer a{margin-right:18px;text-decoration:none}
         <tr><td>삭제 비밀번호</td><td>본인 확인 (암호화하여 보관)</td><td>비공개</td></tr>
       </tbody>
     </table>
-    <p class="note">국적은 참가비를 구분하기 위해서만 사용하며, 그 외의 목적으로 이용하거나 공개하지 않습니다. 계좌번호는 저희가 수집하지 않으며, 입금 시 표시되는 입금자명과 금액만 확인합니다.</p>
+    <p class="note">국적은 참가비를 구분하기 위해서만 사용하며, 그 외의 목적으로 이용하거나 공개하지 않습니다. 참가비는 당일 현장에서 받으므로 계좌번호·입금자명 등 금융 정보는 일절 수집하지 않습니다.</p>
   </div>
 
   <div class="ja">
@@ -111,13 +115,12 @@ footer a{margin-right:18px;text-decoration:none}
       <thead><tr><th>項目</th><th>利用目的</th><th>要否</th></tr></thead>
       <tbody>
         <tr><td>お名前</td><td>参加者の確認、席順の決定</td><td>必須</td></tr>
-        <tr><td>国籍</td><td><b>参加費の区分</b>（韓国の方15,000ウォン / 日本の方5,000ウォン）</td><td>必須</td></tr>
+        <tr><td>国籍</td><td><b>参加費の区分</b>（韓国の方10,000ウォン / 日本の方は無料）</td><td>必須</td></tr>
         <tr><td>メールアドレス</td><td>お申し込みのご案内、日程変更のご連絡</td><td>必須</td></tr>
         <tr><td>ご参加日</td><td>人数の管理、席順の決定</td><td>必須</td></tr>
         <tr><td>SNSアカウント</td><td>連絡手段の補助</td><td>任意</td></tr>
         <tr><td>知ったきっかけ</td><td>運営の参考</td><td>任意</td></tr>
         <tr><td>ご質問・ご要望</td><td>お問い合わせへの対応</td><td>任意</td></tr>
-        <tr><td>振込名義・入金内容</td><td><b>予約金の入金確認</b></td><td>必須</td></tr>
       </tbody>
     </table>
     <p><b>掲示板のご利用時</b></p>
@@ -130,7 +133,7 @@ footer a{margin-right:18px;text-decoration:none}
         <tr><td>削除用パスワード</td><td>本人確認（暗号化して保管）</td><td>非公開</td></tr>
       </tbody>
     </table>
-    <p class="note">国籍は参加費を区分するためだけに使用し、それ以外の目的で利用したり公開したりすることはありません。口座番号を取得することはなく、お振り込みの際に表示される名義とご入金額のみを確認いたします。</p>
+    <p class="note">国籍は参加費を区分するためだけに使用し、それ以外の目的で利用したり公開したりすることはありません。参加費は当日会場でお受けするため、口座番号やお振込名義といった金融に関する情報は一切取得いたしません。</p>
   </div>
 </section>
 
@@ -138,13 +141,11 @@ footer a{margin-right:18px;text-decoration:none}
   <h2><span class="ko">2. 보유 기간</span><span class="ja">2. 保有期間</span></h2>
   <ul class="ko">
     <li>참가 신청 정보 — 모임 종료 후 <b>6개월</b> 보관 후 삭제</li>
-    <li>입금 확인 기록 — 관련 법령에서 정한 기간 동안 보관</li>
     <li>게시판 글과 사진 — 게시일로부터 <b>60일</b>, 또는 작성자가 삭제한 시점까지</li>
     <li>이메일 인증코드 — <b>10분</b> 후 자동 삭제</li>
   </ul>
   <ul class="ja">
     <li>お申し込み情報 — 会の終了後<b>6か月</b>保管し、その後削除します</li>
-    <li>入金確認の記録 — 関係法令に定められた期間、保管します</li>
     <li>掲示板の投稿と写真 — 掲載日から<b>60日</b>、または投稿者が削除した時点まで</li>
     <li>メール認証コード — <b>10分</b>後に自動で削除されます</li>
   </ul>
@@ -223,15 +224,31 @@ footer a{margin-right:18px;text-decoration:none}
 </div></footer>
 
 <script>
-document.querySelectorAll('.lang button').forEach(function(b){
-  b.addEventListener('click', function(){
-    var v = b.dataset.set;
-    document.body.dataset.lang = v;
-    document.documentElement.lang = v;
-    document.querySelectorAll('.lang button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+/* 언어 설정을 세 페이지가 함께 쓴다. 처음 오면 일본어. */
+window.IROLANG = (function(){
+  var KEY = 'irotomo-lang';
+  function get(){
+    try { var v = localStorage.getItem(KEY); if (v === 'ko' || v === 'ja') return v; } catch (e) {}
+    if ((location.hash || '').indexOf('ko') >= 0) return 'ko';
+    if ((location.hash || '').indexOf('ja') >= 0) return 'ja';
+    return 'ja';
+  }
+  function set(v){ try { localStorage.setItem(KEY, v); } catch (e) {} }
+  return { get: get, set: set };
+})();
+
+function setLang(v){
+  document.body.dataset.lang = v;
+  document.documentElement.lang = v;
+  window.IROLANG.set(v);
+  document.querySelectorAll('.lang button').forEach(function(x){
+    x.setAttribute('aria-pressed', String(x.dataset.set === v));
   });
+}
+document.querySelectorAll('.lang button').forEach(function(b){
+  b.addEventListener('click', function(){ setLang(b.dataset.set); });
 });
-if ((location.hash || '').indexOf('ja') >= 0) document.querySelector('.lang button[data-set="ja"]').click();
+setLang(window.IROLANG.get());
 </script>
 </body>
 </html>

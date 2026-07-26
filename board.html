@@ -44,7 +44,8 @@ img{max-width:100%;display:block}
 .nav-right{display:flex;align-items:center;gap:12px;margin-left:auto}
 .nav-links + .nav-right{margin-left:0}
 .lang{display:flex;gap:2px;background:#ECECE6;border-radius:999px;padding:3px}
-.lang button{font:600 .74rem/1 var(--font);letter-spacing:.06em;color:var(--muted);border:0;background:transparent;padding:.52em .9em;border-radius:999px;cursor:pointer;transition:background .18s ease,color .18s ease}
+.lang button{font:600 .78rem/1 var(--font);letter-spacing:0;color:var(--muted);border:0;background:transparent;
+  padding:.5em .82em;border-radius:999px;cursor:pointer;white-space:nowrap;transition:background .18s ease,color .18s ease}
 .lang button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(20,27,46,.08)}
 
 /* ---------- 버튼 ---------- */
@@ -166,6 +167,11 @@ footer{background:var(--canvas);border-top:1px solid var(--line);padding:46px 0 
 .sns a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:600;transition:color .18s ease}
 .sns a:hover{color:var(--gold)}
 
+
+/* iOS 사파리 가로 흔들림 방지 */
+html{overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{overflow-x:hidden;max-width:100%;position:relative;overscroll-behavior-x:none}
+img,svg,iframe,video,table{max-width:100%}
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
 
 @media (max-width:960px){
@@ -187,7 +193,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body data-lang="ko">
+<body data-lang="ja">
 
 <header class="nav" id="nav">
   <div class="wrap nav-in">
@@ -203,8 +209,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
     </nav>
     <div class="nav-right">
       <div class="lang" role="group" aria-label="언어 선택">
-        <button type="button" data-set="ko" aria-pressed="true">KO</button>
-        <button type="button" data-set="ja" aria-pressed="false">JA</button>
+        <button type="button" data-set="ko" aria-pressed="false">한국어</button>
+        <button type="button" data-set="ja" aria-pressed="true">日本語</button>
       </div>
       <button class="btn btn-primary btn-sm" id="open-write" data-t="write">글쓰기</button>
     </div>
@@ -348,6 +354,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
 <div id="toast"></div>
 
 <script>
+/* 언어 설정을 세 페이지가 함께 쓴다. 처음 오면 일본어. */
+window.IROLANG = (function(){
+  var KEY = 'irotomo-lang';
+  function get(){
+    try { var v = localStorage.getItem(KEY); if (v === 'ko' || v === 'ja') return v; } catch (e) {}
+    if ((location.hash || '').indexOf('ko') >= 0) return 'ko';
+    if ((location.hash || '').indexOf('ja') >= 0) return 'ja';
+    return 'ja';
+  }
+  function set(v){ try { localStorage.setItem(KEY, v); } catch (e) {} }
+  return { get: get, set: set };
+})();
 (function(){
 /* ══════════════════════════════════════════════════════════════
    ① Apps Script 웹앱 주소를 아래에 붙여넣으세요.
@@ -435,7 +453,7 @@ var T = {
     eAgree:'個人情報の取得・利用にご同意ください。'
   }
 };
-var lang = 'ko';
+var lang = window.IROLANG.get();
 function t(k){ return (T[lang] && T[lang][k]) || T.ko[k] || k; }
 
 function applyLang(){
@@ -452,6 +470,7 @@ function applyLang(){
 document.querySelectorAll('.lang button').forEach(function(b){
   b.addEventListener('click', function(){
     lang = b.dataset.set;
+    window.IROLANG.set(lang);
     document.querySelectorAll('.lang button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
     applyLang();
   });
@@ -717,6 +736,9 @@ $('#w-submit').addEventListener('click', function(){
 });
 
 /* ── 시작 ─────────────────────────────────────────────── */
+document.querySelectorAll('.lang button').forEach(function(b){
+  b.setAttribute('aria-pressed', String(b.dataset.set === lang));
+});
 applyLang();
 load();
 })();
