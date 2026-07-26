@@ -347,11 +347,6 @@ section[id],div[id]{scroll-margin-top:92px}
 
 
 /* 관리자 (실시간 편집) */
-#admin-tab{position:fixed;right:16px;bottom:14px;z-index:120;font:600 .7rem/1 var(--font);letter-spacing:.06em;
-  color:var(--muted);background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:999px;
-  padding:.6em 1.05em;cursor:pointer;opacity:.42;backdrop-filter:blur(6px);transition:opacity .2s ease,color .2s ease}
-#admin-tab:hover,#admin-tab:focus-visible{opacity:1;color:var(--ink);border-color:var(--ink)}
-body.admin-on #admin-tab{display:none}
 .adm-dim{position:fixed;inset:0;z-index:150;background:rgba(20,27,46,.52);backdrop-filter:blur(3px);
   display:none;align-items:center;justify-content:center;padding:20px}
 .adm-dim.on{display:flex}
@@ -393,6 +388,47 @@ body.admin-on #admin-bar{display:flex}
 #admin-bar .ver{font:600 .72rem var(--font);color:#7D86A3;white-space:nowrap;
   border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:.3em .8em}
 @media (max-width:760px){#admin-bar .ver{display:none}}
+.stats-card{width:min(100%,900px);max-height:92vh;padding:0;display:flex;flex-direction:column}
+.stats-head{display:flex;align-items:center;gap:12px;padding:20px 24px;border-bottom:1px solid var(--line-2);flex:none}
+.stats-head h3{margin:0}
+.st-range{margin-left:auto;display:flex;gap:5px}
+.st-range button{font:600 .78rem var(--font);color:var(--muted);background:#FBFBF9;border:1px solid var(--line);
+  border-radius:999px;padding:.42em .9em;cursor:pointer}
+.st-range button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.stats-head .x{border:0;background:#F2F2ED;width:32px;height:32px;border-radius:50%;cursor:pointer;color:var(--muted);
+  font-size:1rem;line-height:1;display:grid;place-items:center;flex:none}
+#stats-body{padding:22px 24px 28px;overflow-y:auto}
+.st-empty{color:var(--muted);font-size:.9rem;text-align:center;padding:50px 0}
+.st-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.st-kpi div{background:#FAFAF7;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.st-kpi b{display:block;font-size:1.5rem;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+.st-kpi span{font-size:.74rem;color:var(--muted);font-weight:600}
+.st-sec{margin-bottom:26px}
+.st-sec h4{font-size:.76rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
+.st-bars{display:flex;align-items:flex-end;gap:3px;height:120px;padding:0 2px;border-bottom:1px solid var(--line)}
+.st-bars i{flex:1;background:var(--navy);border-radius:3px 3px 0 0;min-height:2px;opacity:.85;position:relative}
+.st-bars i:hover{opacity:1;background:var(--gold)}
+.st-xlab{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-top:6px}
+.st-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.st-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:.86rem}
+.st-row span:first-child{width:32%;color:#2B3247;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-row .bar{flex:1;height:8px;background:#EFEFEA;border-radius:999px;overflow:hidden}
+.st-row .bar i{display:block;height:100%;background:var(--navy);border-radius:999px}
+.st-row .n{width:56px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;font-size:.8rem}
+.st-note{background:#FAFAF7;border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:.88rem;line-height:1.75;color:#2B3247}
+.st-note b{color:var(--navy)}
+.st-ai{margin-top:20px}
+.st-ai .row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}
+.st-ai .btn{padding:.65em 1.25em;font-size:.86rem}
+#ai-out{white-space:pre-wrap;font-size:.89rem;line-height:1.8;color:#2B3247;background:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:18px 20px;display:none}
+#ai-out.on{display:block}
+@media (max-width:760px){
+  .st-kpi{grid-template-columns:repeat(2,1fr)}
+  .st-grid{grid-template-columns:1fr}
+  #stats-body{padding:18px 16px 24px}
+  .stats-head{padding:16px}
+}
 #admin-bar .warn{font-size:.76rem;font-weight:700;color:#2E2308;background:var(--gold);
   border-radius:999px;padding:.35em .9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
 
@@ -957,7 +993,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </footer>
 
 <!-- 관리자 -->
-<button id="admin-tab" type="button">관리자</button>
 
 <div class="adm-dim" id="adm-login">
   <div class="adm-card">
@@ -990,10 +1025,26 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   </div>
 </div>
 
+<div class="adm-dim" id="adm-stats">
+  <div class="adm-card stats-card">
+    <div class="stats-head">
+      <h3>방문 통계</h3>
+      <span class="st-range">
+        <button type="button" data-d="7">7일</button>
+        <button type="button" data-d="30" aria-pressed="true">30일</button>
+        <button type="button" data-d="90">90일</button>
+      </span>
+      <button class="x" type="button" data-adm-close aria-label="닫기">✕</button>
+    </div>
+    <div id="stats-body"><p class="st-empty">불러오는 중…</p></div>
+  </div>
+</div>
+
 <div id="admin-bar">
   <span class="t">관리자 모드</span>
   <span class="d" id="adm-state">고친 곳 없음</span>
   <span class="sp">
+    <button type="button" id="adm-stats-open">통계</button>
     <button type="button" id="adm-sched-open">일정</button>
     <button type="button" class="pri" id="adm-save">저장</button>
     <button type="button" id="adm-exit">종료</button>
@@ -1033,7 +1084,7 @@ window.IROLANG = (function(){
     langBtns.forEach(function(x){ x.setAttribute('aria-pressed', String(x.dataset.set === l)); });
   }
   langBtns.forEach(function(b){
-    b.addEventListener('click', function(){ setLang(b.dataset.set); });
+    b.addEventListener('click', function(){ setLang(b.dataset.set); track('언어전환-' + b.dataset.set); });
   });
   setLang(window.IROLANG.get(), false);
 
@@ -1141,6 +1192,40 @@ window.IROLANG = (function(){
     var sec = (h && h.length > 1) ? document.querySelector(h) : null;
     if (sec) { goTo(sec); }
     else { window.scrollTo(0, 0); }
+  });
+
+  /* ── 방문 기록 (개인을 식별하는 정보는 담지 않습니다) ────────── */
+  var TRACK_PAGE = 'index';
+  function track(ev){
+    try {
+      if (document.body.classList.contains('admin-on')) return;   /* 관리 중에는 기록하지 않음 */
+      var sid = '';
+      try { sid = sessionStorage.getItem('iro-sid') || ''; } catch (e) {}
+      if (!sid) { sid = Math.random().toString(36).slice(2, 10); try { sessionStorage.setItem('iro-sid', sid); } catch (e) {} }
+      var nw = 0;
+      try { if (!localStorage.getItem('iro-seen')) { nw = 1; localStorage.setItem('iro-seen', '1'); } } catch (e) {}
+      var body = JSON.stringify({
+        action:'hit', page: TRACK_PAGE, lang: document.body.dataset.lang,
+        ref: document.referrer || '',
+        tz: (window.Intl && Intl.DateTimeFormat().resolvedOptions().timeZone) || '',
+        device: (window.innerWidth < 760 ? 'mobile' : 'desktop'),
+        w: window.innerWidth, sid: sid, ev: ev || '', nw: nw
+      });
+      if (navigator.sendBeacon) navigator.sendBeacon(API, new Blob([body], { type:'text/plain;charset=utf-8' }));
+      else fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: body, keepalive:true });
+    } catch (e) {}
+  }
+
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a,button');
+    if (!a) return;
+    var h = a.getAttribute('href') || '';
+    if (a.classList.contains('btn-somoim'))       track('신청-소모임');
+    else if (h.indexOf('board.html') >= 0)        track('게시판 이동');
+    else if (a.id === 'submit')                   track('신청폼 제출');
+    else if (h.indexOf('#apply') >= 0)            track('신청 안내 이동');
+    else if (a.id === 'open-kana' || a.id === 'open-kana-ja' || a.hasAttribute('data-open-kana')) track('가나 연습');
+    else if (h.indexOf('privacy.html') >= 0)      track('처리방침 이동');
   });
 
   /* ── 관리자 페이지에서 고친 문구·일정 불러오기 ─────────────────
@@ -1316,6 +1401,7 @@ window.IROLANG = (function(){
 
   applySchedule();
   renderGallery();
+  setTimeout(function(){ track(''); }, 900);
   fetch(API + '?action=content&t=' + Date.now(), { redirect:'follow' })
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -1352,7 +1438,7 @@ window.IROLANG = (function(){
   /* ══════════════════════════════════════════════════════════
      관리자 — 페이지 위에서 바로 고치기
      ══════════════════════════════════════════════════════════ */
-  var ADMIN = { id:'', pw:'' }, editing = false, DEFAULTS = {};
+  var ADMIN = { token:'' }, editing = false, DEFAULTS = {};
 
   function readEl(el){
     var h = el.innerHTML.replace(/<\/(div|p)>/gi, '\n').replace(/<br\s*\/?>/gi, '\n');
@@ -1383,18 +1469,42 @@ window.IROLANG = (function(){
   });
 
   /* 로그인 */
-  $a('admin-tab').addEventListener('click', function(){ openDim($a('adm-login')); $a('adm-id').focus(); });
+  /* 숨은 진입로 ─ ① 주소 끝에 #irotomo-admin  ② 푸터의 모임 이름을 5번 연속 탭 */
+  function openLogin(){ openDim($a('adm-login')); setTimeout(function(){ $a('adm-id').focus(); }, 60); }
+  if ((location.hash || '').toLowerCase() === '#irotomo-admin') {
+    if (history.replaceState) history.replaceState(null, '', location.pathname);
+    openLogin();
+  }
+  (function(){
+    var tapTarget = document.querySelector('footer .foot-meta') || document.querySelector('footer');
+    if (!tapTarget) return;
+    var n = 0, timer = null;
+    tapTarget.style.cursor = 'default';
+    tapTarget.addEventListener('click', function(){
+      n++;
+      clearTimeout(timer);
+      timer = setTimeout(function(){ n = 0; }, 1600);
+      if (n >= 5) { n = 0; clearTimeout(timer); openLogin(); }
+    });
+  })();
   function tryLogin(){
     var id = $a('adm-id').value.trim(), pw = $a('adm-pw').value.trim();
     if (!id || !pw) { $a('adm-msg').textContent = '아이디와 비밀번호를 입력해 주세요.'; return; }
     $a('adm-go').disabled = true; $a('adm-msg').textContent = '';
     apiPost({ action:'login', id:id, pw:pw }).then(function(d){
-      if (!d.ok) { $a('adm-msg').textContent = '아이디 또는 비밀번호가 맞지 않습니다.'; return; }
-      ADMIN = { id:id, pw:pw };
+      if (!d.ok) {
+        $a('adm-msg').textContent = d.locked
+          ? '로그인 실패가 많아 15분간 잠겼습니다. 잠시 뒤 다시 시도해 주세요.'
+          : '아이디 또는 비밀번호가 맞지 않습니다.';
+        return;
+      }
+      ADMIN = { token: d.token || '' };        /* 비밀번호는 여기서 버린다 */
+      id = pw = '';
       closeDim($a('adm-login'));
-      $a('adm-pw').value = '';
+      $a('adm-id').value = ''; $a('adm-pw').value = '';
       startEdit();
       checkDeploy();
+      if (d.weakPw) warnBar('⚠ 관리자 비밀번호가 짧습니다 — Code.gs 의 ADMIN_PW 를 12자 이상으로 바꿔 주세요');
     }).catch(function(){
       $a('adm-msg').textContent = '서버에 연결하지 못했습니다.';
     }).then(function(){ $a('adm-go').disabled = false; });
@@ -1417,12 +1527,16 @@ window.IROLANG = (function(){
         throw new Error('old');
       })
       .catch(function(){
-        var b = $a('admin-bar');
-        var w = document.createElement('span');
-        w.className = 'warn';
-        w.textContent = '⚠ 옛 배포에 연결됨 (…' + API.slice(-8) + ') — 파일의 주소를 확인해 주세요';
-        b.insertBefore(w, b.querySelector('.sp'));
+        warnBar('⚠ 옛 배포에 연결됨 (…' + API.slice(-8) + ') — 파일의 주소를 확인해 주세요');
       });
+  }
+
+  function warnBar(msg){
+    var b = $a('admin-bar');
+    var w = document.createElement('span');
+    w.className = 'warn';
+    w.textContent = msg;
+    b.insertBefore(w, b.querySelector('.sp'));
   }
 
   /* 편집 모드 */
@@ -1561,10 +1675,14 @@ window.IROLANG = (function(){
     el.classList.toggle('err', !!isErr);
     if (msg && !isErr && /저장|완료/.test(msg)) setTimeout(function(){ setState(id, ''); }, 1800);
   }
-  function fail(err){ return String((err && err.message) || err || '알 수 없는 오류'); }
+  function fail(err){
+    var m = String((err && err.message) || err || '알 수 없는 오류');
+    if (/로그인이 만료/.test(m)) m += '\n페이지를 새로고침한 뒤 다시 로그인해 주세요.';
+    return m;
+  }
 
   function pushLogo(uri){
-    var body = { action:'logo', id:ADMIN.id, pw:ADMIN.pw, logoAr:LOGO_AR, logoSize:LOGO_SIZE };
+    var body = { action:'logo', token:ADMIN.token, logoAr:LOGO_AR, logoSize:LOGO_SIZE };
     if (typeof uri === 'string') {
       body.b64 = uri ? uri.split(',')[1] : '';
       body.mime = uri.indexOf('image/png') >= 0 ? 'image/png' : 'image/jpeg';
@@ -1625,7 +1743,7 @@ window.IROLANG = (function(){
   function pushGallery(){
     var list = GALLERY.filter(function(x){ return x && (x.id || x.b64); })
       .map(function(x){ return x.id ? { id:x.id } : { b64:x.b64 }; });
-    return apiPost({ action:'gallery', id:ADMIN.id, pw:ADMIN.pw, gallery:list }).then(function(d){
+    return apiPost({ action:'gallery', token:ADMIN.token, gallery:list }).then(function(d){
       if (!d || !d.ok) throw new Error((d && d.error) || '서버가 응답하지 않았습니다');
       GALLERY = (d.ids || []).map(function(id){ return { id:id }; });   /* 다음엔 다시 안 올리도록 */
       renderGallery();
@@ -1669,6 +1787,157 @@ window.IROLANG = (function(){
     }).then(function(){ $a('gal-file').value = ''; });
   });
 
+  /* ── 통계 ────────────────────────────────────────────────── */
+  var statDays = 30, STAT = null;
+
+  $a('adm-stats-open').addEventListener('click', function(){ openDim($a('adm-stats')); loadStats(); });
+  document.querySelectorAll('.st-range button').forEach(function(b2){
+    b2.addEventListener('click', function(){
+      statDays = +b2.dataset.d;
+      document.querySelectorAll('.st-range button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b2)); });
+      loadStats();
+    });
+  });
+
+  function loadStats(){
+    $a('stats-body').innerHTML = '<p class="st-empty">불러오는 중…</p>';
+    apiPost({ action:'stats', token: ADMIN.token, days: statDays }).then(function(d){
+      if (!d || !d.ok) throw new Error((d && d.error) || '불러오지 못했습니다');
+      STAT = d; renderStats(d);
+    }).catch(function(e){
+      $a('stats-body').innerHTML = '<p class="st-empty">' + fail(e) + '</p>';
+    });
+  }
+
+  function esc2(v){ return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function barRows(list, total){
+    if (!list || !list.length) return '<p class="st-empty" style="padding:18px 0">기록 없음</p>';
+    var max = list[0].n || 1;
+    return list.slice(0, 8).map(function(x){
+      var pct = Math.round(x.n / (total || max) * 100);
+      return '<div class="st-row"><span>' + esc2(x.k) + '</span>' +
+             '<span class="bar"><i style="width:' + Math.max(2, Math.round(x.n / max * 100)) + '%"></i></span>' +
+             '<span class="n">' + x.n + (total ? ' · ' + pct + '%' : '') + '</span></div>';
+    }).join('');
+  }
+
+  function insight(d){
+    if (!d.total) return '아직 쌓인 기록이 없습니다. 방문이 생기면 여기에 요약이 나타납니다.';
+    var out = [];
+    var avg = (d.total / d.days).toFixed(1);
+    out.push('최근 <b>' + d.days + '일</b> 동안 <b>' + d.total + '회</b> 방문했고, 하루 평균 <b>' + avg + '회</b>입니다.');
+    if (d.lang.length) {
+      var ja = (d.lang.filter(function(x){ return x.k === '일본어'; })[0] || {n:0}).n;
+      out.push('일본어 화면 비중은 <b>' + Math.round(ja / d.total * 100) + '%</b>입니다.');
+    }
+    if (d.ref.length) out.push('가장 많은 유입은 <b>' + d.ref[0].k + '</b>(' + d.ref[0].n + '회)입니다.');
+    if (d.device.length) out.push('기기는 <b>' + d.device[0].k + '</b>가 ' + Math.round(d.device[0].n / d.total * 100) + '%로 가장 많습니다.');
+    var top = 0, ti = 0;
+    d.hour.forEach(function(v, i){ if (v > top) { top = v; ti = i; } });
+    if (top) out.push('접속이 몰리는 시간대는 <b>' + ti + '시대</b>입니다.');
+    var apply = (d.event.filter(function(x){ return /신청/.test(x.k); })[0] || {n:0}).n;
+    if (apply) out.push('신청 버튼을 누른 횟수는 <b>' + apply + '회</b>, 방문 대비 <b>' + Math.round(apply / d.total * 100) + '%</b>입니다.');
+    return out.join(' ');
+  }
+
+  function renderStats(d){
+    var daily = d.daily || [];
+    var maxD = daily.reduce(function(m, x){ return Math.max(m, x.n); }, 1);
+    var bars = daily.map(function(x){
+      return '<i style="height:' + Math.max(2, Math.round(x.n / maxD * 100)) + '%" title="' + x.k + ' · ' + x.n + '회"></i>';
+    }).join('');
+    var DOW = ['일','월','화','수','목','금','토'];
+    var dowList = (d.dow || []).map(function(n, i){ return { k: DOW[i] + '요일', n: n }; })
+      .sort(function(a, b2){ return b2.n - a.n; });
+    var hourList = (d.hour || []).map(function(n, i){ return { k: i + '시', n: n }; })
+      .filter(function(x){ return x.n; }).sort(function(a, b2){ return b2.n - a.n; });
+
+    $a('stats-body').innerHTML =
+      '<div class="st-kpi">' +
+        '<div><b>' + d.total + '</b><span>방문</span></div>' +
+        '<div><b>' + d.uniq + '</b><span>방문자(세션)</span></div>' +
+        '<div><b>' + d.newVisitors + '</b><span>처음 온 사람</span></div>' +
+        '<div><b>' + (d.total / d.days).toFixed(1) + '</b><span>하루 평균</span></div>' +
+      '</div>' +
+      (daily.length ? '<div class="st-sec"><h4>일별 방문</h4><div class="st-bars">' + bars + '</div>' +
+        '<div class="st-xlab"><span>' + daily[0].k + '</span><span>' + daily[daily.length-1].k + '</span></div></div>' : '') +
+      '<div class="st-sec st-grid">' +
+        '<div><h4>언어</h4>' + barRows(d.lang, d.total) + '</div>' +
+        '<div><h4>지역(시간대 기준)</h4>' + barRows(d.region, d.total) + '</div>' +
+        '<div><h4>유입 경로</h4>' + barRows(d.ref, d.total) + '</div>' +
+        '<div><h4>기기</h4>' + barRows(d.device, d.total) + '</div>' +
+        '<div><h4>페이지</h4>' + barRows(d.page, d.total) + '</div>' +
+        '<div><h4>버튼 클릭</h4>' + barRows(d.event, 0) + '</div>' +
+        '<div><h4>요일</h4>' + barRows(dowList, d.total) + '</div>' +
+        '<div><h4>시간대</h4>' + barRows(hourList, d.total) + '</div>' +
+      '</div>' +
+      '<div class="st-sec"><h4>요약</h4><p class="st-note">' + insight(d) + '</p></div>' +
+      '<div class="st-ai"><h4 style="font-size:.76rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:11px">AI 분석</h4>' +
+        '<div class="row">' +
+          '<button class="btn btn-primary" type="button" id="ai-run">분석 받기</button>' +
+          '<button class="btn btn-ghost" type="button" id="ai-copy">데이터 복사</button>' +
+        '</div><div id="ai-out"></div></div>';
+
+    $a('ai-run').addEventListener('click', runAi);
+    $a('ai-copy').addEventListener('click', function(){
+      copyText(aiPrompt());
+      alert('통계를 복사했습니다. Claude 나 ChatGPT 에 그대로 붙여넣으면 분석해 줍니다.');
+    });
+  }
+
+  function aiPrompt(){
+    var d = STAT; if (!d) return '';
+    var fmt = function(t, l){ return t + ': ' + (l || []).map(function(x){ return x.k + ' ' + x.n; }).join(', '); };
+    return [
+      '아래는 서울에서 매주 일요일에 열리는 한일 언어교류회 "이로토모"의 소개 사이트 방문 통계입니다.',
+      '이 모임은 한국인과 일본인이 한 테이블에 앉아 대화하는 자리이고, 사이트는 한국어·일본어 두 언어로 되어 있습니다.',
+      '신청은 한국인은 소모임 앱, 일본인은 사이트 안의 구글 폼으로 받습니다.',
+      '',
+      '기간: 최근 ' + d.days + '일',
+      '총 방문 ' + d.total + '회 / 세션 ' + d.uniq + ' / 처음 온 사람 ' + d.newVisitors,
+      fmt('언어', d.lang),
+      fmt('지역(브라우저 시간대 기준)', d.region),
+      fmt('유입 경로', d.ref),
+      fmt('기기', d.device),
+      fmt('페이지', d.page),
+      fmt('버튼 클릭', d.event),
+      '일별 방문: ' + (d.daily || []).map(function(x){ return x.k + ' ' + x.n; }).join(', '),
+      '요일별(일~토): ' + (d.dow || []).join(', '),
+      '시간대별(0~23시): ' + (d.hour || []).join(', '),
+      '',
+      '다음을 한국어로 답해 주세요.',
+      '1) 눈에 띄는 흐름 세 가지 — 숫자를 근거로',
+      '2) 일본인 참가자를 늘리기 위해 지금 당장 해볼 만한 것 두 가지',
+      '3) 이 데이터만으로는 알 수 없어서 추가로 봐야 할 지표',
+      '추측은 추측이라고 밝히고, 표본이 적으면 그 점을 먼저 지적해 주세요.'
+    ].join('\n');
+  }
+
+  function copyText(t){
+    try { navigator.clipboard.writeText(t); }
+    catch (e) {
+      var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a);
+      a.select(); document.execCommand('copy'); a.remove();
+    }
+  }
+
+  function runAi(){
+    var btn = $a('ai-run'), out = $a('ai-out');
+    btn.disabled = true; btn.textContent = '분석 중…';
+    out.classList.add('on'); out.textContent = 'Claude 가 통계를 읽고 있습니다…';
+    apiPost({ action:'ai', token: ADMIN.token, prompt: aiPrompt() }).then(function(d){
+      if (d && d.ok) { out.textContent = d.text; return; }
+      if (d && d.error === 'nokey') {
+        out.textContent = 'AI 분석을 쓰려면 Apps Script 의 ANTHROPIC_KEY 에 API 키를 넣고 다시 배포해 주세요.\n' +
+          '키 없이 쓰시려면 옆의 «데이터 복사» 를 눌러 Claude 나 ChatGPT 에 붙여넣으시면 됩니다.';
+        return;
+      }
+      throw new Error((d && d.error) || '분석에 실패했습니다');
+    }).catch(function(e){ out.textContent = fail(e); })
+      .then(function(){ btn.disabled = false; btn.textContent = '분석 받기'; });
+  }
+
   /* 저장 */
   $a('adm-save').addEventListener('click', function(){
     var out = {};
@@ -1678,7 +1947,7 @@ window.IROLANG = (function(){
       out[k] = out[k] || { ko:'', ja:'' };
       out[k][L] = v;
     });
-    var body = { action:'save', id:ADMIN.id, pw:ADMIN.pw, content:out, schedule:SCHED };
+    var body = { action:'save', token:ADMIN.token, content:out, schedule:SCHED };
     var btn = this; btn.disabled = true; btn.textContent = '저장 중…';
     apiPost(body)
       .then(function(d){

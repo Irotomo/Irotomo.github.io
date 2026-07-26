@@ -354,6 +354,23 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
 <div id="toast"></div>
 
 <script>
+var TRACK_API = 'https://script.google.com/macros/s/AKfycbyjvp9p5e4MCPGXYBvwKXGdFDwxmYHq4sWc_t8yxj8G_upQsf9GP-PMM1gdZZWVR56H/exec';
+
+/* 방문 기록 (개인을 식별하는 정보는 담지 않습니다) */
+(function(){
+  try {
+    var sid=''; try{ sid=sessionStorage.getItem('iro-sid')||''; }catch(e){}
+    if(!sid){ sid=Math.random().toString(36).slice(2,10); try{sessionStorage.setItem('iro-sid',sid);}catch(e){} }
+    var nw=0; try{ if(!localStorage.getItem('iro-seen')){ nw=1; localStorage.setItem('iro-seen','1'); } }catch(e){}
+    var body=JSON.stringify({action:'hit',page:'board',lang:document.body.dataset.lang,
+      ref:document.referrer||'',tz:(window.Intl&&Intl.DateTimeFormat().resolvedOptions().timeZone)||'',
+      device:(window.innerWidth<760?'mobile':'desktop'),w:window.innerWidth,sid:sid,ev:'',nw:nw});
+    setTimeout(function(){
+      if(navigator.sendBeacon) navigator.sendBeacon(TRACK_API,new Blob([body],{type:'text/plain;charset=utf-8'}));
+    },900);
+  } catch(e){}
+})();
+
 /* 언어 설정을 세 페이지가 함께 쓴다. 처음 오면 일본어. */
 window.IROLANG = (function(){
   var KEY = 'irotomo-lang';

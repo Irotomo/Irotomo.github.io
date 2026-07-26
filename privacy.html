@@ -138,16 +138,26 @@ footer a{margin-right:18px;text-decoration:none}
 </section>
 
 <section>
+  <h2><span class="ko">1-2. 방문 기록</span><span class="ja">1-2. アクセス記録</span></h2>
+  <p class="ko">사이트 개선을 위해 방문 기록을 남깁니다. 외부 분석 서비스는 쓰지 않으며, <b>이름·이메일·IP 주소 등 개인을 알아볼 수 있는 정보는 저장하지 않습니다.</b></p>
+  <p class="ko">저장하는 것은 방문 시각, 열어본 페이지, 화면 언어, 유입된 링크의 출처, 브라우저 시간대(한국·일본 구분용), 기기 종류, 화면 너비, 그리고 브라우저를 닫으면 사라지는 임시 번호입니다. 임시 번호는 한 번의 방문에서 몇 페이지를 보셨는지 세기 위한 것이며 다른 정보와 연결되지 않습니다.</p>
+  <p class="ja">サイト改善のためアクセス記録を残しています。外部の解析サービスは利用しておらず、<b>お名前・メールアドレス・IPアドレスなど個人を特定できる情報は保存いたしません。</b></p>
+  <p class="ja">保存するのは、訪問日時、ご覧になったページ、表示言語、流入元のリンク、ブラウザのタイムゾーン（韓国・日本の区別のため）、端末の種類、画面の幅、そしてブラウザを閉じると消える一時的な番号です。この番号は一度の訪問で何ページご覧になったかを数えるためだけのもので、他の情報と結び付くことはありません。</p>
+</section>
+
+<section>
   <h2><span class="ko">2. 보유 기간</span><span class="ja">2. 保有期間</span></h2>
   <ul class="ko">
     <li>참가 신청 정보 — 모임 종료 후 <b>6개월</b> 보관 후 삭제</li>
     <li>게시판 글과 사진 — 게시일로부터 <b>60일</b>, 또는 작성자가 삭제한 시점까지</li>
     <li>이메일 인증코드 — <b>10분</b> 후 자동 삭제</li>
+    <li>방문 기록 — <b>1년</b></li>
   </ul>
   <ul class="ja">
     <li>お申し込み情報 — 会の終了後<b>6か月</b>保管し、その後削除します</li>
     <li>掲示板の投稿と写真 — 掲載日から<b>60日</b>、または投稿者が削除した時点まで</li>
     <li>メール認証コード — <b>10分</b>後に自動で削除されます</li>
+    <li>アクセス記録 — <b>1年</b></li>
   </ul>
 </section>
 
@@ -224,6 +234,23 @@ footer a{margin-right:18px;text-decoration:none}
 </div></footer>
 
 <script>
+var TRACK_API = 'https://script.google.com/macros/s/AKfycbyjvp9p5e4MCPGXYBvwKXGdFDwxmYHq4sWc_t8yxj8G_upQsf9GP-PMM1gdZZWVR56H/exec';
+
+/* 방문 기록 (개인을 식별하는 정보는 담지 않습니다) */
+(function(){
+  try {
+    var sid=''; try{ sid=sessionStorage.getItem('iro-sid')||''; }catch(e){}
+    if(!sid){ sid=Math.random().toString(36).slice(2,10); try{sessionStorage.setItem('iro-sid',sid);}catch(e){} }
+    var nw=0; try{ if(!localStorage.getItem('iro-seen')){ nw=1; localStorage.setItem('iro-seen','1'); } }catch(e){}
+    var body=JSON.stringify({action:'hit',page:'privacy',lang:document.body.dataset.lang,
+      ref:document.referrer||'',tz:(window.Intl&&Intl.DateTimeFormat().resolvedOptions().timeZone)||'',
+      device:(window.innerWidth<760?'mobile':'desktop'),w:window.innerWidth,sid:sid,ev:'',nw:nw});
+    setTimeout(function(){
+      if(navigator.sendBeacon) navigator.sendBeacon(TRACK_API,new Blob([body],{type:'text/plain;charset=utf-8'}));
+    },900);
+  } catch(e){}
+})();
+
 /* 언어 설정을 세 페이지가 함께 쓴다. 처음 오면 일본어. */
 window.IROLANG = (function(){
   var KEY = 'irotomo-lang';
