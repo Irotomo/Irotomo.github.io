@@ -573,6 +573,26 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .sg-row{grid-template-columns:1fr 1fr}
   .sg-del{grid-column:1/-1;justify-self:end}
 }
+
+/* 짧은 라벨이 글자 단위로 잘려 내려가는 것을 막습니다.
+   일본어·한국어는 단어 사이 공백이 없어 기본값으로는 아무 데서나 줄이 바뀝니다.
+   (예: 申し込む 의 「む」만 다음 줄로 떨어지는 현상) */
+.btn{white-space:nowrap;justify-content:center;word-break:keep-all;max-width:100%}
+/* 신청 버튼은 flex 배치에서 눌려 좁아지지 않도록 고정합니다 */
+.form-foot .btn,.form-foot #submit{flex:none}
+
+.sg-digest{border:1px solid #eceaf3;border-radius:11px;padding:10px 13px;margin-bottom:14px}
+.sg-digest summary{cursor:pointer;font-size:13px;font-weight:600;color:#4a4660}
+.sg-dg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px}
+.sg-dg-grid label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#9d99b0}
+.sg-dg-grid input,.sg-dg-grid select{padding:7px 9px;border:1px solid #e2dfec;border-radius:7px;font:inherit;font-size:13px}
+.sg-dg-on{flex-direction:row!important;align-items:center;gap:7px!important;font-size:13px!important;color:#1c1b22!important}
+.sg-dg-on input{width:16px;height:16px}
+.sg-dg-row{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sg-dg-row button{padding:8px 14px;border:1px solid #dcd9e8;background:#fff;border-radius:8px;font:inherit;font-size:13px;cursor:pointer}
+.sg-dg-row button:hover{background:#f4f3f8}
+#dg-state{font-size:12px;color:#8a86a0}
+.sg-dg-note{margin:10px 0 0;font-size:11px;color:#b3b0c4;line-height:1.6}
 </style>
 </head>
 <body data-lang="ja">
@@ -898,7 +918,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <h2 class="ko" data-c="c78">신청하기</h2>
         <h2 class="ja" data-c="c78">お申し込み</h2>
         <p class="ko" data-c="c79">신청은 소모임 앱에서 받고 있습니다. 아래 버튼으로 이동해 모임에 가입하시면 신청이 완료됩니다. 참가비는 당일 현장에서 받습니다.</p>
-        <p class="ja" data-c="c79">下のフォームからお申し込みください。ご入力のメールアドレスにご案内メールをお送りした時点で、ご参加が確定となります。事前のお支払いは必要ありません。</p>
+        <p class="ja" data-c="c79">下のフォームからお申し込みください。ご入力いただいたメールアドレスにご案内メールをお送りした時点で、ご参加が確定となります。事前のお支払いは必要ありません。</p>
       </div>
 
       <!-- 한국인: 소모임 카드 -->
@@ -961,9 +981,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
               <label>
                 <input type="checkbox" id="f-agree" required>
                 <span><b>個人情報の取得・利用に同意します</b> <span class="req">[必須]</span><br>
-                お名前・国籍・メールアドレス・ご参加日を、参加受付および参加費の区分のために取得し、ご案内の送信に利用します。情報は Cloudflare, Inc.（米国）のサーバーに保管し、メールの送信には Brevo（Sendinblue SAS・フランス）を利用します。保管期間はイベント終了後6か月です。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。</span>
+                お名前・国籍・メールアドレス・ご参加日を、お申し込みの受付とご案内のためにお預かりします。情報は Cloudflare, Inc.（米国）のサーバーで保管し、メールの送信には Brevo（Sendinblue SAS・フランス）を利用しています。会の終了後6か月で削除いたします。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。</span>
               </label>
-              <p class="sub">同意はいつでも撤回でき、削除をご希望の場合は info@irotomo.com までご連絡ください。取り消しによる不利益はありません。</p>
+              <p class="sub">同意はいつでも撤回でき、削除をご希望の場合は info@irotomo.com までご連絡ください。撤回されても、ご参加に影響はありません。</p>
             </div>
             <button class="btn btn-primary btn-lg" id="submit" type="submit">申し込む</button>
           </div>
@@ -1068,6 +1088,27 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <button type="button" id="sg-csv">CSV 내려받기</button>
       <button type="button" id="sg-reload">새로고침</button>
     </div>
+    <details class="sg-digest">
+      <summary>명단 정기 발송</summary>
+      <div class="sg-dg-grid">
+        <label class="sg-dg-on"><input type="checkbox" id="dg-on"> <span>켜기</span></label>
+        <label><span>받는 주소</span><input type="email" id="dg-to" placeholder="info@irotomo.com"></label>
+        <label><span>보내는 시각 (한국 시각)</span><select id="dg-hour"></select></label>
+        <label><span>언제</span>
+          <select id="dg-before">
+            <option value="0">모임 당일 아침</option>
+            <option value="1">모임 하루 전</option>
+            <option value="2">모임 이틀 전</option>
+            <option value="3">모임 사흘 전</option>
+          </select></label>
+        <div class="sg-dg-row">
+          <button type="button" id="dg-save">저장</button>
+          <button type="button" id="dg-test">지금 한 통 보내보기</button>
+          <span id="dg-state"></span>
+        </div>
+      </div>
+      <p class="sg-dg-note">신청이 한 건도 없는 날은 보내지 않습니다. 내용은 이름과 국적만 들어갑니다.</p>
+    </details>
     <div id="sg-body"><p class="st-empty">불러오는 중…</p></div>
   </div>
 </div>
@@ -1720,11 +1761,50 @@ window.IROLANG = (function(){
     });
   });
 
+  /* 정기 발송 설정 */
+  (function(){
+    var sel = $a('dg-hour');
+    for (var h = 0; h < 24; h++) {
+      var o = document.createElement('option');
+      o.value = h; o.textContent = (h < 10 ? '0' + h : h) + ':10';
+      sel.appendChild(o);
+    }
+  })();
+
+  function fillDigest(d){
+    d = d || {};
+    $a('dg-on').checked  = !!d.on;
+    $a('dg-to').value    = d.to || '';
+    $a('dg-hour').value  = d.hour || 0;
+    $a('dg-before').value = d.before || 0;
+  }
+
+  $a('dg-save').addEventListener('click', function(){
+    $a('dg-state').textContent = '저장 중…';
+    apiPost({ action:'digest_save', token: ADMIN.token,
+      on: $a('dg-on').checked, to: $a('dg-to').value.trim(),
+      hour: +$a('dg-hour').value, before: +$a('dg-before').value
+    }).then(function(d){
+      $a('dg-state').textContent = (d && d.ok) ? '저장했습니다' : '저장하지 못했습니다';
+    }).catch(function(){ $a('dg-state').textContent = '저장하지 못했습니다'; });
+  });
+
+  $a('dg-test').addEventListener('click', function(){
+    $a('dg-state').textContent = '보내는 중…';
+    apiPost({ action:'digest_test', token: ADMIN.token }).then(function(d){
+      if (d && d.ok) return $a('dg-state').textContent = d.n + '명 명단을 보냈습니다';
+      $a('dg-state').textContent =
+        d && d.error === 'no_rows' ? '그 날짜에 신청이 없습니다'
+      : d && d.error === 'no_to'   ? '받는 주소를 먼저 저장해 주세요'
+      : '보내지 못했습니다';
+    }).catch(function(){ $a('dg-state').textContent = '보내지 못했습니다'; });
+  });
+
   function loadSignups(){
     $a('sg-body').innerHTML = '<p class="st-empty">불러오는 중…</p>';
     apiPost({ action:'signups', token: ADMIN.token }).then(function(d){
       if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
-      SG.rows = d.rows || []; paintSg();
+      SG.rows = d.rows || []; fillDigest(d.digest); paintSg();
     }).catch(function(e){
       $a('sg-body').innerHTML = '<p class="st-empty">불러오지 못했습니다 (' + e.message + ')</p>';
     });
