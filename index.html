@@ -543,6 +543,36 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   html{scroll-behavior:auto}
   .reveal{opacity:1;transform:none}
 }
+
+/* 신청자 패널 */
+.sign-card{width:min(980px,96vw);max-height:88vh;display:flex;flex-direction:column}
+.sg-tools{display:flex;gap:8px;padding:12px 0 14px;flex-wrap:wrap}
+.sg-tools input{flex:1;min-width:160px;padding:9px 12px;border:1px solid #dcd9e8;border-radius:9px;font:inherit}
+.sg-tools button{padding:9px 14px;border:1px solid #dcd9e8;background:#fff;border-radius:9px;font:inherit;cursor:pointer}
+.sg-tools button:hover{background:#f4f3f8}
+#sg-body{overflow:auto;flex:1}
+.sg-day{margin-bottom:20px}
+.sg-day-h{display:flex;align-items:center;gap:10px;padding:8px 0;margin-bottom:8px;
+  border-bottom:2px solid #e9e7fb;position:sticky;top:0;background:#fff;z-index:1}
+.sg-day-h b{font-size:15px}
+.sg-day-h span{font-size:12px;color:#8a86a0;background:#f4f3f8;padding:2px 9px;border-radius:999px}
+.sg-row{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:8px 10px;
+  padding:11px;border:1px solid #eceaf3;border-radius:11px;margin-bottom:8px;align-items:end}
+.sg-f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.sg-f span{font-size:11px;color:#9d99b0}
+.sg-f input,.sg-f textarea{width:100%;padding:7px 9px;border:1px solid #e2dfec;border-radius:7px;
+  font:inherit;font-size:13px;background:#fff;resize:vertical}
+.sg-f input:focus,.sg-f textarea:focus{outline:2px solid #cfc9f0;border-color:transparent}
+.sg-f .saving{opacity:.5}
+.sg-f .saved{border-color:#7bc47f;background:#f4fbf4}
+.sg-f .bad{border-color:#d9534f;background:#fdf5f5}
+.sg-del{grid-column:4;align-self:center;padding:7px 12px;border:1px solid #e8d5d5;background:#fff;
+  color:#b04a46;border-radius:8px;font:inherit;font-size:12px;cursor:pointer}
+.sg-del:hover{background:#fdf5f5}
+@media (max-width:720px){
+  .sg-row{grid-template-columns:1fr 1fr}
+  .sg-del{grid-column:1/-1;justify-self:end}
+}
 </style>
 </head>
 <body data-lang="ja">
@@ -931,7 +961,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
               <label>
                 <input type="checkbox" id="f-agree" required>
                 <span><b>個人情報の取得・利用に同意します</b> <span class="req">[必須]</span><br>
-                お名前・国籍・メールアドレス・ご参加日を、参加受付と参加費の区分のために取得します。情報は韓国および米国（Google）のサーバーに保管されます。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。</span>
+                お名前・国籍・メールアドレス・ご参加日を、参加受付および参加費の区分のために取得し、ご案内の送信に利用します。情報は Cloudflare, Inc.（米国）のサーバーに保管し、メールの送信には Brevo（Sendinblue SAS・フランス）を利用します。保管期間はイベント終了後6か月です。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。</span>
               </label>
               <p class="sub">同意はいつでも撤回でき、削除をご希望の場合は info@irotomo.com までご連絡ください。取り消しによる不利益はありません。</p>
             </div>
@@ -1023,20 +1053,22 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   </div>
 </div>
 
-<div class="adm-dim" id="adm-sched">
-  <div class="adm-card">
-    <h3>모임 날짜</h3>
-    <p class="s">여기서 정한 날짜가 요약 카드의 일시와 일본어 신청 폼의 참가일 선택지에 함께 반영됩니다.</p>
-    <div class="adm-modes">
-      <button type="button" data-m="weekly">매주 일요일</button>
-      <button type="button" data-m="dates">지정한 날짜만</button>
+<div class="adm-dim" id="adm-signups">
+  <div class="adm-card sign-card">
+    <div class="stats-head">
+      <h3>신청자</h3>
+      <span class="st-range" id="sg-filter">
+        <button type="button" data-f="soon" aria-pressed="true">다가오는 날짜</button>
+        <button type="button" data-f="all">전체</button>
+      </span>
+      <button class="x" type="button" data-adm-close aria-label="닫기">&#10005;</button>
     </div>
-    <div class="adm-f"><label for="adm-time">시간</label><input type="text" id="adm-time" placeholder="15:00 – 18:00"></div>
-    <div class="adm-f" id="adm-weeks-f"><label for="adm-weeks">신청 폼에 보여줄 일요일 수</label><input type="number" id="adm-weeks" min="1" max="24" step="1"></div>
-    <div id="adm-dates"></div>
-    <div class="adm-row">
-      <button class="btn btn-primary" type="button" data-adm-close>확인</button>
+    <div class="sg-tools">
+      <input type="search" id="sg-q" placeholder="이름 · 메일 · 메모 검색">
+      <button type="button" id="sg-csv">CSV 내려받기</button>
+      <button type="button" id="sg-reload">새로고침</button>
     </div>
+    <div id="sg-body"><p class="st-empty">불러오는 중…</p></div>
   </div>
 </div>
 
@@ -1060,7 +1092,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   <span class="d" id="adm-state">고친 곳 없음</span>
   <span class="sp">
     <button type="button" id="adm-stats-open">통계</button>
-    <button type="button" id="adm-sched-open">일정</button>
+    <button type="button" id="adm-signups-open">신청자</button>
     <button type="button" class="pri" id="adm-save">저장</button>
     <button type="button" id="adm-exit">종료</button>
   </span>
@@ -1663,55 +1695,140 @@ window.IROLANG = (function(){
     if (editing && dirty()) { e.preventDefault(); e.returnValue = ''; }
   });
 
-  /* 일정 */
-  $a('adm-sched-open').addEventListener('click', function(){ paintSched(); openDim($a('adm-sched')); });
-  $a('adm-time').addEventListener('input', function(){ SCHED.time = this.value; applySchedule(); });
-  $a('adm-weeks').addEventListener('input', function(){ SCHED.weeks = this.value; applySchedule(); });
-  document.querySelectorAll('.adm-modes button').forEach(function(b){
-    b.addEventListener('click', function(){ SCHED.mode = b.dataset.m; paintSched(); applySchedule(); });
+  /* 일정 편집 UI 제거됨 — 매주 일요일 자동 생성만 사용합니다 */
+
+  /* ── 신청자 관리 ─────────────────────────────────────
+     불러오기 → 날짜별 묶음 → 칸을 눌러 바로 수정 → 자동 저장   */
+  var SG = { rows: [], filter: 'soon', q: '' };
+  var SG_COLS = [
+    ['name','이름'], ['nat','국적'], ['email','이메일'],
+    ['sns','SNS'], ['src','경로'], ['memo','메모']
+  ];
+
+  $a('adm-signups-open').addEventListener('click', function(){
+    openDim($a('adm-signups')); loadSignups();
   });
-  function paintSched(){
-    $a('adm-time').value = SCHED.time || '';
-    $a('adm-weeks').value = SCHED.weeks || 12;
-    $a('adm-weeks-f').hidden = (SCHED.mode === 'dates');
-    document.querySelectorAll('.adm-modes button').forEach(function(b){
-      b.setAttribute('aria-pressed', String(b.dataset.m === SCHED.mode));
-    });
-    var wrap = $a('adm-dates'); wrap.innerHTML = '';
-    if (SCHED.mode !== 'dates'){
-      var n = document.createElement('p'); n.className = 'adm-note';
-      n.textContent = '매주 일요일로 표시됩니다. 신청 폼에는 다가오는 일요일이 위에서 정한 개수만큼 들어가며, 오늘이 일요일이면 오늘은 빠집니다.';
-      wrap.appendChild(n); return;
-    }
-    var add = document.createElement('div'); add.className = 'adm-add';
-    var inp = document.createElement('input'); inp.type = 'date';
-    var btn = document.createElement('button'); btn.className = 'btn btn-ghost btn-sm'; btn.type = 'button'; btn.textContent = '추가';
-    btn.style.flex = 'none';
-    add.appendChild(inp); add.appendChild(btn); wrap.appendChild(add);
-    btn.addEventListener('click', function(){
-      var v = inp.value; if (!v) return;
-      if (SCHED.dates.indexOf(v) < 0) { SCHED.dates.push(v); SCHED.dates.sort(); }
-      inp.value = ''; paintSched(); applySchedule();
-    });
-    var chips = document.createElement('div'); chips.className = 'adm-chips';
-    var WD = ['일','월','화','수','목','금','토'];
-    var today = new Date(); today.setHours(0,0,0,0);
-    SCHED.dates.slice().sort().forEach(function(d){
-      var dt = new Date(d + 'T00:00:00');
-      var c = document.createElement('span'); c.className = 'adm-chip';
-      c.innerHTML = d.replace(/-/g, '.') + ' <small>' + WD[dt.getDay()] + (dt < today ? ' 지남' : '') + '</small> ';
-      var x = document.createElement('button'); x.type = 'button'; x.textContent = '✕';
-      x.addEventListener('click', function(){
-        SCHED.dates = SCHED.dates.filter(function(v){ return v !== d; });
-        paintSched(); applySchedule();
+  $a('sg-reload').addEventListener('click', loadSignups);
+  $a('sg-q').addEventListener('input', function(){ SG.q = this.value.trim().toLowerCase(); paintSg(); });
+  document.querySelectorAll('#sg-filter button').forEach(function(b){
+    b.addEventListener('click', function(){
+      SG.filter = b.dataset.f;
+      document.querySelectorAll('#sg-filter button').forEach(function(x){
+        x.setAttribute('aria-pressed', String(x === b));
       });
-      c.appendChild(x); chips.appendChild(c);
+      paintSg();
     });
-    wrap.appendChild(chips);
-    var note = document.createElement('p'); note.className = 'adm-note';
-    note.textContent = '요약 카드에는 다가오는 날짜 3개까지 보이고, 지난 날짜는 자동으로 빠집니다.';
-    wrap.appendChild(note);
+  });
+
+  function loadSignups(){
+    $a('sg-body').innerHTML = '<p class="st-empty">불러오는 중…</p>';
+    apiPost({ action:'signups', token: ADMIN.token }).then(function(d){
+      if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+      SG.rows = d.rows || []; paintSg();
+    }).catch(function(e){
+      $a('sg-body').innerHTML = '<p class="st-empty">불러오지 못했습니다 (' + e.message + ')</p>';
+    });
   }
+
+  function sgVisible(){
+    var today = new Date(); today.setHours(0,0,0,0);
+    return SG.rows.filter(function(r){
+      if (SG.filter === 'soon' && r.date) {
+        if (new Date(r.date + 'T00:00:00') < today) return false;
+      }
+      if (!SG.q) return true;
+      return SG_COLS.some(function(c){
+        return String(r[c[0]] || '').toLowerCase().indexOf(SG.q) >= 0;
+      });
+    });
+  }
+
+  function paintSg(){
+    var rows = sgVisible(), box = $a('sg-body');
+    if (!rows.length) { box.innerHTML = '<p class="st-empty">해당하는 신청이 없습니다.</p>'; return; }
+
+    var groups = {}, order = [];
+    rows.forEach(function(r){
+      var k = r.date || '날짜 미정';
+      if (!groups[k]) { groups[k] = []; order.push(k); }
+      groups[k].push(r);
+    });
+    order.sort();
+
+    var WD = ['일','월','화','수','목','금','토'];
+    box.innerHTML = '';
+    order.forEach(function(k){
+      var list = groups[k];
+      var wrap = document.createElement('section'); wrap.className = 'sg-day';
+
+      var h = document.createElement('div'); h.className = 'sg-day-h';
+      var label = k;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(k)) {
+        var dt = new Date(k + 'T00:00:00');
+        label = k.replace(/-/g, '.') + ' (' + WD[dt.getDay()] + ')';
+      }
+      h.innerHTML = '<b>' + label + '</b><span>' + list.length + '명</span>';
+      wrap.appendChild(h);
+
+      list.forEach(function(r){ wrap.appendChild(sgRow(r)); });
+      box.appendChild(wrap);
+    });
+  }
+
+  function sgRow(r){
+    var row = document.createElement('div'); row.className = 'sg-row';
+    SG_COLS.forEach(function(c){
+      var f = document.createElement('label'); f.className = 'sg-f';
+      var s = document.createElement('span'); s.textContent = c[1];
+      var inp = document.createElement(c[0] === 'memo' ? 'textarea' : 'input');
+      inp.value = r[c[0]] || '';
+      if (c[0] === 'memo') inp.rows = 2;
+      inp.addEventListener('change', function(){
+        var patch = { action:'signup_save', token: ADMIN.token, id: r.id };
+        patch[c[0]] = inp.value;
+        inp.classList.add('saving');
+        apiPost(patch).then(function(d){
+          inp.classList.remove('saving');
+          if (!d || !d.ok) { inp.classList.add('bad'); return; }
+          inp.classList.remove('bad'); r[c[0]] = inp.value;
+          inp.classList.add('saved'); setTimeout(function(){ inp.classList.remove('saved'); }, 900);
+        }).catch(function(){ inp.classList.remove('saving'); inp.classList.add('bad'); });
+      });
+      f.appendChild(s); f.appendChild(inp); row.appendChild(f);
+    });
+
+    var del = document.createElement('button');
+    del.type = 'button'; del.className = 'sg-del'; del.textContent = '삭제';
+    del.addEventListener('click', function(){
+      if (!confirm((r.name || '이 신청') + ' — 삭제할까요? 되돌릴 수 없습니다.')) return;
+      apiPost({ action:'signup_del', token: ADMIN.token, id: r.id }).then(function(d){
+        if (!d || !d.ok) return alert('삭제하지 못했습니다.');
+        SG.rows = SG.rows.filter(function(x){ return x.id !== r.id; });
+        paintSg();
+      });
+    });
+    row.appendChild(del);
+    return row;
+  }
+
+  $a('sg-csv').addEventListener('click', function(){
+    var rows = sgVisible();
+    if (!rows.length) return alert('내려받을 신청이 없습니다.');
+    var head = ['날짜','이름','국적','이메일','SNS','경로','메모','신청시각'];
+    var q = function(v){ return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
+    var lines = [head.map(q).join(',')];
+    rows.forEach(function(r){
+      lines.push([r.date, r.name, r.nat, r.email, r.sns, r.src, r.memo,
+        new Date(r.createdAt).toLocaleString('ko-KR')].map(q).join(','));
+    });
+    /* BOM 을 붙여야 엑셀에서 한글이 깨지지 않습니다 */
+    var blob = new Blob(['\ufeff' + lines.join('\n')], { type:'text/csv;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'irotomo-signups-' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click(); URL.revokeObjectURL(a.href);
+  });
+
 
   /* ── 로고: 고르는 즉시 따로 저장한다 ─────────────────────── */
   function setState(id, msg, isErr){
