@@ -249,7 +249,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
     <div class="sns">
       <a href="https://instagram.com/irotomokr">Instagram</a>
       <a href="https://www.threads.net/@irotomokr">Threads</a>
-      <a href="mailto:irotomokor@gmail.com">Contact</a>
+      <a href="mailto:info@irotomo.com">Contact</a>
       <a href="privacy.html" data-t="privacy">개인정보처리방침</a>
     </div>
   </div>
@@ -354,7 +354,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
 <div id="toast"></div>
 
 <script>
-var TRACK_API = 'https://script.google.com/macros/s/AKfycbyjvp9p5e4MCPGXYBvwKXGdFDwxmYHq4sWc_t8yxj8G_upQsf9GP-PMM1gdZZWVR56H/exec';
+var TRACK_API = 'https://api.irotomo.com';
 
 /* 방문 기록 (개인을 식별하는 정보는 담지 않습니다) */
 (function(){
@@ -390,9 +390,9 @@ window.IROLANG = (function(){
 /* ══════════════════════════════════════════════════════════════
    ① Apps Script 웹앱 주소를 아래에 붙여넣으세요.
       배포 > 새 배포 > 웹 앱 > 액세스 권한 "모든 사용자" 로 배포하면
-      https://script.google.com/macros/s/AKfy.../exec 주소가 나옵니다.
+      https://api.irotomo.com 주소가 나옵니다.
    ══════════════════════════════════════════════════════════════ */
-var API = 'https://script.google.com/macros/s/AKfycbyjvp9p5e4MCPGXYBvwKXGdFDwxmYHq4sWc_t8yxj8G_upQsf9GP-PMM1gdZZWVR56H/exec';
+var API = 'https://api.irotomo.com';
 
 /* ── 문구 ─────────────────────────────────────────────── */
 var T = {
@@ -508,7 +508,7 @@ function fmtDate(iso){
   if (isNaN(d)) return '';
   return d.getFullYear() + '.' + ('0'+(d.getMonth()+1)).slice(-2) + '.' + ('0'+d.getDate()).slice(-2);
 }
-function photoUrl(id, w){ return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w || 1200); }
+function photoUrl(id, w){ return API + '/photo/' + id; }
 
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 var nav = $('#nav');
@@ -638,7 +638,7 @@ function openDetail(post){
   $('#d-price').textContent = post.type === 'give' ? t('free') : (post.price || '');
   $('#d-body').textContent = post.body;
   $('#d-contact').textContent = post.contact;
-  $('#d-report').href = 'mailto:irotomokor@gmail.com?subject=' +
+  $('#d-report').href = 'mailto:info@irotomo.com?subject=' +
     encodeURIComponent(t('reportSubj') + ' / ' + post.id) +
     '&body=' + encodeURIComponent(post.title);
   openSheet($('#detail'));

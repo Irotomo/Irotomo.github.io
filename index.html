@@ -893,8 +893,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
              ※ 폼 설정의 [응답자 로그인 필요]·[이메일 주소 수집]은 꺼져 있어야
                이 페이지에서 전송이 됩니다.
              ══════════════════════════════════════════════════════════════ -->
-        <form class="form reveal" id="apply-form" method="post" target="gform-sink"
-              action="https://docs.google.com/forms/d/e/1FAIpQLSeXRY8H0cvpJTO9K0ohLT0OMpTncBap0Usg55eI0szKy0PzKA/formResponse">
+        <form class="form reveal" id="apply-form" novalidate="false">
           <div class="field">
             <label for="f-name">お名前</label>
             <input id="f-name" name="entry.347162766" required type="text" autocomplete="name">
@@ -934,12 +933,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
                 <span><b>個人情報の取得・利用に同意します</b> <span class="req">[必須]</span><br>
                 お名前・国籍・メールアドレス・ご参加日を、参加受付と参加費の区分のために取得します。情報は韓国および米国（Google）のサーバーに保管されます。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。</span>
               </label>
-              <p class="sub">同意はいつでも撤回でき、削除をご希望の場合は irotomokor@gmail.com までご連絡ください。取り消しによる不利益はありません。</p>
+              <p class="sub">同意はいつでも撤回でき、削除をご希望の場合は info@irotomo.com までご連絡ください。取り消しによる不利益はありません。</p>
             </div>
             <button class="btn btn-primary btn-lg" id="submit" type="submit">申し込む</button>
           </div>
         </form>
-        <iframe name="gform-sink" title="submit target" style="display:none" aria-hidden="true"></iframe>
+        </iframe>
 
         <!-- 送信完了 -->
         <div id="done">
@@ -985,8 +984,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
         <p class="ko" data-c="c81">이로토모에는 매주 서울에 사는 일본인들이 모입니다. 일본인 손님을 만나고 싶은 가게나 브랜드가 있다면 편하게 연락 주세요.</p>
         <p class="ja" data-c="c81">いろともには、毎週ソウル在住の日本人が集まります。日本人のお客様に知っていただきたいお店やブランドがありましたら、お気軽にご連絡ください。</p>
       </div>
-      <a class="btn btn-ghost ko" href="mailto:irotomokor@gmail.com" data-c="c82">문의하기</a>
-      <a class="btn btn-ghost ja" href="mailto:irotomokor@gmail.com" data-c="c82">お問い合わせ</a>
+      <a class="btn btn-ghost ko" href="mailto:info@irotomo.com" data-c="c82">문의하기</a>
+      <a class="btn btn-ghost ja" href="mailto:info@irotomo.com" data-c="c82">お問い合わせ</a>
     </div>
   </section>
 
@@ -1002,7 +1001,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <a href="https://instagram.com/irotomokr">Instagram</a>
       <a href="https://www.threads.net/@irotomokr">Threads</a>
       <a href="https://x.com/irotomokr">X</a>
-      <a href="mailto:irotomokor@gmail.com">Contact</a>
+      <a href="mailto:info@irotomo.com">Contact</a>
       <a class="ko" href="privacy.html">개인정보처리방침</a><a class="ja" href="privacy.html#ja">プライバシーポリシー</a>
     </div>
   </div>
@@ -1249,7 +1248,7 @@ window.IROLANG = (function(){
 
   /* ── 관리자 페이지에서 고친 문구·일정 불러오기 ─────────────────
      주소는 board.html 과 같은 Apps Script 웹앱입니다. */
-  var API = 'https://script.google.com/macros/s/AKfycbyjvp9p5e4MCPGXYBvwKXGdFDwxmYHq4sWc_t8yxj8G_upQsf9GP-PMM1gdZZWVR56H/exec';
+  var API = 'https://api.irotomo.com';
   var SCHED = { mode:'weekly', time:'15:00 – 18:00', weeks:12, dates:[] };
   var LOGO = '', LOGO_ID = '', LOGO_AR = '', LOGO_SIZE = '';
 
@@ -1328,8 +1327,9 @@ window.IROLANG = (function(){
   /* 상단 메뉴의 작은 마크는 그대로 두고, 히어로의 큰 로고만 바꾼다 */
   /* ── 활동 사진 ────────────────────────────────────────────── */
   var GALLERY = [];
-  function driveUrl(id, w){ return 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || 1600); }
-  function driveAlt(id, w){ return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w || 1600); }
+  /* 사진은 Worker 가 내보냅니다 (예전 구글 드라이브 주소 대체) */
+  function driveUrl(id, w){ return API + '/photo/' + id; }
+  function driveAlt(id, w){ return API + '/photo/' + id; }
   function renderGallery(){
     var sec = document.getElementById('gallery');
     if (!sec) return;
@@ -1442,14 +1442,38 @@ window.IROLANG = (function(){
   /* 신청 폼(일본어) — 구글 폼으로 전송 후 완료 화면 */
   var form = document.getElementById('apply-form');
   if (form) {
-    form.addEventListener('submit', function(){
-      setTimeout(function(){
+    var val = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var btn = document.getElementById('submit');
+      if (btn) { btn.disabled = true; btn.dataset.t = btn.textContent; btn.textContent = '…'; }
+      fetch(API, {
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({
+          action:'signup',
+          name: val('f-name'), nat: val('f-nat'),  email: val('f-mail'),
+          date: val('f-date'), sns: val('f-sns'),  src:  val('f-src'),
+          memo: val('f-msg')
+        })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
         form.reset();
         form.style.display = 'none';
         var done = document.getElementById('done');
         done.classList.add('show');
         done.scrollIntoView({block:'center'});
-      }, 700);
+      })
+      .catch(function(){
+        alert(document.body.dataset.lang === 'ja'
+          ? '送信できませんでした。しばらくしてからもう一度お試しください。'
+          : '전송하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+      })
+      .then(function(){
+        if (btn) { btn.disabled = false; if (btn.dataset.t) btn.textContent = btn.dataset.t; }
+      });
     });
   }
 
