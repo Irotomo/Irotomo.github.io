@@ -621,16 +621,33 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   font:inherit;font-size:12.5px;color:#6b6784;cursor:pointer;white-space:nowrap}
 .sg-tabs button[aria-pressed="true"]{background:#fff;color:#1c1b22;font-weight:700;
   box-shadow:0 1px 3px rgba(20,27,46,.10)}
-.sign-card .sg-pane{display:flex;flex-direction:column;min-height:0;flex:1;overflow:auto}
+/* section 기본 여백(위아래 104px)을 물려받지 않도록 초기화 */
+.sign-card .sg-pane{padding:0;margin:0;display:flex;flex-direction:column;min-height:0;flex:1}
 .sign-card .sg-pane[hidden]{display:none}
-.sg-tools{align-items:center}
-.sg-tools #sg-csv,.sg-tools #sg-reload{flex:none}
+.sign-card .sg-pane[data-p="list"]{overflow:hidden}
+.sign-card .sg-pane[data-p="dates"],
+.sign-card .sg-pane[data-p="mail"]{overflow:auto}
+/* 제목·탭 줄을 얇게 */
+.sign-card .stats-head{padding:0 0 10px;margin:0 0 2px}
+.sign-card .stats-head h3{margin:0;font-size:17px}
+/* 검색줄을 탭 바로 밑에 붙이고 높이를 줄임 */
+.sign-card .sg-tools{flex:none;align-items:center;padding:8px 0 10px;gap:6px}
+.sign-card .sg-tools input{padding:6px 10px;font-size:13px}
+.sign-card .sg-tools button{padding:6px 11px;font-size:12.5px;flex:none}
+.sign-card #sg-filter button{padding:6px 11px;font-size:12.5px}
+/* 남은 높이를 목록이 전부 차지하고, 스크롤도 여기서만 */
+.sign-card #sg-body{flex:1;min-height:0;overflow:auto}
+.sign-card .sg-day-h{padding:6px 0;margin-bottom:6px}
 @media (max-width:720px){
   .sign-card .stats-head h3{font-size:16px}
   .sg-tabs{width:100%;margin-left:0;order:3}
   .sg-tabs button{flex:1;padding:7px 6px}
-  .sg-tools{gap:6px}
-  .sg-tools input{flex:1 1 100%}
+  /* 검색줄이 두 줄로 벌어지지 않도록 한 줄에 압축 */
+  .sign-card .sg-tools{gap:5px;padding:8px 0}
+  .sign-card .sg-tools input{flex:1 1 auto;min-width:0}
+  .sign-card .sg-tools button,
+  .sign-card #sg-filter button{padding:6px 8px;font-size:11.5px}
+  .sign-card #sg-filter{display:flex;gap:4px}
 }
 </style>
 </head>
