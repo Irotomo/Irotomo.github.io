@@ -613,6 +613,25 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .mt-row.off .mt-tog{border-color:#e8d5d5;color:#b04a46}
 #mt-new{padding:7px 9px;border:1px solid #e2dfec;border-radius:7px;font:inherit;font-size:13px}
 @media (max-width:720px){ .mt-row{grid-template-columns:1fr auto auto} .mt-note{grid-column:1/-1} }
+
+/* 신청자 패널 탭 */
+.sign-card .stats-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sg-tabs{display:flex;gap:4px;margin-left:auto;background:#f4f3f8;padding:3px;border-radius:10px}
+.sg-tabs button{padding:6px 12px;border:0;background:transparent;border-radius:8px;
+  font:inherit;font-size:12.5px;color:#6b6784;cursor:pointer;white-space:nowrap}
+.sg-tabs button[aria-pressed="true"]{background:#fff;color:#1c1b22;font-weight:700;
+  box-shadow:0 1px 3px rgba(20,27,46,.10)}
+.sign-card .sg-pane{display:flex;flex-direction:column;min-height:0;flex:1;overflow:auto}
+.sign-card .sg-pane[hidden]{display:none}
+.sg-tools{align-items:center}
+.sg-tools #sg-csv,.sg-tools #sg-reload{flex:none}
+@media (max-width:720px){
+  .sign-card .stats-head h3{font-size:16px}
+  .sg-tabs{width:100%;margin-left:0;order:3}
+  .sg-tabs button{flex:1;padding:7px 6px}
+  .sg-tools{gap:6px}
+  .sg-tools input{flex:1 1 100%}
+}
 </style>
 </head>
 <body data-lang="ja">
@@ -1097,19 +1116,28 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   <div class="adm-card sign-card">
     <div class="stats-head">
       <h3>신청자</h3>
-      <span class="st-range" id="sg-filter">
-        <button type="button" data-f="soon" aria-pressed="true">다가오는 날짜</button>
-        <button type="button" data-f="all">전체</button>
-      </span>
+      <nav class="sg-tabs" id="sg-tabs">
+        <button type="button" data-t="list"  aria-pressed="true">신청 내역</button>
+        <button type="button" data-t="dates" aria-pressed="false">모임 날짜</button>
+        <button type="button" data-t="mail"  aria-pressed="false">정기 발송</button>
+      </nav>
       <button class="x" type="button" data-adm-close aria-label="닫기">&#10005;</button>
     </div>
-    <div class="sg-tools">
-      <input type="search" id="sg-q" placeholder="이름 · 메일 · 메모 검색">
-      <button type="button" id="sg-csv">CSV 내려받기</button>
-      <button type="button" id="sg-reload">새로고침</button>
-    </div>
-    <details class="sg-digest" id="mt-box">
-      <summary>모임 날짜</summary>
+
+    <section class="sg-pane" data-p="list">
+      <div class="sg-tools">
+        <input type="search" id="sg-q" placeholder="이름 · 메일 · 메모 검색">
+        <span class="st-range" id="sg-filter">
+          <button type="button" data-f="soon" aria-pressed="true">다가오는 날짜</button>
+          <button type="button" data-f="all" aria-pressed="false">전체</button>
+        </span>
+        <button type="button" id="sg-csv">CSV</button>
+        <button type="button" id="sg-reload">새로고침</button>
+      </div>
+      <div id="sg-body"><p class="st-empty">불러오는 중…</p></div>
+    </section>
+
+    <section class="sg-pane" data-p="dates" hidden>
       <div id="mt-list"><p class="sg-dg-note">여는 중…</p></div>
       <div class="sg-dg-row" style="margin-top:12px">
         <input type="date" id="mt-new">
@@ -1118,13 +1146,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
       <p class="sg-dg-note">매주 일요일은 자동으로 잡힙니다. 쉬는 주만 「휴무」로 바꾸면
         신청 폼의 날짜 선택지에서도 빠집니다. 일요일이 아닌 날은 위에서 추가하세요.</p>
-    </details>
-    <details class="sg-digest">
-      <summary>명단 정기 발송</summary>
+    </section>
+
+    <section class="sg-pane" data-p="mail" hidden>
       <div class="sg-dg-grid">
         <label class="sg-dg-on"><input type="checkbox" id="dg-on"> <span>켜기</span></label>
         <label><span>받는 주소</span><input type="email" id="dg-to" placeholder="info@irotomo.com"></label>
-        <label><span>보내는 시각 (한국 시각)</span><input type="time" id="dg-time" step="600" value="00:10"></label>
+        <label><span>보내는 시각 (한국 시각)</span><input type="time" id="dg-time" step="600" value="09:00"></label>
         <div class="sg-dg-days"><span>보내는 요일</span>
           <div id="dg-days"></div></div>
         <div class="sg-dg-row">
@@ -1133,11 +1161,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
           <span id="dg-state"></span>
         </div>
       </div>
-      <p class="sg-dg-note">고른 요일의 그 시각에, <b>앞으로 있을 모임 중 가장 가까운 날짜</b>의 명단을 보냅니다. 내용은 이름과 국적만 들어갑니다. <b>신청이 0명이어도 보냅니다.</b></p>
-    </details>
-    <div id="sg-body"><p class="st-empty">불러오는 중…</p></div>
+      <p class="sg-dg-note">고른 요일의 그 시각에, <b>앞으로 있을 모임 중 가장 가까운 날짜</b>의
+        명단을 보냅니다. 내용은 이름과 국적만 들어갑니다. <b>신청이 0명이어도 보냅니다.</b></p>
+    </section>
   </div>
 </div>
+
 
 <div class="adm-dim" id="adm-stats">
   <div class="adm-card stats-card">
@@ -1772,11 +1801,11 @@ window.IROLANG = (function(){
     ['sns','SNS'], ['src','경로'], ['memo','메모']
   ];
 
-  $a('adm-signups-open').addEventListener('click', function(){
+  on('adm-signups-open', 'click', function(){
     openDim($a('adm-signups')); loadSignups();
   });
-  $a('sg-reload').addEventListener('click', loadSignups);
-  $a('sg-q').addEventListener('input', function(){ SG.q = this.value.trim().toLowerCase(); paintSg(); });
+  on('sg-reload', 'click', loadSignups);
+  on('sg-q', 'input', function(){ SG.q = this.value.trim().toLowerCase(); paintSg(); });
   document.querySelectorAll('#sg-filter button').forEach(function(b){
     b.addEventListener('click', function(){
       SG.filter = b.dataset.f;
@@ -1787,12 +1816,29 @@ window.IROLANG = (function(){
     });
   });
 
+  /* 요소가 없을 때 스크립트 전체가 멈추지 않도록 감싸는 헬퍼 */
+  function on(id, ev, fn){ var el = $a(id); if (el) el.addEventListener(ev, fn); return el; }
+
   /* ── 모임 날짜 ─────────────────────────────────────── */
-  $a('mt-box').addEventListener('toggle', function(){
-    if ($a('mt-box').open) loadMeetups();
-  });
+  /* 탭 전환 — 한 번에 하나만 보여줍니다 */
+  (function(){
+    var tabs = $a('sg-tabs'); if (!tabs) return;
+    var loaded = {};
+    tabs.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-t]'); if (!b) return;
+      var t = b.dataset.t;
+      tabs.querySelectorAll('button').forEach(function(x){
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      document.querySelectorAll('#adm-signups .sg-pane').forEach(function(p){
+        p.hidden = (p.dataset.p !== t);
+      });
+      if (t === 'dates' && !loaded.dates) { loaded.dates = true; loadMeetups(); }
+    });
+  })();
 
   function loadMeetups(){
+    if (!$a('mt-list')) return;
     $a('mt-list').innerHTML = '<p class="sg-dg-note">여는 중…</p>';
     apiPost({ action:'meetups', token: ADMIN.token }).then(function(d){
       if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
@@ -1841,7 +1887,7 @@ window.IROLANG = (function(){
       }).catch(function(){ $a('mt-state').textContent = '저장하지 못했습니다'; });
   }
 
-  $a('mt-add').addEventListener('click', function(){
+  on('mt-add', 'click', function(){
     var v = $a('mt-new').value;
     if (!v) { $a('mt-state').textContent = '날짜를 고르세요'; return; }
     saveMeetup(v, false, '', true); $a('mt-new').value = '';
@@ -1852,7 +1898,7 @@ window.IROLANG = (function(){
 
   /* 요일 버튼 (0=일 … 6=토) */
   (function(){
-    var box = $a('dg-days');
+    var box = $a('dg-days'); if (!box) return;
     ['일','월','화','수','목','금','토'].forEach(function(w, i){
       var b = document.createElement('button');
       b.type = 'button'; b.dataset.d = i; b.textContent = w;
@@ -1871,6 +1917,7 @@ window.IROLANG = (function(){
   }
 
   function fillDigest(d){
+    if (!$a('dg-on')) return;
     d = d || {};
     $a('dg-on').checked = !!d.on;
     $a('dg-to').value   = d.to || '';
@@ -1881,7 +1928,7 @@ window.IROLANG = (function(){
     });
   }
 
-  $a('dg-save').addEventListener('click', function(){
+  on('dg-save', 'click', function(){
     $a('dg-state').textContent = '저장 중…';
     apiPost({ action:'digest_save', token: ADMIN.token,
       on: $a('dg-on').checked, to: $a('dg-to').value.trim(),
@@ -1895,7 +1942,7 @@ window.IROLANG = (function(){
     }).catch(function(){ $a('dg-state').textContent = '저장하지 못했습니다'; });
   });
 
-  $a('dg-test').addEventListener('click', function(){
+  on('dg-test', 'click', function(){
     $a('dg-state').textContent = '보내는 중…';
     apiPost({ action:'digest_test', token: ADMIN.token,
               to: $a('dg-to').value.trim() }).then(function(d){
@@ -1913,6 +1960,7 @@ window.IROLANG = (function(){
   });
 
   function loadSignups(){
+    if (!$a('sg-body')) return;
     $a('sg-body').innerHTML = '<p class="st-empty">불러오는 중…</p>';
     apiPost({ action:'signups', token: ADMIN.token }).then(function(d){
       if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
@@ -2003,7 +2051,7 @@ window.IROLANG = (function(){
     return row;
   }
 
-  $a('sg-csv').addEventListener('click', function(){
+  on('sg-csv', 'click', function(){
     var rows = sgVisible();
     if (!rows.length) return alert('내려받을 신청이 없습니다.');
     var head = ['날짜','이름','국적','이메일','SNS','경로','메모','신청시각'];
