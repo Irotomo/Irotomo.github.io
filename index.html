@@ -593,6 +593,26 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .sg-dg-row button:hover{background:#f4f3f8}
 #dg-state{font-size:12px;color:#8a86a0}
 .sg-dg-note{margin:10px 0 0;font-size:11px;color:#b3b0c4;line-height:1.6}
+
+.sg-dg-days{grid-column:1/-1;display:flex;flex-direction:column;gap:6px;font-size:11px;color:#9d99b0}
+#dg-days{display:flex;gap:6px;flex-wrap:wrap}
+#dg-days button{width:38px;height:38px;border:1px solid #e2dfec;background:#fff;border-radius:10px;
+  font:inherit;font-size:13px;color:#5b5870;cursor:pointer}
+#dg-days button[aria-pressed="true"]{background:var(--navy,#2C3355);color:#fff;border-color:transparent;font-weight:700}
+
+.mt-row{display:grid;grid-template-columns:auto auto auto 1fr auto;gap:8px;align-items:center;
+  padding:8px 10px;border:1px solid #eceaf3;border-radius:9px;margin-bottom:6px;font-size:13px}
+.mt-row.off{opacity:.5;background:#faf9fb}
+.mt-row.off b{text-decoration:line-through}
+.mt-n{font-size:11px;color:#8a86a0;background:#f4f3f8;padding:2px 8px;border-radius:999px}
+.mt-tag{font-size:10px;color:#7a6fb8;background:#efedfb;padding:2px 7px;border-radius:999px}
+.mt-note{padding:5px 8px;border:1px solid #e2dfec;border-radius:6px;font:inherit;font-size:12px;min-width:0}
+.mt-tog{padding:5px 12px;border:1px solid #dcd9e8;background:#fff;border-radius:7px;
+  font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
+.mt-tog:hover{background:#f4f3f8}
+.mt-row.off .mt-tog{border-color:#e8d5d5;color:#b04a46}
+#mt-new{padding:7px 9px;border:1px solid #e2dfec;border-radius:7px;font:inherit;font-size:13px}
+@media (max-width:720px){ .mt-row{grid-template-columns:1fr auto auto} .mt-note{grid-column:1/-1} }
 </style>
 </head>
 <body data-lang="ja">
@@ -1088,26 +1108,32 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       <button type="button" id="sg-csv">CSV 내려받기</button>
       <button type="button" id="sg-reload">새로고침</button>
     </div>
+    <details class="sg-digest" id="mt-box">
+      <summary>모임 날짜</summary>
+      <div id="mt-list"><p class="sg-dg-note">여는 중…</p></div>
+      <div class="sg-dg-row" style="margin-top:12px">
+        <input type="date" id="mt-new">
+        <button type="button" id="mt-add">날짜 추가</button>
+        <span id="mt-state"></span>
+      </div>
+      <p class="sg-dg-note">매주 일요일은 자동으로 잡힙니다. 쉬는 주만 「휴무」로 바꾸면
+        신청 폼의 날짜 선택지에서도 빠집니다. 일요일이 아닌 날은 위에서 추가하세요.</p>
+    </details>
     <details class="sg-digest">
       <summary>명단 정기 발송</summary>
       <div class="sg-dg-grid">
         <label class="sg-dg-on"><input type="checkbox" id="dg-on"> <span>켜기</span></label>
         <label><span>받는 주소</span><input type="email" id="dg-to" placeholder="info@irotomo.com"></label>
-        <label><span>보내는 시각 (한국 시각)</span><select id="dg-hour"></select></label>
-        <label><span>언제</span>
-          <select id="dg-before">
-            <option value="0">모임 당일 아침</option>
-            <option value="1">모임 하루 전</option>
-            <option value="2">모임 이틀 전</option>
-            <option value="3">모임 사흘 전</option>
-          </select></label>
+        <label><span>보내는 시각 (한국 시각)</span><input type="time" id="dg-time" step="600" value="00:10"></label>
+        <div class="sg-dg-days"><span>보내는 요일</span>
+          <div id="dg-days"></div></div>
         <div class="sg-dg-row">
           <button type="button" id="dg-save">저장</button>
           <button type="button" id="dg-test">지금 한 통 보내보기</button>
           <span id="dg-state"></span>
         </div>
       </div>
-      <p class="sg-dg-note">신청이 한 건도 없는 날은 보내지 않습니다. 내용은 이름과 국적만 들어갑니다.</p>
+      <p class="sg-dg-note">고른 요일의 그 시각에, <b>앞으로 있을 모임 중 가장 가까운 날짜</b>의 명단을 보냅니다. 내용은 이름과 국적만 들어갑니다. <b>신청이 0명이어도 보냅니다.</b></p>
     </details>
     <div id="sg-body"><p class="st-empty">불러오는 중…</p></div>
   </div>
@@ -1761,42 +1787,128 @@ window.IROLANG = (function(){
     });
   });
 
+  /* ── 모임 날짜 ─────────────────────────────────────── */
+  $a('mt-box').addEventListener('toggle', function(){
+    if ($a('mt-box').open) loadMeetups();
+  });
+
+  function loadMeetups(){
+    $a('mt-list').innerHTML = '<p class="sg-dg-note">여는 중…</p>';
+    apiPost({ action:'meetups', token: ADMIN.token }).then(function(d){
+      if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+      paintMeetups(d.dates || []);
+    }).catch(function(e){
+      $a('mt-list').innerHTML = '<p class="sg-dg-note">불러오지 못했습니다 (' + e.message + ')</p>';
+    });
+  }
+
+  function paintMeetups(list){
+    var WD = ['일','월','화','수','목','금','토'];
+    var box = $a('mt-list'); box.innerHTML = '';
+    if (!list.length) { box.innerHTML = '<p class="sg-dg-note">표시할 날짜가 없습니다.</p>'; return; }
+    list.forEach(function(m){
+      var wd = WD[new Date(m.date + 'T00:00:00').getDay()];
+      var row = document.createElement('div');
+      row.className = 'mt-row' + (m.off ? ' off' : '');
+      row.innerHTML =
+        '<b>' + m.date.replace(/-/g, '.') + ' (' + wd + ')</b>' +
+        '<span class="mt-n">' + (m.n ? m.n + '명' : '0명') + '</span>' +
+        (m.auto ? '' : '<span class="mt-tag">추가</span>');
+
+      var note = document.createElement('input');
+      note.type = 'text'; note.placeholder = '메모'; note.value = m.note || '';
+      note.className = 'mt-note';
+      note.addEventListener('change', function(){ saveMeetup(m.date, m.off, note.value); });
+      row.appendChild(note);
+
+      var tog = document.createElement('button');
+      tog.type = 'button'; tog.className = 'mt-tog';
+      tog.textContent = m.off ? '휴무' : '진행';
+      tog.addEventListener('click', function(){
+        m.off = !m.off; saveMeetup(m.date, m.off, note.value, true);
+      });
+      row.appendChild(tog);
+      box.appendChild(row);
+    });
+  }
+
+  function saveMeetup(date, off, note, repaint){
+    $a('mt-state').textContent = '저장 중…';
+    apiPost({ action:'meetup_save', token: ADMIN.token, date: date, off: !!off, note: note || '' })
+      .then(function(d){
+        $a('mt-state').textContent = (d && d.ok) ? '저장했습니다' : '저장하지 못했습니다';
+        if (d && d.ok && repaint) loadMeetups();
+      }).catch(function(){ $a('mt-state').textContent = '저장하지 못했습니다'; });
+  }
+
+  $a('mt-add').addEventListener('click', function(){
+    var v = $a('mt-new').value;
+    if (!v) { $a('mt-state').textContent = '날짜를 고르세요'; return; }
+    saveMeetup(v, false, '', true); $a('mt-new').value = '';
+  });
+
   /* 정기 발송 설정 */
+  var pad2 = function(n){ return (n < 10 ? '0' : '') + n; };
+
+  /* 요일 버튼 (0=일 … 6=토) */
   (function(){
-    var sel = $a('dg-hour');
-    for (var h = 0; h < 24; h++) {
-      var o = document.createElement('option');
-      o.value = h; o.textContent = (h < 10 ? '0' + h : h) + ':10';
-      sel.appendChild(o);
-    }
+    var box = $a('dg-days');
+    ['일','월','화','수','목','금','토'].forEach(function(w, i){
+      var b = document.createElement('button');
+      b.type = 'button'; b.dataset.d = i; b.textContent = w;
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function(){
+        b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      });
+      box.appendChild(b);
+    });
   })();
+
+  function dgDays(){
+    return [].slice.call(document.querySelectorAll('#dg-days button'))
+      .filter(function(b){ return b.getAttribute('aria-pressed') === 'true'; })
+      .map(function(b){ return +b.dataset.d; });
+  }
 
   function fillDigest(d){
     d = d || {};
-    $a('dg-on').checked  = !!d.on;
-    $a('dg-to').value    = d.to || '';
-    $a('dg-hour').value  = d.hour || 0;
-    $a('dg-before').value = d.before || 0;
+    $a('dg-on').checked = !!d.on;
+    $a('dg-to').value   = d.to || '';
+    $a('dg-time').value = pad2(d.hour || 0) + ':' + pad2(d.minute || 0);
+    var on = d.days || [];
+    document.querySelectorAll('#dg-days button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(on.indexOf(+b.dataset.d) >= 0));
+    });
   }
 
   $a('dg-save').addEventListener('click', function(){
     $a('dg-state').textContent = '저장 중…';
     apiPost({ action:'digest_save', token: ADMIN.token,
       on: $a('dg-on').checked, to: $a('dg-to').value.trim(),
-      hour: +$a('dg-hour').value, before: +$a('dg-before').value
+      hour: +(($a('dg-time').value || '09:00').split(':')[0]),
+      minute: +(($a('dg-time').value || '09:00').split(':')[1]),
+      days: dgDays()
     }).then(function(d){
-      $a('dg-state').textContent = (d && d.ok) ? '저장했습니다' : '저장하지 못했습니다';
+      if (!d || !d.ok) return $a('dg-state').textContent = '저장하지 못했습니다';
+      $a('dg-state').textContent = dgDays().length
+        ? '저장했습니다' : '저장했습니다 — 요일을 하나도 안 고르면 발송되지 않습니다';
     }).catch(function(){ $a('dg-state').textContent = '저장하지 못했습니다'; });
   });
 
   $a('dg-test').addEventListener('click', function(){
     $a('dg-state').textContent = '보내는 중…';
-    apiPost({ action:'digest_test', token: ADMIN.token }).then(function(d){
-      if (d && d.ok) return $a('dg-state').textContent = d.n + '명 명단을 보냈습니다';
+    apiPost({ action:'digest_test', token: ADMIN.token,
+              to: $a('dg-to').value.trim() }).then(function(d){
+      if (d && d.ok) {
+        $a('dg-state').textContent =
+          d.date.replace(/-/g, '.') + (d.past ? ' (지난 모임) ' : ' ') + d.n + '명 명단을 보냈습니다';
+        return;
+      }
       $a('dg-state').textContent =
-        d && d.error === 'no_rows' ? '그 날짜에 신청이 없습니다'
-      : d && d.error === 'no_to'   ? '받는 주소를 먼저 저장해 주세요'
-      : '보내지 못했습니다';
+        d && d.error === 'no_rows'  ? '신청 자료가 아직 없습니다'
+      : d && d.error === 'no_to'    ? '받는 주소를 적어 주세요'
+      : d && d.error === 'mail_off' ? 'BREVO_KEY 가 설정되지 않았습니다'
+      : '보내지 못했습니다 (' + ((d && d.error) || '?') + ')';
     }).catch(function(){ $a('dg-state').textContent = '보내지 못했습니다'; });
   });
 
