@@ -1427,10 +1427,10 @@ window.IROLANG = (function(){
       ja: (sun.getMonth() + 1) + '月' + sun.getDate() + '日（日）'
     };
     if (useDates) {
-      var show = list.slice(0, 3).map(function(d){ return d.split('-'); });
-      label.ko = show.map(function(a){ return (+a[1]) + '월 ' + (+a[2]) + '일'; }).join(' · ');
-      label.ja = show.map(function(a){ return (+a[1]) + '月' + (+a[2]) + '日'; }).join('・');
-      if (list.length > 3) { label.ko += ' 외'; label.ja += 'ほか'; }
+      /* 요약 카드에는 바로 다음 한 번만 보여줍니다 */
+      var a = list[0].split('-');
+      label.ko = (+a[1]) + '월 ' + (+a[2]) + '일 (일)';
+      label.ja = (+a[1]) + '月' + (+a[2]) + '日（日）';
     }
     document.querySelectorAll('[data-schedule]').forEach(function(el){
       var L = el.getAttribute('data-schedule');
