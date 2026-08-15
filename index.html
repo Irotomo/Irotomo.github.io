@@ -669,6 +669,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .mt-tog:hover{background:#f4f3f8}
 .mt-row.off .mt-tog{border-color:#e8d5d5;color:#b04a46}
 #mt-new{padding:7px 9px;border:1px solid #e2dfec;border-radius:7px;font:inherit;font-size:13px}
+.mt-time-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:8px}
+.mt-time-row label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#9d99b0}
+#mt-time{padding:7px 9px;border:1px solid #e2dfec;border-radius:7px;font:inherit;font-size:13px;width:160px}
+#mt-time:focus{outline:2px solid #cfc9f0;border-color:transparent}
+#mt-time-save{padding:8px 14px;border:1px solid #dcd9e8;background:#fff;border-radius:8px;
+  font:inherit;font-size:13px;cursor:pointer}
+#mt-time-save:hover{background:#f4f3f8}
+#mt-time-state{font-size:12px;color:#8a86a0}
 @media (max-width:720px){ .mt-row{grid-template-columns:1fr auto auto} .mt-note{grid-column:1/-1} }
 
 /* 신청자 패널 탭 */
@@ -721,7 +729,9 @@ body{font-family:var(--font)}
 
 /* ── 언어를 바꿀 때 새 문장이 부드럽게 나타나도록 ──────────── */
 @keyframes langIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-body.lang-swap .ko,body.lang-swap .ja{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
+/* 문서 전체를 한 겹으로 묶어 한 번만 움직입니다.
+   글자마다 걸면 요소가 180개를 넘어가 휴대폰에서 첫 화면이 늦어집니다. */
+body.lang-swap main,body.lang-swap .nav-links{animation:langIn .28s cubic-bezier(.2,.7,.3,1) both}
 
 /* ── 상단 읽기 진행 바 ───────────────────────────────────── */
 #progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;pointer-events:none;overflow:hidden}
@@ -805,7 +815,7 @@ body.admin-on .flow .step .t,body.admin-on .flow .step .d{opacity:1}
 
 /* ── FAQ 열고 닫힘을 부드럽게 ─────────────────────────────
    지원하는 브라우저에서만 켜지고, 아닌 곳은 지금 그대로입니다. */
-@supports selector(::details-content){
+@supports (interpolate-size:allow-keywords) and (selector(::details-content)){
   details{interpolate-size:allow-keywords}
   details::details-content{
     block-size:0;overflow:hidden;content-visibility:hidden;
@@ -852,9 +862,9 @@ summary:hover{padding-left:4px}
 #mcta{
   position:fixed;left:0;right:0;bottom:0;z-index:70;display:none;
   padding:10px 16px calc(10px + env(safe-area-inset-bottom));
-  background:rgba(247,247,244,.92);
-  -webkit-backdrop-filter:saturate(140%) blur(14px);backdrop-filter:saturate(140%) blur(14px);
+  background:#F7F7F4;
   border-top:1px solid var(--line);
+  box-shadow:0 -8px 24px -18px rgba(20,27,46,.45);
   transform:translateY(115%);transition:transform .32s cubic-bezier(.2,.7,.3,1);
 }
 #mcta.on{transform:none}
@@ -899,6 +909,7 @@ body.admin-on #mcta{display:none!important}
   opacity:1;transition:opacity .45s ease;
 }
 .gal figure.loaded::before{opacity:0;animation:none}
+body.gal-give-up .gal figure::before{animation:none;opacity:0}
 @keyframes shim{from{background-position:120% 0}to{background-position:-120% 0}}
 
 .gal figure img{
@@ -1434,6 +1445,15 @@ body.admin-on .gal figure .zoom{display:none}
     </section>
 
     <section class="sg-pane" data-p="dates" hidden>
+      <div class="mt-time-row">
+        <label><span>모임 시간</span>
+          <input type="text" id="mt-time" placeholder="15:00 – 17:00" autocomplete="off"></label>
+        <button type="button" id="mt-time-save">시간 저장</button>
+        <span id="mt-time-state"></span>
+      </div>
+      <p class="sg-dg-note" style="margin:0 0 14px">
+        맨 위 요약 카드의 「일시 / 日時」 아랫줄에 이 글자가 그대로 들어갑니다.
+        고치는 즉시 뒤쪽 카드가 바뀌니 보면서 맞추시면 됩니다.</p>
       <div id="mt-list"><p class="sg-dg-note">여는 중…</p></div>
       <div class="sg-dg-row" style="margin-top:12px">
         <input type="date" id="mt-new">
@@ -1740,6 +1760,7 @@ window.IROLANG = (function(){
       el.innerHTML = esc(label[L]) + '<br>' + esc(SCHED.time);
     });
     fillDates(useDates ? list : null);
+    try { syncTimeInput(); } catch (e) {}
   }
 
   /* ── 참가일 선택 ────────────────────────────────────────────── */
@@ -2158,7 +2179,29 @@ window.IROLANG = (function(){
     });
   })();
 
+  /* ── 모임 시간 ────────────────────────────────────────────
+     요약 카드의 「일시」 아랫줄은 서버에 저장된 SCHED.time 을 씁니다.
+     이 값을 고칠 자리가 없어 예전 값이 그대로 남아 있던 것을 되살립니다. */
+  function syncTimeInput(){
+    var el = document.getElementById('mt-time');   /* $a 는 아직 없을 수 있습니다 */
+    if (el && document.activeElement !== el) el.value = SCHED.time || '';
+  }
+  on('mt-time', 'input', function(){
+    SCHED.time = this.value;
+    applySchedule();                       /* 뒤쪽 카드가 바로 바뀝니다 */
+    var st = $a('mt-time-state'); if (st) st.textContent = '«시간 저장»을 눌러 주세요';
+  });
+  on('mt-time-save', 'click', function(){
+    var st = $a('mt-time-state'); if (st) st.textContent = '저장 중…';
+    /* 관리자 바의 저장과 같은 경로로 보냅니다.
+       (문구 저장 로직을 그대로 쓰므로 다른 내용이 지워지지 않습니다) */
+    var save = $a('adm-save');
+    if (save) save.click();
+    setTimeout(function(){ if (st) st.textContent = '저장했습니다'; }, 900);
+  });
+
   function loadMeetups(){
+    syncTimeInput();
     if (!$a('mt-list')) return;
     $a('mt-list').innerHTML = '<p class="sg-dg-note">여는 중…</p>';
     apiPost({ action:'meetups', token: ADMIN.token }).then(function(d){
@@ -2732,13 +2775,22 @@ window.IROLANG = (function(){
 
   function frame(){
     ticking = false;
+    try { paintScroll(); } catch (e) { /* 장식용 — 실패해도 페이지는 그대로 */ }
+  }
+  function paintScroll(){
+    /* 먼저 필요한 값을 전부 «읽고», 그 뒤에 «쓰기»만 합니다.
+       읽기와 쓰기를 번갈아 하면 휴대폰에서 스크롤이 눈에 띄게 무거워집니다. */
     var doc = document.documentElement;
-    var max = doc.scrollHeight - window.innerHeight;
+    var vh  = window.innerHeight;
+    var max = doc.scrollHeight - vh;
+    var flowRect = (flow && !isAdmin()) ? flow.getBoundingClientRect() : null;
+    var figRects = [];
+    if (!slow) for (var k = 0; k < figs.length; k++) figRects[k] = figs[k].getBoundingClientRect();
+
     if (bar) bar.style.width = (max > 0 ? Math.min(1, window.scrollY / max) * 100 : 0) + '%';
 
-    if (flow && !isAdmin()) {
-      var r = flow.getBoundingClientRect();
-      var vh = window.innerHeight;
+    if (flowRect) {
+      var r = flowRect;
       /* 화면 아래 78% 지점에 닿을 때부터 위쪽 30% 지점까지 채웁니다 */
       var span = r.height + vh * 0.48;
       var done = (vh * 0.78 - r.top) / span;
@@ -2748,17 +2800,25 @@ window.IROLANG = (function(){
         steps[i].classList.toggle('lit', done >= (i + 0.55) / steps.length);
       }
     }
-    mctaCheck();
-    shotsParallax();
+    for (var j = 0; j < figRects.length; j++) {
+      var fr = figRects[j];
+      if (!fr || fr.bottom < -80 || fr.top > vh + 80) continue;
+      var mid = (fr.top + fr.height / 2 - vh / 2) / (vh / 2);
+      figs[j].style.setProperty('--py', (Math.max(-1, Math.min(1, mid)) * 12).toFixed(1));
+    }
+    mctaCheck(vh);
   }
   function onScroll(){ if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
   window.addEventListener('scroll', onScroll, {passive:true});
   window.addEventListener('resize', onScroll, {passive:true});
 
   /* ── 2. 언어를 바꿀 때 새 문장이 살짝 떠오르도록 ────────── */
-  var swapT;
+  /* 페이지가 열릴 때도 setLang() 이 한 번 불리므로, 그 첫 번째는 건너뜁니다.
+     (건너뛰지 않으면 로드하자마자 애니메이션이 돌아 첫 화면이 늦어집니다) */
+  var swapT, langReady = false;
+  setTimeout(function(){ langReady = true; }, 0);
   new MutationObserver(function(){
-    if (slow) return;
+    if (slow || !langReady) return;
     document.body.classList.add('lang-swap');
     clearTimeout(swapT);
     swapT = setTimeout(function(){ document.body.classList.remove('lang-swap'); }, 340);
@@ -2769,14 +2829,15 @@ window.IROLANG = (function(){
   var apply = document.getElementById('apply');
   var hero = document.querySelector('.hero');
 
-  function mctaCheck(){
+  function mctaCheck(vh){
     if (!mcta) return;
+    vh = vh || window.innerHeight;
     if (isAdmin()) { mcta.classList.remove('on'); return; }
     var past = hero ? hero.getBoundingClientRect().bottom < 40 : window.scrollY > 340;
     var atApply = false;
     if (apply) {
       var a = apply.getBoundingClientRect();
-      atApply = a.top < window.innerHeight * 0.85 && a.bottom > 0;
+      atApply = a.top < vh * 0.85 && a.bottom > 0;
     }
     var atFoot = (document.documentElement.scrollHeight - window.innerHeight - window.scrollY) < 90;
     mcta.classList.toggle('on', past && !atApply && !atFoot);
@@ -2867,35 +2928,40 @@ window.IROLANG = (function(){
   /* ── 6. 활동 사진 : 불러오기 표시 + 스크롤 시 미세한 흔들림 ── */
   var figs = [].slice.call(document.querySelectorAll('.gal figure'));
 
+  /* class 를 직접 건드리므로, 값이 실제로 달라질 때만 씁니다.
+     (그러지 않으면 아래 감시자가 자기 자신을 다시 부르게 됩니다) */
+  function setLoaded(fig, on){
+    if (fig.classList.contains('loaded') === !!on) return;
+    fig.classList.toggle('loaded', !!on);
+  }
   function watchShots(){
     figs.forEach(function(fig){
       var im = fig.querySelector('img');
       if (!im) return;
       if (im.hidden || !(im.currentSrc || im.getAttribute('src'))) {
-        fig.classList.remove('loaded'); return;
+        setLoaded(fig, false); return;
       }
-      if (im.complete && im.naturalWidth) { fig.classList.add('loaded'); return; }
-      im.addEventListener('load', function(){ fig.classList.add('loaded'); }, {once:true});
-      im.addEventListener('error', function(){ fig.classList.remove('loaded'); }, {once:true});
+      if (im.complete && im.naturalWidth) { setLoaded(fig, true); return; }
+      setLoaded(fig, false);
+      im.addEventListener('load',  function(){ setLoaded(fig, true);  }, {once:true});
+      im.addEventListener('error', function(){ setLoaded(fig, false); }, {once:true});
     });
   }
-  /* 관리자가 사진을 갈아끼우거나 서버에서 늦게 도착해도 따라가도록 */
+  /* 관리자가 사진을 갈아끼우거나 서버에서 늦게 도착해도 따라가도록.
+     감시 대상은 img 의 src·hidden 뿐입니다. class 는 넣지 않습니다 —
+     watchShots 가 고치는 것이 바로 class 라서, 넣으면 서로를 계속 부르게 됩니다. */
+  /* 사진이 끝내 도착하지 않아도 반짝임이 영원히 돌지 않도록 8초에서 멈춥니다 */
+  setTimeout(function(){ document.body.classList.add('gal-give-up'); }, 8000);
   var galSec = document.getElementById('gallery');
-  if (galSec) new MutationObserver(watchShots)
-    .observe(galSec, {attributes:true, subtree:true, attributeFilter:['src','hidden','class']});
-  watchShots();
-
-  function shotsParallax(){
-    if (slow) return;
-    var vh = window.innerHeight;
-    figs.forEach(function(fig){
-      var r = fig.getBoundingClientRect();
-      if (r.bottom < -80 || r.top > vh + 80) return;
-      /* 화면 한가운데를 0 으로 두고 위아래로 최대 12px 만 움직입니다 */
-      var mid = (r.top + r.height / 2 - vh / 2) / (vh / 2);
-      fig.style.setProperty('--py', (Math.max(-1, Math.min(1, mid)) * 12).toFixed(1));
-    });
+  var galQueued = false;
+  if (galSec) {
+    new MutationObserver(function(){
+      if (galQueued) return;
+      galQueued = true;
+      requestAnimationFrame(function(){ galQueued = false; watchShots(); });
+    }).observe(galSec, {attributes:true, subtree:true, attributeFilter:['src','hidden']});
   }
+  watchShots();
 
   /* ── 7. 첫 실행 ───────────────────────────────────────── */
   frame();

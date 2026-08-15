@@ -314,8 +314,11 @@ setLang(window.IROLANG.get());
 <script>
 (function(){
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var t;
+  /* 페이지가 열릴 때도 setLang() 이 한 번 불리므로 첫 번째는 건너뜁니다 */
+  var t, ready = false;
+  setTimeout(function(){ ready = true; }, 0);
   new MutationObserver(function(){
+    if (!ready) return;
     document.body.classList.add('lang-swap');
     clearTimeout(t);
     t = setTimeout(function(){ document.body.classList.remove('lang-swap'); }, 340);
