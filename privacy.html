@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>개인정보처리방침 — いろとも 이로토모</title>
+<meta name="theme-color" content="#F7F7F4">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://irotomo.com/privacy.html">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" as="image" href="logo.png">
 <meta name="description" content="이로토모 한일교류회의 개인정보 수집·이용 안내. いろともの個人情報の取り扱いについて。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,6 +64,17 @@ footer a{margin-right:18px;text-decoration:none}
   td{border:0;padding:3px 0}
   td:first-child{font-size:.82rem;color:var(--muted)}
 }
+
+/* ══ 마감 다듬기 (2026-08) ══════════════════════════════════ */
+body[data-lang="ko"]{--font:'Schibsted Grotesk','IBM Plex Sans KR','Zen Kaku Gothic New',system-ui,sans-serif}
+body[data-lang="ja"]{--font:'Schibsted Grotesk','Zen Kaku Gothic New','IBM Plex Sans KR',system-ui,sans-serif}
+body{font-family:var(--font)}
+@keyframes langIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
+.btn{transition:transform .16s ease,background .18s ease,border-color .18s ease,color .18s ease}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(1px)}
+@media (prefers-reduced-motion:reduce){body.lang-swap main{animation:none}}
 </style>
 </head>
 <body data-lang="ja">
@@ -263,6 +280,17 @@ window.IROLANG = (function(){
     try { var v = localStorage.getItem(KEY); if (v === 'ko' || v === 'ja') return v; } catch (e) {}
     if ((location.hash || '').indexOf('ko') >= 0) return 'ko';
     if ((location.hash || '').indexOf('ja') >= 0) return 'ja';
+    /* 처음 오신 분 — 기기 언어가 한국어면 한국어로, 그 밖에는 모두 일본어로 시작합니다.
+       (주 고객층이 일본인이라 기본값은 일본어입니다) */
+    try {
+      var ls = (navigator.languages && navigator.languages.length)
+             ? navigator.languages : [navigator.language || ''];
+      for (var i = 0; i < ls.length; i++) {
+        var t = String(ls[i]).toLowerCase();
+        if (t.indexOf('ja') === 0) return 'ja';
+        if (t.indexOf('ko') === 0) return 'ko';
+      }
+    } catch (e) {}
     return 'ja';
   }
   function set(v){ try { localStorage.setItem(KEY, v); } catch (e) {} }
@@ -281,6 +309,18 @@ document.querySelectorAll('.lang button').forEach(function(b){
   b.addEventListener('click', function(){ setLang(b.dataset.set); });
 });
 setLang(window.IROLANG.get());
+</script>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var t;
+  new MutationObserver(function(){
+    document.body.classList.add('lang-swap');
+    clearTimeout(t);
+    t = setTimeout(function(){ document.body.classList.remove('lang-swap'); }, 340);
+  }).observe(document.body, {attributes:true, attributeFilter:['data-lang']});
+})();
 </script>
 </body>
 </html>
