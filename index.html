@@ -431,6 +431,7 @@ body.admin-on #admin-bar{display:flex}
 #admin-bar button{font:600 .8rem var(--font);border-radius:999px;padding:.5em 1em;cursor:pointer;
   border:1px solid rgba(255,255,255,.26);background:transparent;color:#fff;white-space:nowrap}
 #admin-bar button:hover{background:rgba(255,255,255,.12)}
+#admin-bar button:disabled{opacity:.38;cursor:not-allowed;background:transparent}
 #admin-bar button.pri{background:var(--gold);border-color:var(--gold);color:#2E2308}
 #admin-bar button.pri:hover{background:#E9B65A}
 #admin-bar .ver{font:600 .72rem var(--font);color:#7D86A3;white-space:nowrap;
@@ -500,6 +501,7 @@ body.admin-on [data-c]{outline:1px dashed rgba(223,165,58,.6);outline-offset:3px
 body.admin-on [data-c]:hover{outline-color:var(--gold);background:rgba(223,165,58,.08)}
 body.admin-on [data-c]:focus{outline:2px solid var(--gold);background:rgba(223,165,58,.12)}
 body.admin-on [data-c].chg{outline:1.5px solid #3E8A5F;background:rgba(62,138,95,.08)}
+body.admin-on [data-c].adm-selected{outline:2px solid #7E8FD0;background:rgba(126,143,208,.12)}
 body.admin-on [data-schedule]{outline:1px dashed rgba(110,118,145,.55);outline-offset:3px}
 .hero-logo{position:relative}
 #logo-tools{position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);display:none;gap:7px;z-index:6;
@@ -1553,6 +1555,7 @@ body.admin-on .gal figure .zoom{display:none}
   <span class="sp">
     <button type="button" id="adm-stats-open">통계</button>
     <button type="button" id="adm-signups-open">신청자</button>
+    <button type="button" id="adm-reset" disabled title="페이지에서 초기화할 문구를 먼저 눌러 주세요">선택 문구 초기화</button>
     <button type="button" class="pri" id="adm-save">저장</button>
     <button type="button" id="adm-exit">종료</button>
   </span>
@@ -2103,7 +2106,7 @@ window.IROLANG = (function(){
   /* ══════════════════════════════════════════════════════════
      관리자 — 페이지 위에서 바로 고치기
      ══════════════════════════════════════════════════════════ */
-  var ADMIN = { token:'' }, editing = false, DEFAULTS = {};
+  var ADMIN = { token:'' }, editing = false, DEFAULTS = {}, ACTIVE_EDITABLE = null;
 
   function readEl(el){
     var h = el.innerHTML.replace(/<\/(div|p)>/gi, '\n').replace(/<br\s*\/?>/gi, '\n');
@@ -2223,6 +2226,7 @@ window.IROLANG = (function(){
       mark(el);
     });
     syncSizeInput(); renderGallery();
+    $a('adm-reset').disabled = true;
     fitBar(); count();
   }
   function stopEdit(){
@@ -2230,6 +2234,50 @@ window.IROLANG = (function(){
     location.reload();
   }
   $a('adm-exit').addEventListener('click', stopEdit);
+
+  /* ── 선택한 문구만 초기화 ──────────────────────────────────
+     관리자 화면에서 마지막으로 누른 문구 한 칸만 파일의 기본값으로
+     되돌립니다. 다른 문구와 반대 언어 문구는 건드리지 않으며,
+     위의 「저장」을 눌러야 서버에 반영됩니다. */
+  function selectEditable(el){
+    if (!editing || !el || !el.hasAttribute('data-c')) return;
+    if (ACTIVE_EDITABLE && ACTIVE_EDITABLE !== el) ACTIVE_EDITABLE.classList.remove('adm-selected');
+    ACTIVE_EDITABLE = el;
+    el.classList.add('adm-selected');
+    var L = langOf(el) === 'ja' ? '일본어' : '한국어';
+    var btn = $a('adm-reset');
+    btn.disabled = false;
+    btn.title = '선택한 ' + L + ' 문구만 기본값으로 되돌립니다';
+  }
+
+  document.addEventListener('focusin', function(e){
+    var el = e.target.closest && e.target.closest('[data-c]');
+    if (el) selectEditable(el);
+  });
+  document.addEventListener('pointerdown', function(e){
+    var el = e.target.closest && e.target.closest('[data-c]');
+    if (el) selectEditable(el);
+  }, true);
+
+  on('adm-reset', 'click', function(){
+    var el = ACTIVE_EDITABLE;
+    if (!el || !document.body.contains(el)) {
+      alert('초기화할 문구를 페이지에서 먼저 눌러 주세요.');
+      return;
+    }
+    var k = el.getAttribute('data-c'), L = langOf(el);
+    var before = readEl(el), base = DEFAULTS[k] && DEFAULTS[k][L];
+    if (typeof base !== 'string') return;
+    if (before === base) {
+      $a('adm-state').textContent = '선택한 문구는 이미 기본값입니다';
+      el.focus();
+      return;
+    }
+    el.innerHTML = esc(base);
+    mark(el); count();
+    $a('adm-state').textContent += ' · 선택 문구 초기화됨 · 저장 필요';
+    el.focus();
+  });
 
   function mark(el){
     var k = el.getAttribute('data-c'), L = langOf(el);
