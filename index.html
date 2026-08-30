@@ -954,6 +954,11 @@ body.admin-on .gal figure .zoom{display:none}
   background:rgba(223,165,58,.10);border-radius:8px;padding:8px 10px}
 #f-drink option:disabled{color:#b3b0c4}
 
+/* ── 소모임 병행 안내 ───────────────────────────────────── */
+#somoim-card{margin-bottom:26px}
+.somoim-note{margin:12px 0 0;font-size:12.5px;line-height:1.7;color:#8a6d1f;
+  background:rgba(223,165,58,.10);border-radius:8px;padding:9px 12px}
+
 </style>
 </head>
 <body data-lang="ja">
@@ -1229,13 +1234,13 @@ body.admin-on .gal figure .zoom{display:none}
       </details>
       <details>
         <summary><span class="ko" data-c="c66">신청은 어떻게 하나요?</span><span class="ja" data-c="c66">申し込み方法を教えてください。</span></summary>
-        <div class="answer ko" data-c="c67">아래 신청하기 칸의 양식으로 받고 있습니다. 인스타그램(@irotomokr) DM으로 문의하셔도 괜찮습니다.</div>
+        <div class="answer ko" data-c="c67">한국에 계신 분은 소모임에서 참가 신청을 하신 뒤, 이 사이트의 신청 양식에서 음료를 고르고 예약금을 입금해 주세요. 두 가지를 모두 마치셔야 확정됩니다. 문의는 인스타그램(@irotomokr) DM으로도 받습니다.</div>
         <div class="answer ja" data-c="c67">下のお申し込みフォームから受け付けております。Instagram（@irotomokr）へDMをいただいても構いません。</div>
       </details>
       <details>
         <summary><span class="ko" data-c="c68">못 가게 되면 어떻게 하나요?</span><span class="ja" data-c="c68">行けなくなった場合はどうすればいいですか？</span></summary>
-        <div class="answer ko" data-c="c69">미리 내시는 돈이 없으니 취소 수수료도 없습니다. 다만 자리를 미리 잡아두기 때문에, 못 오시게 되면 전날까지 DM이나 메일로 알려주시면 감사하겠습니다.</div>
-        <div class="answer ja" data-c="c69">事前にお支払いいただくものがありませんので、キャンセル料もかかりません。ただ席をご用意しておりますので、ご都合が悪くなった場合は前日までにDMかメールでお知らせいただけますと助かります。</div>
+        <div class="answer ko" data-c="c69">모임 전 금요일 오후 3시까지 DM이나 메일로 알려주시면 예약금 6,000원을 전액 돌려드립니다. 그 이후에는 카페에 음료 준비를 이미 부탁드린 뒤라 환불이 어렵습니다. 자리를 미리 잡아두니, 못 오시게 되면 되도록 빨리 알려주시면 감사하겠습니다.</div>
+        <div class="answer ja" data-c="c69">開催前の金曜15時までにDMかメールでお知らせいただければ、予約金6,000ウォンを全額お返しします。それ以降は、カフェへお飲み物のご用意をお願いしたあとのため返金いたしかねます。お席をご用意しておりますので、ご都合が悪くなった場合はお早めにご連絡いただけますと助かります。</div>
       </details>
     </div>
   </section>
@@ -1279,8 +1284,22 @@ body.admin-on .gal figure .zoom{display:none}
         <p class="eyebrow">Apply</p>
         <h2 class="ko" data-c="c78">신청하기</h2>
         <h2 class="ja" data-c="c78">お申し込み</h2>
-        <p class="ko" data-c="c79">아래 양식으로 신청해 주세요. 예약금 6,000원(당일 음료 1잔 값)을 입금해 주시면 참가가 확정됩니다. 계좌는 신청 후 보내드리는 안내 메일에 있습니다.</p>
+        <p class="ko" data-c="c79">한국에 계신 분은 <b>소모임에서 참가 신청</b>을 하신 뒤, <b>아래 양식에서 음료를 고르고 예약금 6,000원을 입금</b>해 주세요. 두 가지를 모두 마치셔야 참가가 확정됩니다. 계좌는 양식을 보내시면 안내 메일로 보내드립니다.</p>
         <p class="ja" data-c="c79">下のフォームからお申し込みください。予約金6,000ウォン（当日のお飲み物1杯分）のお振込みをもって、ご参加が確定します。口座はお申し込み後のご案内メールに記載しております。</p>
+      </div>
+
+      <!-- 한국 거주 참가자 : 소모임 신청을 먼저 안내합니다.
+           참가 접수는 소모임, 음료 선택과 예약금은 아래 양식으로 나뉩니다. -->
+      <div class="apply-card ko reveal" id="somoim-card">
+        <div class="apply-steps">
+          <div class="astep"><span class="an">1</span><p data-c="c84">소모임에서 참가 신청</p></div>
+          <div class="astep"><span class="an">2</span><p data-c="c85">아래 양식에서 음료 선택</p></div>
+          <div class="astep"><span class="an">3</span><p data-c="c86">예약금 6,000원 입금</p></div>
+        </div>
+        <div class="apply-cta">
+          <a class="btn btn-somoim btn-lg" href="https://www.somoim.co.kr/b45c43da-0bbf-11e6-958b-22000a7f92f31" target="_blank" rel="noopener" data-c="c87">소모임에서 참가 신청하기</a>
+          <p class="somoim-note" data-c="c88">소모임 신청만 하시면 음료가 준비되지 않습니다. 아래 양식도 함께 보내주세요.</p>
+        </div>
       </div>
 
       <!-- 신청 폼 — 한국어·일본어 공용입니다.
