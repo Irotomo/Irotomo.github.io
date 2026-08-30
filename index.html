@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>こんにちは！日韓交流会『いろとも』です。 이로토모 — 서울 한일교류회</title>
-<meta name="description" content="매주 일요일 15시, 서울 선정릉에서 열리는 사전 신청제 한일교류회. 毎週日曜15時、ソウル・ソンジョンヌンで開かれる事前申込制の日韓交流会。">
+<meta name="description" content="매주 일요일 15시, 서울 여의도에서 열리는 사전 신청제 한일교류회. 毎週日曜15時、ソウル・ヨイドで開かれる事前申込制の日韓交流会。">
 <meta name="theme-color" content="#F7F7F4">
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -21,7 +21,7 @@
 <meta property="og:site_name" content="いろとも 이로토모">
 <meta property="og:url" content="https://irotomo.com/">
 <meta property="og:title" content="いろとも 이로토모 — 서울 한일교류회 / ソウルの日韓交流会">
-<meta property="og:description" content="매주 일요일 15시, 선정릉의 카페에서 열리는 사전 신청제 한일교류회. 毎週日曜15時、ソンジョンヌンのカフェで開かれる事前申込制の日韓交流会。">
+<meta property="og:description" content="매주 일요일 15시, 여의도의 카페에서 열리는 사전 신청제 한일교류회. 毎週日曜15時、ヨイドのカフェで開かれる事前申込制の日韓交流会。">
 <meta property="og:image" content="https://irotomo.com/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,22 +30,22 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@irotomokr">
 <meta name="twitter:title" content="いろとも 이로토모 — 서울 한일교류회">
-<meta name="twitter:description" content="매주 일요일 15시, 선정릉. 사전 신청제 한일교류회입니다.">
+<meta name="twitter:description" content="매주 일요일 15시, 여의도. 사전 신청제 한일교류회입니다.">
 <meta name="twitter:image" content="https://irotomo.com/og.png">
 
 <!-- 구글 검색에 '매주 열리는 행사'로 잡히게 하는 표시 -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"EventSeries",
  "name":"いろとも 이로토모 — 日韓交流会 / 한일교류회",
- "description":"매주 일요일 15시, 서울 선정릉에서 열리는 사전 신청제 한일교류회.",
+ "description":"매주 일요일 15시, 서울 여의도에서 열리는 사전 신청제 한일교류회.",
  "url":"https://irotomo.com/",
  "eventSchedule":{"@type":"Schedule","byDay":"https://schema.org/Sunday",
    "startTime":"15:00","endTime":"17:00","repeatFrequency":"P1W","scheduleTimezone":"Asia/Seoul"},
  "eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode",
- "location":{"@type":"Place","name":"카페 레꼴뜨",
-   "address":{"@type":"PostalAddress","streetAddress":"봉은사로50길 10, 1층",
-     "addressLocality":"강남구","addressRegion":"서울","addressCountry":"KR"},
-   "geo":{"@type":"GeoCoordinates","latitude":37.5091435,"longitude":127.0425545}},
+ "location":{"@type":"Place","name":"카페희다 여의도점",
+   "address":{"@type":"PostalAddress","streetAddress":"국제금융로8길 31, 1층",
+     "addressLocality":"영등포구","addressRegion":"서울","addressCountry":"KR"},
+   "geo":{"@type":"GeoCoordinates","latitude":37.5198049,"longitude":126.9280064}},
  "organizer":{"@type":"Organization","name":"いろとも 이로토모","url":"https://irotomo.com/",
    "email":"info@irotomo.com","sameAs":["https://instagram.com/irotomokr","https://www.threads.net/@irotomokr","https://x.com/irotomokr"]},
  "inLanguage":["ko","ja"]}
@@ -939,6 +939,21 @@ body.admin-on .gal figure .zoom{display:none}
   .gal figure img{transform:none!important;opacity:1}
   .gal figure::before{display:none}
 }
+
+/* ── 신청자 목록 : 음료 · 입금 ─────────────────────────── */
+.sg-f select{padding:7px 9px;border:1px solid #e2dfec;border-radius:7px;font:inherit;font-size:13px;background:#fff}
+.sg-paid{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;
+  border:1px solid #f0d8d8;background:#fdf6f6;color:#9d4b4b;font-size:12px;cursor:pointer;white-space:nowrap}
+.sg-paid.on{border-color:#cfe6d8;background:#f2faf5;color:#2f6f4c}
+.sg-paid input{accent-color:#3E8A5F;margin:0}
+.sg-tally{margin:0 0 10px;padding:7px 11px;background:#f6f5fb;border-radius:8px;
+  font-size:12.5px;color:#5b5870}
+
+/* ── 음료 마감 안내 ─────────────────────────────────────── */
+.drink-note{margin:7px 0 0;font-size:12.5px;line-height:1.65;color:#8a6d1f;
+  background:rgba(223,165,58,.10);border-radius:8px;padding:8px 10px}
+#f-drink option:disabled{color:#b3b0c4}
+
 </style>
 </head>
 <body data-lang="ja">
@@ -976,12 +991,12 @@ body.admin-on .gal figure .zoom{display:none}
   <div class="hero wrap">
     <div class="hero-grid">
       <div>
-        <span class="pill ko"><i></i><span class="ko" data-c="c09">매주 일요일 15:00 · 서울 선정릉</span></span>
-        <span class="pill ja"><i></i><span class="ja" data-c="c09">毎週日曜 15:00 · ソウル・ソンジョンヌン</span></span>
+        <span class="pill ko"><i></i><span class="ko" data-c="c09">매주 일요일 15:00 · 서울 여의도</span></span>
+        <span class="pill ja"><i></i><span class="ja" data-c="c09">毎週日曜 15:00 · ソウル・ヨイド</span></span>
         <h1 class="ko" data-c="c10">매주 일요일,<br>일본어로 이야기하는<br>두 시간</h1>
         <h1 class="ja" data-c="c10">毎週日曜、<br>韓国語で話す<br>2時間</h1>
-        <p class="lead ko" data-c="c11">선정릉역에서 도보 5분 거리의 카페에서, 일본인 참가자들과 같은 테이블에 앉아 이야기합니다. 일본어는 간단한 일상 회화가 가능한 정도면 충분합니다. 혼자 오시는 분이 대부분이고, 자리는 저희가 랜덤으로 배정합니다.</p>
-        <p class="lead ja" data-c="c11">ソンジョンヌン駅から徒歩5分のカフェで、韓国人の参加者と同じテーブルを囲みます。韓国語が話せなくても大丈夫です。おひとりでいらっしゃる方がほとんどで、席順はこちらでランダムに決めています。</p>
+        <p class="lead ko" data-c="c11">여의도역에서 도보 5분 거리의 카페에서, 일본인 참가자들과 같은 테이블에 앉아 이야기합니다. 일본어는 간단한 일상 회화가 가능한 정도면 충분합니다. 혼자 오시는 분이 대부분이고, 자리는 저희가 랜덤으로 배정합니다.</p>
+        <p class="lead ja" data-c="c11">ヨイド駅から徒歩5分のカフェで、韓国人の参加者と同じテーブルを囲みます。韓国語が話せなくても大丈夫です。おひとりでいらっしゃる方がほとんどで、席順はこちらでランダムに決めています。</p>
         <div class="hero-cta">
           <a class="btn btn-primary btn-lg ko" href="#apply" data-c="c12">신청 안내 보기</a>
           <a class="btn btn-primary btn-lg ja" href="#apply" data-c="c12">申し込みへ</a>
@@ -1013,13 +1028,13 @@ body.admin-on .gal figure .zoom{display:none}
       </div>
       <div>
         <dt><span class="ko" data-c="c16">장소</span><span class="ja" data-c="c16">場所</span></dt>
-        <dd class="ko" data-c="c17">카페 레꼴뜨<br>봉은사로50길 10, 1층</dd>
-        <dd class="ja" data-c="c17">カフェ・レコルト<br>봉은사로50길 10, 1층</dd>
+        <dd class="ko" data-c="c17">카페희다 여의도점<br>국제금융로8길 31, 1층</dd>
+        <dd class="ja" data-c="c17">カフェ・ヒダ ヨイド店<br>국제금융로8길 31, 1층</dd>
       </div>
       <div>
         <dt><span class="ko" data-c="c18">참가비</span><span class="ja" data-c="c18">参加費</span></dt>
-        <dd class="ko" data-c="c19">한국인 10,000원<br>일본인 무료</dd>
-        <dd class="ja" data-c="c19">韓国人 10,000ウォン<br>日本人 無料</dd>
+        <dd class="ko" data-c="c19">예약금 6,000원<br>한국인 참가비 10,000원</dd>
+        <dd class="ja" data-c="c19">予約金 6,000ウォン<br>日本の方は参加費なし</dd>
       </div>
       <div>
         <dt><span class="ko" data-c="c20">신청</span><span class="ja" data-c="c20">申込</span></dt>
@@ -1114,12 +1129,12 @@ body.admin-on .gal figure .zoom{display:none}
       </div>
       <div>
         <p class="who ko" data-c="c40">일본인 참가자</p><p class="who ja" data-c="c40">日本人の方</p>
-        <p class="calc"><span class="ko" data-c="c41">참가비 없음</span><span class="ja" data-c="c41">参加費なし</span></p>
+        <p class="calc"><span class="ko" data-c="c41">참가비 없음 · 예약금만</span><span class="ja" data-c="c41">参加費なし・予約金のみ</span></p>
         <p class="amt"><span class="ko" data-c="c43">무료</span><span class="ja" data-c="c43">無料</span></p>
       </div>
     </div>
-    <p class="fee-note ko" data-c="c44">참가비는 모임 당일 현장에서 받습니다. 예약금이나 사전 입금은 받지 않습니다. 음료는 각자 주문하시고, 음료값은 참가비에 포함되어 있지 않습니다.</p>
-    <p class="fee-note ja" data-c="c44">日本の方の参加費はいただいておりません。予約金や事前のお振り込みもございません。お飲み物は各自でご注文いただき、代金はご自身でお支払いください。</p>
+    <p class="fee-note ko" data-c="c44">신청하실 때 예약금 6,000원을 먼저 입금해 주세요. 당일 마실 음료 한 잔 값이고, 신청 폼에서 미리 골라두시면 자리에 준비해 둡니다. 참가비는 모임 당일 현장에서 따로 받습니다. 더치커피·밀크티 선택과 예약금 취소는 모임 전 금요일 오후 3시에 마감합니다.</p>
+    <p class="fee-note ja" data-c="c44">お申し込みの際に予約金6,000ウォンをお振込みください。当日のお飲み物1杯分で、フォームで先にお選びいただくとお席にご用意しております。日本の方の参加費はいただいておりません。ダッチコーヒー・ミルクティーのご選択と予約金のキャンセルは、開催前の金曜15時で締め切ります。</p>
   </section>
 
   <!-- 오시는 길 -->
@@ -1128,8 +1143,8 @@ body.admin-on .gal figure .zoom{display:none}
       <p class="eyebrow">Location</p>
       <h2 class="ko" data-c="c45">오시는 길</h2>
       <h2 class="ja" data-c="c45">アクセス</h2>
-      <p class="ko" data-c="c46">지하철 9호선 · 수인분당선 선정릉역에서 도보 5분입니다. 건물 1층에 있습니다.</p>
-      <p class="ja" data-c="c46">地下鉄9号線・水仁盆唐線のソンジョンヌン駅から徒歩5分。ビルの1階です。</p>
+      <p class="ko" data-c="c46">지하철 5호선 · 9호선 여의도역에서 도보 5분입니다. SK증권빌딩 1층에 있습니다.</p>
+      <p class="ja" data-c="c46">地下鉄5号線・9号線のヨイド駅から徒歩5分。SK証券ビル1階です。</p>
     </div>
     <div class="map reveal">
 <!-- ══ 지도 ══════════════════════════════════════════════════
@@ -1142,22 +1157,22 @@ body.admin-on .gal figure .zoom{display:none}
           <iframe title="모임 장소 지도" allowfullscreen referrerpolicy="no-referrer-when-downgrade" data-src="default"></iframe>
           <div class="gmap-fb">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
-            <p class="fb-a">서울 강남구 봉은사로50길 10, 1층</p>
+            <p class="fb-a">서울 영등포구 국제금융로8길 31, SK증권빌딩 1층</p>
             <div class="fb-links">
-              <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">NAVER Map</a>
-              <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Maps</a>
+              <a href="https://map.naver.com/p/search/%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C8%EA%B8%B8%2031" target="_blank" rel="noopener">NAVER Map</a>
+              <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5198049,126.9280064" target="_blank" rel="noopener">Google Maps</a>
             </div>
           </div>
         </div>
       <div class="map-side">
-        <p class="mlabel ko" data-c="c47">카페 레꼴뜨</p><p class="mlabel ja" data-c="c47">カフェ・レコルト</p>
-        <p class="mtext ko" data-c="c48">서울 강남구 봉은사로50길 10, 1층<br>선정릉역 도보 5분 (9호선 · 수인분당선)</p>
-        <p class="mtext ja" data-c="c48">서울 강남구 봉은사로50길 10, 1층<br>ソンジョンヌン駅から徒歩5分（9号線・水仁盆唐線）</p>
+        <p class="mlabel ko" data-c="c47">카페희다 여의도점</p><p class="mlabel ja" data-c="c47">カフェ・ヒダ ヨイド店</p>
+        <p class="mtext ko" data-c="c48">서울 영등포구 국제금융로8길 31, SK증권빌딩 1층<br>여의도역 도보 5분 (5호선 · 9호선)</p>
+        <p class="mtext ja" data-c="c48">서울 영등포구 국제금융로8길 31, SK증권빌딩 1층<br>ヨイド駅から徒歩5分（5号線・9号線）</p>
         <div class="mlinks">
-          <a class="ko" href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener" data-c="c49">네이버 지도에서 열기</a>
-          <a class="ja" href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener" data-c="c49">NAVER マップで開く</a>
-          <a class="ko" href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener" data-c="c50">구글 지도에서 열기</a>
-          <a class="ja" href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener" data-c="c50">Google マップで開く</a>
+          <a class="ko" href="https://map.naver.com/p/search/%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C8%EA%B8%B8%2031" target="_blank" rel="noopener" data-c="c49">네이버 지도에서 열기</a>
+          <a class="ja" href="https://map.naver.com/p/search/%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C8%EA%B8%B8%2031" target="_blank" rel="noopener" data-c="c49">NAVER マップで開く</a>
+          <a class="ko" href="https://www.google.com/maps/search/?api=1&amp;query=37.5198049,126.9280064" target="_blank" rel="noopener" data-c="c50">구글 지도에서 열기</a>
+          <a class="ja" href="https://www.google.com/maps/search/?api=1&amp;query=37.5198049,126.9280064" target="_blank" rel="noopener" data-c="c50">Google マップで開く</a>
         </div>
       </div>
     </div>
@@ -1214,7 +1229,7 @@ body.admin-on .gal figure .zoom{display:none}
       </details>
       <details>
         <summary><span class="ko" data-c="c66">신청은 어떻게 하나요?</span><span class="ja" data-c="c66">申し込み方法を教えてください。</span></summary>
-        <div class="answer ko" data-c="c67">소모임 앱을 통해 신청 부탁드립니다. 아래 신청하기 칸에서 소모임으로 바로 이동하실 수 있습니다.</div>
+        <div class="answer ko" data-c="c67">아래 신청하기 칸의 양식으로 받고 있습니다. 인스타그램(@irotomokr) DM으로 문의하셔도 괜찮습니다.</div>
         <div class="answer ja" data-c="c67">下のお申し込みフォームから受け付けております。Instagram（@irotomokr）へDMをいただいても構いません。</div>
       </details>
       <details>
@@ -1264,24 +1279,14 @@ body.admin-on .gal figure .zoom{display:none}
         <p class="eyebrow">Apply</p>
         <h2 class="ko" data-c="c78">신청하기</h2>
         <h2 class="ja" data-c="c78">お申し込み</h2>
-        <p class="ko" data-c="c79">신청은 소모임 앱에서 받고 있습니다. 아래 버튼으로 이동해 모임에 가입하시면 신청이 완료됩니다. 참가비는 당일 현장에서 받습니다.</p>
-        <p class="ja" data-c="c79">下のフォームからお申し込みください。ご入力いただいたメールアドレスにご案内メールをお送りした時点で、ご参加が確定となります。事前のお支払いは必要ありません。</p>
+        <p class="ko" data-c="c79">아래 양식으로 신청해 주세요. 예약금 6,000원(당일 음료 1잔 값)을 입금해 주시면 참가가 확정됩니다. 계좌는 신청 후 보내드리는 안내 메일에 있습니다.</p>
+        <p class="ja" data-c="c79">下のフォームからお申し込みください。予約金6,000ウォン（当日のお飲み物1杯分）のお振込みをもって、ご参加が確定します。口座はお申し込み後のご案内メールに記載しております。</p>
       </div>
 
-      <!-- 한국인: 소모임 카드 -->
-      <div class="apply-card ko reveal">
-        <div class="apply-steps">
-          <div class="astep"><span class="an">1</span><p>소모임에서 이로토모 신청</p></div>
-          <div class="astep"><span class="an">2</span><p>가입 승인 후 참가 확정</p></div>
-          <div class="astep"><span class="an">3</span><p>참가비는 당일 현장에서</p></div>
-        </div>
-        <div class="apply-cta">
-          <a class="btn btn-somoim btn-lg" href="https://www.somoim.co.kr/b45c43da-0bbf-11e6-958b-22000a7f92f31" target="_blank" rel="noopener">소모임에서 신청하기</a>
-        </div>
-      </div>
-
-      <!-- 일본인: 구글 폼 직접 표시 -->
-      <div class="ja">
+      <!-- 신청 폼 — 한국어·일본어 공용입니다.
+           입력칸은 하나뿐이고, 라벨만 언어에 따라 바뀝니다.
+           (칸을 언어별로 복제하면 id 가 겹쳐서 동작하지 않습니다) -->
+      <div>
         <!-- ══════════════════════════════════════════════════════════════
              구글 폼 '이로토모 참가' 연결.
                이름 entry.347162766 / 국적 entry.2086369190 / 이메일 entry.1787738691
@@ -1292,47 +1297,69 @@ body.admin-on .gal figure .zoom{display:none}
              ══════════════════════════════════════════════════════════════ -->
         <form class="form reveal" id="apply-form" novalidate="false">
           <div class="field">
-            <label for="f-name">お名前</label>
+            <label for="f-name"><span class="ko">이름</span><span class="ja">お名前</span></label>
             <input id="f-name" name="entry.347162766" required type="text" autocomplete="name">
           </div>
           <div class="field">
-            <label for="f-nat">国籍 <span class="lab-note">— 参加費の区分にのみ使用します</span></label>
-            <select id="f-nat" name="entry.2086369190" required><option value="日本 / 일본">日本</option><option value="韓国 / 한국">韓国</option><option value="その他 / 그 외">その他</option></select>
+            <label for="f-nat"><span class="ko">국적 <span class="lab-note">— 참가비 구분에만 사용합니다</span></span><span class="ja">国籍 <span class="lab-note">— 参加費の区分にのみ使用します</span></span></label>
+            <select id="f-nat" name="entry.2086369190" required>
+              <option value="日本 / 일본">日本 / 일본</option>
+              <option value="韓国 / 한국">韓国 / 한국</option>
+              <option value="その他 / 그 외">その他 / 그 외</option>
+            </select>
           </div>
           <div class="field">
-            <label for="f-mail">メールアドレス</label>
+            <label for="f-mail"><span class="ko">이메일</span><span class="ja">メールアドレス</span></label>
             <input id="f-mail" name="entry.1787738691" required type="email" autocomplete="email">
           </div>
           <div class="field">
-            <label for="f-date-pick">ご参加日（日曜日のみ）</label>
+            <label for="f-date-pick"><span class="ko">참가일 (일요일만)</span><span class="ja">ご参加日（日曜日のみ）</span></label>
             <select id="f-date-pick" required>
-              <option value="" disabled selected>日付をお選びください</option>
+              <option value="" disabled selected>—</option>
             </select>
             <input id="f-date" name="entry.274787881" type="hidden">
           </div>
+          <!-- 음료 : 예약금으로 미리 받는 한 잔입니다.
+               값(value)은 worker.js 의 DRINKS 와 반드시 같아야 합니다. -->
           <div class="field">
-            <label for="f-sns">SNSアカウント（任意）</label>
+            <label for="f-drink"><span class="ko">음료 <span class="lab-note">— 예약금 6,000원에 포함됩니다</span></span><span class="ja">お飲み物 <span class="lab-note">— 予約金6,000ウォンに含まれます</span></span></label>
+            <select id="f-drink" required>
+              <option value="" disabled selected>—</option>
+              <option value="dutch"></option>
+              <option value="milk"></option>
+              <option value="lime"></option>
+              <option value="grape"></option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-sns"><span class="ko">SNS 계정 (선택)</span><span class="ja">SNSアカウント（任意）</span></label>
             <input id="f-sns" name="entry.63495182" type="text" placeholder="@">
           </div>
           <div class="field">
-            <label for="f-src">この会を知ったきっかけ</label>
-            <select id="f-src" name="entry.1729227302"><option>Instagram</option><option>Threads</option><option>X (Twitter)</option><option>知人の紹介</option><option>検索</option></select>
+            <label for="f-src"><span class="ko">알게 된 경로</span><span class="ja">この会を知ったきっかけ</span></label>
+            <select id="f-src" name="entry.1729227302">
+              <option>Instagram</option><option>Threads</option><option>X (Twitter)</option>
+              <option value="知人の紹介 / 지인 소개">知人の紹介 / 지인 소개</option>
+              <option value="検索 / 검색">検索 / 검색</option>
+            </select>
           </div>
           <div class="field full">
-            <label for="f-msg">ご質問・ご要望（任意）</label>
+            <label for="f-msg"><span class="ko">질문 · 요청 (선택)</span><span class="ja">ご質問・ご要望（任意）</span></label>
             <textarea id="f-msg" name="entry.1088686635"></textarea>
           </div>
           <div class="form-foot">
-            <p class="draft" id="note">お申し込み後、ご入力のメールアドレス宛にご案内をお送りします。届かない場合は迷惑メールフォルダをご確認ください。</p>
+            <p class="draft" id="note"><span class="ko">신청 후 입력하신 이메일로 예약금 계좌를 안내해 드립니다. 메일이 오지 않으면 스팸함을 확인해 주세요. 예약금은 <b>모임 전 금요일 오후 3시까지</b> 알려주시면 전액 돌려드리고, 그 이후에는 취소·환불이 어렵습니다.</span><span class="ja">お申し込み後、ご入力のメールアドレス宛に予約金のお振込み先をお送りします。届かない場合は迷惑メールフォルダをご確認ください。予約金は<b>開催前の金曜15時まで</b>のご連絡で全額お返しします。それ以降のキャンセル・返金はいたしかねます。</span></p>
             <div class="consent">
               <label>
                 <input type="checkbox" id="f-agree" required>
-                <span><b>個人情報の取得・利用に同意します</b> <span class="req">[必須]</span><br>
-                お名前・国籍・メールアドレス・ご参加日を、お申し込みの受付とご案内のためにお預かりします。情報は Cloudflare, Inc.（米国）のサーバーで保管し、メールの送信には Brevo（Sendinblue SAS・フランス）を利用しています。会の終了後6か月で削除いたします。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。</span>
+                <span class="ko"><b>개인정보 수집·이용에 동의합니다</b> <span class="req">[필수]</span><br>
+                이름·국적·이메일·참가일·음료 선택과 예약금 입금 확인 여부를, 신청 접수와 안내를 위해 보관합니다. 정보는 Cloudflare, Inc.(미국) 서버에 저장하고, 메일 발송에는 Brevo(Sendinblue SAS·프랑스)를 이용합니다. 모임 종료 후 6개월이 지나면 삭제합니다. 자세한 내용은 <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>을 확인해 주세요.</span>
+                <span class="ja"><b>個人情報の取得・利用に同意します</b> <span class="req">[必須]</span><br>
+                お名前・国籍・メールアドレス・ご参加日・お飲み物のご選択と、予約金の入金確認の記録を、お申し込みの受付とご案内のためにお預かりします。情報は Cloudflare, Inc.（米国）のサーバーで保管し、メールの送信には Brevo（Sendinblue SAS・フランス）を利用しています。会の終了後6か月で削除いたします。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。</span>
               </label>
-              <p class="sub">同意はいつでも撤回でき、削除をご希望の場合は info@irotomo.com までご連絡ください。撤回されても、ご参加に影響はありません。</p>
+              <p class="sub"><span class="ko">동의는 언제든 철회할 수 있고, 삭제를 원하시면 info@irotomo.com 으로 연락해 주세요. 철회하셔도 참가에는 영향이 없습니다.</span><span class="ja">同意はいつでも撤回でき、削除をご希望の場合は info@irotomo.com までご連絡ください。撤回されても、ご参加に影響はありません。</span></p>
             </div>
-            <button class="btn btn-primary btn-lg" id="submit" type="submit">申し込む</button>
+            <button class="btn btn-primary btn-lg" id="submit" type="submit"><span class="ko">신청하기</span><span class="ja">申し込む</span></button>
           </div>
         </form>
 
@@ -1340,27 +1367,27 @@ body.admin-on .gal figure .zoom{display:none}
         <div id="done">
           <div class="done-top">
             <div class="done-check"><svg viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6.5"></polyline></svg></div>
-            <h3>お申し込みありがとうございます</h3>
-            <p>ご入力のメールアドレス宛にご案内メールをお送りしました。これでご参加は確定です。事前のお支払いはございません。メールが届かない場合は迷惑メールフォルダをご確認ください。</p>
+            <h3><span class="ko">신청해 주셔서 감사합니다</span><span class="ja">お申し込みありがとうございます</span></h3>
+            <p><span class="ko">입력하신 이메일로 <b>예약금 6,000원 입금 계좌</b>를 보내드렸습니다. 입금이 확인되면 참가가 확정됩니다. 메일이 오지 않으면 스팸함을 확인해 주세요.</span><span class="ja">ご入力のメールアドレス宛に<b>予約金6,000ウォンのお振込み先</b>をお送りしました。入金の確認をもってご参加が確定します。メールが届かない場合は迷惑メールフォルダをご確認ください。</span></p>
           </div>
           <div class="done-map">
             <div class="gmap" data-gmap style="min-height:280px">
               <iframe title="会場地図" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
               <div class="gmap-fb">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
-                <p class="fb-a">서울 강남구 봉은사로50길 10, 1층</p>
+                <p class="fb-a">서울 영등포구 국제금융로8길 31, SK증권빌딩 1층</p>
                 <div class="fb-links">
-                  <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">NAVER Map</a>
-                  <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Maps</a>
+                  <a href="https://map.naver.com/p/search/%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C8%EA%B8%B8%2031" target="_blank" rel="noopener">NAVER Map</a>
+                  <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5198049,126.9280064" target="_blank" rel="noopener">Google Maps</a>
                 </div>
               </div>
             </div>
             <div class="done-info">
-              <p class="mlabel">カフェ・レコルト</p>
-              <p class="mtext">서울 강남구 봉은사로50길 10, 1층<br>毎週日曜 15:00 – 17:00</p>
+              <p class="mlabel">カフェ・ヒダ ヨイド店</p>
+              <p class="mtext">서울 영등포구 국제금융로8길 31, SK증권빌딩 1층<br><span class="ko">매주 일요일 15:00 – 17:00</span><span class="ja">毎週日曜 15:00 – 17:00</span></p>
               <div class="mlinks">
-                <a href="https://map.naver.com/p/search/%EB%B4%89%EC%9D%80%EC%82%AC%EB%A1%9C50%EA%B8%B8%2010" target="_blank" rel="noopener">NAVER Mapで開く</a>
-                <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5091435,127.0425545" target="_blank" rel="noopener">Google Mapsで開く</a>
+                <a href="https://map.naver.com/p/search/%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C8%EA%B8%B8%2031" target="_blank" rel="noopener">NAVER Mapで開く</a>
+                <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5198049,126.9280064" target="_blank" rel="noopener">Google Mapsで開く</a>
               </div>
             </div>
           </div>
@@ -1464,6 +1491,7 @@ body.admin-on .gal figure .zoom{display:none}
         신청 폼의 날짜 선택지에서도 빠집니다. 일요일이 아닌 날은 위에서 추가하세요.</p>
     </section>
 
+
     <section class="sg-pane" data-p="mail" hidden>
       <div class="sg-dg-grid">
         <label class="sg-dg-on"><input type="checkbox" id="dg-on"> <span>켜기</span></label>
@@ -1566,6 +1594,8 @@ window.IROLANG = (function(){
     document.documentElement.lang = l;
     if (remember !== false) window.IROLANG.set(l);
     langBtns.forEach(function(x){ x.setAttribute('aria-pressed', String(x.dataset.set === l)); });
+    /* <option> 안에는 태그를 넣을 수 없어, 선택지 글자는 여기서 다시 채웁니다 */
+    try { fillPicks(); applySchedule(); } catch (e) {}
   }
   langBtns.forEach(function(b){
     b.addEventListener('click', function(){ setLang(b.dataset.set); track('언어전환-' + b.dataset.set); });
@@ -1622,7 +1652,7 @@ window.IROLANG = (function(){
        → <iframe src="https://www.google.com/maps/embed?pb=..."> 중
          src 안의 주소만 따다 아래 MAP_EMBED 에 넣으면 됩니다.
      ══════════════════════════════════════════════════════════════ */
-  var MAP_EMBED = 'https://maps.google.com/maps?q=37.5091435,127.0425545&hl=ko&z=17&ie=UTF8&output=embed';
+  var MAP_EMBED = 'https://maps.google.com/maps?q=37.5198049,126.9280064&hl=ko&z=17&ie=UTF8&output=embed';
 
   /* 지도 — 임베드가 차단되면 주소 카드로 대체 */
   document.querySelectorAll('[data-gmap]').forEach(function(box){
@@ -1764,6 +1794,88 @@ window.IROLANG = (function(){
   }
 
   /* ── 참가일 선택 ────────────────────────────────────────────── */
+  /* ── 선택지 글자 채우기 ───────────────────────────────────
+     <option> 안에는 태그를 넣을 수 없어서, 라벨과 달리
+     여기서 언어에 맞는 글자를 직접 넣어 줍니다.
+     값(value)은 worker.js 의 DRINKS 와 같아야 합니다. */
+  var DRINK_LABEL = {
+    dutch: { ko: '더치커피',      ja: 'ダッチコーヒー' },
+    milk:  { ko: '밀크티',        ja: 'ミルクティー' },
+    lime:  { ko: '탄산수 (라임)',  ja: '炭酸水（ライム）' },
+    grape: { ko: '탄산수 (자몽)',  ja: '炭酸水（グレープフルーツ）' }
+  };
+  /* 더치커피와 밀크티는 카페에 미리 준비를 부탁드려야 해서,
+     모임 48시간 전(일요일 15시 기준 = 금요일 오후 3시)에 마감합니다.
+     worker.js 의 PREORDER_LEAD_HOURS 와 같은 값이어야 합니다. */
+  var PREORDER_DRINKS = ['dutch', 'milk'];
+  var PREORDER_LEAD_HOURS = 48;
+
+  function meetStartMs(ymd){
+    var a = String(ymd || '').split('-');
+    if (a.length !== 3) return NaN;
+    var hm = /(\d{1,2})\s*:\s*(\d{2})/.exec(SCHED.time || '');
+    var hh = hm ? +hm[1] : 15, mm = hm ? +hm[2] : 0;
+    return Date.UTC(+a[0], +a[1] - 1, +a[2], hh - 9, mm);   /* KST = UTC+9 */
+  }
+  function preorderOpen(ymd){
+    var t = meetStartMs(ymd);
+    if (isNaN(t)) return true;
+    return (t - Date.now()) >= PREORDER_LEAD_HOURS * 3600000;
+  }
+
+  /* 고른 날짜에 따라 음료 선택지를 여닫습니다 */
+  function syncDrinks(){
+    var dr = document.getElementById('f-drink');
+    var dHidden = document.getElementById('f-date');
+    if (!dr) return;
+    var L = document.body.dataset.lang === 'ko' ? 'ko' : 'ja';
+    var date = dHidden ? dHidden.value : '';
+    var open = !date || preorderOpen(date);
+    var blocked = false;
+
+    Array.prototype.forEach.call(dr.options, function(o){
+      if (!o.value) return;
+      var pre = PREORDER_DRINKS.indexOf(o.value) >= 0;
+      var off = pre && !open;
+      o.disabled = off;
+      var t = DRINK_LABEL[o.value];
+      if (t) o.textContent = t[L] + (off ? (L === 'ko' ? ' — 마감' : ' — 締切') : '');
+      if (off && dr.value === o.value) blocked = true;
+    });
+    if (blocked) dr.value = '';    /* 이미 고른 것이 마감됐으면 되돌립니다 */
+
+    var note = document.getElementById('f-drink-note');
+    if (!note) {
+      note = document.createElement('p');
+      note.id = 'f-drink-note'; note.className = 'drink-note'; note.hidden = true;
+      if (dr.parentNode) dr.parentNode.appendChild(note);
+    }
+    if (date && !open) {
+      note.textContent = L === 'ko'
+        ? '더치커피와 밀크티는 카페에 미리 준비를 부탁드려야 해서 금요일 오후 3시에 마감했습니다. 탄산수는 그대로 고르실 수 있습니다.'
+        : 'ダッチコーヒーとミルクティーは、カフェへ事前にご用意をお願いする都合上、金曜15時で締め切りました。炭酸水はそのままお選びいただけます。';
+      note.hidden = false;
+    } else {
+      note.hidden = true;
+    }
+  }
+  function fillPicks(){
+    var L = document.body.dataset.lang === 'ko' ? 'ko' : 'ja';
+    var dr = document.getElementById('f-drink');
+    if (dr) {
+      Array.prototype.forEach.call(dr.options, function(o){
+        if (!o.value) { o.textContent = L === 'ko' ? '음료를 선택해 주세요' : 'お飲み物をお選びください'; return; }
+        var t = DRINK_LABEL[o.value];
+        if (t) o.textContent = t[L];
+      });
+      syncDrinks();
+    }
+    var dp = document.getElementById('f-date-pick');
+    if (dp && dp.options.length && !dp.options[0].value) {
+      dp.options[0].textContent = L === 'ko' ? '날짜를 선택해 주세요' : '日付をお選びください';
+    }
+  }
+
   function fillDates(list){
     var dPick = document.getElementById('f-date-pick');
     var dHidden = document.getElementById('f-date');
@@ -1782,16 +1894,24 @@ window.IROLANG = (function(){
         d.setDate(d.getDate() + 7);
       }
     }
-    var WD = ['日','月','火','水','木','金','土'];
+    var ja = document.body.dataset.lang !== 'ko';
+    var WD = ja ? ['日','月','火','水','木','金','土'] : ['일','월','화','수','목','금','토'];
     out.forEach(function(v){
       var a = v.split('-'), dt = new Date(v + 'T00:00:00');
       var o = document.createElement('option');
       o.value = v;
-      o.textContent = (+a[0]) + '年' + (+a[1]) + '月' + (+a[2]) + '日（' + WD[dt.getDay()] + '）';
+      o.textContent = ja
+        ? (+a[0]) + '年' + (+a[1]) + '月' + (+a[2]) + '日（' + WD[dt.getDay()] + '）'
+        : (+a[0]) + '년 ' + (+a[1]) + '월 ' + (+a[2]) + '일 (' + WD[dt.getDay()] + ')';
       dPick.appendChild(o);
     });
-    dHidden.value = '';
-    dPick.onchange = function(){ dHidden.value = dPick.value; };
+    /* 다시 그려도 고르셨던 날짜는 그대로 둡니다 */
+    if (dHidden.value && out.indexOf(dHidden.value) >= 0) dPick.value = dHidden.value;
+    else dHidden.value = '';
+    dPick.onchange = function(){ dHidden.value = dPick.value; syncDrinks(); };
+    fillPicks();
+    syncDrinks();
+
   }
 
   /* 상단 메뉴의 작은 마크는 그대로 두고, 히어로의 큰 로고만 바꾼다 */
@@ -1924,7 +2044,7 @@ window.IROLANG = (function(){
           action:'signup',
           name: val('f-name'), nat: val('f-nat'),  email: val('f-mail'),
           date: val('f-date'), sns: val('f-sns'),  src:  val('f-src'),
-          memo: val('f-msg')
+          drink: val('f-drink'), memo: val('f-msg')
         })
       })
       .then(function(r){ return r.json(); })
@@ -1937,11 +2057,22 @@ window.IROLANG = (function(){
         done.scrollIntoView({block:'center'});
       })
       .catch(function(err){
-        /* 원인을 알 수 있게 사유를 함께 보여줍니다 */
-        var why = (err && err.message) ? ' (' + err.message + ')' : '';
-        alert(document.body.dataset.lang === 'ja'
-          ? '送信できませんでした。しばらくしてからもう一度お試しください。' + why
-          : '전송하지 못했습니다. 잠시 후 다시 시도해 주세요.' + why);
+        var ja = document.body.dataset.lang === 'ja';
+        var code = (err && err.message) || '';
+        /* 서버가 돌려준 사유를 사람이 읽는 말로 바꿔 줍니다 */
+        var MSG = {
+          closed:   ja ? 'この回はお申し込みを締め切りました。次の回をお選びください。'
+                       : '이 회차는 신청이 마감되었습니다. 다음 회차를 선택해 주세요.',
+          no_drink: ja ? 'お飲み物をお選びください。' : '음료를 선택해 주세요.',
+          drink_closed: ja ? 'そのお飲み物は金曜15時で締め切りました。炭酸水をお選びください。'
+                           : '해당 음료는 금요일 오후 3시에 마감되었습니다. 탄산수를 선택해 주세요.',
+          missing:  ja ? 'お名前とメールアドレスをご確認ください。'
+                       : '이름과 이메일을 확인해 주세요.'
+        };
+        if (MSG[code]) { alert(MSG[code]); return; }
+        alert((ja ? '送信できませんでした。しばらくしてからもう一度お試しください。'
+                  : '전송하지 못했습니다. 잠시 후 다시 시도해 주세요.')
+              + (code ? ' (' + code + ')' : ''));
       })
       .then(function(){
         if (btn) { btn.disabled = false; if (btn.dataset.t) btn.textContent = btn.dataset.t; }
@@ -2140,8 +2271,9 @@ window.IROLANG = (function(){
   var SG = { rows: [], filter: 'soon', q: '' };
   var SG_COLS = [
     ['name','이름'], ['nat','국적'], ['email','이메일'],
-    ['sns','SNS'], ['src','경로'], ['memo','메모']
+    ['drink','음료'], ['sns','SNS'], ['src','경로'], ['memo','메모']
   ];
+  var SG_DRINK = { dutch:'더치커피', milk:'밀크티', lime:'탄산수(라임)', grape:'탄산수(자몽)' };
 
   on('adm-signups-open', 'click', function(){
     openDim($a('adm-signups')); loadSignups();
@@ -2199,6 +2331,7 @@ window.IROLANG = (function(){
     if (save) save.click();
     setTimeout(function(){ if (st) st.textContent = '저장했습니다'; }, 900);
   });
+
 
   function loadMeetups(){
     syncTimeInput();
@@ -2371,22 +2504,55 @@ window.IROLANG = (function(){
         var dt = new Date(k + 'T00:00:00');
         label = k.replace(/-/g, '.') + ' (' + WD[dt.getDay()] + ')';
       }
-      h.innerHTML = '<b>' + label + '</b><span>' + list.length + '명</span>';
+      var paidN = list.filter(function(x){ return +x.paid === 1; }).length;
+      h.innerHTML = '<b>' + label + '</b><span>' + list.length + '명 · 입금 ' + paidN + '</span>';
       wrap.appendChild(h);
+
+      /* 카페에 미리 알려주실 잔 수 */
+      var tally = document.createElement('p');
+      tally.className = 'sg-tally';
+      tally.textContent = sgDrinkTally(list);
+      wrap.appendChild(tally);
 
       list.forEach(function(r){ wrap.appendChild(sgRow(r)); });
       box.appendChild(wrap);
     });
   }
 
+  function sgDrinkTally(list){
+    var out = [], none = 0;
+    Object.keys(SG_DRINK).forEach(function(k){
+      var n = list.filter(function(x){ return x.drink === k; }).length;
+      if (n) out.push(SG_DRINK[k] + ' ' + n);
+    });
+    none = list.filter(function(x){ return !x.drink; }).length;
+    if (none) out.push('미선택 ' + none);
+    return out.length ? '음료 — ' + out.join(' · ') : '음료 — 없음';
+  }
+  function paintSgTally(){ paintSg(); }
+
   function sgRow(r){
     var row = document.createElement('div'); row.className = 'sg-row';
     SG_COLS.forEach(function(c){
       var f = document.createElement('label'); f.className = 'sg-f';
       var s = document.createElement('span'); s.textContent = c[1];
-      var inp = document.createElement(c[0] === 'memo' ? 'textarea' : 'input');
+      var inp;
+      if (c[0] === 'drink') {
+        /* 오타로 집계가 어긋나지 않도록 고르는 방식으로 둡니다 */
+        inp = document.createElement('select');
+        var blank = document.createElement('option');
+        blank.value = ''; blank.textContent = '—';
+        inp.appendChild(blank);
+        Object.keys(SG_DRINK).forEach(function(k){
+          var o = document.createElement('option');
+          o.value = k; o.textContent = SG_DRINK[k];
+          inp.appendChild(o);
+        });
+      } else {
+        inp = document.createElement(c[0] === 'memo' ? 'textarea' : 'input');
+        if (c[0] === 'memo') inp.rows = 2;
+      }
       inp.value = r[c[0]] || '';
-      if (c[0] === 'memo') inp.rows = 2;
       inp.addEventListener('change', function(){
         var patch = { action:'signup_save', token: ADMIN.token, id: r.id };
         patch[c[0]] = inp.value;
@@ -2400,6 +2566,28 @@ window.IROLANG = (function(){
       });
       f.appendChild(s); f.appendChild(inp); row.appendChild(f);
     });
+
+    /* 입금 확인 — 예약금이 들어왔는지 표시합니다 */
+    var pay = document.createElement('label'); pay.className = 'sg-paid';
+    var cb = document.createElement('input'); cb.type = 'checkbox';
+    cb.checked = +r.paid === 1;
+    var pt = document.createElement('span'); pt.textContent = cb.checked ? '입금' : '미입금';
+    pay.classList.toggle('on', cb.checked);
+    cb.addEventListener('change', function(){
+      var v = cb.checked ? 1 : 0;
+      cb.disabled = true;
+      apiPost({ action:'signup_save', token: ADMIN.token, id: r.id, paid: v })
+        .then(function(d){
+          cb.disabled = false;
+          if (!d || !d.ok) { cb.checked = !cb.checked; return; }
+          r.paid = v;
+          pt.textContent = v ? '입금' : '미입금';
+          pay.classList.toggle('on', !!v);
+          paintSgTally();
+        })
+        .catch(function(){ cb.disabled = false; cb.checked = !cb.checked; });
+    });
+    pay.appendChild(cb); pay.appendChild(pt); row.appendChild(pay);
 
     var del = document.createElement('button');
     del.type = 'button'; del.className = 'sg-del'; del.textContent = '삭제';
@@ -2418,11 +2606,13 @@ window.IROLANG = (function(){
   on('sg-csv', 'click', function(){
     var rows = sgVisible();
     if (!rows.length) return alert('내려받을 신청이 없습니다.');
-    var head = ['날짜','이름','국적','이메일','SNS','경로','메모','신청시각'];
+    var head = ['날짜','이름','국적','이메일','음료','입금','SNS','경로','메모','신청시각'];
     var q = function(v){ return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
     var lines = [head.map(q).join(',')];
     rows.forEach(function(r){
-      lines.push([r.date, r.name, r.nat, r.email, r.sns, r.src, r.memo,
+      lines.push([r.date, r.name, r.nat, r.email,
+        SG_DRINK[r.drink] || '', (+r.paid === 1 ? '입금' : '미입금'),
+        r.sns, r.src, r.memo,
         new Date(r.createdAt).toLocaleString('ko-KR')].map(q).join(','));
     });
     /* BOM 을 붙여야 엑셀에서 한글이 깨지지 않습니다 */
