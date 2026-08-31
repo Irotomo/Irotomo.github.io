@@ -961,6 +961,25 @@ body.admin-on .gal figure .zoom{display:none}
 .somoim-note{margin:12px 0 0;font-size:12.5px;line-height:1.7;color:#8a6d1f;
   background:rgba(223,165,58,.10);border-radius:8px;padding:9px 12px}
 
+/* ── 신청 폼 가로 넘침 방지 ───────────────────────────────
+   select 은 가장 긴 선택지만큼 최소 너비를 잡습니다.
+   flex·grid 안에서는 그 아래로 줄어들지 못해 카드를 밀어내므로,
+   min-width 를 풀고 폭을 100% 로 묶어 둡니다. */
+.form{min-width:0}
+.field{min-width:0}
+.field input,.field select,.field textarea{
+  width:100%;min-width:0;max-width:100%;box-sizing:border-box}
+.field select{
+  text-overflow:ellipsis;                 /* 긴 선택지는 … 로 줄입니다 */
+  -webkit-appearance:none;appearance:none;
+  padding-right:2.4em;
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
+                   linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 1.15em) 1.25em,calc(100% - .8em) 1.25em;
+  background-size:6px 6px,6px 6px;background-repeat:no-repeat}
+.field label{overflow-wrap:anywhere}
+.drink-note,.date-closed{max-width:100%;overflow-wrap:anywhere}
+
 </style>
 </head>
 <body data-lang="ja">
@@ -1347,7 +1366,7 @@ body.admin-on .gal figure .zoom{display:none}
           <!-- 음료 : 음료비로 미리 받는 한 잔입니다.
                값(value)은 worker.js 의 DRINKS 와 반드시 같아야 합니다. -->
           <div class="field">
-            <label for="f-drink"><span class="ko">음료 <span class="lab-note">— 음료비 6,000원으로 미리 결제합니다</span></span><span class="ja">お飲み物 <span class="lab-note">— ドリンク代6,000ウォンとして先にお支払いいただきます</span></span></label>
+            <label for="f-drink"><span class="ko">음료 <span class="lab-note">— 음료비 6,000원 (사전 결제)</span></span><span class="ja">お飲み物 <span class="lab-note">— ドリンク代6,000ウォン（事前払い）</span></span></label>
             <select id="f-drink" required>
               <option value="" disabled selected>—</option>
               <option value="dutch"></option>
@@ -1870,8 +1889,8 @@ window.IROLANG = (function(){
            고르기 전에 알아야 나중에 당황하지 않습니다. */
         var mark = off
           ? (L === 'ko' ? ' — 신청 마감' : ' — 受付終了')
-          : (pre ? (L === 'ko' ? ' (금요일 15시 이후 신청 시 선택 불가)'
-                               : '（金曜15時以降のお申し込みでは選択不可）') : '');
+          : (pre ? (L === 'ko' ? ' (금 15시 이후 선택 불가)'
+                               : '（金曜15時以降は選択不可）') : '');
         o.textContent = t[L] + mark;
       }
       if (off && dr.value === o.value) blocked = true;
