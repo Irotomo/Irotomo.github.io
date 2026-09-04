@@ -679,6 +679,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   font:inherit;font-size:13px;cursor:pointer}
 #mt-time-save:hover{background:#f4f3f8}
 #mt-time-state{font-size:12px;color:#8a86a0}
+.ls-row #ls-date{width:132px;background:#f4f3f8;color:#8a86a0}
+.ls-row #ls-ja,.ls-row #ls-ko{width:74px;padding:7px 9px;border:1px solid #e2dfec;
+  border-radius:7px;font:inherit;font-size:13px}
+#ls-save,#ls-auto{padding:8px 14px;border:1px solid #dcd9e8;background:#fff;
+  border-radius:8px;font:inherit;font-size:13px;cursor:pointer}
+#ls-save:hover,#ls-auto:hover{background:#f4f3f8}
+#ls-state{font-size:12px;color:#8a86a0}
 @media (max-width:720px){ .mt-row{grid-template-columns:1fr auto auto} .mt-note{grid-column:1/-1} }
 
 /* 신청자 패널 탭 */
@@ -980,6 +987,19 @@ body.admin-on .gal figure .zoom{display:none}
 .field label{overflow-wrap:anywhere}
 .drink-note,.date-closed{max-width:100%;overflow-wrap:anywhere}
 
+/* ── 참가 인원 표시 ─────────────────────────────────────── */
+.hero-stat{
+  margin-top:18px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:.88rem;color:var(--muted);line-height:1.6}
+.hero-stat b{color:var(--ink);font-weight:700}
+
+.date-count{
+  margin:0 0 16px;padding:14px 18px;border-radius:var(--r);
+  background:rgba(223,165,58,.12);border:1px solid rgba(223,165,58,.3)}
+.date-count .dc-when{display:block;font-size:.78rem;color:#8a6d1f;margin-bottom:3px}
+.date-count .dc-n{display:block;font-size:1.15rem;font-weight:700;color:var(--ink)}
+.date-count .dc-mix{display:block;font-size:.8rem;color:#8a6d1f;margin-top:4px}
+
 </style>
 </head>
 <body data-lang="ja">
@@ -1029,6 +1049,9 @@ body.admin-on .gal figure .zoom{display:none}
           <a class="btn btn-ghost btn-lg ko" href="#about" data-c="c13">모임 소개</a>
           <a class="btn btn-ghost btn-lg ja" href="#about" data-c="c13">交流会について</a>
         </div>
+        <!-- 지난 회차 실적 — 관리자에서 숫자만 고쳐 쓰시면 됩니다.
+             «1/1» 처럼 보이는 문제를 막는 자리입니다. -->
+        <p class="hero-stat"><span class="ko" data-c="c89">지난주에는 일본인 {ja}명 · 한국인 {ko}명이 함께했습니다</span><span class="ja" data-c="c89">先週は日本人{ja}名・韓国人{ko}名の方にご参加いただきました</span></p>
         <p class="hero-note ko" data-c="c14">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
         <p class="hero-note ja" data-c="c14">事前申込制です。当日参加は受け付けておりません。</p>
       </div>
@@ -1339,6 +1362,10 @@ body.admin-on .gal figure .zoom{display:none}
              ※ 폼 설정의 [응답자 로그인 필요]·[이메일 주소 수집]은 꺼져 있어야
                이 페이지에서 전송이 됩니다.
              ══════════════════════════════════════════════════════════════ -->
+        <!-- 고른 날짜의 신청 현황 — 서버가 내려준 인원수로 자동으로 채워집니다.
+             일정 인원을 넘었을 때만 보입니다 (COUNT_MIN). -->
+        <p id="date-count" class="date-count" hidden></p>
+
         <form class="form reveal" id="apply-form" novalidate="false">
           <div class="field">
             <label for="f-name"><span class="ko">이름</span><span class="ja">お名前</span></label>
@@ -1516,6 +1543,19 @@ body.admin-on .gal figure .zoom{display:none}
     </section>
 
     <section class="sg-pane" data-p="dates" hidden>
+      <div class="mt-time-row ls-row">
+        <label><span>지난 회차</span><input type="text" id="ls-date" readonly></label>
+        <label><span>일본</span><input type="number" id="ls-ja" min="0" max="999"></label>
+        <label><span>한국</span><input type="number" id="ls-ko" min="0" max="999"></label>
+        <button type="button" id="ls-save">실적 저장</button>
+        <button type="button" id="ls-auto">자동으로</button>
+        <span id="ls-state"></span>
+      </div>
+      <p class="sg-dg-note" style="margin:0 0 14px">
+        첫 화면의 «지난주에는 …» 문구에 들어가는 숫자입니다.
+        비워 두면 입금이 확인된 인원으로 자동 계산됩니다.
+        실제 참석 인원이 다르면 여기서 고쳐 주세요.</p>
+
       <div class="mt-time-row">
         <label><span>모임 시간</span>
           <input type="text" id="mt-time" placeholder="15:00 – 17:30" autocomplete="off"></label>
@@ -1640,7 +1680,7 @@ window.IROLANG = (function(){
     if (remember !== false) window.IROLANG.set(l);
     langBtns.forEach(function(x){ x.setAttribute('aria-pressed', String(x.dataset.set === l)); });
     /* <option> 안에는 태그를 넣을 수 없어, 선택지 글자는 여기서 다시 채웁니다 */
-    try { fillPicks(); applySchedule(); } catch (e) {}
+    try { fillPicks(); applySchedule(); paintCount(); paintLast(); } catch (e) {}
   }
   langBtns.forEach(function(b){
     b.addEventListener('click', function(){ setLang(b.dataset.set); track('언어전환-' + b.dataset.set); });
@@ -1912,6 +1952,71 @@ window.IROLANG = (function(){
       note.hidden = true;
     }
   }
+  /* ── 신청 현황 ────────────────────────────────────────────
+     서버가 내려준 날짜별 인원을 고른 날짜에 맞춰 보여줍니다.
+     숫자가 낮으면 오히려 역효과라, 아래 인원을 넘어야 나타납니다. */
+  var COUNT_MIN = 5;
+  var COUNTS = {};
+
+  /* ── 지난 회차 실적 ──────────────────────────────────────
+     문구는 관리자에서 고칠 수 있고, {ja} {ko} 자리에 숫자가 들어갑니다.
+     자리표시자가 든 «원본» 문장을 따로 들고 있어야
+     숫자를 채워 넣은 뒤에도 다음 갱신 때 다시 쓸 수 있습니다. */
+  var LAST = null, LAST_TPL = {};
+
+  function grabLastTpl(){
+    document.querySelectorAll('[data-c="c89"]').forEach(function(el){
+      var L = el.classList.contains('ja') ? 'ja' : 'ko';
+      if (el.textContent.indexOf('{') >= 0) LAST_TPL[L] = el.textContent;
+    });
+  }
+  function restoreLastTpl(){       /* 편집 모드에서는 원본 문장을 보여줍니다 */
+    document.querySelectorAll('[data-c="c89"]').forEach(function(el){
+      var L = el.classList.contains('ja') ? 'ja' : 'ko';
+      if (LAST_TPL[L]) el.textContent = LAST_TPL[L];
+    });
+    var w = document.querySelector('.hero-stat');
+    if (w) w.hidden = false;
+  }
+  function paintLast(){
+    grabLastTpl();
+    var wrap = document.querySelector('.hero-stat');
+    if (!wrap) return;
+    if (!LAST || !LAST.n) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    document.querySelectorAll('[data-c="c89"]').forEach(function(el){
+      var L = el.classList.contains('ja') ? 'ja' : 'ko';
+      var t = LAST_TPL[L];
+      if (t) el.textContent = t.replace('{ja}', LAST.ja).replace('{ko}', LAST.ko);
+    });
+  }
+
+  function paintCount(){
+    var box = document.getElementById('date-count');
+    if (!box) return;
+    var d = document.getElementById('f-date');
+    var c = d && d.value ? COUNTS[d.value] : null;
+    if (!c || c.n < COUNT_MIN) { box.hidden = true; return; }
+
+    var ko = document.body.dataset.lang === 'ko';
+    var a = d.value.split('-');
+    var wd = ['일','월','화','수','목','금','토'][new Date(d.value + 'T00:00:00').getDay()];
+    var when = ko
+      ? (+a[1]) + '월 ' + (+a[2]) + '일 (' + wd + ') 현재'
+      : (+a[1]) + '月' + (+a[2]) + '日（' + ['日','月','火','水','木','金','土'][new Date(d.value + 'T00:00:00').getDay()] + '）現在';
+
+    box.innerHTML = '';
+    var s1 = document.createElement('span'); s1.className = 'dc-when'; s1.textContent = when;
+    var s2 = document.createElement('span'); s2.className = 'dc-n';
+    s2.textContent = ko ? c.n + '명 신청' : c.n + '名がお申し込み';
+    var s3 = document.createElement('span'); s3.className = 'dc-mix';
+    s3.textContent = ko
+      ? '일본 ' + c.ja + '명 · 한국 ' + (c.n - c.ja) + '명'
+      : '日本 ' + c.ja + '名 ・ 韓国 ' + (c.n - c.ja) + '名';
+    box.appendChild(s1); box.appendChild(s2); box.appendChild(s3);
+    box.hidden = false;
+  }
+
   function fillPicks(){
     var L = document.body.dataset.lang === 'ko' ? 'ko' : 'ja';
     var dr = document.getElementById('f-drink');
@@ -1961,9 +2066,10 @@ window.IROLANG = (function(){
     /* 다시 그려도 고르셨던 날짜는 그대로 둡니다 */
     if (dHidden.value && out.indexOf(dHidden.value) >= 0) dPick.value = dHidden.value;
     else dHidden.value = '';
-    dPick.onchange = function(){ dHidden.value = dPick.value; syncDrinks(); };
+    dPick.onchange = function(){ dHidden.value = dPick.value; syncDrinks(); paintCount(); };
     fillPicks();
     syncDrinks();
+    paintCount();
 
   }
 
@@ -2078,7 +2184,11 @@ window.IROLANG = (function(){
         GALLERY = d.gallery.map(function(id){ return { id:id }; });
         renderGallery();
       }
+      if (d.counts) COUNTS = d.counts;
+      if (d.last) LAST = d.last;
+      paintLast();
       if (d.schedule) { SCHED = d.schedule; applySchedule(); }
+      paintCount();
     })
     .catch(function(){ /* 못 불러오면 페이지에 적힌 기본 문구가 그대로 쓰입니다 */ });
 
@@ -2248,6 +2358,7 @@ window.IROLANG = (function(){
   window.addEventListener('resize', fitBar);
 
   function startEdit(){
+    try { restoreLastTpl(); } catch (e) {}
     editing = true;
     document.body.classList.add('admin-on');
     document.querySelectorAll('details').forEach(function(d){ d.open = true; });
@@ -2261,6 +2372,7 @@ window.IROLANG = (function(){
     fitBar(); count();
   }
   function stopEdit(){
+    setTimeout(function(){ try { paintLast(); } catch (e) {} }, 60);
     if (dirty() && !confirm('저장하지 않은 수정이 있습니다. 그대로 나가시겠습니까?')) return;
     location.reload();
   }
@@ -2431,8 +2543,42 @@ window.IROLANG = (function(){
   });
 
 
+  /* ── 지난 회차 실적 (관리자) ─────────────────────────── */
+  function lsFill(v){
+    LAST = v || LAST;
+    var d = $a('ls-date'), j = $a('ls-ja'), k = $a('ls-ko'), st = $a('ls-state');
+    if (!d) return;
+    if (!LAST) { d.value = ''; if (st) st.textContent = '지난 회차가 없습니다'; return; }
+    d.value = LAST.date || '';
+    j.value = LAST.ja;
+    k.value = LAST.ko;
+    if (st) st.textContent = LAST.auto ? '입금 확인 인원으로 자동 계산됨' : '직접 넣은 값';
+    try { paintLast(); } catch (e) {}
+  }
+  function lsSend(body, msg){
+    var st = $a('ls-state'); if (st) st.textContent = '저장 중…';
+    apiPost(body).then(function(d){
+      if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+      lsFill(d.last);
+      if (st) st.textContent = msg;
+    }).catch(function(e){ if (st) st.textContent = fail(e).slice(0, 30); });
+  }
+  on('ls-save', 'click', function(){
+    if (!LAST || !LAST.date) return;
+    lsSend({ action:'laststat_save', token: ADMIN.token, date: LAST.date,
+             ja: +$a('ls-ja').value || 0, ko: +$a('ls-ko').value || 0 }, '저장했습니다');
+  });
+  on('ls-auto', 'click', function(){
+    if (!LAST || !LAST.date) return;
+    lsSend({ action:'laststat_save', token: ADMIN.token, date: LAST.date, clear: true },
+           '자동 계산으로 되돌렸습니다');
+  });
+
   function loadMeetups(){
     syncTimeInput();
+    apiPost({ action:'laststat', token: ADMIN.token })
+      .then(function(d){ if (d && d.ok) lsFill(d.last); })
+      .catch(function(){});
     if (!$a('mt-list')) return;
     $a('mt-list').innerHTML = '<p class="sg-dg-note">여는 중…</p>';
     apiPost({ action:'meetups', token: ADMIN.token }).then(function(d){
