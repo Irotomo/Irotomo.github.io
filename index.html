@@ -686,6 +686,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   border-radius:8px;font:inherit;font-size:13px;cursor:pointer}
 #ls-save:hover,#ls-auto:hover{background:#f4f3f8}
 #ls-state{font-size:12px;color:#8a86a0}
+.so-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 12px}
+.so-lab{font-size:12px;color:#9d99b0;margin-right:2px}
+.so-chip{padding:5px 12px;border:1px solid #e2dfec;background:#fff;border-radius:999px;
+  font:inherit;font-size:12px;color:#5b5870;cursor:pointer;white-space:nowrap}
+.so-chip:hover{background:#f4f3f8}
+.so-chip.on{background:#fdf4f4;border-color:#f0d8d8;color:#9d4b4b;font-weight:600}
 @media (max-width:720px){ .mt-row{grid-template-columns:1fr auto auto} .mt-note{grid-column:1/-1} }
 
 /* 신청자 패널 탭 */
@@ -987,18 +993,58 @@ body.admin-on .gal figure .zoom{display:none}
 .field label{overflow-wrap:anywhere}
 .drink-note,.date-closed{max-width:100%;overflow-wrap:anywhere}
 
-/* ── 참가 인원 표시 ─────────────────────────────────────── */
+/* ── 지난 회차 실적 ─────────────────────────────────────── */
 .hero-stat{
-  margin-top:18px;padding-top:16px;border-top:1px solid var(--line);
-  font-size:.88rem;color:var(--muted);line-height:1.6}
-.hero-stat b{color:var(--ink);font-weight:700}
+  margin-top:22px;padding-top:20px;border-top:1px solid var(--line);
+  font-size:1.12rem;font-weight:600;color:var(--ink);line-height:1.55;
+  letter-spacing:-.01em}
+@media (max-width:760px){ .hero-stat{font-size:1.02rem} }
 
+/* ── 이번 회차 현황 — 전광판 ────────────────────────────── */
 .date-count{
-  margin:0 0 16px;padding:14px 18px;border-radius:var(--r);
-  background:rgba(223,165,58,.12);border:1px solid rgba(223,165,58,.3)}
-.date-count .dc-when{display:block;font-size:.78rem;color:#8a6d1f;margin-bottom:3px}
-.date-count .dc-n{display:block;font-size:1.15rem;font-weight:700;color:var(--ink)}
-.date-count .dc-mix{display:block;font-size:.8rem;color:#8a6d1f;margin-top:4px}
+  margin:0 0 20px;padding:20px 22px;border-radius:16px;position:relative;
+  background:linear-gradient(160deg,#141B2E 0%,#1E2740 100%);
+  border:1px solid #2A3352;overflow:hidden;
+  box-shadow:0 16px 40px -22px rgba(20,27,46,.7)}
+/* 위쪽에 흐르는 빛 한 줄 */
+.date-count::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(223,165,58,.9),transparent);
+  animation:dcSweep 3.4s linear infinite}
+@keyframes dcSweep{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(100%)}}
+
+.date-count .dc-when{
+  display:block;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
+  color:#8C97BC;margin-bottom:9px}
+.date-count .dc-n{
+  display:flex;align-items:baseline;gap:.32em;
+  font-size:2.7rem;font-weight:800;color:#fff;line-height:1;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+  text-shadow:0 0 26px rgba(223,165,58,.4)}
+.date-count .dc-n em{
+  font-style:normal;font-size:.98rem;font-weight:600;color:var(--gold);
+  letter-spacing:.02em}
+.date-count .dc-mix{
+  display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.date-count .dc-mix span{
+  font-size:.8rem;color:#C8D0E8;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.11);border-radius:999px;padding:5px 12px;
+  font-variant-numeric:tabular-nums}
+@media (max-width:760px){
+  .date-count{padding:17px 18px}
+  .date-count .dc-n{font-size:2.25rem}}
+@media (prefers-reduced-motion:reduce){ .date-count::before{animation:none} }
+
+/* ── 관리자 : 음료 품절 ─────────────────────────────────── */
+.mt-drinks{display:flex;gap:5px;flex-wrap:wrap}
+.mt-drinks button{
+  padding:5px 10px;border:1px solid #dcd9e8;background:#fff;border-radius:999px;
+  font:inherit;font-size:11.5px;color:#5b5870;cursor:pointer;white-space:nowrap}
+.mt-drinks button:hover{background:#f4f3f8}
+.mt-drinks button.shut{
+  border-color:#f0d8d8;background:#fdf4f4;color:#9d4b4b;font-weight:700}
 
 </style>
 </head>
@@ -1918,12 +1964,19 @@ window.IROLANG = (function(){
     var open = !date || preorderOpen(date);
     var blocked = false;
 
+    var shut = (date && CLOSED[date]) || [];
     Array.prototype.forEach.call(dr.options, function(o){
       if (!o.value) return;
       var pre = PREORDER_DRINKS.indexOf(o.value) >= 0;
-      var off = pre && !open;
+      var soldout = shut.indexOf(o.value) >= 0;
+      var off = soldout || (pre && !open);
       o.disabled = off;
       var t = DRINK_LABEL[o.value];
+      if (soldout) {
+        o.textContent = t[L] + (L === 'ko' ? ' — 품절' : ' — 完売');
+        if (dr.value === o.value) blocked = true;
+        return;
+      }
       if (t) {
         /* 마감 전에도 «금요일 정오 이후 선택 불가»를 함께 보여줍니다.
            고르기 전에 알아야 나중에 당황하지 않습니다. */
@@ -1957,6 +2010,7 @@ window.IROLANG = (function(){
      숫자가 낮으면 오히려 역효과라, 아래 인원을 넘어야 나타납니다. */
   var COUNT_MIN = 5;
   var COUNTS = {};
+  var CLOSED = {};      /* 날짜별로 닫아 둔 음료 — { '2026-09-13': ['lime'] } */
 
   /* ── 지난 회차 실적 ──────────────────────────────────────
      문구는 관리자에서 고칠 수 있고, {ja} {ko} 자리에 숫자가 들어갑니다.
@@ -2004,15 +2058,22 @@ window.IROLANG = (function(){
     var when = ko
       ? (+a[1]) + '월 ' + (+a[2]) + '일 (' + wd + ') 현재'
       : (+a[1]) + '月' + (+a[2]) + '日（' + ['日','月','火','水','木','金','土'][new Date(d.value + 'T00:00:00').getDay()] + '）現在';
+    /* 「명 신청」 앞의 숫자를 크게 보이게 하려고 단위를 따로 넣습니다 */
 
     box.innerHTML = '';
     var s1 = document.createElement('span'); s1.className = 'dc-when'; s1.textContent = when;
     var s2 = document.createElement('span'); s2.className = 'dc-n';
-    s2.textContent = ko ? c.n + '명 신청' : c.n + '名がお申し込み';
+    s2.appendChild(document.createTextNode(String(c.n)));
+    var em = document.createElement('em');
+    em.textContent = ko ? '명 신청' : '名 お申し込み';
+    s2.appendChild(em);
+
     var s3 = document.createElement('span'); s3.className = 'dc-mix';
-    s3.textContent = ko
-      ? '일본 ' + c.ja + '명 · 한국 ' + (c.n - c.ja) + '명'
-      : '日本 ' + c.ja + '名 ・ 韓国 ' + (c.n - c.ja) + '名';
+    [ko ? '일본 ' + c.ja + '명' : '日本 ' + c.ja + '名',
+     ko ? '한국 ' + (c.n - c.ja) + '명' : '韓国 ' + (c.n - c.ja) + '名'
+    ].forEach(function(t){
+      var b = document.createElement('span'); b.textContent = t; s3.appendChild(b);
+    });
     box.appendChild(s1); box.appendChild(s2); box.appendChild(s3);
     box.hidden = false;
   }
@@ -2185,6 +2246,7 @@ window.IROLANG = (function(){
         renderGallery();
       }
       if (d.counts) COUNTS = d.counts;
+      if (d.closed) { CLOSED = d.closed; try { syncDrinks(); } catch (e) {} }
       if (d.last) LAST = d.last;
       paintLast();
       if (d.schedule) { SCHED = d.schedule; applySchedule(); }
@@ -2229,6 +2291,10 @@ window.IROLANG = (function(){
           no_drink: ja ? 'お飲み物をお選びください。' : '음료를 선택해 주세요.',
           drink_closed: ja ? 'そのお飲み物は金曜12時（正午）で締め切りました。バンダバーグをお選びください。'
                            : '해당 음료는 금요일 정오 12시에 마감되었습니다. 분다버그를 선택해 주세요.',
+          drink_soldout: ja ? 'そのお飲み物は完売いたしました。他のものをお選びください。'
+                            : '해당 음료는 준비된 수량이 모두 나갔습니다. 다른 음료를 선택해 주세요.',
+          drink_soldout: ja ? 'そのお飲み物は完売しました。他のものをお選びください。'
+                            : '해당 음료는 품절되었습니다. 다른 음료를 선택해 주세요.',
           missing:  ja ? 'お名前とメールアドレスをご確認ください。'
                        : '이름과 이메일을 확인해 주세요.'
         };
@@ -2608,20 +2674,47 @@ window.IROLANG = (function(){
       note.addEventListener('change', function(){ saveMeetup(m.date, m.off, note.value); });
       row.appendChild(note);
 
+      /* 수량이 정해진 음료를 손으로 닫습니다.
+         누르면 그 날짜의 신청 화면에서 «품절» 로 잠깁니다. */
+      var shut = (m.closed || []).slice();
+      var dbox = document.createElement('div'); dbox.className = 'mt-drinks';
+      [['lime','라임'], ['grape','자몽']].forEach(function(p){
+        var b = document.createElement('button');
+        b.type = 'button';
+        var paint = function(){
+          var on = shut.indexOf(p[0]) >= 0;
+          b.classList.toggle('shut', on);
+          b.textContent = p[1] + (on ? ' 품절' : '');
+          b.title = on ? '누르면 다시 받습니다' : '누르면 품절 처리합니다';
+        };
+        paint();
+        b.addEventListener('click', function(){
+          var i = shut.indexOf(p[0]);
+          if (i >= 0) shut.splice(i, 1); else shut.push(p[0]);
+          paint();
+          m.closed = shut.slice();
+          saveMeetup(m.date, m.off, note.value, false, shut);
+        });
+        dbox.appendChild(b);
+      });
+      row.appendChild(dbox);
+
       var tog = document.createElement('button');
       tog.type = 'button'; tog.className = 'mt-tog';
       tog.textContent = m.off ? '휴무' : '진행';
       tog.addEventListener('click', function(){
-        m.off = !m.off; saveMeetup(m.date, m.off, note.value, true);
+        m.off = !m.off; saveMeetup(m.date, m.off, note.value, true, shut);
       });
       row.appendChild(tog);
       box.appendChild(row);
     });
   }
 
-  function saveMeetup(date, off, note, repaint){
+  function saveMeetup(date, off, note, repaint, closed){
     $a('mt-state').textContent = '저장 중…';
-    apiPost({ action:'meetup_save', token: ADMIN.token, date: date, off: !!off, note: note || '' })
+    var body = { action:'meetup_save', token: ADMIN.token, date: date, off: !!off, note: note || '' };
+    if (Array.isArray(closed)) body.closed = closed;
+    apiPost(body)
       .then(function(d){
         $a('mt-state').textContent = (d && d.ok) ? '저장했습니다' : '저장하지 못했습니다';
         if (d && d.ok && repaint) loadMeetups();
@@ -2705,7 +2798,9 @@ window.IROLANG = (function(){
     $a('sg-body').innerHTML = '<p class="st-empty">불러오는 중…</p>';
     apiPost({ action:'signups', token: ADMIN.token }).then(function(d){
       if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
-      SG.rows = d.rows || []; fillDigest(d.digest); paintSg();
+      SG.rows = d.rows || [];
+      if (d.closed) CLOSED = d.closed;   /* 품절 버튼 상태 */
+      fillDigest(d.digest); paintSg();
     }).catch(function(e){
       $a('sg-body').innerHTML = '<p class="st-empty">불러오지 못했습니다 (' + e.message + ')</p>';
     });
@@ -2758,9 +2853,46 @@ window.IROLANG = (function(){
       tally.textContent = sgDrinkTally(list);
       wrap.appendChild(tally);
 
+      /* 수량이 정해진 음료를 그 날짜에 한해 닫습니다 */
+      if (/^\d{4}-\d{2}-\d{2}$/.test(k)) wrap.appendChild(soldoutRow(k));
+
       list.forEach(function(r){ wrap.appendChild(sgRow(r)); });
       box.appendChild(wrap);
     });
+  }
+
+  /* ── 품절 버튼 ────────────────────────────────────────── */
+  function soldoutRow(date){
+    var box = document.createElement('div');
+    box.className = 'so-row';
+    var lab = document.createElement('span');
+    lab.className = 'so-lab'; lab.textContent = '품절 처리';
+    box.appendChild(lab);
+
+    Object.keys(SG_DRINK).forEach(function(id){
+      var on = ((CLOSED[date] || []).indexOf(id) >= 0);
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'so-chip' + (on ? ' on' : '');
+      b.textContent = SG_DRINK[id] + (on ? ' 품절' : '');
+      b.addEventListener('click', function(){
+        var cur = (CLOSED[date] || []).slice();
+        var i = cur.indexOf(id);
+        if (i >= 0) cur.splice(i, 1); else cur.push(id);
+        b.disabled = true;
+        apiPost({ action:'meetup_save', token: ADMIN.token, date: date, closed: cur })
+          .then(function(d){
+            b.disabled = false;
+            if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+            if (cur.length) CLOSED[date] = cur; else delete CLOSED[date];
+            paintSg();
+            try { syncDrinks(); } catch (e) {}
+          })
+          .catch(function(){ b.disabled = false; alert('바꾸지 못했습니다.'); });
+      });
+      box.appendChild(b);
+    });
+    return box;
   }
 
   function sgDrinkTally(list){
