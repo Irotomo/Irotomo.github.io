@@ -698,7 +698,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .stf-add input{flex:1;min-width:110px;padding:7px 10px;border:1px solid #e2dfec;
   border-radius:8px;font:inherit;font-size:13px}
 .stf-add select{padding:7px 9px;border:1px solid #e2dfec;border-radius:8px;
-  font:inherit;font-size:13px;background:#fff}
+  font:inherit;font-size:13px;background:#fff;flex:none}
+.stf-add input{flex:1 1 110px}
 .stf-go{padding:7px 15px;border:1px solid #1c1b22;background:#1c1b22;color:#fff;
   border-radius:8px;font:inherit;font-size:13px;cursor:pointer}
 .stf-go:hover{background:#33313f}
@@ -2859,10 +2860,13 @@ window.IROLANG = (function(){
         var dt = new Date(k + 'T00:00:00');
         label = k.replace(/-/g, '.') + ' (' + WD[dt.getDay()] + ')';
       }
-      var gN = list.filter(function(x){ return +x.staff !== 1; }).length;
-      var sN = list.length - gN;
+      var sN = list.filter(function(x){ return +x.staff === 1; }).length;
+      var gN = list.length - sN;
       var paidN = list.filter(function(x){ return +x.staff !== 1 && +x.paid === 1; }).length;
-      h.innerHTML = '<b>' + label + '</b><span>' + gN + '명 · 입금 ' + paidN
+      var jaN = list.filter(function(x){ return /日本|일본/.test(x.nat || ''); }).length;
+      h.innerHTML = '<b>' + label + '</b><span>전체 ' + list.length
+                  + ' · 일본 ' + jaN + ' · 한국 ' + (list.length - jaN)
+                  + '</span><span>입금 ' + paidN + '/' + gN
                   + (sN ? ' · 스탭 ' + sN : '') + '</span>';
       wrap.appendChild(h);
 
@@ -2901,8 +2905,12 @@ window.IROLANG = (function(){
       list.forEach(function(r){
         var c = document.createElement('span');
         c.className = 'stf-chip';
+        var natShort = /日本|일본/.test(r.nat || '') ? '일본'
+                     : (/韓国|한국/.test(r.nat || '') ? '한국' : '');
         c.appendChild(document.createTextNode(
-          r.name + (r.drink ? ' · ' + (SG_DRINK[r.drink] || r.drink) : '')));
+          r.name
+          + (natShort ? ' · ' + natShort : '')
+          + (r.drink ? ' · ' + (SG_DRINK[r.drink] || r.drink) : '')));
         var x = document.createElement('button');
         x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', '빼기');
         x.addEventListener('click', function(){
@@ -2928,6 +2936,13 @@ window.IROLANG = (function(){
     var name = document.createElement('input');
     name.type = 'text'; name.placeholder = '이름'; name.maxLength = 60;
 
+    var nat = document.createElement('select');
+    [['日本 / 일본','일본'],['韓国 / 한국','한국']].forEach(function(p){
+      var o = document.createElement('option');
+      o.value = p[0]; o.textContent = p[1];
+      nat.appendChild(o);
+    });
+
     var pick = document.createElement('select');
     var blank = document.createElement('option');
     blank.value = ''; blank.textContent = '음료 없음';
@@ -2945,7 +2960,7 @@ window.IROLANG = (function(){
       if (!v) { name.focus(); return; }
       add.disabled = true;
       apiPost({ action:'staff_add', token: ADMIN.token,
-                date: date, name: v, drink: pick.value })
+                date: date, name: v, nat: nat.value, drink: pick.value })
         .then(function(d){
           add.disabled = false;
           if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
@@ -2956,7 +2971,7 @@ window.IROLANG = (function(){
     add.addEventListener('click', submit);
     name.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); submit(); } });
 
-    row.appendChild(name); row.appendChild(pick); row.appendChild(add);
+    row.appendChild(name); row.appendChild(nat); row.appendChild(pick); row.appendChild(add);
     box.appendChild(row);
     return box;
   }
@@ -3004,7 +3019,7 @@ window.IROLANG = (function(){
     none = list.filter(function(x){ return !x.drink; }).length;
     if (none) out.push('미선택 ' + none);
     return out.length
-      ? '음료 — ' + out.join(' · ') + '  (스탭 포함 ' + list.length + '잔)'
+      ? '음료 — ' + out.join(' · ') + '  (모두 ' + list.length + '잔)'
       : '음료 — 없음';
   }
   function paintSgTally(){ paintSg(); }
