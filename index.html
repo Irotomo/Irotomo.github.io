@@ -752,7 +752,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* ── 관리자 : 자리 배정 ─────────────────────────────────── */
 .seat-pane{overflow:auto!important}
-.seat-tools{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:9px;
+.seat-tools{display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:9px;
   padding:10px 0 12px;align-items:end}
 .seat-tools label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#9d99b0}
 .seat-tools select,.seat-tools input{width:100%;padding:8px 9px;border:1px solid #e2dfec;
@@ -765,6 +765,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .seat-actions button.primary:hover{background:#33313f}
 #seat-state{font-size:12px;color:#8a86a0;line-height:1.5}
 #seat-state.err{color:#a6382e;font-weight:600}
+#seat-public-state{font-size:12px;color:#5b5870;background:#f4f3f8;border-radius:9px;padding:8px 10px;line-height:1.5}
+#seat-public-state.on{color:#1c7a50;background:#e8f4ec;font-weight:700}
+#seat-public-state.off{color:#8a86a0}
 .seat-summary{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}
 .seat-summary span{font-size:12px;color:#5b5870;background:#f4f3f8;border-radius:999px;padding:4px 10px}
 .seat-round{margin:0 0 22px}
@@ -1130,6 +1133,7 @@ body.admin-on .gal figure .zoom{display:none}
       <a href="#place" class="ko" data-c="c05">오시는 길</a><a href="#place" class="ja" data-c="c05">アクセス</a>
       <a href="#kana" class="ko" data-open-kana>가나 연습</a>
       <a href="#faq" class="ko" data-c="c06">FAQ</a><a href="#faq" class="ja" data-c="c06">FAQ</a>
+      <a href="seat.html" class="ko">좌석 확인</a><a href="seat.html" class="ja">席の確認</a>
       <a href="board.html" class="ko" data-c="c07">중고 · 나눔</a><a href="board.html" class="ja" data-c="c07">中古・おゆずり</a>
     </nav>
     <div class="nav-right">
@@ -1159,6 +1163,8 @@ body.admin-on .gal figure .zoom{display:none}
         <div class="hero-cta">
           <a class="btn btn-primary btn-lg ko" href="#apply" data-c="c12">신청 안내 보기</a>
           <a class="btn btn-primary btn-lg ja" href="#apply" data-c="c12">申し込みへ</a>
+          <a class="btn btn-gold btn-lg ko" href="seat.html">좌석 확인</a>
+          <a class="btn btn-gold btn-lg ja" href="seat.html">席の確認</a>
           <a class="btn btn-ghost btn-lg ko" href="#about" data-c="c13">모임 소개</a>
           <a class="btn btn-ghost btn-lg ja" href="#about" data-c="c13">交流会について</a>
         </div>
@@ -1664,18 +1670,27 @@ body.admin-on .gal figure .zoom{display:none}
         <label><span>테이블당 최대 인원</span><input type="number" id="seat-size" min="2" max="20" value="6"></label>
         <label><span>최대 테이블 수</span><input type="number" id="seat-max" min="1" max="50" value="12"></label>
         <label><span>회차 수</span><input type="number" id="seat-rounds" min="1" max="6" value="3"></label>
-        <label><span>배정 대상</span><select id="seat-paid"><option value="all">신청자 전체</option><option value="paid">입금 확인만</option></select></label>
+        <label><span>배정 대상</span><select id="seat-paid"><option value="all">신청자 전체</option><option value="paid" selected>입금 확인만</option></select></label>
+        <label><span>좌석 확인 비밀번호 (직접 지정)</span><input type="text" id="seat-pass" maxlength="40" placeholder="예: 0906iro" autocomplete="off"></label>
         <div class="seat-actions">
           <button type="button" class="primary" id="seat-run">랜덤 배정</button>
           <button type="button" id="seat-reroll">다시 섞기</button>
           <button type="button" id="seat-csv">배정 CSV</button>
+          <button type="button" class="primary" id="seat-publish">저장 · 참가자 공개</button>
+          <button type="button" id="seat-hide">공개 중지</button>
           <span id="seat-state"></span>
         </div>
       </div>
-      <div id="seat-summary" class="seat-summary"></div>
+      <div id="seat-public-state" class="off">공개 상태를 확인하는 중…</div>
+      <p class="sg-dg-note" style="margin:9px 0 12px">
+        비밀번호는 <b>모임 날짜마다 운영자가 직접 정합니다.</b> 「저장 · 참가자 공개」를 누를 때 자리배정과 함께 저장되며,
+        서버에는 비밀번호 원문이 아닌 해시값만 저장됩니다. 기존 비밀번호는 다시 표시되지 않으므로 잊어버렸다면 새 비밀번호로 다시 공개해 주세요.
+      </p>
+      <div id="seat-summary" class="seat-summary" style="margin-top:10px"></div>
       <div id="seat-body"><p class="seat-empty">날짜와 설정을 고른 뒤 「랜덤 배정」을 눌러 주세요.</p></div>
       <p class="sg-dg-note">국적 비율은 각 테이블의 정원에 맞춰 전체 한·일 비율과 가장 가까워지도록 나눕니다.
-        스탭은 가능한 한 서로 다른 테이블에 먼저 배치하며, 여러 회차를 만들면 이전 회차에서 만난 사람과 다시 같은 테이블이 되는 횟수도 줄입니다.</p>
+        스탭은 가능한 한 서로 다른 테이블에 먼저 배치하며, 여러 회차를 만들면 이전 회차에서 만난 사람과 다시 같은 테이블이 되는 횟수도 줄입니다.<br>
+        「저장 · 참가자 공개」를 눌러야 실제 참가자 조회 페이지에 반영됩니다. 참가자는 <b>seat.html</b>에서 신청 이름 + 위 비밀번호로 현재 자리만 확인합니다.</p>
     </section>
 
     <section class="sg-pane" data-p="dates" hidden>
@@ -2674,7 +2689,7 @@ window.IROLANG = (function(){
         p.hidden = (p.dataset.p !== t);
       });
       if (t === 'dates' && !loaded.dates) { loaded.dates = true; loadMeetups(); }
-      if (t === 'seat') { seatFillDates(); }
+      if (t === 'seat') { seatFillDates(); seatLoadStatus(); }
     });
   })();
 
@@ -3409,10 +3424,77 @@ window.IROLANG = (function(){
     download('irotomo-자리배정-'+res.date+'.csv',lines.join('\n'));
   }
 
+  function seatStartMin(){
+    var m=/(\d{1,2})\s*:\s*(\d{2})/.exec(String((window.SCHED && SCHED.time) || '15:00'));
+    return m ? (+m[1]*60 + +m[2]) : 900;
+  }
+
+  function seatLoadStatus(){
+    var d=$a('seat-date') && $a('seat-date').value, box=$a('seat-public-state');
+    if(!d || !box || !ADMIN.token) return;
+    box.className='off'; box.textContent='공개 상태를 확인하는 중…';
+    apiPost({action:'seat_status',token:ADMIN.token,date:d}).then(function(x){
+      if(!x || !x.ok) throw new Error((x&&x.error)||'fail');
+      var st=x.setting;
+      if(st && +st.published===1){
+        box.className='on';
+        box.textContent='현재 참가자에게 공개 중 · 저장된 배정 '+(x.assignments||0)+'건 · '+(+st.rounds||1)+'회차'+(+st.has_pass===1?' · 비밀번호 설정됨':'');
+      }else if(st){
+        box.className='off';
+        box.textContent='현재 비공개 · 저장된 배정 '+(x.assignments||0)+'건'+(+st.has_pass===1?' · 비밀번호 설정됨':'');
+      }else{
+        box.className='off'; box.textContent='아직 저장된 자리배정이 없습니다.';
+      }
+    }).catch(function(){ box.className='off'; box.textContent='공개 상태를 불러오지 못했습니다.'; });
+  }
+
+  function seatAssignmentsPayload(res){
+    var a=[];
+    res.rounds.forEach(function(tables,ri){
+      tables.forEach(function(tb,ti){
+        tb.forEach(function(p){ if(p && p.id) a.push({signup_id:String(p.id),round:ri+1,table_no:ti+1}); });
+      });
+    });
+    return a;
+  }
+
+  function seatPublish(){
+    var res=SEAT.result, st=$a('seat-state'), pass=($a('seat-pass').value||'').trim();
+    if(!res){ alert('먼저 자리 배정을 해 주세요.'); return; }
+    if(res.date!==$a('seat-date').value){ alert('현재 선택한 날짜로 다시 자리 배정을 해 주세요.'); return; }
+    if(pass.length<3){ $a('seat-pass').focus(); alert('참가자 조회 비밀번호를 3자 이상 입력해 주세요.'); return; }
+    var assignments=seatAssignmentsPayload(res);
+    if(!assignments.length){ alert('저장할 배정 결과가 없습니다.'); return; }
+    if(!confirm(res.date+' 자리배정을 저장하고 참가자에게 공개할까요?\n\n조회 페이지: irotomo.com/seat.html')) return;
+    st.classList.remove('err'); st.textContent='저장·공개 중…';
+    apiPost({action:'seat_save',token:ADMIN.token,date:res.date,password:pass,
+      rounds:res.rounds.length,start_min:seatStartMin(),interval_min:50,assignments:assignments})
+      .then(function(d){
+        if(!d || !d.ok) throw new Error((d&&d.error)||'fail');
+        st.textContent='저장하고 공개했습니다. 참가자는 이름 + 오늘 비밀번호로 조회할 수 있습니다.';
+        seatLoadStatus();
+      }).catch(function(e){
+        st.textContent='저장하지 못했습니다 ('+e.message+')'; st.classList.add('err');
+      });
+  }
+
+  function seatHide(){
+    var d=$a('seat-date').value, st=$a('seat-state');
+    if(!d) return;
+    if(!confirm(d+' 자리 조회를 참가자에게 비공개로 바꿀까요?')) return;
+    st.classList.remove('err'); st.textContent='공개 중지 중…';
+    apiPost({action:'seat_unpublish',token:ADMIN.token,date:d}).then(function(x){
+      if(!x || !x.ok) throw new Error((x&&x.error)||'fail');
+      st.textContent='참가자 공개를 중지했습니다.'; seatLoadStatus();
+    }).catch(function(e){ st.textContent='공개 중지에 실패했습니다 ('+e.message+')';st.classList.add('err'); });
+  }
+
   on('seat-run','click',seatGenerate);
   on('seat-reroll','click',seatGenerate);
   on('seat-csv','click',seatCsv);
-  on('seat-date','change',function(){SEAT.result=null;seatPaint();});
+  on('seat-publish','click',seatPublish);
+  on('seat-hide','click',seatHide);
+  on('seat-date','change',function(){SEAT.result=null;seatPaint();seatLoadStatus();});
   on('seat-paid','change',function(){SEAT.result=null;seatPaint();});
 
   /* ── 명단표 ───────────────────────────────────────────────
