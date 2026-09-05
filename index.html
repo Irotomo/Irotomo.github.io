@@ -3596,12 +3596,16 @@ window.IROLANG = (function(){
   });
   on('seat-paid','change',function(){SEAT.result=null;seatPaint();});
 
-  /* ── 명단표 XLSX ──────────────────────────────────────────
-     외부 CDN 없이 브라우저 자체에서 XLSX(Open XML ZIP)를 만듭니다.
-     네가 사용하던 명단 서식 그대로:
+  /* ── 명단표 CSV ───────────────────────────────────────────
+     XLSX 방식은 제거하고, 사용자가 쓰던 명단표 형식으로 CSV를 생성합니다.
      일본인 참가자 → 합계 → 한국인 참가자 → 합계 → 스탭 → 합계
-     마지막에는 현장에서 체크할 수 있는 «출석» 열을 둡니다. */
-  function rosterRows(rows){
+     마지막 열에는 출석 여부를 함께 넣습니다. */
+  function csvQuote(v){
+    var t = String(v == null ? '' : v);
+    return /[",\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
+  }
+
+  function rosterCsvLines(rows){
     var HEAD = ['No.','구분','이름','국적','음료','입금','메모','출석'];
     var isJa = function(r){ return /日本|일본/.test(String(r.nat || '')); };
     var blocks = [
@@ -3610,192 +3614,63 @@ window.IROLANG = (function(){
       ['스탭합계',     rows.filter(function(r){ return +r.staff === 1; })]
     ];
 
-    var out = [], meta = [];
+    var out = [];
     blocks.forEach(function(b){
       var label = b[0], list = b[1];
       if (!list.length) return;
-      meta.push({ header: out.length });
-      out.push(HEAD.slice());
+
+      out.push(HEAD.map(csvQuote).join(','));
+
       list.forEach(function(r, idx){
         out.push([
-          idx + 1,
+          String(idx + 1),
           (+r.staff === 1 ? '스탭' : '참가자'),
           r.name || '',
           r.nat || '',
           SG_DRINK[r.drink] || '',
           (+r.paid === 1 ? '입금' : '미입금'),
           r.memo || '',
-          (+r.attended === 1 ? '☑' : '□')
-        ]);
+          (+r.attended === 1 ? '출석' : '')
+        ].map(csvQuote).join(','));
       });
-      meta[meta.length - 1].total = out.length;
-      out.push(['','','','',label,'합계',list.length,'']);
-    });
-    return { rows: out, meta: meta };
-  }
 
-  function xlsxXml(v){
-    return String(v == null ? '' : v)
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;').replace(/'/g,'&apos;');
-  }
-  function xlsxCol(n){
-    var s='';
-    for(n++; n>0; n=Math.floor((n-1)/26)) s=String.fromCharCode(65+(n-1)%26)+s;
-    return s;
-  }
-  function xlsxUtf8(s){ return new TextEncoder().encode(s); }
-  function xlsxU16(n){ return new Uint8Array([n&255,(n>>>8)&255]); }
-  function xlsxU32(n){ return new Uint8Array([n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255]); }
-  function xlsxCat(parts){
-    var len=0; parts.forEach(function(p){len+=p.length;});
-    var out=new Uint8Array(len), o=0;
-    parts.forEach(function(p){out.set(p,o);o+=p.length;});
+      /* 사용자가 쓰던 합계 행 형태를 유지 */
+      out.push(['','','','',label,'합계',String(list.length),''].map(csvQuote).join(','));
+    });
+
     return out;
-  }
-  var XLSX_CRC_TABLE = (function(){
-    var t=new Uint32Array(256);
-    for(var n=0;n<256;n++){
-      var c=n;
-      for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);
-      t[n]=c>>>0;
-    }
-    return t;
-  })();
-  function xlsxCrc32(bytes){
-    var c=0xFFFFFFFF;
-    for(var i=0;i<bytes.length;i++) c=XLSX_CRC_TABLE[(c^bytes[i])&255]^(c>>>8);
-    return (c^0xFFFFFFFF)>>>0;
-  }
-  function xlsxDosNow(){
-    var d=new Date(), y=Math.max(1980,d.getFullYear());
-    return {
-      time: ((d.getHours()&31)<<11)|((d.getMinutes()&63)<<5)|((Math.floor(d.getSeconds()/2))&31),
-      date: (((y-1980)&127)<<9)|(((d.getMonth()+1)&15)<<5)|(d.getDate()&31)
-    };
-  }
-  function xlsxZip(files){
-    var locals=[], centrals=[], offset=0, dt=xlsxDosNow();
-    files.forEach(function(f){
-      var name=xlsxUtf8(f.name), data=(f.data instanceof Uint8Array)?f.data:xlsxUtf8(f.data);
-      var crc=xlsxCrc32(data), flag=0x0800; /* UTF-8 */
-      var local=xlsxCat([
-        xlsxU32(0x04034b50),xlsxU16(20),xlsxU16(flag),xlsxU16(0),xlsxU16(dt.time),xlsxU16(dt.date),
-        xlsxU32(crc),xlsxU32(data.length),xlsxU32(data.length),xlsxU16(name.length),xlsxU16(0),name,data
-      ]);
-      var central=xlsxCat([
-        xlsxU32(0x02014b50),xlsxU16(20),xlsxU16(20),xlsxU16(flag),xlsxU16(0),xlsxU16(dt.time),xlsxU16(dt.date),
-        xlsxU32(crc),xlsxU32(data.length),xlsxU32(data.length),xlsxU16(name.length),xlsxU16(0),xlsxU16(0),
-        xlsxU16(0),xlsxU16(0),xlsxU32(0),xlsxU32(offset),name
-      ]);
-      locals.push(local); centrals.push(central); offset+=local.length;
-    });
-    var central=xlsxCat(centrals);
-    var eocd=xlsxCat([
-      xlsxU32(0x06054b50),xlsxU16(0),xlsxU16(0),xlsxU16(files.length),xlsxU16(files.length),
-      xlsxU32(central.length),xlsxU32(offset),xlsxU16(0)
-    ]);
-    return new Blob(locals.concat([central,eocd]), {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-  }
-  function buildRosterXlsx(pack){
-    var headerRows={}, totalRows={};
-    pack.meta.forEach(function(m){ headerRows[m.header]=1; totalRows[m.total]=1; });
-    var widths=[6,10,24,17,24,10,34,9];
-    var cols=widths.map(function(w,i){return '<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>';}).join('');
-    var rowsXml=pack.rows.map(function(row,ri){
-      var cells=row.map(function(v,ci){
-        var ref=xlsxCol(ci)+(ri+1);
-        var style=0;
-        if(headerRows[ri]) style=1;
-        else if(totalRows[ri]) style=4;
-        else if([0,1,3,5,7].indexOf(ci)>=0) style=3;
-        else style=2;
-        if(typeof v==='number' && isFinite(v)) return '<c r="'+ref+'" s="'+style+'"><v>'+v+'</v></c>';
-        return '<c r="'+ref+'" t="inlineStr" s="'+style+'"><is><t xml:space="preserve">'+xlsxXml(v)+'</t></is></c>';
-      }).join('');
-      return '<row r="'+(ri+1)+'" ht="22" customHeight="1">'+cells+'</row>';
-    }).join('');
-
-    var sheet='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+
-      '<sheetFormatPr defaultRowHeight="15"/><cols>'+cols+'</cols><sheetData>'+rowsXml+'</sheetData>'+
-      '<pageMargins left="0.25" right="0.25" top="0.35" bottom="0.35" header="0.15" footer="0.15"/>'+
-      '<pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0"/>'+
-      '</worksheet>';
-
-    var styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-      '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+
-      '<fonts count="3">'+
-        '<font><sz val="11"/><name val="Aptos"/></font>'+
-        '<font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Aptos"/></font>'+
-        '<font><b/><color rgb="FF55400F"/><sz val="11"/><name val="Aptos"/></font>'+
-      '</fonts>'+
-      '<fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>'+
-        '<fill><patternFill patternType="solid"><fgColor rgb="FF242D50"/><bgColor indexed="64"/></patternFill></fill>'+
-        '<fill><patternFill patternType="solid"><fgColor rgb="FFF7E8C5"/><bgColor indexed="64"/></patternFill></fill></fills>'+
-      '<borders count="2"><border/><border><left style="thin"><color rgb="FFD9D9D9"/></left><right style="thin"><color rgb="FFD9D9D9"/></right><top style="thin"><color rgb="FFD9D9D9"/></top><bottom style="thin"><color rgb="FFD9D9D9"/></bottom><diagonal/></border></borders>'+
-      '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'+
-      '<cellXfs count="5">'+
-        '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'+
-        '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'+
-        '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>'+
-        '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>'+
-        '<xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'+
-      '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
-
-    var workbook='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-      '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'+
-      '<workbookPr/><bookViews><workbookView/></bookViews><sheets><sheet name="명단표" sheetId="1" r:id="rId1"/></sheets></workbook>';
-    var wbRels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
-      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'+
-      '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
-    var rels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
-      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
-    var types='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
-      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'+
-      '<Default Extension="xml" ContentType="application/xml"/>'+
-      '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'+
-      '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'+
-      '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>';
-
-    return xlsxZip([
-      {name:'[Content_Types].xml',data:types},
-      {name:'_rels/.rels',data:rels},
-      {name:'xl/workbook.xml',data:workbook},
-      {name:'xl/_rels/workbook.xml.rels',data:wbRels},
-      {name:'xl/worksheets/sheet1.xml',data:sheet},
-      {name:'xl/styles.xml',data:styles}
-    ]);
   }
 
   function downloadRosterForDate(date, rows){
-    var list = (rows || SG.rows || []).filter(function(r){ return !date || r.date === date; });
+    var list = (rows || SG.rows || []).filter(function(r){
+      return !date || r.date === date;
+    });
     if (!list.length) return alert('해당 날짜의 신청자가 없습니다.');
-    try {
-      var blob=buildRosterXlsx(rosterRows(list));
-      var a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);
-      a.download='irotomo-명단표-'+date+'.xlsx';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(function(){URL.revokeObjectURL(a.href);},1500);
-    } catch(e) {
-      console.error('XLSX download failed',e);
-      alert('명단표를 만들지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
-    }
+
+    var text = rosterCsvLines(list).join('\r\n');
+    var blob = new Blob(['\ufeff' + text], { type:'text/csv;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'irotomo-명단표-' + date + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1200);
   }
 
   on('sg-roster', 'click', function(){
     var rows = sgVisible();
     if (!rows.length) return alert('내려받을 신청이 없습니다.');
+
     var days = {};
     rows.forEach(function(r){ if (r.date) days[r.date] = 1; });
     var keys = Object.keys(days).sort();
-    if (keys.length === 1) return downloadRosterForDate(keys[0], rows);
+
+    if (keys.length === 1) {
+      downloadRosterForDate(keys[0], rows);
+      return;
+    }
+
     alert('여러 모임 날짜가 함께 표시되어 있습니다.\n각 날짜 제목 오른쪽의 「명단표」 버튼을 눌러 주세요.');
   });
 
