@@ -1599,7 +1599,8 @@ body.admin-on .gal figure .zoom{display:none}
           <button type="button" data-f="soon" aria-pressed="true">다가오는 날짜</button>
           <button type="button" data-f="all" aria-pressed="false">전체</button>
         </span>
-        <button type="button" id="sg-csv">CSV</button>
+        <button type="button" id="sg-csv">원본 CSV</button>
+        <button type="button" id="sg-roster">명단표</button>
         <button type="button" id="sg-reload">새로고침</button>
       </div>
       <div id="sg-body"><p class="st-empty">불러오는 중…</p></div>
@@ -3095,6 +3096,67 @@ window.IROLANG = (function(){
     row.appendChild(del);
     return row;
   }
+
+  /* ── 명단표 ───────────────────────────────────────────────
+     원본 CSV 와 따로, 당일 명단으로 쓰는 표를 만듭니다.
+     일본인 참가자 → 한국인 참가자 → 스탭 순으로 나누고
+     각 묶음 끝에 합계를 붙입니다. */
+  /* 쉼표·따옴표·줄바꿈이 든 값만 감쌉니다.
+     그래야 엑셀에서 열었을 때 직접 만드신 표와 똑같이 보입니다. */
+  function csvQuote(v){
+    var t = String(v == null ? '' : v);
+    return /[",\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
+  }
+
+  function rosterLines(rows){
+    var HEAD = ['구분','이름','국적','음료','입금','메모'];
+    var isJa = function(r){ return /日本|일본/.test(r.nat || ''); };
+
+    var blocks = [
+      ['일본인참가자', rows.filter(function(r){ return +r.staff !== 1 &&  isJa(r); })],
+      ['한국인참가자', rows.filter(function(r){ return +r.staff !== 1 && !isJa(r); })],
+      ['스탭합계',     rows.filter(function(r){ return +r.staff === 1; })]
+    ];
+
+    var out = [];
+    blocks.forEach(function(b){
+      var label = b[0], list = b[1];
+      if (!list.length) return;
+      out.push(HEAD.map(csvQuote).join(','));
+      list.forEach(function(r){
+        out.push([
+          (+r.staff === 1 ? '스탭' : '참가자'),
+          r.name || '', r.nat || '',
+          SG_DRINK[r.drink] || '',
+          (+r.paid === 1 ? '입금' : '미입금'),
+          r.memo || ''
+        ].map(csvQuote).join(','));
+      });
+      out.push(['','','',label,'합계',String(list.length)].map(csvQuote).join(','));
+    });
+    return out;
+  }
+
+  function download(name, text){
+    /* 앞의 BOM 이 있어야 엑셀에서 한글이 깨지지 않습니다 */
+    var blob = new Blob(['\ufeff' + text], { type:'text/csv;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  }
+
+  on('sg-roster', 'click', function(){
+    var rows = sgVisible();
+    if (!rows.length) return alert('내려받을 신청이 없습니다.');
+    /* 날짜가 하나면 파일 이름에 그 날짜를, 여럿이면 오늘 날짜를 씁니다 */
+    var days = {};
+    rows.forEach(function(r){ if (r.date) days[r.date] = 1; });
+    var keys = Object.keys(days);
+    var tag = keys.length === 1 ? keys[0] : new Date().toISOString().slice(0, 10);
+    download('irotomo-명단표-' + tag + '.csv', rosterLines(rows).join('\n'));
+  });
 
   on('sg-csv', 'click', function(){
     var rows = sgVisible();
