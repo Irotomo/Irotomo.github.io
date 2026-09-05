@@ -686,6 +686,22 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   border-radius:8px;font:inherit;font-size:13px;cursor:pointer}
 #ls-save:hover,#ls-auto:hover{background:#f4f3f8}
 #ls-state{font-size:12px;color:#8a86a0}
+.stf{margin:10px 0 4px;padding:12px 14px;border:1px dashed #ded9ee;border-radius:12px;background:#fbfaff}
+.stf-h{margin:0 0 9px;font-size:12px;color:#8a86a0;font-weight:600}
+.stf-list{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.stf-chip{display:inline-flex;align-items:center;gap:7px;padding:5px 8px 5px 12px;
+  background:#fff;border:1px solid #e6e3f0;border-radius:999px;font-size:12.5px;color:#3c3a4a}
+.stf-chip button{width:18px;height:18px;padding:0;border:0;border-radius:50%;
+  background:#efedf6;color:#8a86a0;font-size:10px;line-height:1;cursor:pointer}
+.stf-chip button:hover{background:#e2dfec;color:#5b5870}
+.stf-add{display:flex;gap:7px;flex-wrap:wrap}
+.stf-add input{flex:1;min-width:110px;padding:7px 10px;border:1px solid #e2dfec;
+  border-radius:8px;font:inherit;font-size:13px}
+.stf-add select{padding:7px 9px;border:1px solid #e2dfec;border-radius:8px;
+  font:inherit;font-size:13px;background:#fff}
+.stf-go{padding:7px 15px;border:1px solid #1c1b22;background:#1c1b22;color:#fff;
+  border-radius:8px;font:inherit;font-size:13px;cursor:pointer}
+.stf-go:hover{background:#33313f}
 .so-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 12px}
 .so-lab{font-size:12px;color:#9d99b0;margin-right:2px}
 .so-chip{padding:5px 12px;border:1px solid #e2dfec;background:#fff;border-radius:999px;
@@ -2843,8 +2859,11 @@ window.IROLANG = (function(){
         var dt = new Date(k + 'T00:00:00');
         label = k.replace(/-/g, '.') + ' (' + WD[dt.getDay()] + ')';
       }
-      var paidN = list.filter(function(x){ return +x.paid === 1; }).length;
-      h.innerHTML = '<b>' + label + '</b><span>' + list.length + '명 · 입금 ' + paidN + '</span>';
+      var gN = list.filter(function(x){ return +x.staff !== 1; }).length;
+      var sN = list.length - gN;
+      var paidN = list.filter(function(x){ return +x.staff !== 1 && +x.paid === 1; }).length;
+      h.innerHTML = '<b>' + label + '</b><span>' + gN + '명 · 입금 ' + paidN
+                  + (sN ? ' · 스탭 ' + sN : '') + '</span>';
       wrap.appendChild(h);
 
       /* 카페에 미리 알려주실 잔 수 */
@@ -2856,9 +2875,90 @@ window.IROLANG = (function(){
       /* 수량이 정해진 음료를 그 날짜에 한해 닫습니다 */
       if (/^\d{4}-\d{2}-\d{2}$/.test(k)) wrap.appendChild(soldoutRow(k));
 
-      list.forEach(function(r){ wrap.appendChild(sgRow(r)); });
+      var guests = list.filter(function(r){ return +r.staff !== 1; });
+      var staff  = list.filter(function(r){ return +r.staff === 1; });
+      guests.forEach(function(r){ wrap.appendChild(sgRow(r)); });
+      wrap.appendChild(staffBox(k, staff));
       box.appendChild(wrap);
     });
+  }
+
+  /* ── 스탭 ─────────────────────────────────────────────────
+     이름과 음료만 넣습니다. 참가 인원에는 세지 않고,
+     음료 잔 수와 명단·CSV 에는 함께 들어갑니다. */
+  function staffBox(date, list){
+    var box = document.createElement('div');
+    box.className = 'stf';
+
+    var head = document.createElement('p');
+    head.className = 'stf-h';
+    head.textContent = '스탭' + (list.length ? ' ' + list.length + '명' : '');
+    box.appendChild(head);
+
+    if (list.length) {
+      var chips = document.createElement('div');
+      chips.className = 'stf-list';
+      list.forEach(function(r){
+        var c = document.createElement('span');
+        c.className = 'stf-chip';
+        c.appendChild(document.createTextNode(
+          r.name + (r.drink ? ' · ' + (SG_DRINK[r.drink] || r.drink) : '')));
+        var x = document.createElement('button');
+        x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', '빼기');
+        x.addEventListener('click', function(){
+          if (!confirm(r.name + ' 님을 스탭 명단에서 뺍니다.')) return;
+          x.disabled = true;
+          apiPost({ action:'signup_del', token: ADMIN.token, id: r.id })
+            .then(function(d){
+              if (!d || !d.ok) throw new Error('fail');
+              loadSignups();
+            })
+            .catch(function(){ x.disabled = false; alert('빼지 못했습니다.'); });
+        });
+        c.appendChild(x);
+        chips.appendChild(c);
+      });
+      box.appendChild(chips);
+    }
+
+    /* 추가 줄 */
+    var row = document.createElement('div');
+    row.className = 'stf-add';
+
+    var name = document.createElement('input');
+    name.type = 'text'; name.placeholder = '이름'; name.maxLength = 60;
+
+    var pick = document.createElement('select');
+    var blank = document.createElement('option');
+    blank.value = ''; blank.textContent = '음료 없음';
+    pick.appendChild(blank);
+    Object.keys(SG_DRINK).forEach(function(id){
+      var o = document.createElement('option');
+      o.value = id; o.textContent = SG_DRINK[id];
+      pick.appendChild(o);
+    });
+
+    var add = document.createElement('button');
+    add.type = 'button'; add.className = 'stf-go'; add.textContent = '추가';
+    function submit(){
+      var v = name.value.trim();
+      if (!v) { name.focus(); return; }
+      add.disabled = true;
+      apiPost({ action:'staff_add', token: ADMIN.token,
+                date: date, name: v, drink: pick.value })
+        .then(function(d){
+          add.disabled = false;
+          if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+          loadSignups();
+        })
+        .catch(function(e){ add.disabled = false; alert('추가하지 못했습니다. (' + fail(e) + ')'); });
+    }
+    add.addEventListener('click', submit);
+    name.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); submit(); } });
+
+    row.appendChild(name); row.appendChild(pick); row.appendChild(add);
+    box.appendChild(row);
+    return box;
   }
 
   /* ── 품절 버튼 ────────────────────────────────────────── */
@@ -2903,7 +3003,9 @@ window.IROLANG = (function(){
     });
     none = list.filter(function(x){ return !x.drink; }).length;
     if (none) out.push('미선택 ' + none);
-    return out.length ? '음료 — ' + out.join(' · ') : '음료 — 없음';
+    return out.length
+      ? '음료 — ' + out.join(' · ') + '  (스탭 포함 ' + list.length + '잔)'
+      : '음료 — 없음';
   }
   function paintSgTally(){ paintSg(); }
 
@@ -2982,11 +3084,11 @@ window.IROLANG = (function(){
   on('sg-csv', 'click', function(){
     var rows = sgVisible();
     if (!rows.length) return alert('내려받을 신청이 없습니다.');
-    var head = ['날짜','이름','국적','이메일','음료','입금','SNS','경로','메모','신청시각'];
+    var head = ['날짜','구분','이름','국적','이메일','음료','입금','SNS','경로','메모','신청시각'];
     var q = function(v){ return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
     var lines = [head.map(q).join(',')];
     rows.forEach(function(r){
-      lines.push([r.date, r.name, r.nat, r.email,
+      lines.push([r.date, (+r.staff === 1 ? '스탭' : '참가자'), r.name, r.nat, r.email,
         SG_DRINK[r.drink] || '', (+r.paid === 1 ? '입금' : '미입금'),
         r.sns, r.src, r.memo,
         new Date(r.createdAt).toLocaleString('ko-KR')].map(q).join(','));
