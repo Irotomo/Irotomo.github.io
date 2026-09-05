@@ -90,7 +90,8 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
     $('r-date').textContent=(d.date||'').replace(/-/g,'.');$('r-name').textContent=d.name||'';$('r-table').textContent='TABLE '+d.table;
     $('r-round').textContent=text(d.round+'회차 · '+d.rounds+'회 중',d.round+'回目 / 全'+d.rounds+'回');
     if(d.phase==='before') $('r-next').textContent=text('모임 시작 전입니다. 첫 자리입니다.','開始前です。最初の席です。');
-    else if(d.next_change) $('r-next').textContent=text('다음 자리 변경 '+d.next_change,'次の席替え '+d.next_change);
+    else if(d.phase==='preview' && d.move_at) $('r-next').textContent=text(d.move_at+'부터 이 자리로 이동해주세요.',''+d.move_at+'からこの席へ移動してください。');
+    else if(d.next_change) $('r-next').textContent=text('다음 좌석은 '+(function(t){var a=t.split(':');return String((+a[1]||0)-5<0?+a[0]-1:+a[0]).padStart(2,'0')+':'+String(((+a[1]||0)-5+60)%60).padStart(2,'0')}) (d.next_change)+'부터 확인할 수 있습니다.','次の席は'+(function(t){var a=t.split(':');return String((+a[1]||0)-5<0?+a[0]-1:+a[0]).padStart(2,'0')+':'+String(((+a[1]||0)-5+60)%60).padStart(2,'0')}) (d.next_change)+'から確認できます。');
     else $('r-next').textContent=text('마지막 회차입니다.','最後の回です。');
     clearTimeout(timer);timer=setTimeout(function(){lookup(true)},65000);
   }

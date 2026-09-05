@@ -615,6 +615,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   border-bottom:2px solid #e9e7fb;position:sticky;top:0;background:#fff;z-index:1}
 .sg-day-h b{font-size:15px}
 .sg-day-h span{font-size:12px;color:#8a86a0;background:#f4f3f8;padding:2px 9px;border-radius:999px}
+.sg-day-h .sg-day-roster{margin-left:auto;padding:5px 10px;border:1px solid #dcd9e8;background:#fff;
+  border-radius:8px;font:600 12px var(--font);color:#3c3a4a;cursor:pointer;white-space:nowrap}
+.sg-day-h .sg-day-roster:hover{background:#f4f3f8}
 .sg-row{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:8px 10px;
   padding:11px;border:1px solid #eceaf3;border-radius:11px;margin-bottom:8px;align-items:end}
 .sg-f{display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -1031,6 +1034,10 @@ body.admin-on .gal figure .zoom{display:none}
   border:1px solid #f0d8d8;background:#fdf6f6;color:#9d4b4b;font-size:12px;cursor:pointer;white-space:nowrap}
 .sg-paid.on{border-color:#cfe6d8;background:#f2faf5;color:#2f6f4c}
 .sg-paid input{accent-color:#3E8A5F;margin:0}
+.sg-att{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;
+  border:1px solid #ddd9ec;background:#f8f7fc;color:#716c87;font-size:12px;cursor:pointer;white-space:nowrap}
+.sg-att.on{border-color:#c9d9f2;background:#f1f6fd;color:#315f9b;font-weight:600}
+.sg-att input{accent-color:#315f9b;margin:0}
 .sg-tally{margin:0 0 10px;padding:7px 11px;background:#f6f5fb;border-radius:8px;
   font-size:12.5px;color:#5b5870}
 
@@ -1117,6 +1124,7 @@ body.admin-on .gal figure .zoom{display:none}
   border-color:#f0d8d8;background:#fdf4f4;color:#9d4b4b;font-weight:700}
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js" defer></script>
 </head>
 <body data-lang="ja">
 
@@ -2952,11 +2960,28 @@ window.IROLANG = (function(){
       var sN = list.filter(function(x){ return +x.staff === 1; }).length;
       var gN = list.length - sN;
       var paidN = list.filter(function(x){ return +x.staff !== 1 && +x.paid === 1; }).length;
+      var attN = list.filter(function(x){ return +x.staff !== 1 && +x.attended === 1; }).length;
       var jaN = list.filter(function(x){ return /日本|일본/.test(x.nat || ''); }).length;
       h.innerHTML = '<b>' + label + '</b><span>전체 ' + list.length
                   + ' · 일본 ' + jaN + ' · 한국 ' + (list.length - jaN)
                   + '</span><span>입금 ' + paidN + '/' + gN
+                  + ' · 출석 ' + attN + '/' + gN
                   + (sN ? ' · 스탭 ' + sN : '') + '</span>';
+
+      /* 주 2회 이상 운영해도 날짜별 명단이 섞이지 않도록
+         각 날짜 제목에서 바로 그 날짜 명단표를 받을 수 있게 합니다. */
+      if (/^\d{4}-\d{2}-\d{2}$/.test(k)) {
+        var rb = document.createElement('button');
+        rb.type = 'button';
+        rb.className = 'sg-day-roster';
+        rb.textContent = '명단표';
+        (function(dateKey, dateRows){
+          rb.addEventListener('click', function(){
+            downloadRosterForDate(dateKey, dateRows);
+          });
+        })(k, list.slice());
+        h.appendChild(rb);
+      }
       wrap.appendChild(h);
 
       /* 카페에 미리 알려주실 잔 수 */
@@ -3170,6 +3195,28 @@ window.IROLANG = (function(){
         .catch(function(){ cb.disabled = false; cb.checked = !cb.checked; });
     });
     pay.appendChild(cb); pay.appendChild(pt); row.appendChild(pay);
+
+    /* 실제 출석 여부 — 현장에서 체크하면 D1에 바로 저장됩니다. */
+    var att = document.createElement('label'); att.className = 'sg-att';
+    var acb = document.createElement('input'); acb.type = 'checkbox';
+    acb.checked = +r.attended === 1;
+    var at = document.createElement('span'); at.textContent = acb.checked ? '출석' : '미출석';
+    att.classList.toggle('on', acb.checked);
+    acb.addEventListener('change', function(){
+      var v = acb.checked ? 1 : 0;
+      acb.disabled = true;
+      apiPost({ action:'signup_save', token: ADMIN.token, id: r.id, attended: v })
+        .then(function(d){
+          acb.disabled = false;
+          if (!d || !d.ok) { acb.checked = !acb.checked; return; }
+          r.attended = v;
+          at.textContent = v ? '출석' : '미출석';
+          att.classList.toggle('on', !!v);
+          paintSg();
+        })
+        .catch(function(){ acb.disabled = false; acb.checked = !acb.checked; });
+    });
+    att.appendChild(acb); att.appendChild(at); row.appendChild(att);
 
     var del = document.createElement('button');
     del.type = 'button'; del.className = 'sg-del'; del.textContent = '삭제';
@@ -3497,77 +3544,124 @@ window.IROLANG = (function(){
   on('seat-date','change',function(){SEAT.result=null;seatPaint();seatLoadStatus();});
   on('seat-paid','change',function(){SEAT.result=null;seatPaint();});
 
-  /* ── 명단표 ───────────────────────────────────────────────
-     원본 CSV 와 따로, 당일 명단으로 쓰는 표를 만듭니다.
-     일본인 참가자 → 한국인 참가자 → 스탭 순으로 나누고
-     각 묶음 끝에 합계를 붙입니다. */
-  /* 쉼표·따옴표·줄바꿈이 든 값만 감쌉니다.
-     그래야 엑셀에서 열었을 때 직접 만드신 표와 똑같이 보입니다. */
-  function csvQuote(v){
-    var t = String(v == null ? '' : v);
-    return /[",\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
-  }
-
-  function rosterLines(rows){
-    var HEAD = ['구분','이름','국적','음료','입금','메모'];
-    var isJa = function(r){ return /日本|일본/.test(r.nat || ''); };
-
+  /* ── 명단표 XLSX ──────────────────────────────────────────
+     네가 사용하던 명단 서식 그대로:
+     일본인 참가자 → 합계 → 한국인 참가자 → 합계 → 스탭 → 합계
+     마지막에는 현장에서 체크할 수 있는 «출석» 열을 둡니다. */
+  function rosterRows(rows){
+    var HEAD = ['No.','구분','이름','국적','음료','입금','메모','출석'];
+    var isJa = function(r){ return /日本|일본/.test(String(r.nat || '')); };
     var blocks = [
       ['일본인참가자', rows.filter(function(r){ return +r.staff !== 1 &&  isJa(r); })],
       ['한국인참가자', rows.filter(function(r){ return +r.staff !== 1 && !isJa(r); })],
       ['스탭합계',     rows.filter(function(r){ return +r.staff === 1; })]
     ];
 
-    var out = [];
+    var out = [], meta = [];
     blocks.forEach(function(b){
       var label = b[0], list = b[1];
       if (!list.length) return;
-      out.push(HEAD.map(csvQuote).join(','));
-      list.forEach(function(r){
+      meta.push({ header: out.length });
+      out.push(HEAD.slice());
+      list.forEach(function(r, idx){
         out.push([
+          idx + 1,
           (+r.staff === 1 ? '스탭' : '참가자'),
-          r.name || '', r.nat || '',
+          r.name || '',
+          r.nat || '',
           SG_DRINK[r.drink] || '',
           (+r.paid === 1 ? '입금' : '미입금'),
-          r.memo || ''
-        ].map(csvQuote).join(','));
+          r.memo || '',
+          (+r.attended === 1 ? '☑' : '□')
+        ]);
       });
-      out.push(['','','',label,'합계',String(list.length)].map(csvQuote).join(','));
+      meta[meta.length - 1].total = out.length;
+      /* 기존 CSV의 합계 위치를 유지하고 출석 열만 하나 더 붙입니다. */
+      out.push(['','','','',label,'합계',list.length,'']);
     });
-    return out;
+    return { rows: out, meta: meta };
   }
 
-  function download(name, text){
-    /* 앞의 BOM 이 있어야 엑셀에서 한글이 깨지지 않습니다 */
-    var blob = new Blob(['\ufeff' + text], { type:'text/csv;charset=utf-8' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = name;
-    a.click();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  function downloadRosterForDate(date, rows){
+    var list = (rows || SG.rows || []).filter(function(r){ return !date || r.date === date; });
+    if (!list.length) return alert('해당 날짜의 신청자가 없습니다.');
+    if (typeof XLSX === 'undefined') {
+      return alert('엑셀 생성 모듈을 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.');
+    }
+
+    var pack = rosterRows(list);
+    var ws = XLSX.utils.aoa_to_sheet(pack.rows);
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '명단표');
+
+    /* 열너비 — 바로 열거나 출력해도 보기 좋게 */
+    ws['!cols'] = [
+      {wch:6}, {wch:10}, {wch:24}, {wch:17},
+      {wch:24}, {wch:10}, {wch:34}, {wch:9}
+    ];
+    ws['!rows'] = pack.rows.map(function(_, i){ return { hpt: 22 }; });
+    ws['!pageSetup'] = { orientation:'landscape', fitToWidth:1, fitToHeight:0 };
+    ws['!margins'] = { left:0.25, right:0.25, top:0.35, bottom:0.35, header:0.15, footer:0.15 };
+
+    var border = {
+      top:{style:'thin',color:{rgb:'D9D9D9'}}, bottom:{style:'thin',color:{rgb:'D9D9D9'}},
+      left:{style:'thin',color:{rgb:'D9D9D9'}}, right:{style:'thin',color:{rgb:'D9D9D9'}}
+    };
+    var headStyle = {
+      fill:{fgColor:{rgb:'242D50'}}, font:{bold:true,color:{rgb:'FFFFFF'}},
+      alignment:{horizontal:'center',vertical:'center'}, border:border
+    };
+    var bodyStyle = { alignment:{vertical:'center',wrapText:true}, border:border };
+    var centerStyle = { alignment:{horizontal:'center',vertical:'center',wrapText:true}, border:border };
+    var totalStyle = {
+      fill:{fgColor:{rgb:'F7E8C5'}}, font:{bold:true,color:{rgb:'55400F'}},
+      alignment:{horizontal:'center',vertical:'center'}, border:border
+    };
+
+    var range = XLSX.utils.decode_range(ws['!ref']);
+    for (var R = range.s.r; R <= range.e.r; R++) {
+      for (var C = range.s.c; C <= range.e.c; C++) {
+        var addr = XLSX.utils.encode_cell({r:R,c:C});
+        if (!ws[addr]) ws[addr] = { t:'s', v:'' };
+        ws[addr].s = bodyStyle;
+        if ([0,1,3,5,7].indexOf(C) >= 0) ws[addr].s = centerStyle;
+      }
+    }
+    pack.meta.forEach(function(m){
+      for (var C = 0; C < 8; C++) {
+        var h = XLSX.utils.encode_cell({r:m.header,c:C});
+        if (ws[h]) ws[h].s = headStyle;
+        var t = XLSX.utils.encode_cell({r:m.total,c:C});
+        if (!ws[t]) ws[t] = {t:'s',v:''};
+        ws[t].s = totalStyle;
+      }
+    });
+
+    XLSX.writeFile(wb, 'irotomo-명단표-' + date + '.xlsx', { compression:true });
   }
 
   on('sg-roster', 'click', function(){
     var rows = sgVisible();
     if (!rows.length) return alert('내려받을 신청이 없습니다.');
-    /* 날짜가 하나면 파일 이름에 그 날짜를, 여럿이면 오늘 날짜를 씁니다 */
+
     var days = {};
     rows.forEach(function(r){ if (r.date) days[r.date] = 1; });
-    var keys = Object.keys(days);
-    var tag = keys.length === 1 ? keys[0] : new Date().toISOString().slice(0, 10);
-    download('irotomo-명단표-' + tag + '.csv', rosterLines(rows).join('\n'));
+    var keys = Object.keys(days).sort();
+    if (keys.length === 1) return downloadRosterForDate(keys[0], rows);
+
+    alert('여러 모임 날짜가 함께 표시되어 있습니다.\n각 날짜 제목 오른쪽의 「명단표」 버튼을 눌러 주세요.');
   });
 
   on('sg-csv', 'click', function(){
     var rows = sgVisible();
     if (!rows.length) return alert('내려받을 신청이 없습니다.');
-    var head = ['날짜','구분','이름','국적','이메일','음료','입금','SNS','경로','메모','신청시각'];
+    var head = ['날짜','구분','이름','국적','이메일','음료','입금','출석','SNS','경로','메모','신청시각'];
     var q = function(v){ return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
     var lines = [head.map(q).join(',')];
     rows.forEach(function(r){
       lines.push([r.date, (+r.staff === 1 ? '스탭' : '참가자'), r.name, r.nat, r.email,
         SG_DRINK[r.drink] || '', (+r.paid === 1 ? '입금' : '미입금'),
-        r.sns, r.src, r.memo,
+        (+r.attended === 1 ? '출석' : '미출석'), r.sns, r.src, r.memo,
         new Date(r.createdAt).toLocaleString('ko-KR')].map(q).join(','));
     });
     /* BOM 을 붙여야 엑셀에서 한글이 깨지지 않습니다 */
