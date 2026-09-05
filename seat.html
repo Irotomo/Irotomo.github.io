@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F7F7F4">
+<title>자리 확인 — いろとも 이로토모</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#242D50;--navy2:#37406B;--gold:#DFA53A;--bg:#F7F7F4;--card:#fff;--ink:#141B2E;--muted:#6E7691;--line:#E3E3DD;--ok:#1C7A50;--bad:#A6382E;--font:'Schibsted Grotesk','Zen Kaku Gothic New','IBM Plex Sans KR',system-ui,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--font)}
+body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inset-bottom));display:flex;justify-content:center}
+.wrap{width:min(100%,520px)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:34px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-weight:800}.brand img{width:34px;height:34px;object-fit:contain}.lang{display:flex;gap:3px;background:#ECECE6;border-radius:999px;padding:3px}.lang button{border:0;background:transparent;border-radius:999px;padding:7px 10px;font:700 12px var(--font);color:var(--muted);cursor:pointer}.lang button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(20,27,46,.08)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 26px;box-shadow:0 18px 50px -36px rgba(20,27,46,.35)}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.13em;color:var(--gold);margin-bottom:10px}.title{font-size:28px;line-height:1.25;letter-spacing:-.04em;margin:0 0 10px}.desc{margin:0 0 26px;color:var(--muted);font-size:14px;line-height:1.75}
+.form{display:grid;gap:15px}.field{display:grid;gap:7px}.field label{font-size:12px;font-weight:700;color:var(--muted)}.field input{width:100%;border:1px solid var(--line);background:#FBFBF9;border-radius:12px;padding:14px 14px;font:500 16px var(--font);color:var(--ink);outline:none}.field input:focus{border-color:var(--navy);background:#fff}.go{margin-top:4px;border:0;border-radius:999px;background:var(--navy);color:#fff;padding:14px 18px;font:800 15px var(--font);cursor:pointer}.go:hover{background:var(--navy2)}.go:disabled{opacity:.5;cursor:wait}
+.msg{display:none;margin-top:18px;padding:14px 15px;border-radius:12px;background:#FAF9FD;color:var(--muted);font-size:13px;line-height:1.6}.msg.show{display:block}.msg.err{background:#FDF1F0;color:var(--bad)}
+.result{display:none;text-align:center}.result.show{display:block}.r-date{font-size:13px;color:var(--muted);margin-bottom:8px}.r-name{font-size:15px;font-weight:700;margin-bottom:28px}.r-label{font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--gold);margin-bottom:8px}.table{font-size:clamp(58px,18vw,88px);font-weight:800;letter-spacing:-.065em;line-height:1;color:var(--navy);margin:0}.round{margin-top:16px;font-size:15px;font-weight:700}.next{margin-top:8px;color:var(--muted);font-size:13px}.refresh{margin-top:24px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:10px 16px;font:700 13px var(--font);cursor:pointer}.change{display:block;margin:12px auto 0;border:0;background:none;color:var(--muted);font:600 12px var(--font);text-decoration:underline;cursor:pointer}.note{margin:18px 4px 0;color:#969AAF;font-size:11px;line-height:1.65;text-align:center}
+.ja{display:none}body[data-lang="ja"] .ko{display:none}body[data-lang="ja"] .ja{display:inline}body[data-lang="ja"] .ja.block{display:block}body[data-lang="ko"] .ko.block{display:block}
+@media(max-width:420px){body{padding-left:13px;padding-right:13px}.card{padding:26px 20px}.title{font-size:25px}}
+</style>
+</head>
+<body data-lang="ko">
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/"><img src="logo.png" alt=""><span>いろとも 이로토모</span></a>
+    <div class="lang"><button type="button" id="ko" class="on">한국어</button><button type="button" id="ja">日本語</button></div>
+  </div>
+
+  <main class="card">
+    <section id="lookup">
+      <div class="kicker">TODAY'S SEAT</div>
+      <h1 class="title"><span class="ko">오늘의 자리 확인</span><span class="ja">今日の席を確認</span></h1>
+      <p class="desc ko">신청할 때 사용한 이름과 오늘 안내받은 비밀번호를 입력해 주세요. 본인의 현재 테이블만 표시됩니다.</p>
+      <p class="desc ja block">お申し込み時のお名前と、本日ご案内したパスワードを入力してください。ご本人の現在のテーブルのみ表示されます。</p>
+      <form id="form" class="form">
+        <div class="field"><label for="name"><span class="ko">신청 이름</span><span class="ja">お申し込み名</span></label><input id="name" name="name" maxlength="60" autocomplete="name" required></div>
+        <div class="field"><label for="pass"><span class="ko">오늘의 비밀번호</span><span class="ja">本日のパスワード</span></label><input id="pass" name="pass" type="password" maxlength="40" autocomplete="off" required></div>
+        <button class="go" id="go" type="submit"><span class="ko">자리 확인</span><span class="ja">席を確認</span></button>
+      </form>
+      <div id="msg" class="msg"></div>
+    </section>
+
+    <section id="result" class="result">
+      <div id="r-date" class="r-date"></div>
+      <div id="r-name" class="r-name"></div>
+      <div class="r-label"><span class="ko">현재 자리</span><span class="ja">現在の席</span></div>
+      <div id="r-table" class="table">TABLE 1</div>
+      <div id="r-round" class="round"></div>
+      <div id="r-next" class="next"></div>
+      <button type="button" id="refresh" class="refresh"><span class="ko">현재 자리 새로고침</span><span class="ja">現在の席を更新</span></button>
+      <button type="button" id="change" class="change"><span class="ko">다른 이름으로 확인</span><span class="ja">別のお名前で確認</span></button>
+    </section>
+  </main>
+  <p class="note ko">전체 참가자 명단은 표시되지 않습니다. 동명이인이 있는 경우 운영진에게 문의해 주세요.</p>
+  <p class="note ja block">参加者全体の名簿は表示されません。同姓同名の方がいる場合はスタッフまでお声がけください。</p>
+</div>
+<script>
+(function(){
+  var API='https://api.irotomo.com';
+  var lang='ko', last=null, timer=null;
+  var $=function(id){return document.getElementById(id)};
+  function setLang(v){lang=v;document.body.dataset.lang=v;$('ko').classList.toggle('on',v==='ko');$('ja').classList.toggle('on',v==='ja');document.documentElement.lang=v;try{localStorage.setItem('irotomo-lang',v)}catch(e){}}
+  try{var saved=localStorage.getItem('irotomo-lang');if(saved==='ja'||saved==='ko')setLang(saved);else if((navigator.language||'').toLowerCase().startsWith('ja'))setLang('ja')}catch(e){}
+  $('ko').onclick=function(){setLang('ko')};$('ja').onclick=function(){setLang('ja')};
+  function text(ko,ja){return lang==='ja'?ja:ko}
+  function post(p){return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p)}).then(function(r){return r.json()})}
+  function message(code){
+    var m={
+      missing:['이름과 비밀번호를 입력해 주세요.','お名前とパスワードを入力してください。'],
+      wrong_password:['오늘 비밀번호가 맞지 않습니다.','本日のパスワードが正しくありません。'],
+      not_today:['오늘 공개된 자리배정이 아닙니다. 당일 다시 확인해 주세요.','本日公開されている席順ではありません。当日にもう一度ご確認ください。'],
+      not_found:['오늘 참가 확정 명단에서 해당 이름을 찾지 못했습니다. 신청할 때 입력한 이름을 그대로 적어 주세요.','本日の参加確定名簿に該当するお名前がありません。お申し込み時のお名前をそのまま入力してください。'],
+      duplicate_name:['같은 이름의 참가자가 2명 이상 있어 자동 확인이 어렵습니다. 운영진에게 문의해 주세요.','同じお名前の参加者が複数いるため自動確認できません。スタッフまでお声がけください。'],
+      ended:['오늘 모임의 자리 조회 시간이 종료되었습니다.','本日の席確認時間は終了しました。'],
+      not_assigned:['아직 자리배정이 완료되지 않았습니다. 운영진에게 문의해 주세요.','まだ席順が確定していません。スタッフまでお声がけください。']
+    };
+    var a=m[code]||['확인하지 못했습니다. 잠시 후 다시 시도해 주세요.','確認できませんでした。しばらくしてからもう一度お試しください。'];
+    return lang==='ja'?a[1]:a[0];
+  }
+  function showError(code){var m=$('msg');m.textContent=message(code);m.className='msg show err'}
+  function showResult(d){
+    last=d;$('lookup').style.display='none';$('result').classList.add('show');
+    $('r-date').textContent=(d.date||'').replace(/-/g,'.');$('r-name').textContent=d.name||'';$('r-table').textContent='TABLE '+d.table;
+    $('r-round').textContent=text(d.round+'회차 · '+d.rounds+'회 중',d.round+'回目 / 全'+d.rounds+'回');
+    if(d.phase==='before') $('r-next').textContent=text('모임 시작 전입니다. 첫 자리입니다.','開始前です。最初の席です。');
+    else if(d.next_change) $('r-next').textContent=text('다음 자리 변경 '+d.next_change,'次の席替え '+d.next_change);
+    else $('r-next').textContent=text('마지막 회차입니다.','最後の回です。');
+    clearTimeout(timer);timer=setTimeout(function(){lookup(true)},65000);
+  }
+  function lookup(silent){
+    var name=$('name').value.trim(),pass=$('pass').value.trim();if(!name||!pass){if(!silent)showError('missing');return}
+    var b=$('go');if(!silent){b.disabled=true;$('msg').className='msg';}
+    post({action:'seat_lookup',name:name,password:pass}).then(function(d){
+      if(!d||!d.ok)throw new Error((d&&d.error)||'fail');showResult(d);
+    }).catch(function(e){
+      if(silent){clearTimeout(timer);return}showError(e.message);
+    }).finally(function(){b.disabled=false});
+  }
+  $('form').addEventListener('submit',function(e){e.preventDefault();lookup(false)});
+  $('refresh').onclick=function(){lookup(true)};
+  $('change').onclick=function(){clearTimeout(timer);$('result').classList.remove('show');$('lookup').style.display='block';$('pass').focus()};
+  document.addEventListener('visibilitychange',function(){if(!document.hidden&&$('result').classList.contains('show'))lookup(true)});
+})();
+</script>
+</body>
+</html>

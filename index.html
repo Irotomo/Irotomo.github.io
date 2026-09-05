@@ -723,7 +723,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .sign-card .sg-pane[hidden]{display:none}
 .sign-card .sg-pane[data-p="list"]{overflow:hidden}
 .sign-card .sg-pane[data-p="dates"],
-.sign-card .sg-pane[data-p="mail"]{overflow:auto}
+.sign-card .sg-pane[data-p="mail"],
+.sign-card .sg-pane[data-p="seat"]{overflow:auto}
 /* 제목·탭 줄을 얇게 */
 .sign-card .stats-head{padding:0 0 10px;margin:0 0 2px}
 .sign-card .stats-head h3{margin:0;font-size:17px}
@@ -745,6 +746,55 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .sign-card .sg-tools button,
   .sign-card #sg-filter button{padding:6px 8px;font-size:11.5px}
   .sign-card #sg-filter{display:flex;gap:4px}
+}
+
+
+
+/* ── 관리자 : 자리 배정 ─────────────────────────────────── */
+.seat-pane{overflow:auto!important}
+.seat-tools{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:9px;
+  padding:10px 0 12px;align-items:end}
+.seat-tools label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#9d99b0}
+.seat-tools select,.seat-tools input{width:100%;padding:8px 9px;border:1px solid #e2dfec;
+  border-radius:8px;font:inherit;font-size:13px;background:#fff;color:#1c1b22}
+.seat-actions{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.seat-actions button{padding:8px 14px;border:1px solid #dcd9e8;background:#fff;border-radius:8px;
+  font:inherit;font-size:13px;cursor:pointer}
+.seat-actions button.primary{background:#1c1b22;border-color:#1c1b22;color:#fff;font-weight:700}
+.seat-actions button:hover{background:#f4f3f8}
+.seat-actions button.primary:hover{background:#33313f}
+#seat-state{font-size:12px;color:#8a86a0;line-height:1.5}
+#seat-state.err{color:#a6382e;font-weight:600}
+.seat-summary{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}
+.seat-summary span{font-size:12px;color:#5b5870;background:#f4f3f8;border-radius:999px;padding:4px 10px}
+.seat-round{margin:0 0 22px}
+.seat-round-h{display:flex;align-items:center;gap:8px;margin:0 0 9px;padding:8px 0;
+  border-bottom:2px solid #e9e7fb;position:sticky;top:0;background:#fff;z-index:2}
+.seat-round-h b{font-size:14px}
+.seat-round-h span{font-size:11px;color:#8a86a0}
+.seat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.seat-table{border:1px solid #e5e2ee;border-radius:12px;background:#fff;overflow:hidden;min-width:0}
+.seat-table-h{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:9px 11px;background:#faf9fd;border-bottom:1px solid #eceaf3}
+.seat-table-h b{font-size:13px}
+.seat-table-h span{font-size:10.5px;color:#7d7893;white-space:nowrap}
+.seat-members{list-style:none;margin:0;padding:7px 10px 9px}
+.seat-members li{display:flex;align-items:center;gap:6px;padding:5px 1px;border-bottom:1px solid #f1f0f5;
+  font-size:12.5px;min-width:0}
+.seat-members li:last-child{border-bottom:0}
+.seat-members .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.seat-members .nat{font-size:10px;color:#8a86a0;flex:none}
+.seat-members .staff{font-size:9.5px;font-weight:700;color:#5a4a92;background:#efedfb;
+  border-radius:999px;padding:2px 6px;flex:none}
+.seat-empty{padding:48px 10px;text-align:center;color:#9d99b0;font-size:13px}
+@media (max-width:820px){
+  .seat-tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .seat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:520px){
+  .seat-grid{grid-template-columns:1fr}
+  .seat-tools{grid-template-columns:1fr 1fr}
+  .seat-tools label:first-child{grid-column:1/-1}
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1586,6 +1636,7 @@ body.admin-on .gal figure .zoom{display:none}
       <h3>신청자</h3>
       <nav class="sg-tabs" id="sg-tabs">
         <button type="button" data-t="list"  aria-pressed="true">신청 내역</button>
+        <button type="button" data-t="seat"  aria-pressed="false">자리 배정</button>
         <button type="button" data-t="dates" aria-pressed="false">모임 날짜</button>
         <button type="button" data-t="mail"  aria-pressed="false">정기 발송</button>
       </nav>
@@ -1604,6 +1655,27 @@ body.admin-on .gal figure .zoom{display:none}
         <button type="button" id="sg-reload">새로고침</button>
       </div>
       <div id="sg-body"><p class="st-empty">불러오는 중…</p></div>
+    </section>
+
+
+    <section class="sg-pane seat-pane" data-p="seat" hidden>
+      <div class="seat-tools">
+        <label><span>모임 날짜</span><select id="seat-date"></select></label>
+        <label><span>테이블당 최대 인원</span><input type="number" id="seat-size" min="2" max="20" value="6"></label>
+        <label><span>최대 테이블 수</span><input type="number" id="seat-max" min="1" max="50" value="12"></label>
+        <label><span>회차 수</span><input type="number" id="seat-rounds" min="1" max="6" value="3"></label>
+        <label><span>배정 대상</span><select id="seat-paid"><option value="all">신청자 전체</option><option value="paid">입금 확인만</option></select></label>
+        <div class="seat-actions">
+          <button type="button" class="primary" id="seat-run">랜덤 배정</button>
+          <button type="button" id="seat-reroll">다시 섞기</button>
+          <button type="button" id="seat-csv">배정 CSV</button>
+          <span id="seat-state"></span>
+        </div>
+      </div>
+      <div id="seat-summary" class="seat-summary"></div>
+      <div id="seat-body"><p class="seat-empty">날짜와 설정을 고른 뒤 「랜덤 배정」을 눌러 주세요.</p></div>
+      <p class="sg-dg-note">국적 비율은 각 테이블의 정원에 맞춰 전체 한·일 비율과 가장 가까워지도록 나눕니다.
+        스탭은 가능한 한 서로 다른 테이블에 먼저 배치하며, 여러 회차를 만들면 이전 회차에서 만난 사람과 다시 같은 테이블이 되는 횟수도 줄입니다.</p>
     </section>
 
     <section class="sg-pane" data-p="dates" hidden>
@@ -2602,6 +2674,7 @@ window.IROLANG = (function(){
         p.hidden = (p.dataset.p !== t);
       });
       if (t === 'dates' && !loaded.dates) { loaded.dates = true; loadMeetups(); }
+      if (t === 'seat') { seatFillDates(); }
     });
   })();
 
@@ -2818,7 +2891,7 @@ window.IROLANG = (function(){
       if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
       SG.rows = d.rows || [];
       if (d.closed) CLOSED = d.closed;   /* 품절 버튼 상태 */
-      fillDigest(d.digest); paintSg();
+      fillDigest(d.digest); paintSg(); seatFillDates();
     }).catch(function(e){
       $a('sg-body').innerHTML = '<p class="st-empty">불러오지 못했습니다 (' + e.message + ')</p>';
     });
@@ -3096,6 +3169,251 @@ window.IROLANG = (function(){
     row.appendChild(del);
     return row;
   }
+
+
+
+  /* ── 자리 배정 ─────────────────────────────────────────────
+     국적 비율을 최대한 일정하게 유지하고, 스탭을 먼저 흩어 놓은 뒤
+     같은 조합의 반복이 적도록 여러 회차를 랜덤 배정합니다. */
+  var SEAT = { result:null, serial:0 };
+
+  function seatIsJa(r){ return /日本|일본/.test(String(r && r.nat || '')); }
+  function seatNat(r){ return seatIsJa(r) ? '일본' : '한국'; }
+  function seatShuffle(a){
+    a = a.slice();
+    for (var i=a.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+  function seatId(r){ return String(r && r.id || (r.name+'|'+r.createdAt)); }
+  function seatPairKey(a,b){ a=seatId(a); b=seatId(b); return a < b ? a+'§'+b : b+'§'+a; }
+
+  function seatFillDates(){
+    var sel=$a('seat-date'); if (!sel || !SG.rows) return;
+    var current=sel.value, days={};
+    SG.rows.forEach(function(r){ if (r.date) days[r.date]=1; });
+    var arr=Object.keys(days).sort();
+    sel.innerHTML='';
+    arr.forEach(function(d){ var o=document.createElement('option'); o.value=d; o.textContent=d.replace(/-/g,'.'); sel.appendChild(o); });
+    if (current && days[current]) sel.value=current;
+    else {
+      var today=new Date(); today.setHours(0,0,0,0);
+      var next=arr.find(function(d){ return new Date(d+'T00:00:00')>=today; });
+      if (next) sel.value=next; else if (arr.length) sel.value=arr[arr.length-1];
+    }
+  }
+
+  function seatRows(){
+    var d=$a('seat-date') && $a('seat-date').value;
+    var paidOnly=$a('seat-paid') && $a('seat-paid').value==='paid';
+    return (SG.rows||[]).filter(function(r){
+      if (r.date!==d) return false;
+      if (!paidOnly) return true;
+      return +r.staff===1 || +r.paid===1;
+    });
+  }
+
+  function seatTableSizes(total, cap, tables){
+    var base=Math.floor(total/tables), more=total%tables, a=[];
+    for (var i=0;i<tables;i++) a.push(base+(i<more?1:0));
+    return seatShuffle(a);
+  }
+
+  /* 정해진 테이블 크기와 이미 들어간 스탭을 고려해 일본인 정원을 정수로 배분합니다. */
+  function seatJaQuota(sizes, tables, totalJa){
+    var total=sizes.reduce(function(a,b){return a+b;},0), ratio=total ? totalJa/total : 0;
+    var q=[], ideal=[], lo=[], hi=[];
+    for (var i=0;i<sizes.length;i++){
+      var sj=tables[i].filter(seatIsJa).length;
+      var sk=tables[i].length-sj;
+      ideal[i]=sizes[i]*ratio;
+      lo[i]=sj;
+      hi[i]=sizes[i]-sk;
+      q[i]=Math.max(lo[i],Math.min(hi[i],Math.floor(ideal[i])));
+    }
+    function sum(){ return q.reduce(function(a,b){return a+b;},0); }
+    while(sum()<totalJa){
+      var best=-1, bd=Infinity;
+      for(var j=0;j<q.length;j++) if(q[j]<hi[j]){
+        var d=Math.pow(q[j]+1-ideal[j],2)-Math.pow(q[j]-ideal[j],2)+Math.random()*1e-6;
+        if(d<bd){bd=d;best=j;}
+      }
+      if(best<0) break; q[best]++;
+    }
+    while(sum()>totalJa){
+      var best2=-1, bd2=Infinity;
+      for(var k=0;k<q.length;k++) if(q[k]>lo[k]){
+        var d2=Math.pow(q[k]-1-ideal[k],2)-Math.pow(q[k]-ideal[k],2)+Math.random()*1e-6;
+        if(d2<bd2){bd2=d2;best2=k;}
+      }
+      if(best2<0) break; q[best2]--;
+    }
+    return q;
+  }
+
+  function seatRepeatPenalty(person, members, pairs){
+    var p=0;
+    members.forEach(function(m){ p += pairs[seatPairKey(person,m)] || 0; });
+    return p;
+  }
+
+  function seatChooseTable(person, candidates, tables, pairs){
+    var best=[], score=Infinity;
+    candidates.forEach(function(i){
+      var s=seatRepeatPenalty(person,tables[i],pairs)*1000 + tables[i].length*0.01 + Math.random()*0.005;
+      if(s<score-1e-9){score=s;best=[i];}
+      else if(Math.abs(s-score)<1e-9) best.push(i);
+    });
+    return best.length ? best[Math.floor(Math.random()*best.length)] : -1;
+  }
+
+  function seatOneRound(rows, cap, maxTables, pairs){
+    var n=rows.length;
+    var tableCount=Math.ceil(n/cap);
+    if(tableCount>maxTables) return {error:'capacity', need:tableCount};
+    if(!n) return {error:'empty'};
+    var sizes=seatTableSizes(n,cap,tableCount);
+    var tables=[]; for(var i=0;i<tableCount;i++) tables.push([]);
+
+    var staff=seatShuffle(rows.filter(function(r){return +r.staff===1;}));
+    var guests=rows.filter(function(r){return +r.staff!==1;});
+
+    /* 스탭은 모든 테이블에 1명씩 들어가기 전에는 같은 테이블에 두지 않습니다. */
+    var tableOrder=seatShuffle(Array.from({length:tableCount},function(_,x){return x;}));
+    staff.forEach(function(st,idx){
+      var candidates=[];
+      var minStaff=Infinity;
+      for(var t=0;t<tableCount;t++){
+        if(tables[t].length>=sizes[t]) continue;
+        var sc=tables[t].filter(function(x){return +x.staff===1;}).length;
+        if(sc<minStaff){minStaff=sc;candidates=[t];}
+        else if(sc===minStaff)candidates.push(t);
+      }
+      /* 첫 바퀴는 랜덤한 서로 다른 테이블을 우선 */
+      if(idx<tableCount){
+        var pref=tableOrder[idx];
+        if(candidates.indexOf(pref)>=0) candidates=[pref];
+      }
+      var ti=seatChooseTable(st,candidates,tables,pairs);
+      if(ti>=0) tables[ti].push(st);
+    });
+
+    var totalJa=rows.filter(seatIsJa).length;
+    var quota=seatJaQuota(sizes,tables,totalJa);
+    var ja=seatShuffle(guests.filter(seatIsJa));
+    var ko=seatShuffle(guests.filter(function(r){return !seatIsJa(r);}));
+
+    function fill(pool,isJaPool){
+      pool.forEach(function(p){
+        var cand=[];
+        for(var t=0;t<tableCount;t++){
+          if(tables[t].length>=sizes[t]) continue;
+          var curJa=tables[t].filter(seatIsJa).length;
+          if(isJaPool ? curJa<quota[t] : (tables[t].length-curJa)<(sizes[t]-quota[t])) cand.push(t);
+        }
+        /* 수치상 슬롯이 어긋난 예외에는 빈 자리 어디든 사용 */
+        if(!cand.length) for(var x=0;x<tableCount;x++) if(tables[x].length<sizes[x]) cand.push(x);
+        var ti=seatChooseTable(p,cand,tables,pairs);
+        if(ti>=0) tables[ti].push(p);
+      });
+    }
+    /* 더 적은 국적부터 넣으면 비율 슬롯이 안정적으로 맞습니다 */
+    if(ja.length<=ko.length){fill(ja,true);fill(ko,false);} else {fill(ko,false);fill(ja,true);}
+
+    /* 테이블 안 표시 순서도 매번 랜덤 */
+    tables=tables.map(seatShuffle);
+    return {tables:tables,sizes:sizes};
+  }
+
+  function seatGenerate(){
+    var rows=seatRows(), cap=+$a('seat-size').value||0, maxT=+$a('seat-max').value||0,
+        rounds=Math.max(1,Math.min(6,+$a('seat-rounds').value||1));
+    var st=$a('seat-state'); if(st){st.textContent='';st.classList.remove('err');}
+    if(cap<2 || maxT<1){ if(st){st.textContent='테이블 인원과 최대 테이블 수를 확인해 주세요.';st.classList.add('err');} return; }
+    if(!rows.length){ if(st){st.textContent='이 날짜에 배정할 사람이 없습니다.';st.classList.add('err');} return; }
+    var need=Math.ceil(rows.length/cap);
+    if(need>maxT){
+      if(st){st.textContent='현재 '+rows.length+'명 / 테이블당 '+cap+'명 기준으로 최소 '+need+'테이블이 필요합니다. 최대 테이블 수를 늘려 주세요.';st.classList.add('err');}
+      $a('seat-body').innerHTML='<p class="seat-empty">정원이 부족해 배정하지 않았습니다.</p>';
+      return;
+    }
+
+    var pairs={}, out=[];
+    for(var r=0;r<rounds;r++){
+      /* 여러 후보를 만들어 반복 조합이 가장 적은 것을 고릅니다. */
+      var best=null,bestScore=Infinity;
+      for(var trial=0;trial<60;trial++){
+        var one=seatOneRound(rows,cap,maxT,pairs); if(one.error){best=one;break;}
+        var sc=0;
+        one.tables.forEach(function(tb){
+          for(var i=0;i<tb.length;i++) for(var j=i+1;j<tb.length;j++) sc += pairs[seatPairKey(tb[i],tb[j])]||0;
+        });
+        sc += Math.random()*0.01;
+        if(sc<bestScore){bestScore=sc;best=one;}
+      }
+      if(!best || best.error){ if(st){st.textContent='배정 중 오류가 생겼습니다.';st.classList.add('err');} return; }
+      out.push(best.tables);
+      best.tables.forEach(function(tb){
+        for(var i=0;i<tb.length;i++) for(var j=i+1;j<tb.length;j++){
+          var k=seatPairKey(tb[i],tb[j]); pairs[k]=(pairs[k]||0)+1;
+        }
+      });
+    }
+    SEAT.result={date:$a('seat-date').value, rows:rows, rounds:out, cap:cap, maxTables:maxT, serial:++SEAT.serial};
+    seatPaint();
+    if(st) st.textContent='배정했습니다. 「다시 섞기」를 누르면 같은 조건으로 새로 뽑습니다.';
+  }
+
+  function seatPaint(){
+    var box=$a('seat-body'), sm=$a('seat-summary'), res=SEAT.result;
+    if(!box || !sm) return;
+    if(!res){ box.innerHTML='<p class="seat-empty">날짜와 설정을 고른 뒤 「랜덤 배정」을 눌러 주세요.</p>'; sm.innerHTML=''; return; }
+    var rows=res.rows, ja=rows.filter(seatIsJa).length, staff=rows.filter(function(r){return +r.staff===1;}).length;
+    sm.innerHTML='<span>총 '+rows.length+'명</span><span>일본 '+ja+'명</span><span>한국 '+(rows.length-ja)+'명</span>'+
+      '<span>스탭 '+staff+'명</span><span>'+res.rounds[0].length+'테이블</span><span>'+res.rounds.length+'회차</span>';
+    box.innerHTML='';
+    res.rounds.forEach(function(tables,ri){
+      var sec=document.createElement('section'); sec.className='seat-round';
+      var h=document.createElement('div'); h.className='seat-round-h';
+      h.innerHTML='<b>'+(ri+1)+'회차</b><span>같은 조합 반복을 줄여 랜덤 배정</span>'; sec.appendChild(h);
+      var grid=document.createElement('div'); grid.className='seat-grid';
+      tables.forEach(function(tb,ti){
+        var c=document.createElement('article'); c.className='seat-table';
+        var jn=tb.filter(seatIsJa).length, sn=tb.filter(function(r){return +r.staff===1;}).length;
+        var ch=document.createElement('div'); ch.className='seat-table-h';
+        ch.innerHTML='<b>TABLE '+(ti+1)+'</b><span>'+tb.length+'명 · 日 '+jn+' / 韓 '+(tb.length-jn)+(sn?' · STAFF '+sn:'')+'</span>'; c.appendChild(ch);
+        var ul=document.createElement('ul'); ul.className='seat-members';
+        tb.forEach(function(p){
+          var li=document.createElement('li');
+          var nm=document.createElement('span'); nm.className='nm'; nm.textContent=p.name||'이름 없음'; li.appendChild(nm);
+          var nat=document.createElement('span'); nat.className='nat'; nat.textContent=seatNat(p); li.appendChild(nat);
+          if(+p.staff===1){var b=document.createElement('span');b.className='staff';b.textContent='STAFF';li.appendChild(b);} ul.appendChild(li);
+        });
+        c.appendChild(ul); grid.appendChild(c);
+      });
+      sec.appendChild(grid); box.appendChild(sec);
+    });
+  }
+
+  function seatCsv(){
+    var res=SEAT.result; if(!res) return alert('먼저 자리 배정을 해 주세요.');
+    var lines=[['날짜','회차','테이블','구분','이름','국적'].map(csvQuote).join(',')];
+    res.rounds.forEach(function(tables,ri){
+      tables.forEach(function(tb,ti){
+        tb.forEach(function(p){
+          lines.push([res.date,ri+1,ti+1,(+p.staff===1?'스탭':'참가자'),p.name||'',seatNat(p)].map(csvQuote).join(','));
+        });
+      });
+    });
+    download('irotomo-자리배정-'+res.date+'.csv',lines.join('\n'));
+  }
+
+  on('seat-run','click',seatGenerate);
+  on('seat-reroll','click',seatGenerate);
+  on('seat-csv','click',seatCsv);
+  on('seat-date','change',function(){SEAT.result=null;seatPaint();});
+  on('seat-paid','change',function(){SEAT.result=null;seatPaint();});
 
   /* ── 명단표 ───────────────────────────────────────────────
      원본 CSV 와 따로, 당일 명단으로 쓰는 표를 만듭니다.
