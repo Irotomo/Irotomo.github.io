@@ -715,6 +715,37 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .so-chip.on{background:#fdf4f4;border-color:#f0d8d8;color:#9d4b4b;font-weight:600}
 @media (max-width:720px){ .mt-row{grid-template-columns:1fr auto auto} .mt-note{grid-column:1/-1} }
 
+
+/* 관리자 운영 현황 대시보드 */
+.ops-pane{overflow:auto!important;padding-top:6px!important}
+.ops-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 12px}
+.ops-toolbar h4{margin:0;font-size:14px;color:#1c1b22}
+.ops-toolbar button{padding:6px 11px;border:1px solid #dcd9e8;background:#fff;border-radius:8px;font:inherit;font-size:12px;cursor:pointer}
+.ops-toolbar button:hover{background:#f4f3f8}
+.ops-next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.ops-card{border:1px solid #e7e4ef;border-radius:14px;background:#fff;padding:15px 16px;box-shadow:0 5px 18px -16px rgba(20,27,46,.35)}
+.ops-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:11px}
+.ops-date{font-size:15px;font-weight:800;color:#1c1b22;letter-spacing:-.02em}
+.ops-note{font-size:11px;color:#8a86a0;margin-top:2px}
+.ops-seat{font-size:11px;border-radius:999px;padding:4px 8px;white-space:nowrap;background:#f4f3f8;color:#8a86a0}
+.ops-seat.pub{background:#e8f4ec;color:#1c7a50;font-weight:700}
+.ops-seat.saved{background:#fff7df;color:#8a6818;font-weight:700}
+.ops-big{display:flex;align-items:baseline;gap:6px;margin-bottom:10px}
+.ops-big b{font-size:27px;line-height:1;color:#1c1b22;letter-spacing:-.04em}.ops-big span{font-size:12px;color:#8a86a0}
+.ops-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.ops-kpi{background:#f8f7fb;border-radius:9px;padding:8px 9px;min-width:0}
+.ops-kpi span{display:block;font-size:10.5px;color:#9d99b0;margin-bottom:2px}.ops-kpi b{display:block;font-size:13px;color:#3c3a4a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ops-balance{margin-top:9px;height:7px;border-radius:999px;overflow:hidden;background:#eef0f5;display:flex}
+.ops-balance i{display:block;height:100%}.ops-balance .ja{background:#d9b04b}.ops-balance .ko{background:#6f79a8}
+.ops-drinks{font-size:11px;color:#8a86a0;margin-top:8px;line-height:1.6}
+.ops-section{border-top:1px solid #eceaf3;padding-top:14px;margin-top:4px}
+.ops-section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px}.ops-section-title h4{margin:0;font-size:14px}.ops-section-title span{font-size:11px;color:#9d99b0}
+.ops-avg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}.ops-avg>div{border:1px solid #eceaf3;border-radius:10px;padding:9px 11px}.ops-avg span{display:block;font-size:10.5px;color:#9d99b0}.ops-avg b{font-size:16px;color:#1c1b22}
+.ops-table-wrap{overflow:auto;border:1px solid #eceaf3;border-radius:11px}.ops-table{width:100%;border-collapse:collapse;font-size:12px;min-width:610px}.ops-table th,.ops-table td{padding:8px 10px;border-bottom:1px solid #f0eef5;text-align:right;white-space:nowrap}.ops-table th:first-child,.ops-table td:first-child{text-align:left}.ops-table th{font-size:10.5px;color:#8a86a0;background:#faf9fd;font-weight:700}.ops-table tr:last-child td{border-bottom:0}.ops-table .muted{color:#aaa6b8}.ops-empty{padding:24px 10px;text-align:center;color:#9d99b0;font-size:12px}
+.sg-visit{align-self:center;justify-self:start;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap;background:#f4f3f8;color:#77738d}
+.sg-visit.new{background:#eef4ff;color:#46669d}.sg-visit.repeat{background:#edf7ef;color:#37764a}
+@media(max-width:720px){.ops-next{grid-template-columns:1fr}.ops-avg{grid-template-columns:1fr 1fr}.sg-visit{grid-column:auto}}
+
 /* 신청자 패널 탭 */
 .sign-card .stats-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .sg-tabs{display:flex;gap:4px;margin-left:auto;background:#f4f3f8;padding:3px;border-radius:10px}
@@ -728,7 +759,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .sign-card .sg-pane[data-p="list"]{overflow:hidden}
 .sign-card .sg-pane[data-p="dates"],
 .sign-card .sg-pane[data-p="mail"],
-.sign-card .sg-pane[data-p="seat"]{overflow:auto}
+.sign-card .sg-pane[data-p="seat"],
+.sign-card .sg-pane[data-p="dash"]{overflow:auto}
 /* 제목·탭 줄을 얇게 */
 .sign-card .stats-head{padding:0 0 10px;margin:0 0 2px}
 .sign-card .stats-head h3{margin:0;font-size:17px}
@@ -1649,7 +1681,8 @@ body.admin-on .gal figure .zoom{display:none}
     <div class="stats-head">
       <h3>신청자</h3>
       <nav class="sg-tabs" id="sg-tabs">
-        <button type="button" data-t="list"  aria-pressed="true">신청 내역</button>
+        <button type="button" data-t="dash"  aria-pressed="true">운영 현황</button>
+        <button type="button" data-t="list"  aria-pressed="false">신청 내역</button>
         <button type="button" data-t="seat"  aria-pressed="false">자리 배정</button>
         <button type="button" data-t="dates" aria-pressed="false">모임 날짜</button>
         <button type="button" data-t="mail"  aria-pressed="false">정기 발송</button>
@@ -1657,7 +1690,20 @@ body.admin-on .gal figure .zoom{display:none}
       <button class="x" type="button" data-adm-close aria-label="닫기">&#10005;</button>
     </div>
 
-    <section class="sg-pane" data-p="list">
+    <section class="sg-pane ops-pane" data-p="dash">
+      <div class="ops-toolbar">
+        <h4>다음 모임 운영 현황</h4>
+        <button type="button" id="ops-reload">새로고침</button>
+      </div>
+      <div id="ops-next" class="ops-next"><div class="ops-empty">불러오는 중…</div></div>
+      <div class="ops-section">
+        <div class="ops-section-title"><h4>최근 출석 기록</h4><span>최근 8회 · D1 전체 이력 기준</span></div>
+        <div id="ops-avg" class="ops-avg"></div>
+        <div id="ops-history"></div>
+      </div>
+    </section>
+
+    <section class="sg-pane" data-p="list" hidden>
       <div class="sg-tools">
         <input type="search" id="sg-q" placeholder="이름 · 메일 · 메모 검색">
         <span class="st-range" id="sg-filter">
@@ -2657,7 +2703,7 @@ window.IROLANG = (function(){
 
   /* ── 신청자 관리 ─────────────────────────────────────
      불러오기 → 날짜별 묶음 → 칸을 눌러 바로 수정 → 자동 저장   */
-  var SG = { rows: [], filter: 'soon', q: '' };
+  var SG = { rows: [], filter: 'soon', q: '', dashboard:null };
   var SG_COLS = [
     ['name','이름'], ['nat','국적'], ['email','이메일'],
     ['drink','음료'], ['sns','SNS'], ['src','경로'], ['memo','메모']
@@ -2668,6 +2714,7 @@ window.IROLANG = (function(){
     openDim($a('adm-signups')); loadSignups();
   });
   on('sg-reload', 'click', loadSignups);
+  on('ops-reload', 'click', function(){ loadDashboard(true); });
   on('sg-q', 'input', function(){ SG.q = this.value.trim().toLowerCase(); paintSg(); });
   document.querySelectorAll('#sg-filter button').forEach(function(b){
     b.addEventListener('click', function(){
@@ -2698,6 +2745,7 @@ window.IROLANG = (function(){
       });
       if (t === 'dates' && !loaded.dates) { loaded.dates = true; loadMeetups(); }
       if (t === 'seat') { seatFillDates(); seatLoadStatus(); }
+      if (t === 'dash') { loadDashboard(); }
     });
   })();
 
@@ -2907,6 +2955,88 @@ window.IROLANG = (function(){
     }).catch(function(){ $a('dg-state').textContent = '보내지 못했습니다'; });
   });
 
+
+  /* ── 운영 현황 대시보드 ────────────────────────────────── */
+  function opsPct(a,b){ return b > 0 ? Math.round(a * 1000 / b) / 10 : null; }
+  function opsDateLabel(d){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(String(d||''))) return d||'';
+    var dt=new Date(d+'T00:00:00'), wd=['일','월','화','수','목','금','토'];
+    return d.replace(/-/g,'.')+' ('+wd[dt.getDay()]+')';
+  }
+  function opsSeatText(x){
+    if(+x.seat_published===1) return ['참가자 공개 중','pub'];
+    if(+x.seat_saved===1) return ['배정 저장됨','saved'];
+    return ['좌석 미배정',''];
+  }
+  function paintDashboard(){
+    var nextBox=$a('ops-next'), avgBox=$a('ops-avg'), histBox=$a('ops-history');
+    if(!nextBox || !avgBox || !histBox) return;
+    var d=SG.dashboard;
+    if(!d){ nextBox.innerHTML='<div class="ops-empty">운영 현황을 불러오는 중…</div>'; avgBox.innerHTML=''; histBox.innerHTML=''; return; }
+
+    var next=d.next||[];
+    if(!next.length) nextBox.innerHTML='<div class="ops-empty">다가오는 모임이 없습니다.</div>';
+    else nextBox.innerHTML=next.map(function(x){
+      var seat=opsSeatText(x), total=+x.guests||0, ja=+x.ja||0, ko=+x.ko||0;
+      var jaPct=total ? Math.round(ja*100/total) : 0, koPct=Math.max(0,100-jaPct);
+      var paidPct=opsPct(+x.paid||0,total);
+      var repPct=opsPct(+x.repeat_count||0,total);
+      var drinks=[];
+      if(+x.dutch) drinks.push('더치 '+x.dutch);
+      if(+x.milk) drinks.push('밀크티 '+x.milk);
+      if(+x.lime) drinks.push('라임 '+x.lime);
+      if(+x.grape) drinks.push('자몽 '+x.grape);
+      return '<article class="ops-card">'
+        +'<div class="ops-card-head"><div><div class="ops-date">'+esc(opsDateLabel(x.date))+'</div>'
+        +(x.note?'<div class="ops-note">'+esc(x.note)+'</div>':'')+'</div><span class="ops-seat '+seat[1]+'">'+seat[0]+'</span></div>'
+        +'<div class="ops-big"><b>'+total+'</b><span>명 신청'+(+x.staff?' · 스탭 '+x.staff+'명':'')+'</span></div>'
+        +'<div class="ops-kpis">'
+        +'<div class="ops-kpi"><span>국적</span><b>🇯🇵 '+ja+' / 🇰🇷 '+ko+'</b></div>'
+        +'<div class="ops-kpi"><span>입금</span><b>'+x.paid+' / '+total+(paidPct!==null?' · '+paidPct+'%':'')+'</b></div>'
+        +'<div class="ops-kpi"><span>신규</span><b>'+x.new_count+'명</b></div>'
+        +'<div class="ops-kpi"><span>재참가</span><b>'+x.repeat_count+'명'+(repPct!==null?' · '+repPct+'%':'')+'</b></div>'
+        +'</div><div class="ops-balance"><i class="ja" style="width:'+jaPct+'%"></i><i class="ko" style="width:'+koPct+'%"></i></div>'
+        +(drinks.length?'<div class="ops-drinks">음료 · '+drinks.join(' · ')+'</div>':'')
+        +'</article>';
+    }).join('');
+
+    var recent=d.recent||[], marked=recent.filter(function(x){return (+x.attended||0)>0;});
+    var sumGuests=0,sumPaid=0,sumAtt=0,sumNo=0;
+    marked.forEach(function(x){sumGuests+=+x.guests||0;sumPaid+=+x.paid||0;sumAtt+=+x.attended||0;sumNo+=Math.max(0,(+x.paid||0)-(+x.attended||0));});
+    var ar=opsPct(sumAtt,sumGuests), cr=opsPct(sumAtt,sumPaid);
+    var nr=opsPct(sumNo,sumPaid);
+    avgBox.innerHTML='<div><span>최근 평균 출석</span><b>'+(marked.length?(Math.round(sumAtt/marked.length*10)/10)+'명':'—')+'</b></div>'
+      +'<div><span>신청 → 출석률</span><b>'+(ar===null?'—':ar+'%')+'</b></div>'
+      +'<div><span>입금확정 → 출석률</span><b>'+(cr===null?'—':cr+'%')+'</b></div>'
+      +'<div><span>노쇼율</span><b>'+(nr===null?'—':nr+'%')+'</b></div>';
+
+    if(!recent.length){ histBox.innerHTML='<div class="ops-empty">지난 모임 기록이 없습니다.</div>'; return; }
+    histBox.innerHTML='<div class="ops-table-wrap"><table class="ops-table"><thead><tr>'
+      +'<th>날짜</th><th>신청</th><th>입금</th><th>출석</th><th>노쇼</th><th>노쇼율</th><th>신청→출석</th><th>확정→출석</th><th>신규/재참가</th>'
+      +'</tr></thead><tbody>'+recent.map(function(x){
+        var recorded=(+x.attended||0)>0, no=recorded?Math.max(0,(+x.paid||0)-(+x.attended||0)):null;
+        var r1=recorded?opsPct(+x.attended||0,+x.guests||0):null, r2=recorded?opsPct(+x.attended||0,+x.paid||0):null;
+        var noRate=recorded?opsPct(no,+x.paid||0):null;
+        return '<tr><td>'+esc(opsDateLabel(x.date))+'</td><td>'+x.guests+'</td><td>'+x.paid+'</td>'
+          +'<td class="'+(recorded?'':'muted')+'">'+(recorded?x.attended:'미기록')+'</td>'
+          +'<td class="'+(recorded?'':'muted')+'">'+(recorded?no:'—')+'</td>'
+          +'<td>'+(noRate===null?'—':noRate+'%')+'</td>'
+          +'<td>'+(r1===null?'—':r1+'%')+'</td><td>'+(r2===null?'—':r2+'%')+'</td>'
+          +'<td>'+x.new_count+' / '+x.repeat_count+'</td></tr>';
+      }).join('')+'</tbody></table></div>';
+  }
+  function loadDashboard(force){
+    if(!ADMIN.token) return;
+    if(SG.dashboard && !force){ paintDashboard(); return; }
+    SG.dashboard=null; paintDashboard();
+    apiPost({action:'admin_dashboard',token:ADMIN.token}).then(function(d){
+      if(!d || !d.ok) throw new Error((d&&d.error)||'fail');
+      SG.dashboard=d; paintDashboard();
+    }).catch(function(e){
+      var b=$a('ops-next'); if(b) b.innerHTML='<div class="ops-empty">운영 현황을 불러오지 못했습니다 ('+esc(e.message)+')</div>';
+    });
+  }
+
   function loadSignups(){
     if (!$a('sg-body')) return;
     $a('sg-body').innerHTML = '<p class="st-empty">불러오는 중…</p>';
@@ -2914,7 +3044,7 @@ window.IROLANG = (function(){
       if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
       SG.rows = d.rows || [];
       if (d.closed) CLOSED = d.closed;   /* 품절 버튼 상태 */
-      fillDigest(d.digest); paintSg(); seatFillDates();
+      fillDigest(d.digest); paintSg(); seatFillDates(); loadDashboard(true);
     }).catch(function(e){
       $a('sg-body').innerHTML = '<p class="st-empty">불러오지 못했습니다 (' + e.message + ')</p>';
     });
@@ -2961,11 +3091,14 @@ window.IROLANG = (function(){
       var gN = list.length - sN;
       var paidN = list.filter(function(x){ return +x.staff !== 1 && +x.paid === 1; }).length;
       var attN = list.filter(function(x){ return +x.staff !== 1 && +x.attended === 1; }).length;
+      var newN = list.filter(function(x){ return +x.staff !== 1 && (+x.prior_visit_count||0) === 0; }).length;
+      var repeatN = list.filter(function(x){ return +x.staff !== 1 && (+x.prior_visit_count||0) > 0; }).length;
       var jaN = list.filter(function(x){ return /日本|일본/.test(x.nat || ''); }).length;
       h.innerHTML = '<b>' + label + '</b><span>전체 ' + list.length
                   + ' · 일본 ' + jaN + ' · 한국 ' + (list.length - jaN)
                   + '</span><span>입금 ' + paidN + '/' + gN
                   + ' · 출석 ' + attN + '/' + gN
+                  + ' · 신규 ' + newN + ' · 재참가 ' + repeatN
                   + (sN ? ' · 스탭 ' + sN : '') + '</span>';
 
       /* 주 2회 이상 운영해도 날짜별 명단이 섞이지 않도록
@@ -3170,6 +3303,18 @@ window.IROLANG = (function(){
       f.appendChild(s); f.appendChild(inp); row.appendChild(f);
     });
 
+    /* 신규 / 재참가 — 과거 전체 D1 출석 이력 기준 */
+    if (+r.staff !== 1) {
+      var vc = document.createElement('span');
+      var prior = +r.prior_visit_count || 0;
+      vc.className = 'sg-visit ' + (prior > 0 ? 'repeat' : 'new');
+      vc.textContent = prior > 0 ? ('재참가 · 이전 기록 ' + prior + '회') : '신규';
+      vc.title = prior > 0
+        ? '이 모임 날짜보다 앞선 신청 기록이 ' + prior + '회 있습니다.'
+        : '이 모임 날짜보다 앞선 신청 기록이 없습니다.';
+      row.appendChild(vc);
+    }
+
     /* 입금 확인 — 음료비가 들어왔는지 표시합니다 */
     var pay = document.createElement('label'); pay.className = 'sg-paid';
     var cb = document.createElement('input'); cb.type = 'checkbox';
@@ -3186,7 +3331,7 @@ window.IROLANG = (function(){
           r.paid = v;
           pt.textContent = v ? '입금' : '미입금';
           pay.classList.toggle('on', !!v);
-          paintSgTally();
+          paintSgTally(); SG.dashboard=null; loadDashboard(true);
         })
         .catch(function(){ cb.disabled = false; cb.checked = !cb.checked; });
     });
@@ -3208,7 +3353,7 @@ window.IROLANG = (function(){
           r.attended = v;
           at.textContent = v ? '출석' : '미출석';
           att.classList.toggle('on', !!v);
-          paintSg();
+          paintSg(); SG.dashboard=null; loadDashboard(true);
         })
         .catch(function(){ acb.disabled = false; acb.checked = !acb.checked; });
     });
@@ -3221,7 +3366,7 @@ window.IROLANG = (function(){
       apiPost({ action:'signup_del', token: ADMIN.token, id: r.id }).then(function(d){
         if (!d || !d.ok) return alert('삭제하지 못했습니다.');
         SG.rows = SG.rows.filter(function(x){ return x.id !== r.id; });
-        paintSg();
+        paintSg(); SG.dashboard=null; loadDashboard(true);
       });
     });
     row.appendChild(del);
