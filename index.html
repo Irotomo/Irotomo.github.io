@@ -1280,6 +1280,32 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
   .ops-table-wrap{overflow:visible;border:0;border-radius:0}
 }
 
+
+/* ── 2차 참가 버튼 (신청 내역) ──────────────────────────── */
+.sg-after{align-self:center;padding:6px 11px;border:1px solid #e2dfec;background:#fff;
+  border-radius:999px;font:inherit;font-size:12px;color:#8a86a0;cursor:pointer;white-space:nowrap}
+.sg-after:hover{background:#f4f3f8}
+.sg-after.on{background:#eef4ff;border-color:#cfdcf5;color:#3a5f9e;font-weight:700}
+
+/* ── 테이블별 인원 직접 지정 ────────────────────────────── */
+.seat-manual{margin:12px 0 4px;padding:13px 15px;border:1px dashed #ded9ee;
+  border-radius:12px;background:#fbfaff}
+.seat-manual-h{margin:0 0 10px;font-size:12px;color:#8a86a0;font-weight:600;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#seat-manual-sum{font-weight:700}
+#seat-manual-sum.ok{color:#2f6f4c}
+#seat-manual-sum.bad{color:#b04a4a}
+.seat-manual-rows{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.seat-manual-rows label{display:flex;align-items:center;gap:7px;background:#fff;
+  border:1px solid #e6e3f0;border-radius:9px;padding:6px 9px}
+.seat-manual-rows span{font-size:11px;color:#9d99b0;white-space:nowrap}
+.seat-manual-rows input{width:100%;min-width:0;border:0;background:transparent;
+  font:inherit;font-size:14px;font-weight:700;text-align:right;color:#1c1b22;outline:none}
+
+.stf-chip .stf-after{width:auto;height:auto;padding:2px 8px;border-radius:999px;
+  background:#f2f1f7;color:#8a86a0;font-size:10.5px;font-weight:700}
+.stf-chip .stf-after.on{background:#eef4ff;color:#3a5f9e}
+
 </style>
 </head>
 <body data-lang="ja">
@@ -1854,9 +1880,11 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
       <div class="seat-tools">
         <label><span>모임 날짜</span><select id="seat-date"></select></label>
         <label><span>테이블당 최대 인원</span><input type="number" id="seat-size" min="2" max="20" value="6"></label>
-        <label><span>최대 테이블 수</span><input type="number" id="seat-max" min="1" max="50" value="12"></label>
+        <label><span>최대 테이블 수</span><input type="number" id="seat-max" min="1" max="12" value="12"></label>
         <label><span>회차 수</span><input type="number" id="seat-rounds" min="1" max="6" value="3"></label>
+        <label><span>배정 범위</span><select id="seat-scope"><option value="main" selected>본 모임</option><option value="after">2차</option></select></label>
         <label><span>배정 대상</span><select id="seat-paid"><option value="all">신청자 전체</option><option value="paid" selected>입금 확인만</option></select></label>
+        <label><span>인원 배분</span><select id="seat-mode"><option value="auto" selected>자동 (고르게)</option><option value="manual">테이블별 직접 지정</option></select></label>
         <label><span>좌석 확인 비밀번호 (직접 지정)</span><input type="text" id="seat-pass" maxlength="40" placeholder="예: 0906iro" autocomplete="off"></label>
         <div class="seat-actions">
           <button type="button" class="primary" id="seat-run">랜덤 배정</button>
@@ -1873,6 +1901,13 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
         서버에는 비밀번호 원문이 아닌 해시값만 저장됩니다. 기존 비밀번호는 다시 표시되지 않으므로 잊어버렸다면 새 비밀번호로 다시 공개해 주세요.
       </p>
       <div id="seat-summary" class="seat-summary" style="margin-top:10px"></div>
+      <!-- 테이블별 인원 직접 지정 — «직접 지정» 을 골랐을 때만 보입니다.
+           현장에서 테이블 크기가 제각각일 때 그대로 맞춰 넣습니다. -->
+      <div id="seat-manual" class="seat-manual" hidden>
+        <p class="seat-manual-h">테이블별 인원 <span id="seat-manual-sum"></span></p>
+        <div id="seat-manual-rows" class="seat-manual-rows"></div>
+      </div>
+
       <div id="seat-body"><p class="seat-empty">날짜와 설정을 고른 뒤 「랜덤 배정」을 눌러 주세요.</p></div>
       <p class="sg-dg-note">국적 비율은 각 테이블의 정원에 맞춰 전체 한·일 비율과 가장 가까워지도록 나눕니다.
         스탭은 가능한 한 서로 다른 테이블에 먼저 배치하며, 여러 회차를 만들면 이전 회차에서 만난 사람과 다시 같은 테이블이 되는 횟수도 줄입니다.<br>
@@ -2864,6 +2899,10 @@ window.IROLANG = (function(){
     ['name','이름'], ['nat','국적'], ['email','이메일'],
     ['drink','음료'], ['sns','SNS'], ['src','경로'], ['memo','메모']
   ];
+  /* 2차 참가 표시 — 메모에 붙는 꼬리표입니다 */
+  var AFTER_TAG = '#2차';
+  var AFTER_RE  = /#2차/;
+
   var SG_DRINK = { dutch:'더치커피', milk:'밀크티', lime:'분다버그 라임', grape:'분다버그 핑크자몽' };
 
   on('adm-signups-open', 'click', function(){
@@ -3405,6 +3444,30 @@ window.IROLANG = (function(){
           r.name
           + (natShort ? ' · ' + natShort : '')
           + (r.drink ? ' · ' + (SG_DRINK[r.drink] || r.drink) : '')));
+        /* 스탭도 2차에 참석하므로 여기서 표시합니다 */
+        var af = document.createElement('button');
+        af.type = 'button';
+        af.className = 'stf-after' + (AFTER_RE.test(r.memo || '') ? ' on' : '');
+        af.textContent = '2차';
+        af.title = '2차 참가 여부';
+        af.addEventListener('click', function(){
+          var cur = String(r.memo || '');
+          var next = AFTER_RE.test(cur)
+            ? cur.replace(AFTER_RE, '').replace(/\s{2,}/g, ' ').trim()
+            : (cur ? cur + ' ' + AFTER_TAG : AFTER_TAG);
+          af.disabled = true;
+          apiPost({ action:'signup_save', token: ADMIN.token, id: r.id, memo: next })
+            .then(function(d){
+              af.disabled = false;
+              if (!d || !d.ok) throw new Error('fail');
+              r.memo = next;
+              af.classList.toggle('on', AFTER_RE.test(next));
+              try { seatManualSum(); } catch (e) {}
+            })
+            .catch(function(){ af.disabled = false; alert('바꾸지 못했습니다.'); });
+        });
+        c.appendChild(af);
+
         var x = document.createElement('button');
         x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', '빼기');
         x.addEventListener('click', function(){
@@ -3566,6 +3629,37 @@ window.IROLANG = (function(){
       row.appendChild(vc);
     }
 
+    /* 2차 참가 — 당일 현장에서 눌러 표시합니다.
+       메모 끝에 «#2차» 표시를 넣고 빼는 방식이라 서버는 손대지 않습니다. */
+    if (+r.staff !== 1 || true) {
+      var af = document.createElement('button');
+      af.type = 'button';
+      var isAfter = AFTER_RE.test(r.memo || '');
+      af.className = 'sg-after' + (isAfter ? ' on' : '');
+      af.textContent = isAfter ? '2차 O' : '2차';
+      af.title = '2차 참가 여부를 표시합니다';
+      af.addEventListener('click', function(){
+        var cur = String(r.memo || '');
+        var next = AFTER_RE.test(cur)
+          ? cur.replace(AFTER_RE, '').replace(/\s{2,}/g, ' ').trim()
+          : (cur ? cur + ' ' + AFTER_TAG : AFTER_TAG);
+        af.disabled = true;
+        apiPost({ action:'signup_save', token: ADMIN.token, id: r.id, memo: next })
+          .then(function(d){
+            af.disabled = false;
+            if (!d || !d.ok) throw new Error('fail');
+            r.memo = next;
+            var on = AFTER_RE.test(next);
+            af.classList.toggle('on', on);
+            af.textContent = on ? '2차 O' : '2차';
+            var mi = row.querySelector('textarea');
+            if (mi) mi.value = next;
+          })
+          .catch(function(){ af.disabled = false; alert('바꾸지 못했습니다.'); });
+      });
+      row.appendChild(af);
+    }
+
     /* 입금 확인 — 음료비가 들어왔는지 표시합니다 */
     var pay = document.createElement('label'); pay.className = 'sg-paid';
     var cb = document.createElement('input'); cb.type = 'checkbox';
@@ -3673,14 +3767,64 @@ window.IROLANG = (function(){
   function seatRows(){
     var d=$a('seat-date') && $a('seat-date').value;
     var paidOnly=$a('seat-paid') && $a('seat-paid').value==='paid';
+    var after=$a('seat-scope') && $a('seat-scope').value==='after';
     return (SG.rows||[]).filter(function(r){
       if (r.date!==d) return false;
+      /* 2차 배정은 «2차» 를 눌러 표시한 사람만 대상으로 합니다 */
+      if (after && !AFTER_RE.test(r.memo||'')) return false;
       if (!paidOnly) return true;
       return +r.staff===1 || +r.paid===1;
     });
   }
 
-  function seatTableSizes(total, cap, tables){
+  /* ── 테이블별 인원 직접 지정 ──────────────────────────────
+     현장 테이블 크기가 제각각일 때 그대로 맞춰 넣습니다.
+     합계가 실제 인원과 맞아야 배정이 돌아갑니다. */
+  function seatManualOn(){
+    return $a('seat-mode') && $a('seat-mode').value === 'manual';
+  }
+  function seatManualPaint(){
+    var box=$a('seat-manual'), rowsBox=$a('seat-manual-rows');
+    if(!box||!rowsBox) return;
+    if(!seatManualOn()){ box.hidden=true; return; }
+    box.hidden=false;
+
+    var n=Math.max(1,Math.min(12,+$a('seat-max').value||1));
+    var cap=Math.max(2,+$a('seat-size').value||6);
+    var prev=[];
+    rowsBox.querySelectorAll('input').forEach(function(x){ prev.push(+x.value||0); });
+
+    rowsBox.innerHTML='';
+    for(var i=0;i<n;i++){
+      var lab=document.createElement('label');
+      var t=document.createElement('span'); t.textContent='TABLE '+(i+1);
+      var inp=document.createElement('input');
+      inp.type='number'; inp.min='0'; inp.max='20';
+      inp.value=String(prev[i]!==undefined?prev[i]:cap);
+      inp.addEventListener('input', seatManualSum);
+      lab.appendChild(t); lab.appendChild(inp); rowsBox.appendChild(lab);
+    }
+    seatManualSum();
+  }
+  function seatManualSizes(){
+    var out=[];
+    var b=$a('seat-manual-rows');
+    if(b) b.querySelectorAll('input').forEach(function(x){ out.push(Math.max(0,+x.value||0)); });
+    return out.filter(function(v){ return v>0; });
+  }
+  function seatManualSum(){
+    var el=$a('seat-manual-sum'); if(!el) return;
+    var sizes=seatManualSizes();
+    var sum=sizes.reduce(function(a,b){return a+b;},0);
+    var need=seatRows().length;
+    el.textContent='합계 '+sum+'석 · 배정 대상 '+need+'명';
+    el.className = sum===need ? 'ok' : 'bad';
+  }
+
+  function seatTableSizes(total, cap, tables, fixed){
+    /* 직접 지정한 값이 있으면 섞지 않고 TABLE 번호 순서 그대로 씁니다.
+       현장 테이블 크기에 맞춰 넣은 숫자이므로 순서가 바뀌면 안 됩니다. */
+    if (fixed && fixed.length) return fixed.slice();
     var base=Math.floor(total/tables), more=total%tables, a=[];
     for (var i=0;i<tables;i++) a.push(base+(i<more?1:0));
     return seatShuffle(a);
@@ -3734,12 +3878,13 @@ window.IROLANG = (function(){
     return best.length ? best[Math.floor(Math.random()*best.length)] : -1;
   }
 
-  function seatOneRound(rows, cap, maxTables, pairs){
+  function seatOneRound(rows, cap, maxTables, pairs, fixed){
     var n=rows.length;
-    var tableCount=Math.ceil(n/cap);
+    /* 테이블별 인원을 직접 넣었으면 그 개수가 곧 테이블 수입니다 */
+    var tableCount=(fixed && fixed.length) ? fixed.length : Math.ceil(n/cap);
     if(tableCount>maxTables) return {error:'capacity', need:tableCount};
     if(!n) return {error:'empty'};
-    var sizes=seatTableSizes(n,cap,tableCount);
+    var sizes=seatTableSizes(n,cap,tableCount,fixed);
     var tables=[]; for(var i=0;i<tableCount;i++) tables.push([]);
 
     var staff=seatShuffle(rows.filter(function(r){return +r.staff===1;}));
@@ -3798,8 +3943,20 @@ window.IROLANG = (function(){
     var st=$a('seat-state'); if(st){st.textContent='';st.classList.remove('err');}
     if(cap<2 || maxT<1){ if(st){st.textContent='테이블 인원과 최대 테이블 수를 확인해 주세요.';st.classList.add('err');} return; }
     if(!rows.length){ if(st){st.textContent='이 날짜에 배정할 사람이 없습니다.';st.classList.add('err');} return; }
+    /* 테이블별로 직접 넣은 인원이 있으면 그대로 씁니다 */
+    var manual=null;
+    if(seatManualOn()){
+      manual=seatManualSizes();
+      var msum=manual.reduce(function(a,b){return a+b;},0);
+      if(!manual.length){ if(st){st.textContent='테이블별 인원을 넣어 주세요.';st.classList.add('err');} return; }
+      if(msum!==rows.length){
+        if(st){st.textContent='테이블별 인원 합계가 '+msum+'석인데 배정 대상은 '+rows.length+'명입니다. 숫자를 맞춰 주세요.';st.classList.add('err');}
+        return;
+      }
+    }
+
     var need=Math.ceil(rows.length/cap);
-    if(need>maxT){
+    if(!manual && need>maxT){
       if(st){st.textContent='현재 '+rows.length+'명 / 테이블당 '+cap+'명 기준으로 최소 '+need+'테이블이 필요합니다. 최대 테이블 수를 늘려 주세요.';st.classList.add('err');}
       $a('seat-body').innerHTML='<p class="seat-empty">정원이 부족해 배정하지 않았습니다.</p>';
       return;
@@ -3810,7 +3967,7 @@ window.IROLANG = (function(){
       /* 여러 후보를 만들어 반복 조합이 가장 적은 것을 고릅니다. */
       var best=null,bestScore=Infinity;
       for(var trial=0;trial<60;trial++){
-        var one=seatOneRound(rows,cap,maxT,pairs); if(one.error){best=one;break;}
+        var one=seatOneRound(rows,cap,maxT,pairs,manual); if(one.error){best=one;break;}
         var sc=0;
         one.tables.forEach(function(tb){
           for(var i=0;i<tb.length;i++) for(var j=i+1;j<tb.length;j++) sc += pairs[seatPairKey(tb[i],tb[j])]||0;
@@ -4000,17 +4157,22 @@ window.IROLANG = (function(){
     }).catch(function(e){ st.textContent='공개 중지에 실패했습니다 ('+e.message+')';st.classList.add('err'); });
   }
 
+  on('seat-mode','change',function(){seatManualPaint();SEAT.result=null;seatPaint();});
+  on('seat-max','input',function(){if(seatManualOn())seatManualPaint();});
+  on('seat-size','input',function(){if(seatManualOn())seatManualPaint();});
+  on('seat-scope','change',function(){SEAT.result=null;seatManualSum();seatPaint();seatLoadStatus();});
   on('seat-run','click',seatGenerate);
   on('seat-reroll','click',seatGenerate);
   on('seat-csv','click',seatCsv);
   on('seat-publish','click',seatPublish);
   on('seat-hide','click',seatHide);
   on('seat-date','change',function(){
+    setTimeout(seatManualSum,0);
     SEAT.result=null;
     var b=$a('seat-body'); if(b) b.innerHTML='<p class="seat-empty">저장된 자리배정을 불러오는 중…</p>';
     seatLoadStatus();
   });
-  on('seat-paid','change',function(){SEAT.result=null;seatPaint();});
+  on('seat-paid','change',function(){SEAT.result=null;seatManualSum();seatPaint();});
 
   /* ── 명단표 CSV ───────────────────────────────────────────
      XLSX 방식은 제거하고, 사용자가 쓰던 명단표 형식으로 CSV를 생성합니다.
