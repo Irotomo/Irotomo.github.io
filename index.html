@@ -3881,6 +3881,13 @@ window.IROLANG = (function(){
           r.paid = v;
           pt.textContent = v ? '입금' : '미입금';
           pay.classList.toggle('on', !!v);
+          if (v && d.paid_confirmed) {
+            if (d.mail_attempted && d.mail === false) {
+              alert('입금 확인은 저장됐지만 참가 확정 메일 발송에 실패했습니다. Worker 로그/Brevo 상태를 확인해 주세요.');
+            } else if (!d.mail_attempted) {
+              alert('입금 확인은 저장됐지만 이메일 주소가 없어 참가 확정 메일은 발송되지 않았습니다.');
+            }
+          }
           paintSgTally();
         })
         .catch(function(){ cb.disabled = false; cb.checked = !cb.checked; });
