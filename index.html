@@ -2977,6 +2977,9 @@ window.IROLANG = (function(){
   /* ── 신청자 관리 ─────────────────────────────────────
      불러오기 → 날짜별 묶음 → 칸을 눌러 바로 수정 → 자동 저장   */
   var SG = { rows: [], filter: 'soon', q: '' };
+  /* 관리자에서 불러온 향후 모임 날짜.
+     신청자가 0명이어도 스탭을 미래 날짜에 미리 넣을 수 있게 씁니다. */
+  var ADMIN_MEETUP_DATES = [];
   var SG_COLS = [
     ['name','이름'], ['nat','국적'], ['email','이메일'],
     ['drink','음료'], ['sns','SNS'], ['src','경로'], ['memo','메모']
@@ -3120,6 +3123,9 @@ window.IROLANG = (function(){
   }
 
   function paintMeetups(list){
+    ADMIN_MEETUP_DATES = (list || [])
+      .filter(function(m){ return m && /^\d{4}-\d{2}-\d{2}$/.test(String(m.date||'')) && !m.off; })
+      .map(function(m){ return String(m.date); });
     var WD = ['일','월','화','수','목','금','토'];
     var box = $a('mt-list'); box.innerHTML = '';
     if (!list.length) { box.innerHTML = '<p class="sg-dg-note">표시할 날짜가 없습니다.</p>'; return; }
@@ -3465,9 +3471,103 @@ window.IROLANG = (function(){
     });
   }
 
+  function fallbackFutureMeetups(){
+    var out=[], d=new Date(); d.setHours(0,0,0,0);
+    /* 기본 운영일(일요일) 12주. 관리자 모임 날짜가 아직 안 불러와졌을 때의 안전망 */
+    var add=(7-d.getDay())%7;
+    d.setDate(d.getDate()+add);
+    for(var i=0;i<12;i++){
+      var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+      out.push(y+'-'+m+'-'+day);
+      d.setDate(d.getDate()+7);
+    }
+    return out;
+  }
+
+  function staffQuickBox(){
+    var box=document.createElement('div');
+    box.className='stf';
+    box.style.marginBottom='14px';
+
+    var head=document.createElement('p');
+    head.className='stf-h';
+    head.textContent='스탭 빠른 추가';
+    box.appendChild(head);
+
+    var note=document.createElement('p');
+    note.className='sg-dg-note';
+    note.style.margin='0 0 8px';
+    note.textContent='신청자가 아직 0명인 미래 날짜에도 스탭을 미리 추가할 수 있습니다.';
+    box.appendChild(note);
+
+    var row=document.createElement('div');
+    row.className='stf-add';
+
+    var dateSel=document.createElement('select');
+    dateSel.setAttribute('aria-label','스탭 참가 날짜');
+    var dates=(ADMIN_MEETUP_DATES && ADMIN_MEETUP_DATES.length ? ADMIN_MEETUP_DATES.slice() : fallbackFutureMeetups())
+      .filter(function(d){ return /^\d{4}-\d{2}-\d{2}$/.test(d); });
+    dates.forEach(function(d){
+      var o=document.createElement('option');
+      o.value=d; o.textContent=d.replace(/-/g,'.');
+      dateSel.appendChild(o);
+    });
+
+    var name=document.createElement('input');
+    name.type='text'; name.placeholder='이름'; name.maxLength=60;
+
+    var nat=document.createElement('select');
+    [['日本 / 일본','일본'],['韓国 / 한국','한국']].forEach(function(p){
+      var o=document.createElement('option'); o.value=p[0]; o.textContent=p[1]; nat.appendChild(o);
+    });
+
+    var pick=document.createElement('select');
+    var blank=document.createElement('option'); blank.value=''; blank.textContent='음료 없음'; pick.appendChild(blank);
+    Object.keys(SG_DRINK).forEach(function(id){
+      var o=document.createElement('option'); o.value=id; o.textContent=SG_DRINK[id]; pick.appendChild(o);
+    });
+
+    var add=document.createElement('button');
+    add.type='button'; add.className='stf-go'; add.textContent='추가';
+
+    function submit(){
+      var d=dateSel.value, v=name.value.trim();
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){ alert('추가할 모임 날짜를 선택해 주세요.'); return; }
+      if(!v){ name.focus(); return; }
+      add.disabled=true;
+      apiPost({action:'staff_add',token:ADMIN.token,date:d,name:v,nat:nat.value,drink:pick.value})
+        .then(function(x){
+          add.disabled=false;
+          if(!x || !x.ok) throw new Error((x&&x.error)||'fail');
+          name.value='';
+          loadSignups();
+        })
+        .catch(function(e){
+          add.disabled=false;
+          alert('추가하지 못했습니다. ('+fail(e)+')');
+        });
+    }
+    add.addEventListener('click',submit);
+    name.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){ e.preventDefault(); submit(); }
+    });
+
+    row.appendChild(dateSel); row.appendChild(name); row.appendChild(nat); row.appendChild(pick); row.appendChild(add);
+    box.appendChild(row);
+    return box;
+  }
+
   function paintSg(){
     var rows = sgVisible(), box = $a('sg-body');
-    if (!rows.length) { box.innerHTML = '<p class="st-empty">해당하는 신청이 없습니다.</p>'; return; }
+    box.innerHTML = '';
+    box.appendChild(staffQuickBox());
+    if (!rows.length) {
+      var empty=document.createElement('p');
+      empty.className='st-empty';
+      empty.textContent='해당하는 신청이 없습니다.';
+      box.appendChild(empty);
+      return;
+    }
 
     var groups = {}, order = [];
     rows.forEach(function(r){
@@ -3478,7 +3578,6 @@ window.IROLANG = (function(){
     order.sort();
 
     var WD = ['일','월','화','수','목','금','토'];
-    box.innerHTML = '';
     order.forEach(function(k){
       var list = groups[k];
       var wrap = document.createElement('section'); wrap.className = 'sg-day';
@@ -3524,7 +3623,15 @@ window.IROLANG = (function(){
       var guests = list.filter(function(r){ return +r.staff !== 1; });
       var staff  = list.filter(function(r){ return +r.staff === 1; });
       guests.forEach(function(r){ wrap.appendChild(sgRow(r)); });
-      wrap.appendChild(staffBox(k, staff));
+      if (/^\d{4}-\d{2}-\d{2}$/.test(k)) {
+        wrap.appendChild(staffBox(k, staff));
+      } else if (staff.length) {
+        /* 날짜가 비어 있는 과거/비정상 데이터는 표시만 하고, bad_date가 나는 추가 폼은 만들지 않습니다. */
+        var legacy=document.createElement('p');
+        legacy.className='sg-dg-note';
+        legacy.textContent='날짜가 없는 기존 스탭 데이터입니다. 새 스탭은 위의 「스탭 빠른 추가」에서 날짜를 선택해 추가해 주세요.';
+        wrap.appendChild(legacy);
+      }
       box.appendChild(wrap);
     });
   }
