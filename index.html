@@ -1903,6 +1903,7 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
         <label><span>최대 테이블 수</span><input type="number" id="seat-max" min="1" max="50" value="12"></label>
         <label><span>회차 수</span><input type="number" id="seat-rounds" min="1" max="6" value="3"></label>
         <label><span>배정 범위</span><select id="seat-scope"><option value="main" selected>본 모임</option><option value="after">2차</option></select></label>
+        <label id="seat-start-l" hidden><span>2차 시작 시각</span><input type="time" id="seat-start" value="18:00"></label>
         <label><span>배정 대상</span><select id="seat-paid"><option value="all">신청자 전체</option><option value="paid" selected>입금 확인만</option></select></label>
         <label><span>인원 배분</span><select id="seat-mode"><option value="auto" selected>자동 (고르게)</option><option value="manual">테이블별 직접 지정</option></select></label>
         <label><span>좌석 확인 비밀번호 (직접 지정)</span><input type="text" id="seat-pass" maxlength="40" placeholder="예: 0906iro" autocomplete="off"></label>
@@ -3893,6 +3894,10 @@ window.IROLANG = (function(){
   /* ── 2차 참가자 고르기 ────────────────────────────────────
      그날 참가자 전원을 이름 칩으로 깔아 두고, 한 번 탭으로 켜고 끕니다.
      신청 내역을 스크롤하며 찾지 않아도 되도록 현장용으로 따로 둡니다. */
+  function seatScope(){ return seatPickOn() ? 'after' : 'main'; }
+  /* 2차는 시작 시각을 직접 넣습니다. 길이는 넉넉히 3시간으로 잡습니다. */
+  function seatIntervalMin(){ return seatPickOn() ? 180 : 50; }
+
   function seatPickOn(){
     return $a('seat-scope') && $a('seat-scope').value === 'after';
   }
@@ -3901,6 +3906,7 @@ window.IROLANG = (function(){
     var f = $a('seat-rounds') && $a('seat-rounds').closest('label');
     var after = seatPickOn();
     if (f) f.hidden = after;
+    var sl = $a('seat-start-l'); if (sl) sl.hidden = !after;
     if (after && $a('seat-rounds')) $a('seat-rounds').value = 1;
   }
   function seatPickPaint(){
@@ -4231,6 +4237,11 @@ window.IROLANG = (function(){
   }
 
   function seatStartMin(){
+    if (seatPickOn()) {
+      var v = ($a('seat-start') && $a('seat-start').value) || '18:00';
+      var a = v.split(':');
+      return Math.max(0, Math.min(1439, (+a[0] || 18) * 60 + (+a[1] || 0)));
+    }
     var m=/(\d{1,2})\s*:\s*(\d{2})/.exec(String((window.SCHED && SCHED.time) || '15:00'));
     return m ? (+m[1]*60 + +m[2]) : 900;
   }
@@ -4239,7 +4250,7 @@ window.IROLANG = (function(){
     var d=$a('seat-date') && $a('seat-date').value, box=$a('seat-public-state');
     if(!d || !box || !ADMIN.token) return;
     box.className='off'; box.textContent='저장된 자리배정을 불러오는 중…';
-    apiPost({action:'seat_status',token:ADMIN.token,date:d}).then(function(x){
+    apiPost({action:'seat_status',token:ADMIN.token,date:d,scope:seatScope()}).then(function(x){
       if(!x || !x.ok) throw new Error((x&&x.error)||'fail');
       var st=x.setting, saved=x.assignment_rows||[];
 
@@ -4325,8 +4336,8 @@ window.IROLANG = (function(){
     if(!assignments.length){ alert('저장할 배정 결과가 없습니다.'); return; }
     if(!confirm(res.date+' 자리배정을 저장하고 참가자에게 공개할까요?\n\n조회 페이지: irotomo.com/seat.html')) return;
     st.classList.remove('err'); st.textContent='저장·공개 중…';
-    apiPost({action:'seat_save',token:ADMIN.token,date:res.date,password:pass,
-      rounds:res.rounds.length,start_min:seatStartMin(),interval_min:50,
+    apiPost({action:'seat_save',token:ADMIN.token,date:res.date,password:pass,scope:seatScope(),
+      rounds:res.rounds.length,start_min:seatStartMin(),interval_min:seatIntervalMin(),
       table_size:+$a('seat-size').value||6,max_tables:+$a('seat-max').value||12,
       paid_only:($a('seat-paid').value==='paid'?1:0),assignments:assignments})
       .then(function(d){
@@ -4343,7 +4354,7 @@ window.IROLANG = (function(){
     if(!d) return;
     if(!confirm(d+' 자리 조회를 참가자에게 비공개로 바꿀까요?')) return;
     st.classList.remove('err'); st.textContent='공개 중지 중…';
-    apiPost({action:'seat_unpublish',token:ADMIN.token,date:d}).then(function(x){
+    apiPost({action:'seat_unpublish',token:ADMIN.token,date:d,scope:seatScope()}).then(function(x){
       if(!x || !x.ok) throw new Error((x&&x.error)||'fail');
       st.textContent='참가자 공개를 중지했습니다.'; seatLoadStatus();
     }).catch(function(e){ st.textContent='공개 중지에 실패했습니다 ('+e.message+')';st.classList.add('err'); });
