@@ -1306,6 +1306,26 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
   background:#f2f1f7;color:#8a86a0;font-size:10.5px;font-weight:700}
 .stf-chip .stf-after.on{background:#eef4ff;color:#3a5f9e}
 
+/* ── 2차 참가자 고르기 ──────────────────────────────────── */
+.seat-pick{margin:12px 0 4px;padding:14px 15px;border:1px solid #e6e3f0;
+  border-radius:12px;background:#fbfaff}
+.seat-pick-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:11px}
+.seat-pick-h b{font-size:13px}
+#seat-pick-n{font-size:12px;color:#3a5f9e;background:#eef4ff;border-radius:999px;padding:3px 10px;font-weight:700}
+#seat-pick-clear{margin-left:auto;padding:5px 11px;border:1px solid #e2dfec;background:#fff;
+  border-radius:999px;font:inherit;font-size:11.5px;color:#8a86a0;cursor:pointer}
+#seat-pick-clear:hover{background:#f4f3f8}
+.seat-pick-list{display:flex;flex-wrap:wrap;gap:8px}
+.seat-chip{min-height:44px;padding:10px 15px;border:1px solid #e2dfec;background:#fff;
+  border-radius:12px;font:inherit;font-size:14px;color:#3c3a4a;cursor:pointer;
+  white-space:nowrap;transition:background .12s ease,border-color .12s ease}
+.seat-chip:hover{background:#f4f3f8}
+.seat-chip.on{background:#2E5FA8;border-color:#2E5FA8;color:#fff;font-weight:700}
+.seat-chip.staff{border-style:dashed}
+.seat-chip:disabled{opacity:.5}
+.seat-pick-note{margin:11px 0 0;font-size:11.5px;color:#9d99b0}
+@media(max-width:520px){ .seat-chip{flex:1 1 calc(50% - 4px);text-align:center} }
+
 </style>
 </head>
 <body data-lang="ja">
@@ -1880,7 +1900,7 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
       <div class="seat-tools">
         <label><span>모임 날짜</span><select id="seat-date"></select></label>
         <label><span>테이블당 최대 인원</span><input type="number" id="seat-size" min="2" max="20" value="6"></label>
-        <label><span>최대 테이블 수</span><input type="number" id="seat-max" min="1" max="12" value="12"></label>
+        <label><span>최대 테이블 수</span><input type="number" id="seat-max" min="1" max="50" value="12"></label>
         <label><span>회차 수</span><input type="number" id="seat-rounds" min="1" max="6" value="3"></label>
         <label><span>배정 범위</span><select id="seat-scope"><option value="main" selected>본 모임</option><option value="after">2차</option></select></label>
         <label><span>배정 대상</span><select id="seat-paid"><option value="all">신청자 전체</option><option value="paid" selected>입금 확인만</option></select></label>
@@ -1892,6 +1912,8 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
           <button type="button" id="seat-csv">배정 CSV</button>
           <button type="button" class="primary" id="seat-publish">저장 · 참가자 공개</button>
           <button type="button" id="seat-hide">공개 중지</button>
+          <button type="button" id="seat-save-set">설정 저장</button>
+          <button type="button" id="seat-load-set">설정 불러오기</button>
           <span id="seat-state"></span>
         </div>
       </div>
@@ -1901,6 +1923,18 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
         서버에는 비밀번호 원문이 아닌 해시값만 저장됩니다. 기존 비밀번호는 다시 표시되지 않으므로 잊어버렸다면 새 비밀번호로 다시 공개해 주세요.
       </p>
       <div id="seat-summary" class="seat-summary" style="margin-top:10px"></div>
+      <!-- 2차 참가자 고르기 — «배정 범위» 를 2차로 바꿨을 때만 보입니다.
+           현장에서 한 명씩 물어보며 이름을 눌러 켜고 끕니다. -->
+      <div id="seat-pick" class="seat-pick" hidden>
+        <div class="seat-pick-h">
+          <b>2차 참가자 고르기</b>
+          <span id="seat-pick-n"></span>
+          <button type="button" id="seat-pick-clear">전체 해제</button>
+        </div>
+        <div id="seat-pick-list" class="seat-pick-list"></div>
+        <p class="seat-pick-note">이름을 눌러 2차 참가 여부를 표시합니다. 누르는 즉시 저장됩니다.</p>
+      </div>
+
       <!-- 테이블별 인원 직접 지정 — «직접 지정» 을 골랐을 때만 보입니다.
            현장에서 테이블 크기가 제각각일 때 그대로 맞춰 넣습니다. -->
       <div id="seat-manual" class="seat-manual" hidden>
@@ -2903,6 +2937,30 @@ window.IROLANG = (function(){
   var AFTER_TAG = '#2차';
   var AFTER_RE  = /#2차/;
 
+  /* 2차 참가 선택은 화면이 직접 들고 있습니다.
+     메모에도 함께 저장하지만, 목록을 다시 불러올 때 화면과 데이터가
+     어긋나 «0명 선택» 이 되는 일을 막기 위해 이 값을 기준으로 씁니다.
+     { '2026-09-06': { 'id1':1, 'id2':1 } } */
+  var AFTER_SET = {};
+  function afterKey(){ return ($a('seat-date') && $a('seat-date').value) || ''; }
+  function afterMap(d){ d = d || afterKey(); if (!AFTER_SET[d]) AFTER_SET[d] = {}; return AFTER_SET[d]; }
+  function afterHas(r){ return !!afterMap(r.date)[String(r.id)]; }
+  function afterSet(r, on){
+    var m = afterMap(r.date);
+    if (on) m[String(r.id)] = 1; else delete m[String(r.id)];
+  }
+  /* 서버에서 새로 받은 메모를 화면 상태에 합칩니다.
+     한 번이라도 화면에서 고른 날짜는 화면 값을 그대로 둡니다. */
+  var AFTER_SEEDED = {};
+  function afterSeed(){
+    (SG.rows || []).forEach(function(r){
+      if (!r.date) return;
+      if (AFTER_SEEDED[r.date]) return;
+      if (AFTER_RE.test(r.memo || '')) afterMap(r.date)[String(r.id)] = 1;
+    });
+    (SG.rows || []).forEach(function(r){ if (r.date) AFTER_SEEDED[r.date] = 1; });
+  }
+
   var SG_DRINK = { dutch:'더치커피', milk:'밀크티', lime:'분다버그 라임', grape:'분다버그 핑크자몽' };
 
   on('adm-signups-open', 'click', function(){
@@ -3156,6 +3214,7 @@ window.IROLANG = (function(){
     apiPost({ action:'signups', token: ADMIN.token }).then(function(d){
       if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
       SG.rows = d.rows || [];
+      try { afterSeed(); } catch (e) {}
       if (d.closed) CLOSED = d.closed;   /* 품절 버튼 상태 */
       fillDigest(d.digest); paintSg(); seatFillDates();
     }).catch(function(e){
@@ -3336,6 +3395,7 @@ window.IROLANG = (function(){
     apiPost({ action:'signups', token: ADMIN.token }).then(function(d){
       if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
       SG.rows = d.rows || [];
+      try { afterSeed(); } catch (e) {}
       if (d.closed) CLOSED = d.closed;   /* 품절 버튼 상태 */
       fillDigest(d.digest); paintSg(); seatFillDates(); loadDashboard(true);
     }).catch(function(e){
@@ -3461,6 +3521,7 @@ window.IROLANG = (function(){
               af.disabled = false;
               if (!d || !d.ok) throw new Error('fail');
               r.memo = next;
+              afterSet(r, AFTER_RE.test(next));
               af.classList.toggle('on', AFTER_RE.test(next));
               try { seatManualSum(); } catch (e) {}
             })
@@ -3634,7 +3695,7 @@ window.IROLANG = (function(){
     if (+r.staff !== 1 || true) {
       var af = document.createElement('button');
       af.type = 'button';
-      var isAfter = AFTER_RE.test(r.memo || '');
+      var isAfter = afterHas(r);
       af.className = 'sg-after' + (isAfter ? ' on' : '');
       af.textContent = isAfter ? '2차 O' : '2차';
       af.title = '2차 참가 여부를 표시합니다';
@@ -3650,6 +3711,7 @@ window.IROLANG = (function(){
             if (!d || !d.ok) throw new Error('fail');
             r.memo = next;
             var on = AFTER_RE.test(next);
+            afterSet(r, on);
             af.classList.toggle('on', on);
             af.textContent = on ? '2차 O' : '2차';
             var mi = row.querySelector('textarea');
@@ -3771,10 +3833,131 @@ window.IROLANG = (function(){
     return (SG.rows||[]).filter(function(r){
       if (r.date!==d) return false;
       /* 2차 배정은 «2차» 를 눌러 표시한 사람만 대상으로 합니다 */
-      if (after && !AFTER_RE.test(r.memo||'')) return false;
+      if (after && !afterHas(r)) return false;
       if (!paidOnly) return true;
       return +r.staff===1 || +r.paid===1;
     });
+  }
+
+  /* ── 자리 설정 저장 ───────────────────────────────────────
+     테이블 구성은 몇 주씩 그대로인 경우가 많습니다.
+     본 모임과 2차를 따로 저장해 두고 매주 불러 씁니다.
+     이 브라우저에만 저장되며 서버로는 나가지 않습니다. */
+  var SEAT_KEY = 'irotomo-seat-preset';
+
+  function seatPresetRead(){
+    try { return JSON.parse(localStorage.getItem(SEAT_KEY) || '{}') || {}; }
+    catch (e) { return {}; }
+  }
+  function seatPresetSave(){
+    var scope = seatPickOn() ? 'after' : 'main';
+    var all = seatPresetRead();
+    all[scope] = {
+      size:   +$a('seat-size').value || 6,
+      max:    +$a('seat-max').value || 12,
+      rounds: +$a('seat-rounds').value || 1,
+      mode:   $a('seat-mode') ? $a('seat-mode').value : 'auto',
+      paid:   $a('seat-paid') ? $a('seat-paid').value : 'paid',
+      sizes:  seatManualSizesRaw()
+    };
+    try { localStorage.setItem(SEAT_KEY, JSON.stringify(all)); }
+    catch (e) { alert('저장하지 못했습니다.'); return; }
+    var st = $a('seat-state');
+    if (st) { st.classList.remove('err');
+      st.textContent = (scope === 'after' ? '2차' : '본 모임') + ' 설정을 저장했습니다.'; }
+  }
+  function seatPresetLoad(){
+    var scope = seatPickOn() ? 'after' : 'main';
+    var p = seatPresetRead()[scope];
+    var st = $a('seat-state');
+    if (!p) {
+      if (st) { st.textContent = '저장해 둔 ' + (scope === 'after' ? '2차' : '본 모임') + ' 설정이 없습니다.'; st.classList.add('err'); }
+      return;
+    }
+    $a('seat-size').value = p.size || 6;
+    $a('seat-max').value  = p.max || 12;
+    if (!seatPickOn()) $a('seat-rounds').value = p.rounds || 1;
+    if ($a('seat-paid')) $a('seat-paid').value = p.paid || 'paid';
+    if ($a('seat-mode')) $a('seat-mode').value = p.mode || 'auto';
+    seatManualPaint();
+    if ((p.mode === 'manual') && p.sizes && p.sizes.length) {
+      var ins = $a('seat-manual-rows').querySelectorAll('input');
+      p.sizes.forEach(function(v, i){ if (ins[i]) ins[i].value = v; });
+      seatManualSum();
+    }
+    SEAT.result = null; seatPaint();
+    if (st) { st.classList.remove('err');
+      st.textContent = (scope === 'after' ? '2차' : '본 모임') + ' 설정을 불러왔습니다.'; }
+  }
+
+  /* ── 2차 참가자 고르기 ────────────────────────────────────
+     그날 참가자 전원을 이름 칩으로 깔아 두고, 한 번 탭으로 켜고 끕니다.
+     신청 내역을 스크롤하며 찾지 않아도 되도록 현장용으로 따로 둡니다. */
+  function seatPickOn(){
+    return $a('seat-scope') && $a('seat-scope').value === 'after';
+  }
+  /* 2차는 자리를 한 번만 정하므로 회차 입력을 감추고 1로 고정합니다. */
+  function seatScopeSync(){
+    var f = $a('seat-rounds') && $a('seat-rounds').closest('label');
+    var after = seatPickOn();
+    if (f) f.hidden = after;
+    if (after && $a('seat-rounds')) $a('seat-rounds').value = 1;
+  }
+  function seatPickPaint(){
+    var box = $a('seat-pick'), list = $a('seat-pick-list');
+    if (!box || !list) return;
+    if (!seatPickOn()) { box.hidden = true; return; }
+    box.hidden = false;
+
+    var d = $a('seat-date') && $a('seat-date').value;
+    /* 2차 후보는 그날 온 사람 전체입니다 — 입금 여부와 무관하게 보여줍니다 */
+    var day = (SG.rows || []).filter(function(r){ return r.date === d; });
+    /* 일본인 오십음순 → 한국인 가나다순 → 스탭 순으로 세웁니다.
+       현장에서 이름을 눈으로 찾기 쉬워집니다. */
+    var all = nameSort(day.filter(function(r){ return +r.staff !== 1 &&  seatIsJa(r); }), true)
+      .concat(nameSort(day.filter(function(r){ return +r.staff !== 1 && !seatIsJa(r); }), false))
+      .concat(nameSort(day.filter(function(r){ return +r.staff === 1; }), false));
+
+    list.innerHTML = '';
+    if (!all.length) {
+      list.innerHTML = '<p class="seat-empty">이 날짜에 참가자가 없습니다.</p>';
+      seatPickCount(); return;
+    }
+
+    all.forEach(function(r){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'seat-chip' + (afterHas(r) ? ' on' : '') + (+r.staff === 1 ? ' staff' : '');
+      b.textContent = (r.name || '이름 없음') + (+r.staff === 1 ? ' ·스탭' : '');
+      b.addEventListener('click', function(){
+        /* 화면을 먼저 바꾸고, 저장은 뒤따라 보냅니다.
+           저장이 늦거나 실패해도 현장에서 고른 상태는 그대로 남습니다. */
+        var on = !afterHas(r);
+        afterSet(r, on);
+        b.classList.toggle('on', on);
+        seatPickCount();
+        try { seatManualSum(); } catch (e) {}
+
+        var cur = String(r.memo || '');
+        var next = on
+          ? (AFTER_RE.test(cur) ? cur : (cur ? cur + ' ' + AFTER_TAG : AFTER_TAG))
+          : cur.replace(AFTER_RE, '').replace(/\s{2,}/g, ' ').trim();
+        r.memo = next;
+        apiPost({ action:'signup_save', token: ADMIN.token, id: r.id, memo: next })
+          .catch(function(){ /* 저장만 실패 — 화면 선택은 유지합니다 */ });
+      });
+      list.appendChild(b);
+    });
+    seatPickCount();
+  }
+  function seatPickCount(){
+    var el = $a('seat-pick-n');
+    if (!el) return;
+    var d = $a('seat-date') && $a('seat-date').value;
+    var n = (SG.rows || []).filter(function(r){
+      return r.date === d && afterHas(r);
+    }).length;
+    el.textContent = n + '명 선택';
   }
 
   /* ── 테이블별 인원 직접 지정 ──────────────────────────────
@@ -3789,7 +3972,7 @@ window.IROLANG = (function(){
     if(!seatManualOn()){ box.hidden=true; return; }
     box.hidden=false;
 
-    var n=Math.max(1,Math.min(12,+$a('seat-max').value||1));
+    var n=Math.max(1,Math.min(50,+$a('seat-max').value||1));
     var cap=Math.max(2,+$a('seat-size').value||6);
     var prev=[];
     rowsBox.querySelectorAll('input').forEach(function(x){ prev.push(+x.value||0); });
@@ -3805,6 +3988,12 @@ window.IROLANG = (function(){
       lab.appendChild(t); lab.appendChild(inp); rowsBox.appendChild(lab);
     }
     seatManualSum();
+  }
+  function seatManualSizesRaw(){
+    var out=[];
+    var b=$a('seat-manual-rows');
+    if(b) b.querySelectorAll('input').forEach(function(x){ out.push(Math.max(0,+x.value||0)); });
+    return out;
   }
   function seatManualSizes(){
     var out=[];
@@ -4011,7 +4200,10 @@ window.IROLANG = (function(){
         ch.innerHTML='<b>TABLE '+(ti+1)+'</b><span>'+tb.length+'명 · 日 '+jn+' / 韓 '+(tb.length-jn)
           +(sn?' · STAFF '+sn:'')+(nw?' · 新 '+nw:'')+'</span>'; c.appendChild(ch);
         var ul=document.createElement('ul'); ul.className='seat-members';
-        tb.forEach(function(p){
+        /* 테이블 안에서도 일본인 → 한국인 순으로 세워 부르기 쉽게 합니다 */
+        var ordered=nameSort(tb.filter(function(r){ return seatIsJa(r); }), true)
+          .concat(nameSort(tb.filter(function(r){ return !seatIsJa(r); }), false));
+        ordered.forEach(function(p){
           var li=document.createElement('li');
           var nm=document.createElement('span'); nm.className='nm'; nm.textContent=p.name||'이름 없음'; li.appendChild(nm);
           var nat=document.createElement('span'); nat.className='nat'; nat.textContent=seatNat(p); li.appendChild(nat);
@@ -4160,14 +4352,29 @@ window.IROLANG = (function(){
   on('seat-mode','change',function(){seatManualPaint();SEAT.result=null;seatPaint();});
   on('seat-max','input',function(){if(seatManualOn())seatManualPaint();});
   on('seat-size','input',function(){if(seatManualOn())seatManualPaint();});
-  on('seat-scope','change',function(){SEAT.result=null;seatManualSum();seatPaint();seatLoadStatus();});
+  on('seat-scope','change',function(){SEAT.result=null;seatScopeSync();seatPickPaint();seatManualSum();seatPaint();seatLoadStatus();});
+  on('seat-pick-clear','click',function(){
+    var d=$a('seat-date') && $a('seat-date').value;
+    var list=(SG.rows||[]).filter(function(r){ return r.date===d && afterHas(r); });
+    if(!list.length) return;
+    if(!confirm(list.length+'명의 2차 표시를 모두 지웁니다.')) return;
+    var jobs=list.map(function(r){
+      var next=String(r.memo||'').replace(AFTER_RE,'').replace(/\s{2,}/g,' ').trim();
+      r.memo=next; afterSet(r,false);
+      return apiPost({action:'signup_save',token:ADMIN.token,id:r.id,memo:next});
+    });
+    Promise.all(jobs).then(function(){ seatPickPaint(); seatManualSum(); })
+      .catch(function(){ alert('일부를 지우지 못했습니다.'); seatPickPaint(); });
+  });
+  on('seat-save-set','click',seatPresetSave);
+  on('seat-load-set','click',seatPresetLoad);
   on('seat-run','click',seatGenerate);
   on('seat-reroll','click',seatGenerate);
   on('seat-csv','click',seatCsv);
   on('seat-publish','click',seatPublish);
   on('seat-hide','click',seatHide);
   on('seat-date','change',function(){
-    setTimeout(seatManualSum,0);
+    setTimeout(function(){ seatPickPaint(); seatManualSum(); },0);
     SEAT.result=null;
     var b=$a('seat-body'); if(b) b.innerHTML='<p class="seat-empty">저장된 자리배정을 불러오는 중…</p>';
     seatLoadStatus();
@@ -4178,6 +4385,37 @@ window.IROLANG = (function(){
      XLSX 방식은 제거하고, 사용자가 쓰던 명단표 형식으로 CSV를 생성합니다.
      일본인 참가자 → 합계 → 한국인 참가자 → 합계 → 스탭 → 합계
      마지막 열에는 출석 여부를 함께 넣습니다. */
+  /* ── 이름 정렬 ────────────────────────────────────────────
+     한국인은 가나다순, 일본인은 오십음순으로 세웁니다.
+
+     일본어는 카타카나를 히라가나로 바꿔 통일한 뒤 비교합니다.
+     한자 이름은 읽는 법을 알 수 없어 오십음순으로 세울 수 없으므로,
+     가나로 시작하는 이름을 먼저 두고 한자 이름을 뒤에 붙입니다. */
+  function nameKana(v){
+    return String(v || '').replace(/[\u30a1-\u30f6]/g, function(c){
+      return String.fromCharCode(c.charCodeAt(0) - 0x60);
+    });
+  }
+  /* 첫 글자로 갈래를 나눕니다 — 0 가나 · 1 한글 · 2 한자(그 외) */
+  function nameGroup(v){
+    var c = String(v || '').trim().charAt(0);
+    if (/[\u3041-\u3096\u30a1-\u30f6]/.test(c)) return 0;
+    if (/[\uac00-\ud7a3]/.test(c)) return 1;
+    return 2;
+  }
+  function nameSort(list, ja){
+    return list.slice().sort(function(a, b){
+      var x = String(a.name || ''), y = String(b.name || '');
+      if (!ja) return x.localeCompare(y, 'ko');
+      /* 일본인 명단은 «가나 → 한글 → 한자» 순으로 묶고 각 묶음 안에서 정렬합니다.
+         한자는 읽는 법을 알 수 없어 오십음순으로 세울 수 없으므로 뒤에 둡니다. */
+      var gx = nameGroup(x), gy = nameGroup(y);
+      if (gx !== gy) return gx - gy;
+      if (gx === 1) return x.localeCompare(y, 'ko');
+      return nameKana(x).localeCompare(nameKana(y), 'ja');
+    });
+  }
+
   function csvQuote(v){
     var t = String(v == null ? '' : v);
     return /[",\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
@@ -4186,10 +4424,11 @@ window.IROLANG = (function(){
   function rosterCsvLines(rows){
     var HEAD = ['No.','구분','이름','국적','음료','입금','메모','출석'];
     var isJa = function(r){ return /日本|일본/.test(String(r.nat || '')); };
+    /* 일본인은 오십음순, 한국인은 가나다순으로 세웁니다 */
     var blocks = [
-      ['일본인참가자', rows.filter(function(r){ return +r.staff !== 1 &&  isJa(r); })],
-      ['한국인참가자', rows.filter(function(r){ return +r.staff !== 1 && !isJa(r); })],
-      ['스탭합계',     rows.filter(function(r){ return +r.staff === 1; })]
+      ['일본인참가자', nameSort(rows.filter(function(r){ return +r.staff !== 1 &&  isJa(r); }), true)],
+      ['한국인참가자', nameSort(rows.filter(function(r){ return +r.staff !== 1 && !isJa(r); }), false)],
+      ['스탭합계',     nameSort(rows.filter(function(r){ return +r.staff === 1; }), false)]
     ];
 
     var out = [];
