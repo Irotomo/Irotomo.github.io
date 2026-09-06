@@ -1727,7 +1727,7 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
              일정 인원을 넘었을 때만 보입니다 (COUNT_MIN). -->
         <p id="date-count" class="date-count" hidden></p>
 
-        <form class="form reveal" id="apply-form" novalidate="false">
+        <form class="form reveal" id="apply-form">
           <div class="field">
             <label for="f-name"><span class="ko">이름</span><span class="ja">お名前</span></label>
             <input id="f-name" name="entry.347162766" required type="text" autocomplete="name">
@@ -2692,6 +2692,23 @@ window.IROLANG = (function(){
     var val = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
     form.addEventListener('submit', function(e){
       e.preventDefault();
+
+      /* required 속성만 믿지 않고 제출 직전에도 날짜를 확인합니다.
+         예전에는 novalidate="false"도 HTML에서는 novalidate로 처리되어 필수 검사가 꺼질 수 있었습니다. */
+      var datePick = document.getElementById('f-date-pick');
+      var dateHidden = document.getElementById('f-date');
+      if (datePick && dateHidden) dateHidden.value = datePick.value || '';
+      if (!dateHidden || !/^\d{4}-\d{2}-\d{2}$/.test(dateHidden.value)) {
+        var ja0 = document.body.dataset.lang === 'ja';
+        alert(ja0 ? '参加日を選択してください。' : '참가일을 선택해 주세요.');
+        if (datePick) datePick.focus();
+        return;
+      }
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
       var btn = document.getElementById('submit');
       if (btn) { btn.disabled = true; btn.dataset.t = btn.textContent; btn.textContent = '…'; }
       fetch(API, {
@@ -2728,7 +2745,9 @@ window.IROLANG = (function(){
           drink_soldout: ja ? 'そのお飲み物は完売しました。他のものをお選びください。'
                             : '해당 음료는 품절되었습니다. 다른 음료를 선택해 주세요.',
           missing:  ja ? 'お名前とメールアドレスをご確認ください。'
-                       : '이름과 이메일을 확인해 주세요.'
+                       : '이름과 이메일을 확인해 주세요.',
+          bad_date: ja ? '参加日を選択してください。'
+                       : '참가일을 선택해 주세요.'
         };
         if (MSG[code]) { alert(MSG[code]); return; }
         alert((ja ? '送信できませんでした。しばらくしてからもう一度お試しください。'
@@ -2981,7 +3000,7 @@ window.IROLANG = (function(){
      신청자가 0명이어도 스탭을 미래 날짜에 미리 넣을 수 있게 씁니다. */
   var ADMIN_MEETUP_DATES = [];
   var SG_COLS = [
-    ['name','이름'], ['nat','국적'], ['email','이메일'],
+    ['name','이름'], ['nat','국적'], ['email','이메일'], ['date','참가일'],
     ['drink','음료'], ['sns','SNS'], ['src','경로'], ['memo','메모']
   ];
   /* 2차 참가 표시 — 메모에 붙는 꼬리표입니다 */
@@ -3794,18 +3813,41 @@ window.IROLANG = (function(){
       } else {
         inp = document.createElement(c[0] === 'memo' ? 'textarea' : 'input');
         if (c[0] === 'memo') inp.rows = 2;
+        if (c[0] === 'date') {
+          inp.type = 'date';
+          inp.required = true;
+          inp.title = '참가일을 선택해 주세요.';
+        }
       }
       inp.value = r[c[0]] || '';
       inp.addEventListener('change', function(){
+        var before = r[c[0]] || '';
+        if (c[0] === 'date' && !/^\d{4}-\d{2}-\d{2}$/.test(inp.value)) {
+          alert('참가일을 선택해 주세요.');
+          inp.value = before;
+          return;
+        }
         var patch = { action:'signup_save', token: ADMIN.token, id: r.id };
         patch[c[0]] = inp.value;
         inp.classList.add('saving');
         apiPost(patch).then(function(d){
           inp.classList.remove('saving');
-          if (!d || !d.ok) { inp.classList.add('bad'); return; }
+          if (!d || !d.ok) {
+            inp.classList.add('bad');
+            if (c[0] === 'date') inp.value = before;
+            return;
+          }
           inp.classList.remove('bad'); r[c[0]] = inp.value;
+          if (c[0] === 'date') {
+            /* 날짜를 바꾸면 그룹/신규·재참가 계산도 바뀌므로 서버에서 다시 불러옵니다. */
+            loadSignups();
+            return;
+          }
           inp.classList.add('saved'); setTimeout(function(){ inp.classList.remove('saved'); }, 900);
-        }).catch(function(){ inp.classList.remove('saving'); inp.classList.add('bad'); });
+        }).catch(function(){
+          inp.classList.remove('saving'); inp.classList.add('bad');
+          if (c[0] === 'date') inp.value = before;
+        });
       });
       f.appendChild(s); f.appendChild(inp); row.appendChild(f);
     });
