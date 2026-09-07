@@ -1493,7 +1493,69 @@ main .sec-head{margin-bottom:26px}.nav-in{padding-left:18px;padding-right:18px}.
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
 
 </style>
-</head>
+<style id="irotomo-responsive-v2">
+/* Responsive repair and cumulative gallery */
+.nav .lang{flex-shrink:0;align-items:stretch}
+.nav .lang button{display:flex;align-items:center;justify-content:center;line-height:1.4;padding:8px 12px;min-width:max-content;height:auto}
+.nav-right .btn{white-space:nowrap;line-height:1.4;flex-shrink:0}
+.nav-links a{line-height:1.6;padding:8px 0;flex-shrink:0}
+.nav-links a::after{bottom:2px}
+.sg-tabs{overflow-x:auto;max-width:100%;align-items:stretch}
+.sg-tabs button{flex:0 0 auto;min-width:max-content;white-space:nowrap;line-height:1.5}
+.hero .pill{height:auto;white-space:normal;line-height:1.65}
+.hero .pill>span{min-width:0;overflow-wrap:anywhere}
+#flow .flow{gap:0;isolation:isolate}
+#flow .flow::before,#flow .flow::after{display:none!important}
+#flow .step{position:relative;padding:0 22px 0 0}
+#flow .step::before{box-sizing:border-box;left:0;top:0;width:12px;height:12px;border:2px solid var(--navy);background:var(--canvas);z-index:2;transform:none!important;transition:none}
+#flow .step:not(:last-child)::after{content:'';position:absolute;left:6px;top:5px;width:100%;height:2px;background:#BEC7D7;z-index:0}
+#flow .step:last-child::before{border-color:#9F7122;background:#E9B652}
+#flow .step .t{margin-top:28px;line-height:1.5;opacity:1!important}
+#flow .step .d{opacity:1!important}
+.gal-admin{display:none;align-items:center;flex-wrap:wrap;gap:14px;margin:0 0 22px}
+body.admin-on .gal-admin{display:flex}
+.gal-admin #gal-state{position:static;transform:none;white-space:normal;overflow-wrap:anywhere;font-size:.875rem;max-width:100%}
+#gal-add:disabled,.gal-tools button:disabled{opacity:.5;cursor:wait}
+#gallery .gal figure{transition:none;transform:none!important;opacity:1}
+#gallery .gal figure::before{display:none}
+#gallery .gal img{transform:none!important}
+#lb-nav{color:white;font-size:1rem;font-variant-numeric:tabular-nums}
+@media(min-width:701px){
+#gallery .gal{display:block;columns:3;column-gap:18px;margin-top:24px}
+#gallery .gal figure{break-inside:avoid;margin:0 0 18px;aspect-ratio:auto;min-height:100px;border:0;border-radius:14px;overflow:hidden}
+#gallery .gal img{height:auto;width:100%;object-fit:contain}
+}
+@media(min-width:701px) and (max-width:960px){#gallery .gal{columns:2}}
+@media(max-width:1190px){
+.nav .nav-in,.nav.stuck .nav-in{height:auto;min-height:0;flex-wrap:wrap;row-gap:8px}
+.nav-links{width:100%;min-width:0;flex:0 0 100%;order:3;overflow-x:auto}
+}
+@media(max-width:960px){
+main .hero-grid{grid-template-columns:minmax(0,1fr)}
+main .hero-logo{order:-1;width:100%;aspect-ratio:16/9;padding:18px;max-height:none;justify-self:stretch;background-size:contain;background-position:center;border-radius:16px;box-shadow:none}
+#flow .flow{grid-template-columns:1fr;gap:0}
+#flow .step{padding:0 0 28px 32px}
+#flow .step:last-child{padding-bottom:0}
+#flow .step::before{top:8px}
+#flow .step:not(:last-child)::after{left:5px;top:14px;bottom:-14px;width:2px;height:auto}
+#flow .step .t{margin-top:0}
+.sg-tabs button{flex:0 0 auto;padding:10px 14px}
+}
+@media(max-width:640px){
+.nav .nav-in{display:grid;grid-template-columns:auto minmax(0,1fr);padding-top:10px;column-gap:10px}
+.nav .nav-right{justify-self:end;margin:0;gap:6px;min-width:0}
+.nav .nav-links{grid-column:1/-1;width:auto;margin:0;padding:0 0 8px;gap:18px}
+.nav .lang button{padding:7px 9px;font-size:.875rem}
+.nav .brand-name{font-size:1rem}.nav .brand{gap:6px}
+.nav .nav-right .btn{font-size:.875rem;padding:10px}
+}
+@media(max-width:380px){.nav .nav-in{grid-template-columns:1fr}.nav .brand{justify-self:start}.nav .nav-right{grid-row:2;justify-self:stretch;justify-content:space-between}.nav .nav-links{grid-row:3}}
+</style>
+<style>.date-count .dc-n{flex-wrap:wrap;row-gap:8px}.date-count .dc-n em{line-height:1.6}</style><style id="irotomo-mobile-mark">
+@media(max-width:960px){
+ main .hero-logo{width:140px;max-width:100%;aspect-ratio:1/1;justify-self:center;padding:12px;border-radius:18px;background-size:contain;background-position:center}
+}
+</style></head>
 <body data-lang="ja">
 
 <header class="nav" id="nav">
@@ -1596,47 +1658,10 @@ main .sec-head{margin-bottom:26px}.nav-in{padding-left:18px;padding-right:18px}.
       <p class="ko" data-c="g2">모임에서 찍은 사진 몇 장입니다. 참가자 얼굴은 가린 뒤에 올립니다.</p>
       <p class="ja" data-c="g2">会の様子から数枚。参加者のお顔は隠したうえで掲載しています。</p>
     </div>
-    <div class="gal reveal">
-      <span id="gal-state"></span>
-      <figure class="empty" data-ph="0"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="0">사진</button><button type="button" class="sub" data-gal-del="0">✕</button></span>
-      </figure>
-      <figure class="empty" data-ph="1"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="1">사진</button><button type="button" class="sub" data-gal-del="1">✕</button></span>
-      </figure>
-      <figure class="empty" data-ph="2"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="2">사진</button><button type="button" class="sub" data-gal-del="2">✕</button></span>
-      </figure>
-      <figure class="empty" data-ph="3"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="3">사진</button><button type="button" class="sub" data-gal-del="3">✕</button></span>
-      </figure>
-      <figure class="empty" data-ph="4"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="4">사진</button><button type="button" class="sub" data-gal-del="4">✕</button></span>
-      </figure>
-      <figure class="empty" data-ph="5"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="5">사진</button><button type="button" class="sub" data-gal-del="5">✕</button></span>
-      </figure>
-      <figure class="empty gal-extra" data-ph="6"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="6">사진</button><button type="button" class="sub" data-gal-del="6">✕</button></span>
-      </figure>
-      <figure class="empty gal-extra" data-ph="7"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="7">사진</button><button type="button" class="sub" data-gal-del="7">✕</button></span>
-      </figure>
-      <figure class="empty gal-extra" data-ph="8"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="8">사진</button><button type="button" class="sub" data-gal-del="8">✕</button></span>
-      </figure>
-      <figure class="empty gal-extra" data-ph="9"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="9">사진</button><button type="button" class="sub" data-gal-del="9">✕</button></span>
-      </figure>
-      <figure class="empty gal-extra" data-ph="10"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="10">사진</button><button type="button" class="sub" data-gal-del="10">✕</button></span>
-      </figure>
-      <figure class="empty gal-extra" data-ph="11"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
-        <span class="gal-tools"><button type="button" data-gal-pick="11">사진</button><button type="button" class="sub" data-gal-del="11">✕</button></span>
-      </figure>
-    </div>
-    <button type="button" id="gal-more" class="gal-more"><span class="ko">사진 더 보기</span><span class="ja">写真をもっと見る</span></button>
-    <input type="file" id="gal-file" accept="image/*" hidden>
+    <div class="gal-admin"><button type="button" class="btn btn-primary" id="gal-add">사진 여러 장 추가</button><span id="gal-state" role="status" aria-live="polite"></span></div>
+    <div class="gal reveal"></div>
+    <div class="gal-more-wrap"><button type="button" id="gal-more" class="btn btn-ghost"><span class="ko">사진 더 보기</span><span class="ja">写真をもっと見る</span></button></div>
+    <input type="file" id="gal-file" accept="image/*" multiple hidden>
   </section>
 
   <!-- 소개 -->
@@ -2659,7 +2684,7 @@ window.IROLANG = (function(){
     if (!box) return;
     var d = document.getElementById('f-date');
     var c = d && d.value ? COUNTS[d.value] : null;
-    if (!c || c.n < COUNT_MIN) { box.hidden = true; return; }
+    if (!c || (c.total == null ? c.n : c.total) < COUNT_MIN) { box.hidden = true; return; }
 
     var ko = document.body.dataset.lang === 'ko';
     var a = d.value.split('-');
@@ -2672,14 +2697,15 @@ window.IROLANG = (function(){
     box.innerHTML = '';
     var s1 = document.createElement('span'); s1.className = 'dc-when'; s1.textContent = when;
     var s2 = document.createElement('span'); s2.className = 'dc-n';
-    s2.appendChild(document.createTextNode(String(c.n)));
+    s2.appendChild(document.createTextNode(String(c.total == null ? c.n : c.total)));
     var em = document.createElement('em');
-    em.textContent = ko ? '명 신청' : '名 お申し込み';
+    em.textContent = ko ? '명 · 스탭 포함' : '名 · スタッフ含む';
     s2.appendChild(em);
 
     var s3 = document.createElement('span'); s3.className = 'dc-mix';
-    [ko ? '일본 ' + c.ja + '명' : '日本 ' + c.ja + '名',
-     ko ? '한국 ' + (c.n - c.ja) + '명' : '韓国 ' + (c.n - c.ja) + '名'
+    var total=c.total == null ? c.n : c.total, japan=c.totalJa == null ? c.ja : c.totalJa;
+    [ko ? '일본 ' + japan + '명' : '日本 ' + japan + '名',
+     ko ? '한국 ' + (total - japan) + '명' : '韓国 ' + (total - japan) + '名'
     ].forEach(function(t){
       var b = document.createElement('span'); b.textContent = t; s3.appendChild(b);
     });
@@ -2769,29 +2795,34 @@ window.IROLANG = (function(){
   function renderGallery(){
     var sec = document.getElementById('gallery');
     if (!sec) return;
-    sec.querySelectorAll('.gal figure').forEach(function(fig, i){
-      var g = GALLERY[i], img = fig.querySelector('img');
-      if (g && (g.uri || g.id)) {
-        img.onerror = function(){
-          if (g.id && img.src.indexOf('lh3.') >= 0) { img.src = driveAlt(g.id, 1600); return; }
-          img.hidden = true; fig.classList.add('empty');
-        };
-        img.src = g.uri || driveUrl(g.id, 1600);
-        img.hidden = false; fig.classList.remove('empty');
-      } else {
-        img.removeAttribute('src'); img.hidden = true; fig.classList.add('empty');
-      }
+    var grid=sec.querySelector('.gal');
+    grid.replaceChildren();
+    GALLERY.forEach(function(g,i){
+      if(!g || !(g.uri || g.id)) return;
+      var fig=document.createElement('figure'); fig.dataset.ph=i;
+      if(i>=6) fig.classList.add('gal-extra');
+      var img=document.createElement('img');
+      img.alt=document.body.dataset.lang==='ja' ? 'いろとも交流会の様子 '+(i+1) : '이로토모 모임 사진 '+(i+1);
+      img.loading='lazy'; img.decoding='async';
+      img.onload=function(){fig.classList.add('loaded');};
+      img.onerror=function(){
+        if(g.id && img.src.indexOf('lh3.')>=0){img.src=driveAlt(g.id,1600);return;}
+        fig.classList.add('empty');img.hidden=true;
+      };
+      img.src=g.uri || driveUrl(g.id,1600);fig.appendChild(img);
+      var controls=document.createElement('span');controls.className='gal-tools';
+      [['galPick','교체'],['galDel','삭제']].forEach(function(entry){
+        var btn=document.createElement('button');btn.type='button';btn.dataset[entry[0]]=i;btn.textContent=entry[1];btn.disabled=!!galBusy;controls.appendChild(btn);
+      });
+      fig.appendChild(controls);grid.appendChild(fig);
     });
-    var any = GALLERY.some(function(g){ return g && (g.uri || g.id); });
-    var count = GALLERY.filter(function(g){return g && (g.uri || g.id);}).length;
     sec.classList.toggle('gal-expanded', GAL_EXPANDED || editing);
     var more=document.getElementById('gal-more');
-    if(more){
-      more.classList.toggle('show', !editing && count>6);
-      more.querySelector('.ko').textContent = GAL_EXPANDED ? '사진 접기' : '사진 더 보기';
-      more.querySelector('.ja').textContent = GAL_EXPANDED ? '写真を閉じる' : '写真をもっと見る';
-    }
-    sec.hidden = !any && !editing;
+    if(more){more.classList.toggle('show',!editing && GALLERY.length>6);
+      more.querySelector('.ko').textContent=GAL_EXPANDED?'사진 접기':'사진 더 보기 ('+GALLERY.length+')';
+      more.querySelector('.ja').textContent=GAL_EXPANDED?'写真を閉じる':'写真をもっと見る（'+GALLERY.length+'）';}
+    sec.hidden=!GALLERY.length && !editing;
+    var add=document.getElementById('gal-add');if(add) add.disabled=!!galBusy;
   }
 
   /* 사진 열기 — createImageBitmap 이 안 되는 브라우저·형식 대비 */
@@ -5250,59 +5281,48 @@ window.IROLANG = (function(){
     $a('logo-size').value = parseInt(LOGO_SIZE, 10) || 380;
   }
 
-  /* ── 활동 사진: 고르는 즉시 한 장씩 올린다 ────────────────── */
-  var galSlot = 0;
-
-  function pushGallery(){
-    var list = GALLERY.filter(function(x){ return x && (x.id || x.b64); })
-      .map(function(x){ return x.id ? { id:x.id } : { b64:x.b64 }; });
-    return apiPost({ action:'gallery', token:ADMIN.token, gallery:list }).then(function(d){
-      if (!d || !d.ok) throw new Error((d && d.error) || '서버가 응답하지 않았습니다');
-      GALLERY = (d.ids || []).map(function(id){ return { id:id }; });   /* 다음엔 다시 안 올리도록 */
-      renderGallery();
-      return d;
+  /* Gallery mutations are serialized; completed uploads remain saved on failure. */
+  var galSlot=null, galBusy=false;
+  function galleryMutation(payload){
+    return apiPost(Object.assign({action:'gallery_update',token:ADMIN.token},payload)).then(function(d){
+      if(!d || !d.ok) throw new Error(d && d.error || '저장에 실패했습니다');
+      GALLERY=(d.ids || []).map(function(id){return {id:id};});renderGallery();return d;
     });
   }
-
-  document.querySelectorAll('[data-gal-pick]').forEach(function(b2){
-    b2.addEventListener('click', function(e){
-      e.stopPropagation(); galSlot = +b2.dataset.galPick; $a('gal-file').click();
-    });
+  on('gal-add','click',function(){
+    if(!editing || galBusy)return;galSlot=null;$a('gal-file').multiple=true;$a('gal-file').click();
   });
-
-  document.querySelectorAll('[data-gal-del]').forEach(function(b2){
-    b2.addEventListener('click', function(e){
-      e.stopPropagation();
-      if (!confirm('이 사진을 지울까요?')) return;
-      GALLERY[+b2.dataset.galDel] = null;
-      renderGallery();
-      setState('gal-state', '지우는 중…');
-      pushGallery().then(function(){ setState('gal-state', '완료'); })
-        .catch(function(err){ setState('gal-state', fail(err).slice(0, 50), true); });
-    });
+  $a('gallery').addEventListener('click',async function(e){
+    var pick=e.target.closest('[data-gal-pick]'),del=e.target.closest('[data-gal-del]');
+    if(!pick && !del)return;e.stopPropagation();
+    if(!editing || galBusy)return;
+    if(pick){galSlot=GALLERY[+pick.dataset.galPick].id;$a('gal-file').multiple=false;$a('gal-file').click();return;}
+    if(!confirm('이 사진을 갤러리에서 삭제할까요?'))return;
+    var target=GALLERY[+del.dataset.galDel].id;
+    galBusy=true;renderGallery();setState('gal-state','삭제 중…');
+    try{await galleryMutation({mode:'remove',target:target});setState('gal-state','삭제됨');}
+    catch(err){setState('gal-state',fail(err).slice(0,100),true);}
+    finally{galBusy=false;renderGallery();}
   });
-
-  on('gal-more','click',function(){
-    GAL_EXPANDED=!GAL_EXPANDED;
-    renderGallery();
-  });
-
-  $a('gal-file').addEventListener('change', function(e){
-    var file = e.target.files && e.target.files[0];
-    if (!file) return;
-    setState('gal-state', '사진 여는 중…');
-    fitImage(file, [[1800,0.84],[1400,0.8],[1100,0.76]], 1000000, false).then(function(r){
-      if (!r.uri) throw new Error('이 사진은 열 수 없습니다. JPG 나 PNG 로 저장한 뒤 다시 시도해 주세요.');
-      GALLERY[galSlot] = { b64: r.uri.split(',')[1], uri: r.uri };
-      renderGallery();
-      setState('gal-state', '올리는 중… ' + kb(r.uri));
-      return pushGallery();
-    }).then(function(){
-      setState('gal-state', '저장됨');
-    }).catch(function(err){
-      setState('gal-state', fail(err).slice(0, 50), true);
-      alert('사진을 저장하지 못했습니다.\n\n' + fail(err) + '\n\n연결된 서버: …' + API.slice(-10));
-    }).then(function(){ $a('gal-file').value = ''; });
+  on('gal-more','click',function(){GAL_EXPANDED=!GAL_EXPANDED;renderGallery();});
+  $a('gal-file').addEventListener('change',async function(e){
+    var files=Array.from(e.target.files || []);if(!files.length || galBusy || !editing)return;
+    if(galSlot!==null)files=files.slice(0,1);
+    galBusy=true;renderGallery();var saved=0;
+    try{
+      for(var file of files){
+        setState('gal-state',(saved+1)+' / '+files.length+' · '+file.name+' 업로드 중…');
+        var r=await fitImage(file,[[1800,.84],[1400,.8],[1100,.76]],1000000,false);
+        if(!r.uri)throw new Error(file.name+' 파일을 열 수 없습니다');
+        await galleryMutation({mode:galSlot===null?'append':'replace',target:galSlot,
+          item:{b64:r.uri.split(',')[1],mime:r.uri.slice(5,r.uri.indexOf(';'))}});
+        saved++;
+      }
+      setState('gal-state',saved+'장 저장됨 · 전체 '+GALLERY.length+'장');
+    }catch(err){
+      setState('gal-state',saved+'/'+files.length+'장 저장됨. '+fail(err).slice(0,120),true);
+      alert(saved+'장은 저장되었습니다. 나머지 사진은 다시 선택해 주세요.\n'+fail(err));
+    }finally{galBusy=false;galSlot=null;e.target.value='';renderGallery();}
   });
 
   /* ── 통계 ────────────────────────────────────────────────── */
@@ -5622,9 +5642,7 @@ window.IROLANG = (function(){
   function paint(){
     if (!shots.length) return;
     lbImg.src = shots[at].currentSrc || shots[at].src;
-    lbNav.innerHTML = shots.map(function(_, i){
-      return '<b class="' + (i === at ? 'on' : '') + '"></b>';
-    }).join('');
+    lbNav.textContent = (at + 1) + ' / ' + shots.length;
   }
   function openLb(i){
     collect(); if (!shots.length) return;
@@ -5683,6 +5701,7 @@ window.IROLANG = (function(){
     fig.classList.toggle('loaded', !!on);
   }
   function watchShots(){
+    figs = [].slice.call(document.querySelectorAll('.gal figure'));
     figs.forEach(function(fig){
       var im = fig.querySelector('img');
       if (!im) return;
@@ -5707,7 +5726,7 @@ window.IROLANG = (function(){
       if (galQueued) return;
       galQueued = true;
       requestAnimationFrame(function(){ galQueued = false; watchShots(); });
-    }).observe(galSec, {attributes:true, subtree:true, attributeFilter:['src','hidden']});
+    }).observe(galSec, {childList:true, attributes:true, subtree:true, attributeFilter:['src','hidden']});
   }
   watchShots();
 
