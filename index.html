@@ -686,7 +686,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   font:inherit;font-size:13px;color:#5b5870;cursor:pointer}
 #dg-days button[aria-pressed="true"]{background:var(--navy,#2C3355);color:#fff;border-color:transparent;font-weight:700}
 
-.mt-row{display:grid;grid-template-columns:auto auto auto 1fr auto;gap:8px;align-items:center;
+.mt-row{display:grid;grid-template-columns:auto auto auto 1fr auto auto auto;gap:8px;align-items:center;
   padding:8px 10px;border:1px solid #eceaf3;border-radius:9px;margin-bottom:6px;font-size:13px}
 .mt-row.off{opacity:.5;background:#faf9fb}
 .mt-row.off b{text-decoration:line-through}
@@ -697,6 +697,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
 .mt-tog:hover{background:#f4f3f8}
 .mt-row.off .mt-tog{border-color:#e8d5d5;color:#b04a46}
+.mt-cap{width:78px;padding:5px 8px;border:1px solid #e2dfec;border-radius:6px;font:inherit;font-size:12px}
+.mt-wait{padding:5px 9px;border:1px solid #dcd9e8;background:#fff;border-radius:7px;font:700 11px var(--font);cursor:pointer;white-space:nowrap}
+.mt-wait.on{background:#f3efff;color:#6b52a7;border-color:#d8cef1}
 #mt-new{padding:7px 9px;border:1px solid #e2dfec;border-radius:7px;font:inherit;font-size:13px}
 .mt-time-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:8px}
 .mt-time-row label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#9d99b0}
@@ -1321,6 +1324,36 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
 #seat-pick-clear:hover{background:#f4f3f8}
 
 /* ── 2차 전용 탭 ─────────────────────────────────────────── */
+
+/* ── 당일 체크인 ───────────────────────────────────────────── */
+.checkin-tools{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:14px}
+.checkin-tools label{display:grid;gap:5px;min-width:180px}
+.checkin-tools label span{font-size:12px;color:#8a86a0;font-weight:600}
+.checkin-tools select,.checkin-tools input{min-height:40px;padding:8px 11px;border:1px solid #dedbe8;border-radius:10px;background:#fff;font:inherit}
+.checkin-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.checkin-summary span{padding:5px 10px;border-radius:999px;background:#f4f3f8;font-size:12px;color:#666176;font-weight:700}
+.checkin-list{display:grid;gap:8px}
+.checkin-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:13px 14px;border:1px solid #e7e4ef;border-radius:12px;background:#fff}
+.checkin-row.done{background:#f2faf6;border-color:#cfe8da}
+.checkin-name{font-size:15px;font-weight:800;color:#1c1b22}
+.checkin-meta{font-size:11.5px;color:#8a86a0;margin-top:2px}
+.checkin-pay{font-size:11.5px;padding:4px 8px;border-radius:999px;background:#f7eded;color:#a34b4b}
+.checkin-pay.ok{background:#eef8f2;color:#327654}
+.checkin-go{min-width:84px;padding:9px 12px;border:1px solid #dcd9e8;background:#fff;border-radius:9px;font:700 12.5px var(--font);cursor:pointer}
+.checkin-row.done .checkin-go{background:#327654;color:#fff;border-color:#327654}
+.sg-dup{padding:4px 8px;border-radius:999px;background:#fff1d8;color:#8a6416;font-size:11px;font-weight:800}
+.sg-wait{padding:4px 8px;border-radius:999px;background:#f3efff;color:#6b52a7;font-size:11px;font-weight:800}
+.sg-wait-promote{padding:6px 9px;border:1px solid #cfc3ec;background:#fff;border-radius:8px;color:#694fa1;font:700 11.5px var(--font);cursor:pointer}
+.sg-row.waitlisted{background:#fbf9ff;border-color:#e1d9f4}
+@media(max-width:700px){.checkin-row{grid-template-columns:1fr auto}.checkin-pay{grid-column:1}.checkin-go{grid-column:2;grid-row:1/3}}
+/* ── 갤러리 확장 ───────────────────────────────────────────── */
+body:not(.admin-on) .gal figure.empty{display:none}
+body:not(.admin-on) .gal figure.gal-extra{display:none}
+body:not(.admin-on) #gallery.gal-expanded .gal figure.gal-extra{display:block}
+.gal-more{display:none;margin:22px auto 0;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:10px 20px;font:700 var(--fs-sm) var(--font);cursor:pointer}
+.gal-more.show{display:block}
+body.admin-on .gal-more{display:none!important}
+
 .after-pane{padding-bottom:8px}
 /* 2차 탭은 부모가 flex-column이라 화면 높이가 부족하면 결과 박스가 1행 높이까지
    강제로 축소될 수 있습니다. 각 블록은 줄어들지 않게 하고, 탭 자체가 스크롤합니다. */
@@ -1523,7 +1556,35 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
       <figure class="empty" data-ph="2"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
         <span class="gal-tools"><button type="button" data-gal-pick="2">사진</button><button type="button" class="sub" data-gal-del="2">✕</button></span>
       </figure>
+      <figure class="empty" data-ph="3"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="3">사진</button><button type="button" class="sub" data-gal-del="3">✕</button></span>
+      </figure>
+      <figure class="empty" data-ph="4"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="4">사진</button><button type="button" class="sub" data-gal-del="4">✕</button></span>
+      </figure>
+      <figure class="empty" data-ph="5"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="5">사진</button><button type="button" class="sub" data-gal-del="5">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="6"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="6">사진</button><button type="button" class="sub" data-gal-del="6">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="7"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="7">사진</button><button type="button" class="sub" data-gal-del="7">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="8"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="8">사진</button><button type="button" class="sub" data-gal-del="8">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="9"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="9">사진</button><button type="button" class="sub" data-gal-del="9">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="10"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="10">사진</button><button type="button" class="sub" data-gal-del="10">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="11"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="11">사진</button><button type="button" class="sub" data-gal-del="11">✕</button></span>
+      </figure>
     </div>
+    <button type="button" id="gal-more" class="gal-more"><span class="ko">사진 더 보기</span><span class="ja">写真をもっと見る</span></button>
     <input type="file" id="gal-file" accept="image/*" hidden>
   </section>
 
@@ -1809,8 +1870,8 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
         <div id="done">
           <div class="done-top">
             <div class="done-check"><svg viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6.5"></polyline></svg></div>
-            <h3><span class="ko">신청해 주셔서 감사합니다</span><span class="ja">お申し込みありがとうございます</span></h3>
-            <p><span class="ko">입력하신 이메일로 <b>음료비 6,000원 입금 계좌</b>를 보내드렸습니다. 입금이 확인되면 참가가 확정됩니다. 메일이 오지 않으면 스팸함을 확인해 주세요.</span><span class="ja">ご入力のメールアドレス宛に<b>ドリンク代6,000ウォンのお振込み先</b>をお送りしました。入金の確認をもってご参加が確定します。メールが届かない場合は迷惑メールフォルダをご確認ください。</span></p>
+            <h3 id="done-title"><span class="ko">신청해 주셔서 감사합니다</span><span class="ja">お申し込みありがとうございます</span></h3>
+            <p id="done-desc"><span class="ko">입력하신 이메일로 <b>음료비 6,000원 입금 계좌</b>를 보내드렸습니다. 입금이 확인되면 참가가 확정됩니다. 메일이 오지 않으면 스팸함을 확인해 주세요.</span><span class="ja">ご入力のメールアドレス宛に<b>ドリンク代6,000ウォンのお振込み先</b>をお送りしました。入金の確認をもってご参加が確定します。メールが届かない場合は迷惑メールフォルダをご確認ください。</span></p>
           </div>
           <div class="done-map">
             <div class="gmap" data-gmap style="min-height:280px">
@@ -1897,6 +1958,7 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
       <nav class="sg-tabs" id="sg-tabs">
         <button type="button" data-t="dash"  aria-pressed="true">운영 현황</button>
         <button type="button" data-t="list"  aria-pressed="false">신청 내역</button>
+        <button type="button" data-t="checkin" aria-pressed="false">체크인</button>
         <button type="button" data-t="seat"  aria-pressed="false">자리 배정</button>
         <button type="button" data-t="after" aria-pressed="false">2차</button>
         <button type="button" data-t="dates" aria-pressed="false">모임 날짜</button>
@@ -1933,6 +1995,15 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
       <div id="sg-body"><p class="st-empty">불러오는 중…</p></div>
     </section>
 
+
+    <section class="sg-pane" data-p="checkin" hidden>
+      <div class="checkin-tools">
+        <label><span>모임 날짜</span><select id="checkin-date"></select></label>
+        <label style="flex:1;min-width:220px"><span>이름 검색</span><input type="search" id="checkin-q" placeholder="이름 입력"></label>
+      </div>
+      <div id="checkin-summary" class="checkin-summary"></div>
+      <div id="checkin-list" class="checkin-list"><p class="seat-empty">명단을 불러오는 중…</p></div>
+    </section>
 
     <section class="sg-pane seat-pane" data-p="seat" hidden>
       <div class="seat-tools">
@@ -1998,7 +2069,7 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
         <span id="after-result-note"></span>
       </div>
       <div id="after-result" class="after-result"><p class="seat-empty">참가자를 선택하고 「랜덤번호 배정」을 눌러 주세요.</p></div>
-      <p class="sg-dg-note">2차 체크 여부는 기존과 같이 신청자 메모의 <b>#2차</b> 표시로 서버에 저장됩니다. 랜덤번호 결과는 이 관리자 브라우저에 날짜별로 저장되며, 다시 섞기를 누르면 새 번호로 바뀝니다. 참가자 좌석 확인 페이지와는 연결되지 않습니다.</p>
+      <p class="sg-dg-note">2차 체크 여부는 신청자 메모의 <b>#2차</b> 표시로 저장됩니다. 랜덤번호 결과도 <b>D1에 날짜별로 저장</b>되어 다른 휴대폰·PC에서 관리자 로그인 후 그대로 확인할 수 있습니다. 참가자 좌석 확인 페이지와는 연결되지 않습니다.</p>
     </section>
 
     <section class="sg-pane" data-p="dates" hidden>
@@ -2423,6 +2494,7 @@ window.IROLANG = (function(){
      숫자가 낮으면 오히려 역효과라, 아래 인원을 넘어야 나타납니다. */
   var COUNT_MIN = 5;
   var COUNTS = {};
+  var CAPACITY = {};   /* 날짜별 {capacity,waitlist_on} */
   var CLOSED = {};      /* 날짜별로 닫아 둔 음료 — { '2026-09-13': ['lime'] } */
 
   /* ── 지난 회차 실적 ──────────────────────────────────────
@@ -2511,6 +2583,15 @@ window.IROLANG = (function(){
       var b = document.createElement('span'); b.textContent = t; s3.appendChild(b);
     });
     box.appendChild(s1); box.appendChild(s2); box.appendChild(s3);
+    var cap = CAPACITY[d.value] || {};
+    if (+cap.capacity > 0) {
+      var s4=document.createElement('span'); s4.className='dc-mix';
+      var full=(+c.n >= +cap.capacity);
+      s4.textContent = ko
+        ? ('정원 '+cap.capacity+'명'+(full ? (+cap.waitlist_on===0?' · 마감':' · 대기 접수 중') : ''))
+        : ('定員 '+cap.capacity+'名'+(full ? (+cap.waitlist_on===0?' · 締切':' · キャンセル待ち受付中') : ''));
+      box.appendChild(s4);
+    }
     box.hidden = false;
   }
 
@@ -2555,9 +2636,16 @@ window.IROLANG = (function(){
       var a = v.split('-'), dt = new Date(v + 'T00:00:00');
       var o = document.createElement('option');
       o.value = v;
-      o.textContent = ja
+      var baseLabel = ja
         ? (+a[0]) + '年' + (+a[1]) + '月' + (+a[2]) + '日（' + WD[dt.getDay()] + '）'
         : (+a[0]) + '년 ' + (+a[1]) + '월 ' + (+a[2]) + '일 (' + WD[dt.getDay()] + ')';
+      var cap = CAPACITY[v] || {}, cc = COUNTS[v] || {n:0,wait:0};
+      if (+cap.capacity > 0 && +cc.n >= +cap.capacity) {
+        baseLabel += (+cap.waitlist_on === 0)
+          ? (ja ? ' — 締切' : ' — 마감')
+          : (ja ? ' — キャンセル待ち' : ' — 대기 접수');
+      }
+      o.textContent = baseLabel;
       dPick.appendChild(o);
     });
     /* 다시 그려도 고르셨던 날짜는 그대로 둡니다 */
@@ -2573,6 +2661,7 @@ window.IROLANG = (function(){
   /* 상단 메뉴의 작은 마크는 그대로 두고, 히어로의 큰 로고만 바꾼다 */
   /* ── 활동 사진 ────────────────────────────────────────────── */
   var GALLERY = [];
+  var GAL_EXPANDED = false;
   /* 사진은 Worker 가 내보냅니다 (예전 구글 드라이브 주소 대체) */
   function driveUrl(id, w){ return API + '/photo/' + id; }
   function driveAlt(id, w){ return API + '/photo/' + id; }
@@ -2593,6 +2682,14 @@ window.IROLANG = (function(){
       }
     });
     var any = GALLERY.some(function(g){ return g && (g.uri || g.id); });
+    var count = GALLERY.filter(function(g){return g && (g.uri || g.id);}).length;
+    sec.classList.toggle('gal-expanded', GAL_EXPANDED || editing);
+    var more=document.getElementById('gal-more');
+    if(more){
+      more.classList.toggle('show', !editing && count>6);
+      more.querySelector('.ko').textContent = GAL_EXPANDED ? '사진 접기' : '사진 더 보기';
+      more.querySelector('.ja').textContent = GAL_EXPANDED ? '写真を閉じる' : '写真をもっと見る';
+    }
     sec.hidden = !any && !editing;
   }
 
@@ -2682,6 +2779,7 @@ window.IROLANG = (function(){
         renderGallery();
       }
       if (d.counts) COUNTS = d.counts;
+      if (d.capacity) CAPACITY = d.capacity;
       try { seatLinkCheck(); } catch (e) {}
       if (d.closed) { CLOSED = d.closed; try { syncDrinks(); } catch (e) {} }
       if (d.last) LAST = d.last;
@@ -2732,6 +2830,11 @@ window.IROLANG = (function(){
         form.reset();
         form.style.display = 'none';
         var done = document.getElementById('done');
+        var dt=document.getElementById('done-title'), dd=document.getElementById('done-desc');
+        if (d.waitlisted) {
+          if (dt) dt.innerHTML='<span class="ko">대기 신청이 접수되었습니다</span><span class="ja">キャンセル待ちとして受け付けました</span>';
+          if (dd) dd.innerHTML='<span class="ko">현재 정원이 마감되어 <b>대기자로 접수</b>되었습니다. 지금은 입금하지 않으셔도 됩니다. 참가 자리가 생기면 이메일로 다시 안내드립니다.</span><span class="ja">現在定員に達しているため、<b>キャンセル待ち</b>として受け付けました。現時点でのお振込みは不要です。お席をご用意できましたらメールでご案内します。</span>';
+        }
         done.classList.add('show');
         done.scrollIntoView({block:'center'});
       })
@@ -2752,7 +2855,11 @@ window.IROLANG = (function(){
           missing:  ja ? 'お名前とメールアドレスをご確認ください。'
                        : '이름과 이메일을 확인해 주세요.',
           bad_date: ja ? '参加日を選択してください。'
-                       : '참가일을 선택해 주세요.'
+                       : '참가일을 선택해 주세요.',
+          duplicate: ja ? '同じメールアドレスでこの日程にすでにお申し込み済みです。'
+                        : '같은 이메일로 해당 날짜에 이미 신청되어 있습니다.',
+          full: ja ? 'この回は定員に達し、キャンセル待ちも受け付けていません。'
+                   : '이 회차는 정원이 마감되었고 대기 신청도 받지 않습니다.'
         };
         if (MSG[code]) { alert(MSG[code]); return; }
         alert((ja ? '送信できませんでした。しばらくしてからもう一度お試しください。'
@@ -3073,8 +3180,9 @@ window.IROLANG = (function(){
       });
       if (t === 'dash') { loadDashboard(); }
       if (t === 'dates' && !loaded.dates) { loaded.dates = true; loadMeetups(); }
+      if (t === 'checkin') { checkinFillDates(); checkinPaint(); }
       if (t === 'seat') { seatFillDates(); seatLoadStatus(); }
-      if (t === 'after') { afterFillDates(); afterPaint(); }
+      if (t === 'after') { afterFillDates(); afterPaint(); afterLoadOrder(afterDate()); }
     });
   })();
 
@@ -3159,7 +3267,7 @@ window.IROLANG = (function(){
       row.className = 'mt-row' + (m.off ? ' off' : '');
       row.innerHTML =
         '<b>' + m.date.replace(/-/g, '.') + ' (' + wd + ')</b>' +
-        '<span class="mt-n">' + (m.n ? m.n + '명' : '0명') + '</span>' +
+        '<span class="mt-n">' + (m.n ? m.n + '명' : '0명') + (m.wait_n ? ' · 대기 '+m.wait_n : '') + '</span>' +
         (m.auto ? '' : '<span class="mt-tag">추가</span>');
 
       var note = document.createElement('input');
@@ -3193,6 +3301,17 @@ window.IROLANG = (function(){
       });
       row.appendChild(dbox);
 
+      var cap=document.createElement('input');
+      cap.type='number';cap.min='0';cap.max='999';cap.value=+m.capacity||0;cap.className='mt-cap';cap.title='정원 (0=제한 없음)';
+      cap.addEventListener('change',function(){m.capacity=Math.max(0,+cap.value||0);saveMeetup(m.date,m.off,note.value,false,shut,m.capacity,m.waitlist_on);});
+      row.appendChild(cap);
+
+      var wait=document.createElement('button');wait.type='button';wait.className='mt-wait'+(+m.waitlist_on===0?'':' on');
+      function paintWait(){wait.textContent=(+m.waitlist_on===0?'대기 OFF':'대기 ON');wait.classList.toggle('on',+m.waitlist_on!==0);}
+      paintWait();
+      wait.addEventListener('click',function(){m.waitlist_on=(+m.waitlist_on===0?1:0);paintWait();saveMeetup(m.date,m.off,note.value,false,shut,m.capacity,m.waitlist_on);});
+      row.appendChild(wait);
+
       var tog = document.createElement('button');
       tog.type = 'button'; tog.className = 'mt-tog';
       tog.textContent = m.off ? '휴무' : '진행';
@@ -3204,10 +3323,12 @@ window.IROLANG = (function(){
     });
   }
 
-  function saveMeetup(date, off, note, repaint, closed){
+  function saveMeetup(date, off, note, repaint, closed, capacity, waitlistOn){
     $a('mt-state').textContent = '저장 중…';
     var body = { action:'meetup_save', token: ADMIN.token, date: date, off: !!off, note: note || '' };
     if (Array.isArray(closed)) body.closed = closed;
+    if (capacity !== undefined) body.capacity = capacity;
+    if (waitlistOn !== undefined) body.waitlist_on = waitlistOn;
     apiPost(body)
       .then(function(d){
         $a('mt-state').textContent = (d && d.ok) ? '저장했습니다' : '저장하지 못했습니다';
@@ -3356,7 +3477,8 @@ window.IROLANG = (function(){
 
     next.forEach(function(x){
       var c = opsCountdown(x.date), when = opsDateLabel(x.date).slice(5);
-      var total = +x.guests || 0, unpaid = total - (+x.paid || 0);
+      var total = +x.guests || 0, unpaid = total - (+x.paid || 0), waiting=+x.waitlist_count||0;
+      if(waiting>0) out.push(['warn', when+' · 대기 '+waiting+'명 — 취소 자리 발생 시 참가 전환']);
 
       if (unpaid > 0 && c && c.preOpen && c.preHours <= 36)
         out.push(['urgent', when + ' · 미입금 ' + unpaid + '명 — 음료 마감 '
@@ -3476,7 +3598,7 @@ window.IROLANG = (function(){
       SG.rows = d.rows || [];
       try { afterSeed(); } catch (e) {}
       if (d.closed) CLOSED = d.closed;   /* 품절 버튼 상태 */
-      fillDigest(d.digest); paintSg(); seatFillDates(); loadDashboard(true);
+      fillDigest(d.digest); paintSg(); seatFillDates(); checkinFillDates(); checkinPaint(); loadDashboard(true);
     }).catch(function(e){
       $a('sg-body').innerHTML = '<p class="st-empty">불러오지 못했습니다 (' + e.message + ')</p>';
     });
@@ -3798,8 +3920,20 @@ window.IROLANG = (function(){
   }
   function paintSgTally(){ paintSg(); }
 
+  function sgNormName(v){
+    try{return String(v||'').normalize('NFKC').replace(/\s+/g,'').toLocaleLowerCase('ko-KR');}
+    catch(e){return String(v||'').replace(/\s+/g,'').toLowerCase();}
+  }
+  function sgSameNameCount(r){
+    if(!r || !r.date || +r.staff===1) return 0;
+    var k=sgNormName(r.name);
+    return (SG.rows||[]).filter(function(x){
+      return +x.staff!==1 && x.date===r.date && sgNormName(x.name)===k;
+    }).length;
+  }
+
   function sgRow(r){
-    var row = document.createElement('div'); row.className = 'sg-row';
+    var row = document.createElement('div'); row.className = 'sg-row' + (+r.waitlisted===1 ? ' waitlisted' : '');
     SG_COLS.forEach(function(c){
       var f = document.createElement('label'); f.className = 'sg-f';
       var s = document.createElement('span'); s.textContent = c[1];
@@ -3867,13 +4001,33 @@ window.IROLANG = (function(){
         ? '이 모임 날짜보다 앞선 신청 기록이 ' + prior + '회 있습니다.'
         : '이 모임 날짜보다 앞선 신청 기록이 없습니다.';
       row.appendChild(vc);
+      if (sgSameNameCount(r) > 1) {
+        var dup=document.createElement('span'); dup.className='sg-dup'; dup.textContent='동명이인/중복 확인';
+        dup.title='같은 날짜에 같은 이름이 2명 이상 있습니다. 이메일을 확인해 주세요.';
+        row.appendChild(dup);
+      }
+      if (+r.waitlisted===1) {
+        var wb=document.createElement('span'); wb.className='sg-wait'; wb.textContent='대기';
+        row.appendChild(wb);
+        var wp=document.createElement('button'); wp.type='button'; wp.className='sg-wait-promote'; wp.textContent='참가 전환';
+        wp.addEventListener('click',function(){
+          if(!confirm((r.name||'이 신청')+' 님을 대기에서 일반 참가로 전환할까요?\n입금 안내 메일이 자동 발송됩니다.')) return;
+          wp.disabled=true;
+          apiPost({action:'signup_save',token:ADMIN.token,id:r.id,waitlisted:0}).then(function(d){
+            if(!d||!d.ok) throw new Error((d&&d.error)||'fail');
+            if(d.mail_attempted && d.mail===false) alert('참가 전환은 저장됐지만 입금 안내 메일 발송에 실패했습니다.');
+            loadSignups();
+          }).catch(function(e){wp.disabled=false;alert('전환하지 못했습니다. ('+fail(e)+')');});
+        });
+        row.appendChild(wp);
+      }
     }
 
 
     /* 입금 확인 — 음료비가 들어왔는지 표시합니다 */
     var pay = document.createElement('label'); pay.className = 'sg-paid';
     var cb = document.createElement('input'); cb.type = 'checkbox';
-    cb.checked = +r.paid === 1;
+    cb.checked = +r.paid === 1; cb.disabled = +r.waitlisted === 1;
     var pt = document.createElement('span'); pt.textContent = cb.checked ? '입금' : '미입금';
     pay.classList.toggle('on', cb.checked);
     cb.addEventListener('change', function(){
@@ -3902,7 +4056,7 @@ window.IROLANG = (function(){
     /* 실제 출석 여부 — 현장에서 체크하면 D1에 바로 저장됩니다. */
     var att = document.createElement('label'); att.className = 'sg-att';
     var acb = document.createElement('input'); acb.type = 'checkbox';
-    acb.checked = +r.attended === 1;
+    acb.checked = +r.attended === 1; acb.disabled = +r.waitlisted === 1;
     var at = document.createElement('span'); at.textContent = acb.checked ? '출석' : '미출석';
     att.classList.toggle('on', acb.checked);
     acb.addEventListener('change', function(){
@@ -3936,6 +4090,61 @@ window.IROLANG = (function(){
   }
 
 
+
+  /* ── 당일 체크인 ─────────────────────────────────────────── */
+  function checkinFillDates(){
+    var sel=$a('checkin-date'); if(!sel) return;
+    var cur=sel.value, days={};
+    (SG.rows||[]).forEach(function(r){if(r.date && +r.waitlisted!==1)days[r.date]=1;});
+    var arr=Object.keys(days).sort(); sel.innerHTML='';
+    arr.forEach(function(d){var o=document.createElement('option');o.value=d;o.textContent=d.replace(/-/g,'.');sel.appendChild(o);});
+    if(cur&&days[cur])sel.value=cur;
+    else{
+      var today=new Date();today.setHours(0,0,0,0);
+      var t=arr.find(function(d){return new Date(d+'T00:00:00')>=today;});
+      if(t)sel.value=t;else if(arr.length)sel.value=arr[arr.length-1];
+    }
+  }
+  function checkinPaint(){
+    var box=$a('checkin-list'),sum=$a('checkin-summary'),d=$a('checkin-date')&&$a('checkin-date').value;
+    if(!box||!sum)return;
+    var q=(($a('checkin-q')&&$a('checkin-q').value)||'').trim().toLowerCase();
+    var rows=(SG.rows||[]).filter(function(r){
+      return r.date===d && +r.waitlisted!==1 && (!q || String(r.name||'').toLowerCase().indexOf(q)>=0);
+    });
+    rows=rows.slice().sort(function(a,b){
+      if(+a.attended!==+b.attended)return +b.attended-+a.attended;
+      return String(a.name||'').localeCompare(String(b.name||''),'ko');
+    });
+    var all=(SG.rows||[]).filter(function(r){return r.date===d&&+r.waitlisted!==1;});
+    var done=all.filter(function(r){return +r.attended===1;}).length;
+    var paid=all.filter(function(r){return +r.staff===1||+r.paid===1;}).length;
+    sum.innerHTML='<span>출석 '+done+'/'+all.length+'</span><span>입금/스탭 '+paid+'/'+all.length+'</span>';
+    box.innerHTML='';
+    if(!rows.length){box.innerHTML='<p class="seat-empty">표시할 참가자가 없습니다.</p>';return;}
+    rows.forEach(function(r){
+      var row=document.createElement('div');row.className='checkin-row'+(+r.attended===1?' done':'');
+      var info=document.createElement('div');
+      var n=document.createElement('div');n.className='checkin-name';n.textContent=r.name||'이름 없음';
+      var meta=document.createElement('div');meta.className='checkin-meta';
+      meta.textContent=(+r.staff===1?'스탭 · ':'')+(seatIsJa(r)?'일본':'한국');
+      info.appendChild(n);info.appendChild(meta);
+      var pay=document.createElement('span');pay.className='checkin-pay'+((+r.staff===1||+r.paid===1)?' ok':'');
+      pay.textContent=(+r.staff===1?'스탭':(+r.paid===1?'입금':'미입금'));
+      var go=document.createElement('button');go.type='button';go.className='checkin-go';
+      go.textContent=+r.attended===1?'출석 완료':'출석 체크';
+      go.addEventListener('click',function(){
+        var v=+r.attended===1?0:1;go.disabled=true;
+        apiPost({action:'signup_save',token:ADMIN.token,id:r.id,attended:v}).then(function(x){
+          go.disabled=false;if(!x||!x.ok)throw new Error('fail');
+          r.attended=v;checkinPaint();loadDashboard(true);
+        }).catch(function(){go.disabled=false;alert('출석 상태를 저장하지 못했습니다.');});
+      });
+      row.appendChild(info);row.appendChild(pay);row.appendChild(go);box.appendChild(row);
+    });
+  }
+  on('checkin-date','change',checkinPaint);
+  on('checkin-q','input',checkinPaint);
 
   /* ── 자리 배정 ─────────────────────────────────────────────
      국적 비율을 최대한 일정하게 유지하고, 스탭을 먼저 흩어 놓은 뒤
@@ -3985,40 +4194,28 @@ window.IROLANG = (function(){
     var d=$a('seat-date') && $a('seat-date').value;
     var paidOnly=$a('seat-paid') && $a('seat-paid').value==='paid';
     return (SG.rows||[]).filter(function(r){
-      if (r.date!==d) return false;
+      if (r.date!==d || +r.waitlisted===1) return false;
       if (!paidOnly) return true;
       return +r.staff===1 || +r.paid===1;
     });
   }
 
   /* ── 2차 전용 탭: 참가 체크 + 랜덤번호 ────────────────────
-     좌석 공개와 완전히 분리합니다. 체크는 기존 #2차 메모를 그대로 사용하고,
-     번호 결과만 브라우저 localStorage 에 날짜별로 저장합니다. */
-  var AFTER_ORDER_KEY = 'irotomo-after-random-v1';
+     참가 체크는 신청자 메모 #2차, 랜덤번호 결과는 D1에 날짜별 저장합니다. */
+  var AFTER_ORDER = {};
 
   function afterDate(){ return ($a('after-date') && $a('after-date').value) || ''; }
   function afterRows(d){
     d = d || afterDate();
-    return (SG.rows || []).filter(function(r){ return r.date === d; });
+    return (SG.rows || []).filter(function(r){ return r.date === d && +r.waitlisted!==1; });
   }
-  function afterSelected(d){
-    return afterRows(d).filter(function(r){ return afterHas(r); });
-  }
-  function afterOrderRead(){
-    try { return JSON.parse(localStorage.getItem(AFTER_ORDER_KEY) || '{}') || {}; }
-    catch(e){ return {}; }
-  }
-  function afterOrderWrite(all){
-    try { localStorage.setItem(AFTER_ORDER_KEY, JSON.stringify(all || {})); } catch(e){}
-  }
-  function afterOrderGet(d){ return afterOrderRead()[d] || []; }
-  function afterOrderSet(d, ids){ var a=afterOrderRead(); a[d]=ids || []; afterOrderWrite(a); }
-  function afterOrderClear(d){ var a=afterOrderRead(); delete a[d]; afterOrderWrite(a); }
+  function afterSelected(d){ return afterRows(d).filter(function(r){ return afterHas(r); }); }
+  function afterOrderGet(d){ return AFTER_ORDER[d] || []; }
 
   function afterFillDates(){
     var sel=$a('after-date'); if(!sel) return;
     var current=sel.value, days={};
-    (SG.rows||[]).forEach(function(r){ if(r.date) days[r.date]=1; });
+    (SG.rows||[]).forEach(function(r){ if(r.date && +r.waitlisted!==1) days[r.date]=1; });
     var arr=Object.keys(days).sort(); sel.innerHTML='';
     arr.forEach(function(d){ var o=document.createElement('option'); o.value=d; o.textContent=d.replace(/-/g,'.'); sel.appendChild(o); });
     if(current && days[current]) sel.value=current;
@@ -4029,44 +4226,65 @@ window.IROLANG = (function(){
     }
   }
 
-  function afterMeta(r){
-    if(+r.staff===1) return '스탭';
-    return seatIsJa(r) ? '일본' : '한국';
+  function afterMeta(r){ if(+r.staff===1) return '스탭'; return seatIsJa(r) ? '일본' : '한국'; }
+
+  function afterLoadOrder(d){
+    d=d||afterDate(); if(!d||!ADMIN.token) return Promise.resolve();
+    var note=$a('after-result-note'); if(note) note.textContent='저장된 랜덤번호 불러오는 중…';
+    return apiPost({action:'after_status',token:ADMIN.token,date:d}).then(function(x){
+      if(!x||!x.ok) throw new Error((x&&x.error)||'fail');
+      AFTER_ORDER[d]=(x.assignments||[]).sort(function(a,b){return +a.rand_no-+b.rand_no;})
+        .map(function(a){return String(a.signup_id);});
+      afterRenderResult();
+    }).catch(function(){
+      if(note) note.textContent='저장된 랜덤번호를 불러오지 못했습니다.';
+    });
+  }
+
+  function afterClearOrder(d){
+    d=d||afterDate(); if(!d) return Promise.resolve();
+    delete AFTER_ORDER[d]; afterRenderResult();
+    return apiPost({action:'after_clear',token:ADMIN.token,date:d}).catch(function(){});
+  }
+
+  function afterSaveOrder(d,ids){
+    var assignments=(ids||[]).map(function(id,i){return {signup_id:String(id),rand_no:i+1};});
+    return apiPost({action:'after_save',token:ADMIN.token,date:d,assignments:assignments}).then(function(x){
+      if(!x||!x.ok) throw new Error((x&&x.error)||'fail');
+      AFTER_ORDER[d]=ids.slice();
+      afterRenderResult();
+      return x;
+    });
   }
 
   function afterSetAndSave(r,on){
     afterSet(r,on);
     var cur=String(r.memo||'');
-    var next=on
-      ? (AFTER_RE.test(cur) ? cur : (cur ? cur+' '+AFTER_TAG : AFTER_TAG))
-      : cur.replace(AFTER_RE,'').replace(/\s{2,}/g,' ').trim();
+    var next=on ? (AFTER_RE.test(cur) ? cur : (cur ? cur+' '+AFTER_TAG : AFTER_TAG))
+                : cur.replace(AFTER_RE,'').replace(/\s{2,}/g,' ').trim();
     r.memo=next;
     return apiPost({action:'signup_save',token:ADMIN.token,id:r.id,memo:next});
   }
 
   function afterPaint(){
     var list=$a('after-pick-list'); if(!list) return;
-    var d=afterDate();
-    var day=afterRows(d);
+    var d=afterDate(), day=afterRows(d);
     var all=nameSort(day.filter(function(r){return +r.staff!==1 && seatIsJa(r);}),true)
       .concat(nameSort(day.filter(function(r){return +r.staff!==1 && !seatIsJa(r);}),false))
       .concat(nameSort(day.filter(function(r){return +r.staff===1;}),false));
     list.innerHTML='';
     if(!all.length){ list.innerHTML='<p class="seat-empty">이 날짜에 참가자가 없습니다.</p>'; afterRefresh(); return; }
-
     all.forEach(function(r){
       var b=document.createElement('button'); b.type='button';
       b.className='seat-chip'+(afterHas(r)?' on':'')+(+r.staff===1?' staff':'');
       b.textContent=(r.name||'이름 없음')+' · '+afterMeta(r);
       b.addEventListener('click',function(){
-        var on=!afterHas(r);
-        b.disabled=true;
+        var on=!afterHas(r); b.disabled=true;
         afterSetAndSave(r,on).then(function(x){
           if(!x||!x.ok) throw new Error('fail');
           b.disabled=false; b.classList.toggle('on',on);
-          /* 참가자 구성이 바뀌면 이전 번호표는 무효입니다. */
-          afterOrderClear(d); afterRefresh();
-        }).catch(function(){
+          return afterClearOrder(d);
+        }).then(afterRefresh).catch(function(){
           b.disabled=false; afterSet(r,!on); alert('2차 참가 표시를 저장하지 못했습니다.'); afterPaint();
         });
       });
@@ -4086,9 +4304,9 @@ window.IROLANG = (function(){
     var d=afterDate(), selected=afterSelected(d), ids=afterOrderGet(d);
     var byId={}; selected.forEach(function(r){byId[String(r.id)]=r;});
     var selectedIds=selected.map(function(r){return String(r.id);}).sort();
-    var orderIds=(ids||[]).map(String);
-    var orderSorted=orderIds.slice().sort();
-    var valid=selectedIds.length>0 && selectedIds.length===orderSorted.length && selectedIds.every(function(v,i){return v===orderSorted[i];});
+    var orderIds=(ids||[]).map(String), orderSorted=orderIds.slice().sort();
+    var valid=selectedIds.length>0 && selectedIds.length===orderSorted.length &&
+      selectedIds.every(function(v,i){return v===orderSorted[i];});
     if(!valid){
       box.innerHTML='<p class="seat-empty">'+(selected.length ? selected.length+'명이 선택되었습니다. 「랜덤번호 배정」을 눌러 주세요.' : '참가자를 선택하고 「랜덤번호 배정」을 눌러 주세요.')+'</p>';
       if(note) note.textContent=selected.length ? '1~'+selected.length+'번을 중복 없이 배정합니다.' : '';
@@ -4103,44 +4321,45 @@ window.IROLANG = (function(){
       var meta=document.createElement('span'); meta.className='after-order-meta'; meta.textContent=afterMeta(r);
       row.appendChild(no); row.appendChild(name); row.appendChild(meta); box.appendChild(row);
     });
-    if(note) note.textContent=orderIds.length+'명 · 1~'+orderIds.length+'번 랜덤 배정 완료';
+    if(note) note.textContent=orderIds.length+'명 · D1 저장 완료';
   }
 
   function afterRandomize(){
-    var d=afterDate(), arr=afterSelected(d).slice();
+    var d=afterDate(), arr=afterSelected(d).slice(), note=$a('after-result-note');
     if(!d){ alert('모임 날짜를 선택해 주세요.'); return; }
     if(!arr.length){ alert('먼저 2차 참가자를 선택해 주세요.'); return; }
-    for(var i=arr.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=arr[i]; arr[i]=arr[j]; arr[j]=t; }
-    afterOrderSet(d,arr.map(function(r){return String(r.id);}));
-    afterRenderResult();
+    for(var i=arr.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)),t=arr[i];arr[i]=arr[j];arr[j]=t; }
+    var ids=arr.map(function(r){return String(r.id);});
+    if(note) note.textContent='D1에 저장 중…';
+    afterSaveOrder(d,ids).catch(function(e){alert('랜덤번호를 저장하지 못했습니다. ('+fail(e)+')');});
   }
 
   function afterClearAll(){
     var d=afterDate(), list=afterSelected(d);
     if(!list.length) return;
     if(!confirm(list.length+'명의 2차 참가 표시를 모두 해제할까요?')) return;
-    var jobs=list.map(function(r){ return afterSetAndSave(r,false); });
-    Promise.all(jobs).then(function(){ afterOrderClear(d); afterPaint(); })
-      .catch(function(){ alert('일부 참가자의 2차 표시를 해제하지 못했습니다. 새로고침 후 확인해 주세요.'); afterPaint(); });
+    Promise.all(list.map(function(r){return afterSetAndSave(r,false);}))
+      .then(function(){return afterClearOrder(d);}).then(afterPaint)
+      .catch(function(){alert('일부 참가자의 2차 표시를 해제하지 못했습니다. 새로고침 후 확인해 주세요.');afterPaint();});
   }
 
   function afterCopyResult(){
     var d=afterDate(), ids=afterOrderGet(d), selected=afterSelected(d), byId={};
     selected.forEach(function(r){byId[String(r.id)]=r;});
-    if(!ids.length){ alert('먼저 랜덤번호를 배정해 주세요.'); return; }
-    var lines=ids.map(function(id,i){ var r=byId[String(id)]; return r ? ((i+1)+'\t'+(r.name||'')+'\t'+afterMeta(r)) : ''; }).filter(Boolean);
+    if(!ids.length){alert('먼저 랜덤번호를 배정해 주세요.');return;}
+    var lines=ids.map(function(id,i){var r=byId[String(id)];return r?((i+1)+'\t'+(r.name||'')+'\t'+afterMeta(r)):'';}).filter(Boolean);
     var txt=lines.join('\n');
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(txt).then(function(){alert('랜덤번호 결과를 복사했습니다.');}).catch(function(){fallback();});
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){alert('랜덤번호 결과를 복사했습니다.');}).catch(fallback);
     }else fallback();
     function fallback(){
-      var ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.select();
-      try{document.execCommand('copy'); alert('랜덤번호 결과를 복사했습니다.');}catch(e){alert('복사하지 못했습니다.');}
+      var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');alert('랜덤번호 결과를 복사했습니다.');}catch(e){alert('복사하지 못했습니다.');}
       ta.remove();
     }
   }
 
-  on('after-date','change',function(){ afterPaint(); });
+  on('after-date','change',function(){ afterPaint(); afterLoadOrder(afterDate()); });
   on('after-random','click',afterRandomize);
   on('after-reroll','click',afterRandomize);
   on('after-clear','click',afterClearAll);
@@ -4960,6 +5179,11 @@ window.IROLANG = (function(){
       pushGallery().then(function(){ setState('gal-state', '완료'); })
         .catch(function(err){ setState('gal-state', fail(err).slice(0, 50), true); });
     });
+  });
+
+  on('gal-more','click',function(){
+    GAL_EXPANDED=!GAL_EXPANDED;
+    renderGallery();
   });
 
   $a('gal-file').addEventListener('change', function(e){

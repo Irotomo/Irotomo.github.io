@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F7F7F4">
-<title>좌석 확인 — いろとも 이로토모</title>
+<title>자리 확인 — いろとも 이로토모</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +21,13 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
 .kicker{font-size:11px;font-weight:800;letter-spacing:.13em;color:var(--gold);margin-bottom:10px}.title{font-size:28px;line-height:1.25;letter-spacing:-.04em;margin:0 0 10px}.desc{margin:0 0 26px;color:var(--muted);font-size:14px;line-height:1.75}
 .form{display:grid;gap:15px}.field{display:grid;gap:7px}.field label{font-size:12px;font-weight:700;color:var(--muted)}.field input{width:100%;border:1px solid var(--line);background:#FBFBF9;border-radius:12px;padding:14px 14px;font:500 16px var(--font);color:var(--ink);outline:none}.field input:focus{border-color:var(--navy);background:#fff}.go{margin-top:4px;border:0;border-radius:999px;background:var(--navy);color:#fff;padding:14px 18px;font:800 15px var(--font);cursor:pointer}.go:hover{background:var(--navy2)}.go:disabled{opacity:.5;cursor:wait}
 .msg{display:none;margin-top:18px;padding:14px 15px;border-radius:12px;background:#FAF9FD;color:var(--muted);font-size:13px;line-height:1.6}.msg.show{display:block}.msg.err{background:#FDF1F0;color:var(--bad)}
-.result{display:none;text-align:center}.result.show{display:block}.r-date{font-size:13px;color:var(--muted);margin-bottom:8px}.r-name{font-size:15px;font-weight:700;margin-bottom:28px}.r-label{font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--gold);margin-bottom:8px}.table{font-size:clamp(58px,18vw,88px);font-weight:800;letter-spacing:-.065em;line-height:1;color:var(--navy);margin:0}.round{margin-top:16px;font-size:15px;font-weight:700}.next{margin-top:8px;color:var(--muted);font-size:13px}.refresh{margin-top:24px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:10px 16px;font:700 13px var(--font);cursor:pointer}.change{display:block;margin:12px auto 0;border:0;background:none;color:var(--muted);font:600 12px var(--font);text-decoration:underline;cursor:pointer}.note{margin:18px 4px 0;color:#969AAF;font-size:11px;line-height:1.65;text-align:center}
+.result{display:none;text-align:center}.result.show{display:block}
+.r-date{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:var(--muted);background:#f4f3f8;border-radius:999px;padding:6px 11px;margin-bottom:12px}
+.r-name{font-size:16px;font-weight:800;margin-bottom:24px}.r-label{font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--gold);margin-bottom:8px}
+.table{font-size:clamp(64px,19vw,92px);font-weight:800;letter-spacing:-.065em;line-height:1;color:var(--navy);margin:0}
+.round{margin-top:15px;font-size:16px;font-weight:800}.next{margin:16px auto 0;max-width:380px;color:var(--muted);font-size:13px;line-height:1.7;padding:12px 14px;border-radius:12px;background:#f7f6fb}
+.next.preview{background:#fff5df;color:#785810;border:1px solid #f0dfb4;font-weight:800}
+.next.before{background:#eef4ff;color:#3a5f9e}.refresh{margin-top:24px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:10px 16px;font:700 13px var(--font);cursor:pointer}.change{display:block;margin:12px auto 0;border:0;background:none;color:var(--muted);font:600 12px var(--font);text-decoration:underline;cursor:pointer}.note{margin:18px 4px 0;color:#969AAF;font-size:11px;line-height:1.65;text-align:center}
 .ja{display:none}body[data-lang="ja"] .ko{display:none}body[data-lang="ja"] .ja{display:inline}body[data-lang="ja"] .ja.block{display:block}body[data-lang="ko"] .ko.block{display:block}
 @media(max-width:420px){body{padding-left:13px;padding-right:13px}.card{padding:26px 20px}.title{font-size:25px}}
 </style>
@@ -36,13 +42,13 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
   <main class="card">
     <section id="lookup">
       <div class="kicker">TODAY'S SEAT</div>
-      <h1 class="title"><span class="ko">좌석 확인</span><span class="ja">席の確認</span></h1>
-      <p class="desc ko">신청할 때 사용한 이름과 오늘 안내받은 비밀번호를 입력해 주세요. 본인의 현재 테이블만 표시됩니다.</p>
-      <p class="desc ja block">お申し込み時のお名前と、本日ご案内したパスワードを入力してください。ご本人の現在のテーブルのみ表示されます。</p>
+      <h1 class="title"><span class="ko">자리 확인</span><span class="ja">席を確認</span></h1>
+      <p class="desc ko">신청할 때 사용한 이름과 안내받은 비밀번호를 입력해 주세요. 본인의 현재 테이블만 표시됩니다.</p>
+      <p class="desc ja block">お申し込み時のお名前と、ご案内したパスワードを入力してください。ご本人の現在のテーブルのみ表示されます。</p>
       <form id="form" class="form">
         <div class="field"><label for="name"><span class="ko">신청 이름</span><span class="ja">お申し込み名</span></label><input id="name" name="name" maxlength="60" autocomplete="name" required></div>
-        <div class="field"><label for="pass"><span class="ko">오늘의 비밀번호</span><span class="ja">本日のパスワード</span></label><input id="pass" name="pass" type="password" maxlength="40" autocomplete="off" required></div>
-        <button class="go" id="go" type="submit"><span class="ko">좌석 확인</span><span class="ja">席の確認</span></button>
+        <div class="field"><label for="pass"><span class="ko">좌석 비밀번호</span><span class="ja">席確認パスワード</span></label><input id="pass" name="pass" type="password" maxlength="40" autocomplete="off" required></div>
+        <button class="go" id="go" type="submit"><span class="ko">자리 확인</span><span class="ja">席を確認</span></button>
       </form>
       <div id="msg" class="msg"></div>
     </section>
@@ -50,7 +56,7 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
     <section id="result" class="result">
       <div id="r-date" class="r-date"></div>
       <div id="r-name" class="r-name"></div>
-      <div class="r-label"><span class="ko">현재 자리</span><span class="ja">現在の席</span></div>
+      <div class="r-label"><span class="ko">배정된 테이블</span><span class="ja">ご案内テーブル</span></div>
       <div id="r-table" class="table">TABLE 1</div>
       <div id="r-round" class="round"></div>
       <div id="r-next" class="next"></div>
@@ -74,11 +80,11 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
   function message(code){
     var m={
       missing:['이름과 비밀번호를 입력해 주세요.','お名前とパスワードを入力してください。'],
-      wrong_password:['좌석 확인 비밀번호가 맞지 않습니다.','席確認のパスワードが正しくありません。'],
+      wrong_password:['비밀번호가 맞지 않습니다.','席確認パスワードが正しくありません。'],
       not_today:['오늘 공개된 자리배정이 아닙니다. 당일 다시 확인해 주세요.','本日公開されている席順ではありません。当日にもう一度ご確認ください。'],
-      not_found:['해당 모임의 참가 확정 명단에서 이름을 찾지 못했습니다. 신청할 때 입력한 이름을 그대로 적어 주세요.','該当する回の参加確定名簿にお名前がありません。お申し込み時のお名前をそのまま入力してください。'],
+      not_found:['참가 확정 명단에서 해당 이름을 찾지 못했습니다. 신청할 때 입력한 이름을 그대로 적어 주세요.','参加確定名簿に該当するお名前がありません。お申し込み時のお名前をそのまま入力してください。'],
       duplicate_name:['같은 이름의 참가자가 2명 이상 있어 자동 확인이 어렵습니다. 운영진에게 문의해 주세요.','同じお名前の参加者が複数いるため自動確認できません。スタッフまでお声がけください。'],
-      ended:['해당 모임의 좌석 조회가 종료되었습니다.','該当する回の席確認は終了しました。'],
+      ended:['해당 모임의 자리 조회 시간이 종료되었습니다.','該当回の席確認時間は終了しました。'],
       not_assigned:['아직 자리배정이 완료되지 않았습니다. 운영진에게 문의해 주세요.','まだ席順が確定していません。スタッフまでお声がけください。']
     };
     var a=m[code]||['확인하지 못했습니다. 잠시 후 다시 시도해 주세요.','確認できませんでした。しばらくしてからもう一度お試しください。'];
@@ -87,13 +93,24 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
   function showError(code){var m=$('msg');m.textContent=message(code);m.className='msg show err'}
   function showResult(d){
     last=d;$('lookup').style.display='none';$('result').classList.add('show');
-    $('r-date').textContent=(d.date||'').replace(/-/g,'.');$('r-name').textContent=d.name||'';$('r-table').textContent='TABLE '+d.table;
-    $('r-round').textContent=text(d.round+'회차 · '+d.rounds+'회 중',d.round+'回目 / 全'+d.rounds+'回');
-    if(d.phase==='before') $('r-next').textContent=text('모임 시작 전입니다. 첫 자리입니다.','開始前です。最初の席です。');
-    else if(d.phase==='preview' && d.move_at) $('r-next').textContent=text(d.move_at+'부터 이 자리로 이동해주세요.',''+d.move_at+'からこの席へ移動してください。');
-    else if(d.next_change) $('r-next').textContent=text('다음 좌석은 '+(function(t){var a=t.split(':');return String((+a[1]||0)-5<0?+a[0]-1:+a[0]).padStart(2,'0')+':'+String(((+a[1]||0)-5+60)%60).padStart(2,'0')}) (d.next_change)+'부터 확인할 수 있습니다.','次の席は'+(function(t){var a=t.split(':');return String((+a[1]||0)-5<0?+a[0]-1:+a[0]).padStart(2,'0')+':'+String(((+a[1]||0)-5+60)%60).padStart(2,'0')}) (d.next_change)+'から確認できます。');
-    else $('r-next').textContent=text('마지막 회차입니다.','最後の回です。');
-    clearTimeout(timer);timer=setTimeout(function(){lookup(true)},65000);
+    var a=(d.date||'').split('-'), dateText=d.date||'';
+    if(a.length===3) dateText=(+a[1])+'월 '+(+a[2])+'일';
+    $('r-date').textContent=text(dateText+' · '+d.round+'회차',(+a[1])+'月'+(+a[2])+'日 · '+d.round+'回目');
+    $('r-name').textContent=d.name||'';$('r-table').textContent='TABLE '+d.table;
+    $('r-round').textContent=text(d.round+'회차 / 전체 '+d.rounds+'회',d.round+'回目 / 全'+d.rounds+'回');
+    var nx=$('r-next');nx.className='next';
+    if(d.phase==='preview'){
+      nx.classList.add('preview');
+      nx.textContent=text((d.move_at||'')+'부터 TABLE '+d.table+'로 이동해 주세요.',(d.move_at||'')+'から TABLE '+d.table+'へ移動してください。');
+    }else if(d.phase==='before'){
+      nx.classList.add('before');
+      nx.textContent=text('모임 시작 전 미리보기입니다. 1회차 자리를 확인해 주세요。','開始前のプレビューです。1回目のお席です。');
+    }else if(d.next_change){
+      nx.textContent=text('현재 자리입니다 · 다음 자리 공개 '+d.next_change+' 5분 전','現在のお席です · 次のお席は'+d.next_change+'の5分前から表示');
+    }else{
+      nx.textContent=text('마지막 회차입니다.','最後の回です。');
+    }
+    clearTimeout(timer);timer=setTimeout(function(){lookup(true)},30000);
   }
   function lookup(silent){
     var name=$('name').value.trim(),pass=$('pass').value.trim();if(!name||!pass){if(!silent)showError('missing');return}
