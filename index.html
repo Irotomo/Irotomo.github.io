@@ -1395,6 +1395,104 @@ body.admin-on .gal-more{display:none!important}
 @media(max-width:520px){ .seat-chip{flex:1 1 calc(50% - 4px);text-align:center} }
 
 </style>
+<style id="irotomo-refinement">
+
+/* Irotomo refinement: public presentation only; existing integrations retained. */
+:root{--canvas:#F6F7FA;--line:#DFE3EC;--line-2:#EBEEF4;--muted:#626B80;--body:#424D63;--fs-md:1rem;--fs-sm:.875rem;--maxw:1180px}
+.nav{background:rgba(255,255,255,.96);border-bottom:1px solid var(--line)}
+.nav-in{gap:20px;height:76px}
+.nav-links{gap:18px}
+.nav-links a{font-size:.875rem;color:#515C73}
+.lang{background:#EDF0F6}.lang button{font-size:.875rem;min-height:36px}
+main .btn{border-radius:12px;min-height:48px;justify-content:center}
+main .hero{max-width:calc(var(--maxw) - 56px);margin:32px auto 28px;padding:56px;border-radius:28px;background:#18233F;color:#fff;overflow:hidden}
+.hero::before{display:none}
+.hero-grid{grid-template-columns:minmax(0,1.45fr) minmax(0,.8fr);gap:44px}
+.hero-grid>div{min-width:0}
+main .hero h1{font-size:clamp(2.15rem,4.2vw,3.4rem);line-height:1.26;letter-spacing:-.045em;color:#fff;margin-top:24px;text-wrap:balance}
+main .hero p.lead{color:#D1D8E7;font-size:1rem;line-height:1.85;margin-top:22px;max-width:48ch;text-wrap:pretty}
+.hero .pill{background:transparent;border-color:#53617C;color:#E4E9F2;font-size:.875rem;padding:7px 12px}
+.hero .pill i{display:none}
+.hero-cta{gap:10px;margin-top:28px;align-items:center}
+.hero-cta .btn-primary{background:#E9B652;color:#17213A;border-color:#E9B652;font-weight:750}
+.hero-cta .btn-primary:hover{background:#F5C875;border-color:#F5C875}
+.hero-cta .btn-gold{background:transparent;color:#fff;border-color:#63708B}
+.hero-cta .btn-gold:hover{background:#2C3957}
+.hero-cta .btn-ghost{border-color:transparent;background:transparent;color:#D1D8E7;padding-left:10px;padding-right:10px}
+main .hero-stat{font-size:1rem;color:#D1D8E7;border-color:#43506A;font-weight:400;margin-top:28px;padding-top:20px}
+main .hero-stat b,main .hero-stat strong{color:#fff}
+main .hero-stat .n{color:#F2C76D}
+main .hero-note{font-size:.875rem;color:#B9C4D8;margin-top:12px}
+main .hero-logo{width:min(100%,var(--logo-w,300px));background-color:#fff;background-origin:content-box;padding:26px;border-radius:22px;animation:none;box-shadow:0 20px 55px #080F2429;transform:none}
+.facts{border-radius:18px;box-shadow:none;grid-template-columns:1fr 1.2fr 1.5fr .85fr}
+.facts>div{padding:24px 22px}
+.facts dt{font-size:.875rem;color:#657087;letter-spacing:.035em;margin-bottom:10px}
+.facts dd{font-size:1rem;line-height:1.65;font-weight:550;overflow-wrap:anywhere}
+main>section.wrap{padding-top:76px;padding-bottom:76px}
+main>section.wrap+section.wrap{border-top:1px solid var(--line)}
+main .sec-head{margin-bottom:32px;max-width:64ch}
+main .sec-head p:not(.eyebrow){font-size:1rem;line-height:1.8;color:var(--body)}
+main .eyebrow{font-size:.875rem;letter-spacing:.08em;color:#586987;margin-bottom:12px}
+main h2{font-size:clamp(1.75rem,3vw,2.4rem);line-height:1.35;letter-spacing:-.035em}
+#gallery .gal{margin-top:30px;gap:16px}
+#gallery .gal figure{aspect-ratio:4/3;border-radius:16px}
+#gallery .gal figure.empty{background:#EDF0F5}
+#about .cards{gap:0;background:transparent;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+#about .card{padding:28px;border:0;border-right:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none;transform:none}
+#about .card:last-child{border-right:0}
+#about .card h3{line-height:1.65;font-size:1.125rem;margin-bottom:12px}
+#about .card p{line-height:1.85}
+.fee{border-radius:18px;box-shadow:none}
+.fee .amt{letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.fee-note{white-space:pre-line;max-width:85ch;padding:20px 0;margin-top:16px}
+main .rules li{border-left:2px solid #B3BED3;box-shadow:none}
+main .map{border-radius:18px;box-shadow:none}
+main .faq summary{font-size:1rem;padding:25px 0}
+main .faq .answer{line-height:1.85}
+#apply{padding:76px 0;background:#18233F}
+#apply .sec-head p:not(.eyebrow){color:#D1D8E7}
+#apply .sec-head .eyebrow{color:#F2C76D}
+#apply .form{border-radius:20px;padding:36px;gap:24px;background:#fff}
+#apply .field label{font-size:.875rem;color:#43506A;line-height:1.65}
+#apply .field input,#apply .field select,#apply .field textarea{font-size:1rem;min-height:50px;background-color:#F8F9FC;border-color:#CCD3E0}
+#apply .field input:focus,#apply .field select:focus,#apply .field textarea:focus{outline:3px solid #DAE2F5;outline-offset:1px;border-color:#536990}
+main .board-sec,main .kana-sec{padding:40px 0}
+.board-sec{background:#EEF1F7;border-color:var(--line)}
+.bb-tag,.bb-title,.bb-desc{color:var(--body)}
+.kana-sec{background:#25314C}
+:where(a,button,input,select,textarea,summary):focus-visible{outline:3px solid #A77B20;outline-offset:4px}
+@media(min-width:961px) and (max-width:1190px){.nav-in{flex-wrap:wrap;height:auto;padding-top:14px;padding-bottom:10px;gap:12px}.nav-links{order:3;flex-basis:100%;margin-left:0;justify-content:space-between}.nav-links+.nav-right{margin-left:auto}.nav.stuck .nav-in{height:auto}}
+@media(max-width:960px){
+.nav-in{padding:12px 22px 0;gap:10px}.nav-links{padding-bottom:12px}
+main .hero{margin:20px 22px 24px;padding:36px;border-radius:22px}
+.hero-grid{grid-template-columns:minmax(0,1fr) 180px;text-align:left;gap:26px}
+main .hero-logo{order:0;width:100%;padding:18px;border-radius:16px}
+.hero .pill{margin:0}.hero h1,.hero .lead{margin-left:0;margin-right:0}
+.hero-cta{justify-content:flex-start}
+.facts{grid-template-columns:1fr 1fr}.facts>div{border-bottom:1px solid var(--line)}
+.facts>div:nth-child(even){border-right:0}.facts>div:nth-child(n+3){border-bottom:0}
+main>section.wrap{padding-top:52px;padding-bottom:52px}
+#about .cards{grid-template-columns:1fr}#about .card{padding:24px 0;border-right:0;border-bottom:1px solid var(--line)}#about .card:last-child{border-bottom:0}
+}
+@media(max-width:640px){
+main .hero{padding:28px 22px;margin:16px 18px 20px;border-radius:20px}
+.hero-grid{grid-template-columns:minmax(0,1fr);gap:24px}
+main .hero-logo{order:0;width:112px;justify-self:start;padding:10px;border-radius:12px}
+main .hero h1{font-size:2.15rem;line-height:1.3;margin-top:22px}
+.hero .pill{font-size:.875rem;line-height:1.5}
+main .hero p.lead{font-size:1rem;line-height:1.85}
+.hero-cta .btn{font-size:.9375rem;padding:12px 15px}
+.hero-cta .btn-primary{flex:1 1 100%}
+.hero-cta .btn-gold,.hero-cta .btn-ghost{flex:1 1 auto}
+.facts{grid-template-columns:1fr}.facts>div{padding:18px 20px;display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;border-right:0;border-bottom:1px solid var(--line)!important}.facts>div:last-child{border-bottom:0!important}.facts dt{margin:0;line-height:1.65}.facts dd{font-size:.9375rem}
+#gallery .gal{margin-left:-18px;margin-right:-18px;padding-left:18px;padding-right:18px;gap:12px}
+#gallery .gal figure{flex-basis:86%;aspect-ratio:4/3}
+#apply{padding:52px 0}#apply .form{padding:22px 18px;gap:20px;border-radius:16px}
+main .sec-head{margin-bottom:26px}.nav-in{padding-left:18px;padding-right:18px}.nav-right{gap:7px}.nav-right .btn-sm{padding:.65em .8em}.brand-name{font-size:1rem}.brand{gap:7px}.brand-mark{width:26px;height:26px}
+}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+
+</style>
 </head>
 <body data-lang="ja">
 
@@ -1490,53 +1588,6 @@ body.admin-on .gal-more{display:none!important}
     </dl>
   </div>
 
-  <!-- 소개 -->
-  <section id="about" class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">About</p>
-      <h2 class="ko" data-c="c22">이런 모임입니다</h2>
-      <h2 class="ja" data-c="c22">こんな会です</h2>
-      <p class="ko" data-c="c23">통역이 있는 자리는 아니지만, 서로 아는 만큼 천천히 이야기하면 됩니다. 일본어가 유창하지 않아도 초급 이상이면 충분히 어울리실 수 있습니다.</p>
-      <p class="ja" data-c="c23">通訳がつくわけではありませんが、みなさん分かる範囲でゆっくり話しています。韓国側の参加者は日本語を話せる方がほとんどですので、どうぞお気軽にお越しください。</p>
-    </div>
-    <div class="cards reveal">
-      <article class="card">
-        <h3 class="ko" data-c="c24">4~6명이 한 테이블에 앉습니다</h3>
-        <h3 class="ja" data-c="c24">4〜6人でひとつのテーブルを囲みます</h3>
-        <p class="ko" data-c="c25">자리는 저희가 랜덤으로 배정합니다. 한국어와 일본어를 섞어 쓰셔도 되고, 번역 앱을 꺼내는 분도 많습니다.</p>
-        <p class="ja" data-c="c25">席順はこちらでランダムに決めています。韓国語と日本語が混ざっても構いませんし、翻訳アプリを使う方も多くいらっしゃいます。</p>
-      </article>
-      <article class="card">
-        <h3 class="ko" data-c="c26">50분마다 자리를 바꿉니다</h3>
-        <h3 class="ja" data-c="c26">50分ごとに席を替えます</h3>
-        <p class="ko" data-c="c27">15시 50분과 16시 40분에 테이블을 교체합니다. 두 시간 반 동안 세 번에 나누어, 여러 사람과 이야기하실 수 있습니다.</p>
-        <p class="ja" data-c="c27">15時50分と16時40分に席替えをします。2時間半を3回に分けて、いろいろな方とお話しいただけます。</p>
-      </article>
-      <article class="card">
-        <h3 class="ko" data-c="c28">2차는 자유 참가입니다</h3>
-        <h3 class="ja" data-c="c28">二次会は自由参加です</h3>
-        <p class="ko" data-c="c29">모임이 끝나면 근처에서 저녁을 먹습니다. 자유 참가이고, 비용은 각자 부담입니다.</p>
-        <p class="ja" data-c="c29">会が終わったあとは、近くのお店へ夕食に行きます。自由参加で、費用は各自のご負担となります。</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- 흐름 -->
-  <section id="flow" class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Schedule</p>
-      <h2 class="ko" data-c="c30">당일 흐름</h2>
-      <h2 class="ja" data-c="c30">当日の流れ</h2>
-    </div>
-    <div class="flow reveal">
-      <div class="step"><p class="t">15:00</p><p class="d ko" data-c="c31">모임 시작<br>자기소개</p><p class="d ja" data-c="c31">開始<br>自己紹介</p></div>
-      <div class="step"><p class="t">15:50</p><p class="d ko" data-c="c32">첫 번째<br>테이블 교체</p><p class="d ja" data-c="c32">1回目の<br>席替え</p></div>
-      <div class="step"><p class="t">16:40</p><p class="d ko" data-c="c33">두 번째 테이블 교체<br>2차 안내</p><p class="d ja" data-c="c33">2回目の席替え<br>二次会のご案内</p></div>
-      <div class="step"><p class="t">17:30</p><p class="d ko" data-c="c34">모임 종료<br>이후 2차 (자유 참가)</p><p class="d ja" data-c="c34">終了<br>そのあと二次会（自由参加）</p></div>
-    </div>
-  </section>
-
-  <!-- 활동 사진 -->
   <section class="wrap" id="gallery">
     <div class="sec-head reveal">
       <p class="eyebrow">Gallery</p>
@@ -1587,6 +1638,55 @@ body.admin-on .gal-more{display:none!important}
     <button type="button" id="gal-more" class="gal-more"><span class="ko">사진 더 보기</span><span class="ja">写真をもっと見る</span></button>
     <input type="file" id="gal-file" accept="image/*" hidden>
   </section>
+
+  <!-- 소개 -->
+  <section id="about" class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">About</p>
+      <h2 class="ko" data-c="c22">이런 모임입니다</h2>
+      <h2 class="ja" data-c="c22">こんな会です</h2>
+      <p class="ko" data-c="c23">통역이 있는 자리는 아니지만, 서로 아는 만큼 천천히 이야기하면 됩니다. 일본어가 유창하지 않아도 초급 이상이면 충분히 어울리실 수 있습니다.</p>
+      <p class="ja" data-c="c23">通訳がつくわけではありませんが、みなさん分かる範囲でゆっくり話しています。韓国側の参加者は日本語を話せる方がほとんどですので、どうぞお気軽にお越しください。</p>
+    </div>
+    <div class="cards reveal">
+      <article class="card">
+        <h3 class="ko" data-c="c24">4~6명이 한 테이블에 앉습니다</h3>
+        <h3 class="ja" data-c="c24">4〜6人でひとつのテーブルを囲みます</h3>
+        <p class="ko" data-c="c25">자리는 저희가 랜덤으로 배정합니다. 한국어와 일본어를 섞어 쓰셔도 되고, 번역 앱을 꺼내는 분도 많습니다.</p>
+        <p class="ja" data-c="c25">席順はこちらでランダムに決めています。韓国語と日本語が混ざっても構いませんし、翻訳アプリを使う方も多くいらっしゃいます。</p>
+      </article>
+      <article class="card">
+        <h3 class="ko" data-c="c26">50분마다 자리를 바꿉니다</h3>
+        <h3 class="ja" data-c="c26">50分ごとに席を替えます</h3>
+        <p class="ko" data-c="c27">15시 50분과 16시 40분에 테이블을 교체합니다. 두 시간 반 동안 세 번에 나누어, 여러 사람과 이야기하실 수 있습니다.</p>
+        <p class="ja" data-c="c27">15時50分と16時40分に席替えをします。2時間半を3回に分けて、いろいろな方とお話しいただけます。</p>
+      </article>
+      <article class="card">
+        <h3 class="ko" data-c="c28">2차는 자유 참가입니다</h3>
+        <h3 class="ja" data-c="c28">二次会は自由参加です</h3>
+        <p class="ko" data-c="c29">모임이 끝나면 근처에서 저녁을 먹습니다. 자유 참가이고, 비용은 각자 부담입니다.</p>
+        <p class="ja" data-c="c29">会が終わったあとは、近くのお店へ夕食に行きます。自由参加で、費用は各自のご負担となります。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 흐름 -->
+  <section id="flow" class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Schedule</p>
+      <h2 class="ko" data-c="c30">당일 흐름</h2>
+      <h2 class="ja" data-c="c30">当日の流れ</h2>
+    </div>
+    <div class="flow reveal">
+      <div class="step"><p class="t">15:00</p><p class="d ko" data-c="c31">모임 시작<br>자기소개</p><p class="d ja" data-c="c31">開始<br>自己紹介</p></div>
+      <div class="step"><p class="t">15:50</p><p class="d ko" data-c="c32">첫 번째<br>테이블 교체</p><p class="d ja" data-c="c32">1回目の<br>席替え</p></div>
+      <div class="step"><p class="t">16:40</p><p class="d ko" data-c="c33">두 번째 테이블 교체<br>2차 안내</p><p class="d ja" data-c="c33">2回目の席替え<br>二次会のご案内</p></div>
+      <div class="step"><p class="t">17:30</p><p class="d ko" data-c="c34">모임 종료<br>이후 2차 (자유 참가)</p><p class="d ja" data-c="c34">終了<br>そのあと二次会（自由参加）</p></div>
+    </div>
+  </section>
+
+  <!-- 활동 사진 -->
+
 
   <!-- 참가비 -->
   <section id="fee" class="wrap">
@@ -1719,38 +1819,6 @@ body.admin-on .gal-more{display:none!important}
   </section>
 
   <!-- 게시판 안내 -->
-  <section class="board-sec">
-    <div class="wrap">
-      <div class="board-band reveal">
-        <div class="bb-text">
-          <p class="bb-tag ko" data-c="c70">게시판</p><p class="bb-tag ja" data-c="c70">掲示板</p>
-          <p class="bb-title ko" data-c="c71">중고 · 나눔 게시판</p><p class="bb-title ja" data-c="c71">中古・おゆずり掲示板</p>
-          <p class="bb-desc ko" data-c="c72">이사나 귀국으로 두고 갈 물건, 다 본 교재, 몇 번 쓰지 않은 생활용품. 모임 날 직접 주고받으니 택배비도 들지 않습니다.</p>
-          <p class="bb-desc ja" data-c="c72">帰国のときに置いていくもの、読み終えた教材、数回しか使わなかった生活用品。会の当日に手渡しできるので、送料もかかりません。</p>
-        </div>
-        <a class="btn btn-primary btn-lg ko" href="board.html" data-c="c73">게시판 보기</a>
-        <a class="btn btn-primary btn-lg ja" href="board.html" data-c="c73">掲示板を見る</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- 가나 연습 (부가 도구, 한국어 전용) -->
-  <section class="kana-sec ko" id="kana">
-    <div class="wrap">
-      <div class="kana-strip reveal">
-        <div class="ks-text">
-          <p class="ks-tag ko" data-c="c74">부가 도구</p><p class="ks-tag ja" data-c="c74">おまけ</p>
-          <p class="ks-title ko" data-c="c75">가나 쓰기 연습</p><p class="ks-title ja" data-c="c75">かなの書き取り練習</p>
-          <p class="ks-desc ko" data-c="c76">히라가나·가타카나를 획순대로 따라 쓰는 도구입니다. 휴대폰에서도 손가락으로 바로 쓸 수 있습니다.</p>
-          <p class="ks-desc ja" data-c="c76">ひらがな・カタカナを書き順どおりになぞる練習ツールです。スマホでも指でそのまま書けます。</p>
-        </div>
-        <button class="btn btn-ghost ko" id="open-kana" data-c="c77">연습 열기</button>
-        <button class="btn btn-ghost ja" id="open-kana-ja" data-c="c77">練習を開く</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- 신청 -->
   <section id="apply">
     <div class="wrap">
       <div class="sec-head reveal">
@@ -1901,6 +1969,39 @@ body.admin-on .gal-more{display:none!important}
   </section>
 
   <!-- 제휴 · 스폰서 -->
+  <section class="board-sec">
+    <div class="wrap">
+      <div class="board-band reveal">
+        <div class="bb-text">
+          <p class="bb-tag ko" data-c="c70">게시판</p><p class="bb-tag ja" data-c="c70">掲示板</p>
+          <p class="bb-title ko" data-c="c71">중고 · 나눔 게시판</p><p class="bb-title ja" data-c="c71">中古・おゆずり掲示板</p>
+          <p class="bb-desc ko" data-c="c72">이사나 귀국으로 두고 갈 물건, 다 본 교재, 몇 번 쓰지 않은 생활용품. 모임 날 직접 주고받으니 택배비도 들지 않습니다.</p>
+          <p class="bb-desc ja" data-c="c72">帰国のときに置いていくもの、読み終えた教材、数回しか使わなかった生活用品。会の当日に手渡しできるので、送料もかかりません。</p>
+        </div>
+        <a class="btn btn-primary btn-lg ko" href="board.html" data-c="c73">게시판 보기</a>
+        <a class="btn btn-primary btn-lg ja" href="board.html" data-c="c73">掲示板を見る</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 가나 연습 (부가 도구, 한국어 전용) -->
+  <section class="kana-sec ko" id="kana">
+    <div class="wrap">
+      <div class="kana-strip reveal">
+        <div class="ks-text">
+          <p class="ks-tag ko" data-c="c74">부가 도구</p><p class="ks-tag ja" data-c="c74">おまけ</p>
+          <p class="ks-title ko" data-c="c75">가나 쓰기 연습</p><p class="ks-title ja" data-c="c75">かなの書き取り練習</p>
+          <p class="ks-desc ko" data-c="c76">히라가나·가타카나를 획순대로 따라 쓰는 도구입니다. 휴대폰에서도 손가락으로 바로 쓸 수 있습니다.</p>
+          <p class="ks-desc ja" data-c="c76">ひらがな・カタカナを書き順どおりになぞる練習ツールです。スマホでも指でそのまま書けます。</p>
+        </div>
+        <button class="btn btn-ghost ko" id="open-kana" data-c="c77">연습 열기</button>
+        <button class="btn btn-ghost ja" id="open-kana-ja" data-c="c77">練習を開く</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 신청 -->
+
   <section class="wrap" id="sponsor">
     <div class="sponsor reveal">
       <div>
