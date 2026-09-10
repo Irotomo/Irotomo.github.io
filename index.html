@@ -1441,16 +1441,15 @@ body.admin-on .gal-more{display:none!important}
         <div class="next-meeting" id="next-meeting" aria-live="polite">
 <p class="eyebrow"><span class="ko">다음 신청 가능 모임</span><span class="ja">次のお申し込み可能な日程</span></p>
 <p id="next-meeting-date"><span class="ko">일정 확인 중…</span><span class="ja">日程を確認中…</span></p>
+<p id="next-meeting-time" hidden></p>
 <p class="next-price"><span class="ko"><span class="next-price-item">한국인 16,000원</span> · <wbr><span class="next-price-item">일본인 6,000원</span><br>모두 음료 한 잔 포함</span><span class="ja"><span class="next-price-item">日本人 6,000ウォン</span> · <wbr><span class="next-price-item">韓国人 16,000ウォン</span><br>どちらもドリンク1杯込み</span></p>
 <a href="#apply" id="next-meeting-apply" class="btn btn-primary" hidden><span class="ko">이 날짜로 신청하기</span><span class="ja">この日程で申し込む</span></a>
 </div>
         <div class="hero-cta">
-          <a class="btn btn-primary btn-lg ko" href="#apply" data-c="v2-c12">날짜 선택하고 신청하기</a>
-          <a class="btn btn-primary btn-lg ja" href="#apply" data-c="v2-c12">日程を選んで申し込む</a>
           <a class="btn btn-gold btn-lg ko seat-link" href="seat.html">좌석 확인</a>
           <a class="btn btn-gold btn-lg ja seat-link" href="seat.html">席の確認</a>
-          <a class="btn btn-ghost btn-lg ko" href="#gallery" data-c="v2-c13">모임 사진 먼저 보기</a>
-          <a class="btn btn-ghost btn-lg ja" href="#gallery" data-c="v2-c13">会の写真を見る</a>
+          <a class="hero-photo-link ko" href="#gallery" data-c="v2-c13">모임 사진 먼저 보기</a>
+          <a class="hero-photo-link ja" href="#gallery" data-c="v2-c13">会の写真を見る</a>
         </div>
         <!-- 지난 회차 실적 — 관리자에서 숫자만 고쳐 쓰시면 됩니다.
              «1/1» 처럼 보이는 문제를 막는 자리입니다. -->
@@ -1587,10 +1586,10 @@ body.admin-on .gal-more{display:none!important}
       <h2 class="ja" data-c="c30">当日の流れ</h2>
     </div>
     <div class="flow reveal">
-      <div class="step"><p class="t">15:00</p><p class="d ko" data-c="c31">모임 시작<br>자기소개</p><p class="d ja" data-c="c31">開始<br>自己紹介</p></div>
-      <div class="step"><p class="t">15:50</p><p class="d ko" data-c="c32">첫 번째<br>테이블 교체</p><p class="d ja" data-c="c32">1回目の<br>席替え</p></div>
-      <div class="step"><p class="t">16:40</p><p class="d ko" data-c="c33">두 번째 테이블 교체<br>2차 안내</p><p class="d ja" data-c="c33">2回目の席替え<br>二次会のご案内</p></div>
-      <div class="step"><p class="t">17:30</p><p class="d ko" data-c="c34">모임 종료<br>이후 2차 (자유 참가)</p><p class="d ja" data-c="c34">終了<br>そのあと二次会（自由参加）</p></div>
+      <div class="step"><span class="timeline-dot" aria-hidden="true"></span><span class="timeline-connector" aria-hidden="true"></span><p class="t">15:00</p><p class="d ko" data-c="c31">모임 시작<br>자기소개</p><p class="d ja" data-c="c31">開始<br>自己紹介</p></div>
+      <div class="step"><span class="timeline-dot" aria-hidden="true"></span><span class="timeline-connector" aria-hidden="true"></span><p class="t">15:50</p><p class="d ko" data-c="c32">첫 번째<br>테이블 교체</p><p class="d ja" data-c="c32">1回目の<br>席替え</p></div>
+      <div class="step"><span class="timeline-dot" aria-hidden="true"></span><span class="timeline-connector" aria-hidden="true"></span><p class="t">16:40</p><p class="d ko" data-c="c33">두 번째 테이블 교체<br>2차 안내</p><p class="d ja" data-c="c33">2回目の席替え<br>二次会のご案内</p></div>
+      <div class="step"><span class="timeline-dot" aria-hidden="true"></span><span class="timeline-connector" aria-hidden="true"></span><p class="t">17:30</p><p class="d ko" data-c="c34">모임 종료<br>이후 2차 (자유 참가)</p><p class="d ja" data-c="c34">終了<br>そのあと二次会（自由参加）</p></div>
     </div>
   </section>
 
@@ -1604,15 +1603,18 @@ body.admin-on .gal-more{display:none!important}
     <div class="fee reveal">
       <div>
         <p class="who ko" data-c="c36">한국인 참가자</p><p class="who ja" data-c="c36">韓国人の方</p>
-        <p class="calc"><span class="ko" data-c="c37">참가비 10,000원 + 음료비 6,000원</span><span class="ja" data-c="c37">参加費10,000ウォン + ドリンク代6,000ウォン</span></p>
         <p class="amt">16,000<small class="ko" data-c="c39">원</small><small class="ja" data-c="c39">ウォン</small></p>
+        <p class="fee-included"><span class="ko">음료 한 잔 포함</span><span class="ja">ドリンク1杯込み</span></p>
+        <p class="calc"><span class="ko" data-c="c37">참가비 10,000원 + 음료비 6,000원</span><span class="ja" data-c="c37">参加費10,000ウォン + ドリンク代6,000ウォン</span></p>
       </div>
       <div>
         <p class="who ko" data-c="c40">일본인 참가자</p><p class="who ja" data-c="c40">日本人の方</p>
-        <p class="calc"><span class="ko" data-c="c41">참가비 없음 + 음료비 6,000원</span><span class="ja" data-c="c41">参加費なし + ドリンク代6,000ウォン</span></p>
         <p class="amt">6,000<small class="ko" data-c="c43">원</small><small class="ja" data-c="c43">ウォン</small></p>
+        <p class="fee-included"><span class="ko">음료 한 잔 포함</span><span class="ja">ドリンク1杯込み</span></p>
+        <p class="calc"><span class="ko" data-c="c41">참가비 없음 + 음료비 6,000원</span><span class="ja" data-c="c41">参加費なし + ドリンク代6,000ウォン</span></p>
       </div>
     </div>
+    <div class="fee-guidance"><h3><span class="ko">입금 · 음료 선택 · 환불 안내</span><span class="ja">お支払い・ドリンク選択・返金</span></h3>
     <p class="fee-note ko" data-c="v2-c44">음료비 6,000원은 신청 후 안내 메일을 확인하고 미리 입금해 주세요. 한국인 참가비 10,000원은 당일 현장에서 받습니다.
 • 더치커피·밀크티 선택 마감: 금요일 정오 12시
 • 음료비 취소·환불 접수 마감: 금요일 정오 12시
@@ -1621,6 +1623,7 @@ body.admin-on .gal-more{display:none!important}
 • ダッチコーヒー・ミルクティーの選択期限：金曜12時（正午）
 • ドリンク代のキャンセル・返金受付期限：金曜12時（正午）
 • 以降も受付中の日程は、バンダバーグのライム・ピンクグレープフルーツをお選びいただけます。</p>
+    </div>
   </section>
 
   <!-- 오시는 길 -->
@@ -5644,6 +5647,12 @@ window.IROLANG = (function(){
 </style>
 <script>
 (function(){
+function meetingDateLabel(value,japanese){
+ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(value);if(!m)return japanese?'日程を選んでください':'날짜를 선택해 주세요';
+ var day=new Date(Date.UTC(+m[1],+m[2]-1,+m[3])).getUTCDay();
+ return japanese?(+m[2])+'月'+(+m[3])+'日（'+'日月火水木金土'[day]+'）':(+m[2])+'월 '+(+m[3])+'일 ('+'일월화수목금토'[day]+')';
+}
+function meetingTimeLabel(text){var m=String(text).match(/(\d{1,2}:\d{2})\s*[–—−-]\s*(\d{1,2}:\d{2})/);return m?m[1]+'–'+m[2]:'';}
 var ready=false,failed=false;
 var dp=document.getElementById('f-date-pick'), nat=document.getElementById('f-nat');
 var quick=document.getElementById('next-meeting-apply');
@@ -5657,10 +5666,13 @@ function refresh(){
  quick.hidden=!ready||!available;
  quick.dataset.date=available?available.value:'';
  document.getElementById('next-meeting-date').textContent=failed?(ja()?'日程を読み込めませんでした。再読み込みしてください。':'일정을 불러오지 못했어요. 새로고침해 주세요.'):!ready?(ja()?'日程を確認中…':'일정 확인 중…'):available?available.textContent:(ja()?'現在お申し込み可能な日程はありません。':'현재 신청 가능한 일정이 없습니다.');
- if(ready&&available){
-  var schedule=document.querySelector('[data-schedule]');
-  var time=schedule.innerText.split('\n').pop();
-  document.getElementById('next-meeting-date').textContent=available.textContent+' · '+time;
+ var timeNode=document.getElementById('next-meeting-time');
+ timeNode.hidden=true;timeNode.textContent='';
+ if(ready&&available&&!failed){
+  document.getElementById('next-meeting-date').textContent=meetingDateLabel(available.value,ja());
+  var schedule=document.querySelector('[data-schedule="'+(ja()?'ja':'ko')+'"]');
+  var time=meetingTimeLabel(schedule?schedule.textContent:'');
+  timeNode.textContent=time;timeNode.hidden=!time;
  }
  var waiting=available&&/대기|キャンセル待ち/.test(available.textContent);
  quick.querySelector('.ko').textContent=waiting?'이 날짜 대기 신청':'이 날짜로 신청하기';
@@ -5681,5 +5693,79 @@ refresh();
 })();
 </script>
 
+<style id="design-refinement">
+/* Focused first screen: one primary action and a quiet secondary photo link. */
+.next-meeting{position:relative;background:#fffdf8;border:1px solid #dfd8c8;border-top:3px solid var(--gold);padding:26px 28px;border-radius:18px;box-shadow:0 12px 30px -24px rgba(32,39,64,.32)}
+.next-meeting .eyebrow{margin:0 0 12px;font-size:12px;letter-spacing:.09em}
+#next-meeting-date{font-size:clamp(26px,3.4vw,34px);line-height:1.3;letter-spacing:-.025em;margin:0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#next-meeting-time{margin:7px 0 17px;font-size:18px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.015em}
+.next-price{margin:14px 0 20px;line-height:1.8;color:var(--body,var(--ink));font-size:15px}
+#next-meeting-apply{min-height:48px;max-width:100%;white-space:normal;text-align:center;line-height:1.5}
+.hero-cta{margin-top:14px;align-items:center;gap:20px;justify-content:flex-start}
+.hero-photo-link{display:inline-flex;align-items:center;min-height:44px;padding:6px 0;color:var(--navy);font-size:14px;text-decoration:underline;text-underline-offset:5px;text-decoration-color:#b9b3a5}
+.hero-photo-link:hover{text-decoration-color:var(--navy)}
+.hero-stat{margin-top:22px}.hero-note{font-size:14px;line-height:1.7}
+#about .cards{gap:28px;counter-reset:about-item}
+#about .card{counter-increment:about-item;border:0;border-top:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none;padding:24px 0 0}
+#about .card::before{content:'0' counter(about-item);display:block;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:12px}
+#about .card:hover,#about .cards.reveal.in .card:hover{transform:none;box-shadow:none}
+#about .card h3{font-size:19px;line-height:1.5;margin-bottom:10px}
+#about .card p{font-size:16px;line-height:1.8}
+.fee{border-radius:18px;box-shadow:0 10px 28px -26px rgba(32,39,64,.3)}
+.fee>div{padding:30px}.fee .who{font-size:15px;font-weight:650;margin-bottom:15px}
+.fee .amt{font-size:clamp(30px,4vw,40px);color:var(--navy);line-height:1.2;font-variant-numeric:tabular-nums}
+.fee-included{margin:12px 0 16px;font-size:14px;color:var(--navy)}
+.fee .calc{font-size:14px;line-height:1.7;margin:0;padding-top:14px;border-top:1px solid var(--line-2);color:var(--muted)}
+.fee-guidance{margin-top:18px;padding:22px 24px;border-radius:14px;background:#f0eee7}
+.fee-guidance h3{font-size:15px;font-weight:700;line-height:1.6;margin:0 0 9px}
+.fee-guidance .fee-note{font-size:14px;line-height:1.9;white-space:pre-line;margin:0;color:var(--body,var(--ink))}
+.flow .step .t,.flow .step .d{opacity:1!important}.flow .step .t{font-variant-numeric:tabular-nums}
+@media(max-width:960px){
+ .next-meeting{padding:22px;margin:22px 0 10px;text-align:left}
+ .hero-cta{justify-content:flex-start}.hero .lead{line-height:1.85}
+ #about .cards{gap:0}#about .card{padding:22px 0;display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:14px;align-items:start}
+ #about .card::before{grid-column:1;grid-row:1/3;margin-top:5px}#about .card h3,#about .card p{grid-column:2}
+ #about .card h3{font-size:18px;margin-bottom:8px}#about .card:last-child{padding-bottom:0}
+ .flow{display:block;margin:12px 0 0}.flow::before,.flow::after{display:none}
+ .flow .step{display:grid;grid-template-columns:64px minmax(0,1fr);gap:16px;padding:0 0 28px 28px;min-height:80px}
+ .flow .step::before{left:0;top:6px;width:10px;height:10px;background:var(--navy);border-color:var(--navy);z-index:1}
+ .flow .step::after{content:'';position:absolute;left:5px;top:19px;bottom:0;width:1px;background:var(--line)}
+ .flow .step:last-child{padding-bottom:0}.flow .step:last-child::after{display:none}
+ .flow .step .t{margin:0;font-size:17px;line-height:1.6}.flow .step .d{margin:0;font-size:16px;line-height:1.7}
+ .fee>div{padding:25px}.fee-guidance{padding:20px}
+}
+@media(max-width:480px){
+ .next-meeting{padding:20px 18px;border-radius:15px}#next-meeting-date{font-size:28px}#next-meeting-time{font-size:17px}
+ #next-meeting-apply{width:100%;padding:13px 15px}.hero-cta{gap:12px;margin-top:8px}
+ .fee-guidance{padding:18px}.fee .amt{font-size:34px}.flow .step{grid-template-columns:56px minmax(0,1fr);gap:12px}
+}
+@media(prefers-reduced-motion:reduce){.next-meeting,.hero-photo-link,#about .card{transition:none;animation:none}}
+</style>
+<style id="mobile-timeline-fix">
+/* Fixed-size markers; no inherited pseudo-element scale or scroll morphing. */
+#flow .flow::before,#flow .flow::after,#flow .step::before,#flow .step::after{content:none!important;display:none!important}
+#flow .step{position:relative}
+#flow .timeline-dot{display:block;position:absolute;left:0;top:3px;width:10px;height:10px;min-width:10px;min-height:10px;box-sizing:border-box;border:0;border-radius:50%;background:var(--navy);transform:none;transition:none;z-index:1}
+#flow .step:last-child .timeline-dot{background:var(--gold)}
+#flow .timeline-connector{position:absolute;display:block;left:18px;right:8px;top:7.5px;height:1px;background:var(--line);pointer-events:none}
+#flow .step:last-child .timeline-connector{display:none}
+@media(max-width:960px){
+ #flow .step{padding-left:28px}
+ #flow .timeline-dot{top:9px}
+ #flow .timeline-connector{left:4.5px;right:auto;top:25px;bottom:3px;width:1px;height:auto}
+ .hero-grid>div,.map-side,.fee>div,.apply-card,.field{min-width:0}
+ .hero .pill{max-width:100%;white-space:normal;line-height:1.6;text-align:left}.hero .pill i{flex-shrink:0}
+ .next-price-item{max-width:100%}
+ .fee .amt small{display:inline-block}
+ .map-side a,.fee-guidance,.selection-fee{overflow-wrap:anywhere}
+ .field input:not([type=checkbox]):not([type=radio]),.field select,.field textarea{box-sizing:border-box;max-width:100%;font-size:16px}
+ #about .card p{text-align:left}
+}
+@media(max-width:380px){
+ .nav .brand-name{font-size:15px}.nav .lang button{padding-left:7px;padding-right:7px}
+ .nav-right{gap:6px}.nav-right .btn-sm{padding-left:10px;padding-right:10px}
+ .apply-card{padding-left:18px;padding-right:18px}.form{padding-left:18px;padding-right:18px}
+}
+</style>
 </body>
 </html>
