@@ -1615,6 +1615,8 @@ body.admin-on .gal-more{display:none!important}
       </div>
     </div>
     <div class="fee-guidance"><h3><span class="ko">입금 · 음료 선택 · 환불 안내</span><span class="ja">お支払い・ドリンク選択・返金</span></h3>
+    <div id="fee-essentials" class="fee-essentials" hidden><p class="ko" id="fee-essential-ko"></p><p class="ja" id="fee-essential-ja"></p></div>
+    <details class="notice-fold" id="fee-details" open><summary><span class="ko">음료 선택 · 취소 및 환불 자세히</span><span class="ja">ドリンク選択・キャンセル・返金の詳細</span></summary><div class="notice-body">
     <p class="fee-note ko" data-c="v2-c44">음료비 6,000원은 신청 후 안내 메일을 확인하고 미리 입금해 주세요. 한국인 참가비 10,000원은 당일 현장에서 받습니다.
 • 더치커피·밀크티 선택 마감: 금요일 정오 12시
 • 음료비 취소·환불 접수 마감: 금요일 정오 12시
@@ -1623,6 +1625,7 @@ body.admin-on .gal-more{display:none!important}
 • ダッチコーヒー・ミルクティーの選択期限：金曜12時（正午）
 • ドリンク代のキャンセル・返金受付期限：金曜12時（正午）
 • 以降も受付中の日程は、バンダバーグのライム・ピンクグレープフルーツをお選びいただけます。</p>
+    </div></details>
     </div>
   </section>
 
@@ -1676,7 +1679,8 @@ body.admin-on .gal-more{display:none!important}
       <h2 class="ko" data-c="c51">참가 전에 확인해 주세요</h2>
       <h2 class="ja" data-c="c51">ご参加の前にお読みください</h2>
     </div>
-    <ul class="rules reveal">
+    <details class="notice-fold participation-fold"><summary><span class="ko">참가 조건 · 모임 이용 안내</span><span class="ja">参加条件・交流会のルール</span></summary>
+    <ul class="rules">
       <li class="ko" data-c="c52">짧은 시간 안에 연락처를 주고받는 분위기는 삼가 주세요.</li>
       <li class="ja" data-c="c52">短時間で連絡先を交換するような雰囲気づくりはご遠慮ください。</li>
       <li class="ko" data-c="c53">연애나 이성 만남을 목적으로 한 참가는 사양하고 있습니다.</li>
@@ -1688,6 +1692,7 @@ body.admin-on .gal-more{display:none!important}
       <li class="ko" data-c="c56">영업이나 권유를 목적으로 한 참가는 사양하고 있습니다.</li>
       <li class="ja" data-c="c56">勧誘・営業を目的としたご参加はお断りしています。</li>
     </ul>
+    </details>
   </section>
 
   <!-- FAQ -->
@@ -5767,5 +5772,75 @@ refresh();
  .apply-card{padding-left:18px;padding-right:18px}.form{padding-left:18px;padding-right:18px}
 }
 </style>
+<style id="button-system">
+/* Public-facing buttons: primary navy, secondary outline. */
+:is(.nav,main,footer,#mcta) .btn{border-radius:10px;min-height:50px;font-size:16px;font-weight:600;line-height:1.5;padding:12px 22px;box-shadow:none;white-space:normal;text-align:center;transition:background .16s ease,border-color .16s ease,color .16s ease}
+:is(.nav,main,footer,#mcta) :is(.btn-primary,.btn-somoim){background:var(--navy);border-color:var(--navy);color:#fff}
+:is(.nav,main,footer,#mcta) :is(.btn-ghost,.btn-gold){background:#fff;border-color:var(--navy);color:var(--navy)}
+:is(.nav,main,footer,#mcta) .btn:hover{transform:none;box-shadow:none}
+:is(.nav,main,footer,#mcta) :is(.btn-primary,.btn-somoim):hover{background:var(--navy-2,#343d65);border-color:var(--navy-2,#343d65)}
+:is(.nav,main,footer,#mcta) :is(.btn-ghost,.btn-gold):hover{background:#f0f1f6;border-color:var(--navy)}
+:is(.nav,main,footer,#mcta) .btn:active{transform:none;box-shadow:inset 0 1px 3px rgba(20,27,46,.16)}
+:is(.nav,main,footer,#mcta) .btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:10px}
+:is(.nav,main,footer,#mcta) .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.nav .btn.btn-sm{min-height:44px;padding:9px 14px;font-size:14px}
+.hero-photo-link,main .mlinks a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:11px 18px;border:1px solid var(--navy);border-radius:10px;background:#fff;color:var(--navy);font-size:14px;font-weight:600;line-height:1.5;text-decoration:none;text-align:center;box-shadow:none;white-space:normal;transition:background .16s ease}
+.hero-photo-link:hover,main .mlinks a:hover,.gal-more:hover{background:#f0f1f6;color:var(--navy);text-decoration:none;transform:none;box-shadow:none}
+main .mlinks{display:flex;flex-wrap:wrap;gap:8px}.hero-cta{gap:10px}
+@media(max-width:480px){.hero-photo-link,main .mlinks a{padding:10px 14px}.nav .btn.btn-sm{padding:9px 11px}}
+@media(prefers-reduced-motion:reduce){:is(.nav,main,footer,#mcta) .btn,.hero-photo-link,main .mlinks a{transition:none}}
+</style>
+<style id="compact-notices">
+/* Collapsible guidance leaves payment and deadlines above the fold. */
+.notice-fold{border:1px solid var(--line);border-radius:12px;background:var(--card,#fff);overflow:hidden}
+.notice-fold>summary{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:48px;list-style:none;padding:14px 18px;font-size:15px;line-height:1.6;font-weight:600;color:var(--navy);cursor:pointer}
+.notice-fold>summary::-webkit-details-marker{display:none}.notice-fold>summary::after{content:'＋';position:static;flex:0 0 auto;font-size:19px;font-weight:400;transform:none;transition:none;color:var(--muted)}
+.notice-fold[open]>summary::after{content:'−';transform:none}.notice-fold[open]>summary{border-bottom:1px solid var(--line)}
+.notice-fold>summary:focus-visible{outline:3px solid var(--gold);outline-offset:-4px}
+.notice-body{padding:16px 18px}.fee-essentials p{font-size:14px;line-height:1.9;white-space:pre-line;margin:0 0 16px;color:var(--body,var(--ink))}
+.participation-fold .rules{margin:0;padding:16px 18px;gap:10px}
+.participation-fold .rules li{opacity:1!important;transform:none!important;transition:none;padding:14px 16px}
+body.admin-on .fee-essentials{display:none}
+@media(max-width:960px){
+ #apply-form{padding:24px;row-gap:14px;column-gap:18px}
+ #apply-form .field{gap:6px}
+ #apply-form .form-foot{gap:12px;padding-top:16px}
+ #apply-form #somoim-card{padding:16px}
+ #apply-form #somoim-card p{margin-bottom:10px}
+ #apply-form .selection-fee{padding:12px 14px;margin:0}
+ #apply-form .field.full:has(>#date-count[hidden]){display:none}
+ .fee-guidance .notice-fold>summary{padding:12px 14px}
+ .notice-body{padding:14px}
+}
+@media(max-width:480px){#apply-form{padding:20px 18px}.participation-fold .rules{padding:12px}.notice-fold>summary{padding:13px 14px}}
+</style>
+<script>
+(function(){
+ var sources=Array.from(document.querySelectorAll('.fee-note[data-c="v2-c44"]'));
+ var initialized=false;
+ function linesFrom(source){
+  var copy=source.cloneNode(true);
+  copy.querySelectorAll('br').forEach(function(br){br.replaceWith(document.createTextNode('\n'));});
+  copy.querySelectorAll('p,div,li').forEach(function(el){el.appendChild(document.createTextNode('\n'));});
+  return copy.textContent.split(/\n+/).map(function(line){return line.trim();}).filter(Boolean);
+ }
+ function essentials(lines){
+  return lines.filter(function(line,i){return i===0||/입금|송금|계좌|마감|기한|금요일|현장|振込|振り込|口座|支払|期限|締切|締め切|金曜|まで/.test(line);}).join('\n');
+ }
+ function refreshNotices(){
+  var valid=sources.length===2;
+  sources.forEach(function(source){var lang=source.classList.contains('ko')?'ko':'ja';var text=essentials(linesFrom(source));document.getElementById('fee-essential-'+lang).textContent=text;if(!text)valid=false;});
+  document.getElementById('fee-essentials').hidden=!valid;
+  var detail=document.getElementById('fee-details');
+  if(!initialized&&valid&&!document.body.classList.contains('admin-on')){detail.open=false;initialized=true;}
+  if(!valid)detail.open=true;
+ }
+ sources.forEach(function(source){new MutationObserver(refreshNotices).observe(source,{childList:true,subtree:true,characterData:true});});
+ window.addEventListener('iro-content-ready',refreshNotices);
+ function editMode(){if(document.body.classList.contains('admin-on'))document.querySelectorAll('.notice-fold').forEach(function(d){d.open=true;});}
+ new MutationObserver(editMode).observe(document.body,{attributes:true,attributeFilter:['class']});
+ refreshNotices();editMode();
+})();
+</script>
 </body>
 </html>
