@@ -1395,210 +1395,7 @@ body.admin-on .gal-more{display:none!important}
 @media(max-width:520px){ .seat-chip{flex:1 1 calc(50% - 4px);text-align:center} }
 
 </style>
-<style id="irotomo-refinement">
-
-/* Irotomo refinement: public presentation only; existing integrations retained. */
-:root{--canvas:#F6F7FA;--line:#DFE3EC;--line-2:#EBEEF4;--muted:#626B80;--body:#424D63;--fs-md:1rem;--fs-sm:.875rem;--maxw:1180px}
-.nav{background:rgba(255,255,255,.96);border-bottom:1px solid var(--line)}
-.nav-in{gap:20px;height:76px}
-.nav-links{gap:18px}
-.nav-links a{font-size:.875rem;color:#515C73}
-.lang{background:#EDF0F6}.lang button{font-size:.875rem;min-height:36px}
-main .btn{border-radius:12px;min-height:48px;justify-content:center}
-main .hero{max-width:calc(var(--maxw) - 56px);margin:32px auto 28px;padding:56px;border-radius:28px;background:#18233F;color:#fff;overflow:hidden}
-.hero::before{display:none}
-.hero-grid{grid-template-columns:minmax(0,1.45fr) minmax(0,.8fr);gap:44px}
-.hero-grid>div{min-width:0}
-main .hero h1{font-size:clamp(2.15rem,4.2vw,3.4rem);line-height:1.26;letter-spacing:-.045em;color:#fff;margin-top:24px;text-wrap:balance}
-main .hero p.lead{color:#D1D8E7;font-size:1rem;line-height:1.85;margin-top:22px;max-width:48ch;text-wrap:pretty}
-.hero .pill{background:transparent;border-color:#53617C;color:#E4E9F2;font-size:.875rem;padding:7px 12px}
-.hero .pill i{display:none}
-.hero-cta{gap:10px;margin-top:28px;align-items:center}
-.hero-cta .btn-primary{background:#E9B652;color:#17213A;border-color:#E9B652;font-weight:750}
-.hero-cta .btn-primary:hover{background:#F5C875;border-color:#F5C875}
-.hero-cta .btn-gold{background:transparent;color:#fff;border-color:#63708B}
-.hero-cta .btn-gold:hover{background:#2C3957}
-.hero-cta .btn-ghost{border-color:transparent;background:transparent;color:#D1D8E7;padding-left:10px;padding-right:10px}
-main .hero-stat{font-size:1rem;color:#D1D8E7;border-color:#43506A;font-weight:400;margin-top:28px;padding-top:20px}
-main .hero-stat b,main .hero-stat strong{color:#fff}
-main .hero-stat .n{color:#F2C76D}
-main .hero-note{font-size:.875rem;color:#B9C4D8;margin-top:12px}
-main .hero-logo{width:min(100%,var(--logo-w,300px));background-color:#fff;background-origin:content-box;padding:26px;border-radius:22px;animation:none;box-shadow:0 20px 55px #080F2429;transform:none}
-.facts{border-radius:18px;box-shadow:none;grid-template-columns:1fr 1.2fr 1.5fr .85fr}
-.facts>div{padding:24px 22px}
-.facts dt{font-size:.875rem;color:#657087;letter-spacing:.035em;margin-bottom:10px}
-.facts dd{font-size:1rem;line-height:1.65;font-weight:550;overflow-wrap:anywhere}
-main>section.wrap{padding-top:76px;padding-bottom:76px}
-main>section.wrap+section.wrap{border-top:1px solid var(--line)}
-main .sec-head{margin-bottom:32px;max-width:64ch}
-main .sec-head p:not(.eyebrow){font-size:1rem;line-height:1.8;color:var(--body)}
-main .eyebrow{font-size:.875rem;letter-spacing:.08em;color:#586987;margin-bottom:12px}
-main h2{font-size:clamp(1.75rem,3vw,2.4rem);line-height:1.35;letter-spacing:-.035em}
-#gallery .gal{margin-top:30px;gap:16px}
-#gallery .gal figure{aspect-ratio:4/3;border-radius:16px}
-#gallery .gal figure.empty{background:#EDF0F5}
-#about .cards{gap:0;background:transparent;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-#about .card{padding:28px;border:0;border-right:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none;transform:none}
-#about .card:last-child{border-right:0}
-#about .card h3{line-height:1.65;font-size:1.125rem;margin-bottom:12px}
-#about .card p{line-height:1.85}
-.fee{border-radius:18px;box-shadow:none}
-.fee .amt{letter-spacing:-.04em;font-variant-numeric:tabular-nums}
-.fee-note{white-space:pre-line;max-width:85ch;padding:20px 0;margin-top:16px}
-main .rules li{border-left:2px solid #B3BED3;box-shadow:none}
-main .map{border-radius:18px;box-shadow:none}
-main .faq summary{font-size:1rem;padding:25px 0}
-main .faq .answer{line-height:1.85}
-#apply{padding:76px 0;background:#18233F}
-#apply .sec-head p:not(.eyebrow){color:#D1D8E7}
-#apply .sec-head .eyebrow{color:#F2C76D}
-#apply .form{border-radius:20px;padding:36px;gap:24px;background:#fff}
-#apply .field label{font-size:.875rem;color:#43506A;line-height:1.65}
-#apply .field input,#apply .field select,#apply .field textarea{font-size:1rem;min-height:50px;background-color:#F8F9FC;border-color:#CCD3E0}
-#apply .field input:focus,#apply .field select:focus,#apply .field textarea:focus{outline:3px solid #DAE2F5;outline-offset:1px;border-color:#536990}
-main .board-sec,main .kana-sec{padding:40px 0}
-.board-sec{background:#EEF1F7;border-color:var(--line)}
-.bb-tag,.bb-title,.bb-desc{color:var(--body)}
-.kana-sec{background:#25314C}
-:where(a,button,input,select,textarea,summary):focus-visible{outline:3px solid #A77B20;outline-offset:4px}
-@media(min-width:961px) and (max-width:1190px){.nav-in{flex-wrap:wrap;height:auto;padding-top:14px;padding-bottom:10px;gap:12px}.nav-links{order:3;flex-basis:100%;margin-left:0;justify-content:space-between}.nav-links+.nav-right{margin-left:auto}.nav.stuck .nav-in{height:auto}}
-@media(max-width:960px){
-.nav-in{padding:12px 22px 0;gap:10px}.nav-links{padding-bottom:12px}
-main .hero{margin:20px 22px 24px;padding:36px;border-radius:22px}
-.hero-grid{grid-template-columns:minmax(0,1fr) 180px;text-align:left;gap:26px}
-main .hero-logo{order:0;width:100%;padding:18px;border-radius:16px}
-.hero .pill{margin:0}.hero h1,.hero .lead{margin-left:0;margin-right:0}
-.hero-cta{justify-content:flex-start}
-.facts{grid-template-columns:1fr 1fr}.facts>div{border-bottom:1px solid var(--line)}
-.facts>div:nth-child(even){border-right:0}.facts>div:nth-child(n+3){border-bottom:0}
-main>section.wrap{padding-top:52px;padding-bottom:52px}
-#about .cards{grid-template-columns:1fr}#about .card{padding:24px 0;border-right:0;border-bottom:1px solid var(--line)}#about .card:last-child{border-bottom:0}
-}
-@media(max-width:640px){
-main .hero{padding:28px 22px;margin:16px 18px 20px;border-radius:20px}
-.hero-grid{grid-template-columns:minmax(0,1fr);gap:24px}
-main .hero-logo{order:0;width:112px;justify-self:start;padding:10px;border-radius:12px}
-main .hero h1{font-size:2.15rem;line-height:1.3;margin-top:22px}
-.hero .pill{font-size:.875rem;line-height:1.5}
-main .hero p.lead{font-size:1rem;line-height:1.85}
-.hero-cta .btn{font-size:.9375rem;padding:12px 15px}
-.hero-cta .btn-primary{flex:1 1 100%}
-.hero-cta .btn-gold,.hero-cta .btn-ghost{flex:1 1 auto}
-.facts{grid-template-columns:1fr}.facts>div{padding:18px 20px;display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;border-right:0;border-bottom:1px solid var(--line)!important}.facts>div:last-child{border-bottom:0!important}.facts dt{margin:0;line-height:1.65}.facts dd{font-size:.9375rem}
-#gallery .gal{margin-left:-18px;margin-right:-18px;padding-left:18px;padding-right:18px;gap:12px}
-#gallery .gal figure{flex-basis:86%;aspect-ratio:4/3}
-#apply{padding:52px 0}#apply .form{padding:22px 18px;gap:20px;border-radius:16px}
-main .sec-head{margin-bottom:26px}.nav-in{padding-left:18px;padding-right:18px}.nav-right{gap:7px}.nav-right .btn-sm{padding:.65em .8em}.brand-name{font-size:1rem}.brand{gap:7px}.brand-mark{width:26px;height:26px}
-}
-@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
-
-</style>
-<style id="irotomo-responsive-v2">
-/* Responsive repair and cumulative gallery */
-.nav .lang{flex-shrink:0;align-items:stretch}
-.nav .lang button{display:flex;align-items:center;justify-content:center;line-height:1.4;padding:8px 12px;min-width:max-content;height:auto}
-.nav-right .btn{white-space:nowrap;line-height:1.4;flex-shrink:0}
-.nav-links a{line-height:1.6;padding:8px 0;flex-shrink:0}
-.nav-links a::after{bottom:2px}
-.sg-tabs{overflow-x:auto;max-width:100%;align-items:stretch}
-.sg-tabs button{flex:0 0 auto;min-width:max-content;white-space:nowrap;line-height:1.5}
-.hero .pill{height:auto;white-space:normal;line-height:1.65}
-.hero .pill>span{min-width:0;overflow-wrap:anywhere}
-#flow .flow{gap:0;isolation:isolate}
-#flow .flow::before,#flow .flow::after{display:none!important}
-#flow .step{position:relative;padding:0 22px 0 0}
-#flow .step::before{box-sizing:border-box;left:0;top:0;width:12px;height:12px;border:2px solid var(--navy);background:var(--canvas);z-index:2;transform:none!important;transition:none}
-#flow .step:not(:last-child)::after{content:'';position:absolute;left:6px;top:5px;width:100%;height:2px;background:#BEC7D7;z-index:0}
-#flow .step:last-child::before{border-color:#9F7122;background:#E9B652}
-#flow .step .t{margin-top:28px;line-height:1.5;opacity:1!important}
-#flow .step .d{opacity:1!important}
-.gal-admin{display:none;align-items:center;flex-wrap:wrap;gap:14px;margin:0 0 22px}
-body.admin-on .gal-admin{display:flex}
-.gal-admin #gal-state{position:static;transform:none;white-space:normal;overflow-wrap:anywhere;font-size:.875rem;max-width:100%}
-#gal-add:disabled,.gal-tools button:disabled{opacity:.5;cursor:wait}
-#gallery .gal figure{transition:none;transform:none!important;opacity:1}
-#gallery .gal figure::before{display:none}
-#gallery .gal img{transform:none!important}
-#lb-nav{color:white;font-size:1rem;font-variant-numeric:tabular-nums}
-@media(min-width:701px){
-#gallery .gal{display:block;columns:3;column-gap:18px;margin-top:24px}
-#gallery .gal figure{break-inside:avoid;margin:0 0 18px;aspect-ratio:auto;min-height:100px;border:0;border-radius:14px;overflow:hidden}
-#gallery .gal img{height:auto;width:100%;object-fit:contain}
-}
-@media(min-width:701px) and (max-width:960px){#gallery .gal{columns:2}}
-@media(max-width:1190px){
-.nav .nav-in,.nav.stuck .nav-in{height:auto;min-height:0;flex-wrap:wrap;row-gap:8px}
-.nav-links{width:100%;min-width:0;flex:0 0 100%;order:3;overflow-x:auto}
-}
-@media(max-width:960px){
-main .hero-grid{grid-template-columns:minmax(0,1fr)}
-main .hero-logo{order:-1;width:100%;aspect-ratio:16/9;padding:18px;max-height:none;justify-self:stretch;background-size:contain;background-position:center;border-radius:16px;box-shadow:none}
-#flow .flow{grid-template-columns:1fr;gap:0}
-#flow .step{padding:0 0 28px 32px}
-#flow .step:last-child{padding-bottom:0}
-#flow .step::before{top:8px}
-#flow .step:not(:last-child)::after{left:5px;top:14px;bottom:-14px;width:2px;height:auto}
-#flow .step .t{margin-top:0}
-.sg-tabs button{flex:0 0 auto;padding:10px 14px}
-}
-@media(max-width:640px){
-.nav .nav-in{display:grid;grid-template-columns:auto minmax(0,1fr);padding-top:10px;column-gap:10px}
-.nav .nav-right{justify-self:end;margin:0;gap:6px;min-width:0}
-.nav .nav-links{grid-column:1/-1;width:auto;margin:0;padding:0 0 8px;gap:18px}
-.nav .lang button{padding:7px 9px;font-size:.875rem}
-.nav .brand-name{font-size:1rem}.nav .brand{gap:6px}
-.nav .nav-right .btn{font-size:.875rem;padding:10px}
-}
-@media(max-width:380px){.nav .nav-in{grid-template-columns:1fr}.nav .brand{justify-self:start}.nav .nav-right{grid-row:2;justify-self:stretch;justify-content:space-between}.nav .nav-links{grid-row:3}}
-</style>
-<style>.date-count .dc-n{flex-wrap:wrap;row-gap:8px}.date-count .dc-n em{line-height:1.6}</style><style id="irotomo-mobile-mark">
-@media(max-width:960px){
- main .hero-logo{width:140px;max-width:100%;aspect-ratio:1/1;justify-self:center;padding:12px;border-radius:18px;background-size:contain;background-position:center}
-}
-</style><style id="irotomo-fee-arrival">
-#fee .who{font-size:1.125rem;font-weight:700;color:var(--ink);margin-bottom:20px}
-.fee-total-label{font-size:.875rem;color:var(--muted);margin-bottom:8px}
-#fee .amt{font-size:clamp(2.3rem,5vw,3.3rem);color:var(--navy);margin-bottom:16px;line-height:1.2}
-#fee .calc{font-size:.875rem;line-height:1.8;margin-bottom:20px}
-.fee-payment{border-top:1px solid var(--line);padding-top:16px;display:grid;gap:12px}
-.fee-payment>div{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:.875rem;color:var(--body);line-height:1.7}
-.fee-payment b{color:var(--navy);font-size:1rem;white-space:nowrap}
-.arrival-photos{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
-body:not(.admin-on) .arrival-photos:not(:has(.has-photo)){display:none}body.admin-on .arrival-photos{display:grid}
-.arrival-card{margin:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:white;min-width:0}
-.arrival-card:not(.has-photo){display:none}body.admin-on .arrival-card{display:block}
-.arrival-image{position:relative;aspect-ratio:4/3;background:#EDF0F6;display:grid;place-items:center}
-.arrival-image img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0}.arrival-image img[hidden]{display:none}
-.arrival-empty{display:none;color:var(--muted);font-size:.875rem;padding:24px;text-align:center}
-body.admin-on .arrival-card:not(.has-photo) .arrival-empty{display:block}
-.arrival-card figcaption{padding:18px 20px}.arrival-card figcaption>b{font-size:1rem}
-.arrival-tools{display:none;gap:8px;flex-wrap:wrap;margin-top:14px}body.admin-on .arrival-tools{display:flex}
-.arrival-tools button{font:600 .875rem var(--font);background:var(--navy);color:white;border:0;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
-.arrival-tools button:disabled{opacity:.5;cursor:wait}
-#arrival-state{display:none;color:var(--body);font-size:.875rem;line-height:1.7}body.admin-on #arrival-state{display:block}
-@media(max-width:640px){.arrival-photos{grid-template-columns:1fr}#fee .fee>div{padding:26px 22px}}
-</style><style id="irotomo-viewer-polish">
-.arrival-admin-heading{display:none;margin-top:28px;padding:18px 20px;border:1px dashed #8E9CB5;border-radius:14px;background:#EDF1F8}
-.arrival-admin-heading b{font-size:1.125rem;color:var(--navy)}.arrival-admin-heading p{font-size:.875rem;color:var(--body);margin:6px 0 0;line-height:1.7}
-body.admin-on .arrival-admin-heading{display:block}
-body.admin-on #arrival-photos{display:grid}
-body.admin-on .arrival-card:not(.has-photo){border-style:dashed;border-color:#8E9CB5}
-.arrival-card.has-photo img{cursor:zoom-in}
-#lb{padding:70px 76px 80px}#lb img{max-height:calc(100dvh - 160px)}
-.lb-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:56px;display:grid;place-items:center;background:#26324B;border:1px solid #78849C;border-radius:12px;color:#fff;font:400 36px/1 system-ui;cursor:pointer}
-#lb-prev{left:16px}#lb-next{right:16px}.lb-arrow:hover{background:#40516F}.lb-arrow[hidden]{display:none}
-#lb-nav{bottom:24px;font-size:1rem;letter-spacing:.08em}#lb-x{width:44px;height:44px}
-.date-count{background:#18233F;border:1px solid #35425D;box-shadow:none;border-radius:18px;padding:24px 26px}
-.date-count::before{display:none;animation:none}.date-count .dc-when{font-size:.875rem;color:#BEC9DC;letter-spacing:0;line-height:1.6;margin-bottom:12px}
-.date-count .dc-n{font-size:2.6rem;line-height:1.2;text-shadow:none;gap:12px}.date-count .dc-n em{font-size:.875rem;color:#F2C76D;font-weight:500;letter-spacing:0}
-.date-count .dc-mix{margin-top:14px;gap:10px}.date-count .dc-mix span{background:#26334D;border:1px solid #4A5872;border-radius:10px;font-size:.875rem;padding:7px 12px;color:#E0E6F0;line-height:1.5}
-@media(max-width:640px){#lb{padding:64px 14px 110px}#lb img{max-height:calc(100dvh - 174px)}.lb-arrow{top:auto;bottom:20px;transform:none;width:48px;height:48px;font-size:30px}#lb-prev{left:calc(50% - 110px)}#lb-next{right:calc(50% - 110px)}#lb-nav{bottom:32px;left:calc(50% - 48px);right:calc(50% - 48px)}.date-count{padding:20px}.date-count .dc-n{font-size:2.3rem}}
-</style><style id="irotomo-active-nav">
-/* 현재 보고 있는 섹션을 메뉴에서 은은하게 표시 */
-.nav-links a.is-active{color:var(--navy);font-weight:700}
-.nav-links a.is-active::after{transform:scaleX(1);background:var(--gold)}
-@media(max-width:960px){.nav-links a.is-active{background:#EEF1F7;border-radius:8px;padding-left:10px;padding-right:10px;margin-left:-10px;margin-right:-10px}.nav-links a.is-active::after{display:none}}
-</style></head>
+</head>
 <body data-lang="ja">
 
 <header class="nav" id="nav">
@@ -1693,20 +1490,6 @@ body.admin-on .arrival-card:not(.has-photo){border-style:dashed;border-color:#8E
     </dl>
   </div>
 
-  <section class="wrap" id="gallery">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Gallery</p>
-      <h2 class="ko" data-c="g1">이런 분위기입니다</h2>
-      <h2 class="ja" data-c="g1">こんな雰囲気です</h2>
-      <p class="ko" data-c="g2">모임에서 찍은 사진 몇 장입니다. 참가자 얼굴은 가린 뒤에 올립니다.</p>
-      <p class="ja" data-c="g2">会の様子から数枚。参加者のお顔は隠したうえで掲載しています。</p>
-    </div>
-    <div class="gal-admin"><button type="button" class="btn btn-primary" id="gal-add">사진 여러 장 추가</button><span id="gal-state" role="status" aria-live="polite"></span></div>
-    <div class="gal reveal"></div>
-    <div class="gal-more-wrap"><button type="button" id="gal-more" class="btn btn-ghost"><span class="ko">사진 더 보기</span><span class="ja">写真をもっと見る</span></button></div>
-    <input type="file" id="gal-file" accept="image/*" multiple hidden>
-  </section>
-
   <!-- 소개 -->
   <section id="about" class="wrap">
     <div class="sec-head reveal">
@@ -1754,7 +1537,56 @@ body.admin-on .arrival-card:not(.has-photo){border-style:dashed;border-color:#8E
   </section>
 
   <!-- 활동 사진 -->
-
+  <section class="wrap" id="gallery">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Gallery</p>
+      <h2 class="ko" data-c="g1">이런 분위기입니다</h2>
+      <h2 class="ja" data-c="g1">こんな雰囲気です</h2>
+      <p class="ko" data-c="g2">모임에서 찍은 사진 몇 장입니다. 참가자 얼굴은 가린 뒤에 올립니다.</p>
+      <p class="ja" data-c="g2">会の様子から数枚。参加者のお顔は隠したうえで掲載しています。</p>
+    </div>
+    <div class="gal reveal">
+      <span id="gal-state"></span>
+      <figure class="empty" data-ph="0"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="0">사진</button><button type="button" class="sub" data-gal-del="0">✕</button></span>
+      </figure>
+      <figure class="empty" data-ph="1"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="1">사진</button><button type="button" class="sub" data-gal-del="1">✕</button></span>
+      </figure>
+      <figure class="empty" data-ph="2"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="2">사진</button><button type="button" class="sub" data-gal-del="2">✕</button></span>
+      </figure>
+      <figure class="empty" data-ph="3"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="3">사진</button><button type="button" class="sub" data-gal-del="3">✕</button></span>
+      </figure>
+      <figure class="empty" data-ph="4"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="4">사진</button><button type="button" class="sub" data-gal-del="4">✕</button></span>
+      </figure>
+      <figure class="empty" data-ph="5"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="5">사진</button><button type="button" class="sub" data-gal-del="5">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="6"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="6">사진</button><button type="button" class="sub" data-gal-del="6">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="7"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="7">사진</button><button type="button" class="sub" data-gal-del="7">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="8"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="8">사진</button><button type="button" class="sub" data-gal-del="8">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="9"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="9">사진</button><button type="button" class="sub" data-gal-del="9">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="10"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="10">사진</button><button type="button" class="sub" data-gal-del="10">✕</button></span>
+      </figure>
+      <figure class="empty gal-extra" data-ph="11"><img alt="" loading="lazy" decoding="async" hidden><span class="zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5M11 8v6M8 11h6"/></svg></span>
+        <span class="gal-tools"><button type="button" data-gal-pick="11">사진</button><button type="button" class="sub" data-gal-del="11">✕</button></span>
+      </figure>
+    </div>
+    <button type="button" id="gal-more" class="gal-more"><span class="ko">사진 더 보기</span><span class="ja">写真をもっと見る</span></button>
+    <input type="file" id="gal-file" accept="image/*" hidden>
+  </section>
 
   <!-- 참가비 -->
   <section id="fee" class="wrap">
@@ -1766,17 +1598,13 @@ body.admin-on .arrival-card:not(.has-photo){border-style:dashed;border-color:#8E
     <div class="fee reveal">
       <div>
         <p class="who ko" data-c="c36">한국인 참가자</p><p class="who ja" data-c="c36">韓国人の方</p>
-        <p class="fee-total-label"><span class="ko">1회 총 비용</span><span class="ja">1回の合計</span></p>
-        <p class="amt">16,000<small class="ko" data-c="c39">원</small><small class="ja" data-c="c39">ウォン</small></p>
         <p class="calc"><span class="ko" data-c="c37">참가비 10,000원 + 음료비 6,000원</span><span class="ja" data-c="c37">参加費10,000ウォン + ドリンク代6,000ウォン</span></p>
-        <div class="fee-payment"><div><span class="ko">사전 입금 · 음료비</span><span class="ja">事前振込 · ドリンク代</span><b>6,000<span class="ko">원</span><span class="ja">ウォン</span></b></div><div><span class="ko">당일 결제 · 참가비</span><span class="ja">当日支払 · 参加費</span><b>10,000<span class="ko">원</span><span class="ja">ウォン</span></b></div></div>
+        <p class="amt">16,000<small class="ko" data-c="c39">원</small><small class="ja" data-c="c39">ウォン</small></p>
       </div>
       <div>
         <p class="who ko" data-c="c40">일본인 참가자</p><p class="who ja" data-c="c40">日本人の方</p>
-        <p class="fee-total-label"><span class="ko">1회 총 비용</span><span class="ja">1回の合計</span></p>
-        <p class="amt">6,000<small class="ko" data-c="c43">원</small><small class="ja" data-c="c43">ウォン</small></p>
         <p class="calc"><span class="ko" data-c="c41">참가비 없음 + 음료비 6,000원</span><span class="ja" data-c="c41">参加費なし + ドリンク代6,000ウォン</span></p>
-        <div class="fee-payment"><div><span class="ko">사전 입금 · 음료비</span><span class="ja">事前振込 · ドリンク代</span><b>6,000<span class="ko">원</span><span class="ja">ウォン</span></b></div><div><span class="ko">당일 참가비</span><span class="ja">当日の参加費</span><b><span class="ko">없음</span><span class="ja">無料</span></b></div></div>
+        <p class="amt">6,000<small class="ko" data-c="c43">원</small><small class="ja" data-c="c43">ウォン</small></p>
       </div>
     </div>
     <p class="fee-note ko" data-c="c44">신청하실 때 음료비 6,000원을 미리 입금하시고, 당일 드실 음료 한 잔(더치커피 · 밀크티 · 분다버그 라임 · 분다버그 핑크자몽)을 골라주세요. 참가비는 모임 당일 현장에서 따로 받습니다.
@@ -1826,13 +1654,6 @@ body.admin-on .arrival-card:not(.has-photo){border-style:dashed;border-color:#8E
         </div>
       </div>
     </div>
-    <div class="arrival-admin-heading"><b>입구 사진 관리</b><p>건물 입구와 카페 입구 사진을 각각 올려 주세요. 업로드하면 아래 지도 다음에 표시됩니다.</p></div>
-    <div class="arrival-photos" id="arrival-photos">
-      <figure class="arrival-card" data-arrival="building"><div class="arrival-image"><img alt="건물 입구 / 建物の入口" loading="lazy" hidden><span class="arrival-empty">건물 입구 사진을 올려 주세요</span></div><figcaption><b class="ko">건물 입구</b><b class="ja">建物の入口</b><div class="arrival-tools"><button type="button" data-arrival-pick="building">사진 업로드·교체</button><button type="button" data-arrival-remove="building">삭제</button></div></figcaption></figure>
-      <figure class="arrival-card" data-arrival="cafe"><div class="arrival-image"><img alt="카페 입구 / カフェの入口" loading="lazy" hidden><span class="arrival-empty">카페 입구 사진을 올려 주세요</span></div><figcaption><b class="ko">카페 입구</b><b class="ja">カフェの入口</b><div class="arrival-tools"><button type="button" data-arrival-pick="cafe">사진 업로드·교체</button><button type="button" data-arrival-remove="cafe">삭제</button></div></figcaption></figure>
-    </div>
-    <input type="file" id="arrival-file" accept="image/*" hidden>
-    <p id="arrival-state" role="status" aria-live="polite"></p>
   </section>
 
   <!-- 방침 -->
@@ -1898,6 +1719,38 @@ body.admin-on .arrival-card:not(.has-photo){border-style:dashed;border-color:#8E
   </section>
 
   <!-- 게시판 안내 -->
+  <section class="board-sec">
+    <div class="wrap">
+      <div class="board-band reveal">
+        <div class="bb-text">
+          <p class="bb-tag ko" data-c="c70">게시판</p><p class="bb-tag ja" data-c="c70">掲示板</p>
+          <p class="bb-title ko" data-c="c71">중고 · 나눔 게시판</p><p class="bb-title ja" data-c="c71">中古・おゆずり掲示板</p>
+          <p class="bb-desc ko" data-c="c72">이사나 귀국으로 두고 갈 물건, 다 본 교재, 몇 번 쓰지 않은 생활용품. 모임 날 직접 주고받으니 택배비도 들지 않습니다.</p>
+          <p class="bb-desc ja" data-c="c72">帰国のときに置いていくもの、読み終えた教材、数回しか使わなかった生活用品。会の当日に手渡しできるので、送料もかかりません。</p>
+        </div>
+        <a class="btn btn-primary btn-lg ko" href="board.html" data-c="c73">게시판 보기</a>
+        <a class="btn btn-primary btn-lg ja" href="board.html" data-c="c73">掲示板を見る</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 가나 연습 (부가 도구, 한국어 전용) -->
+  <section class="kana-sec ko" id="kana">
+    <div class="wrap">
+      <div class="kana-strip reveal">
+        <div class="ks-text">
+          <p class="ks-tag ko" data-c="c74">부가 도구</p><p class="ks-tag ja" data-c="c74">おまけ</p>
+          <p class="ks-title ko" data-c="c75">가나 쓰기 연습</p><p class="ks-title ja" data-c="c75">かなの書き取り練習</p>
+          <p class="ks-desc ko" data-c="c76">히라가나·가타카나를 획순대로 따라 쓰는 도구입니다. 휴대폰에서도 손가락으로 바로 쓸 수 있습니다.</p>
+          <p class="ks-desc ja" data-c="c76">ひらがな・カタカナを書き順どおりになぞる練習ツールです。スマホでも指でそのまま書けます。</p>
+        </div>
+        <button class="btn btn-ghost ko" id="open-kana" data-c="c77">연습 열기</button>
+        <button class="btn btn-ghost ja" id="open-kana-ja" data-c="c77">練習を開く</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 신청 -->
   <section id="apply">
     <div class="wrap">
       <div class="sec-head reveal">
@@ -2048,39 +1901,6 @@ body.admin-on .arrival-card:not(.has-photo){border-style:dashed;border-color:#8E
   </section>
 
   <!-- 제휴 · 스폰서 -->
-  <section class="board-sec">
-    <div class="wrap">
-      <div class="board-band reveal">
-        <div class="bb-text">
-          <p class="bb-tag ko" data-c="c70">게시판</p><p class="bb-tag ja" data-c="c70">掲示板</p>
-          <p class="bb-title ko" data-c="c71">중고 · 나눔 게시판</p><p class="bb-title ja" data-c="c71">中古・おゆずり掲示板</p>
-          <p class="bb-desc ko" data-c="c72">이사나 귀국으로 두고 갈 물건, 다 본 교재, 몇 번 쓰지 않은 생활용품. 모임 날 직접 주고받으니 택배비도 들지 않습니다.</p>
-          <p class="bb-desc ja" data-c="c72">帰国のときに置いていくもの、読み終えた教材、数回しか使わなかった生活用品。会の当日に手渡しできるので、送料もかかりません。</p>
-        </div>
-        <a class="btn btn-primary btn-lg ko" href="board.html" data-c="c73">게시판 보기</a>
-        <a class="btn btn-primary btn-lg ja" href="board.html" data-c="c73">掲示板を見る</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- 가나 연습 (부가 도구, 한국어 전용) -->
-  <section class="kana-sec ko" id="kana">
-    <div class="wrap">
-      <div class="kana-strip reveal">
-        <div class="ks-text">
-          <p class="ks-tag ko" data-c="c74">부가 도구</p><p class="ks-tag ja" data-c="c74">おまけ</p>
-          <p class="ks-title ko" data-c="c75">가나 쓰기 연습</p><p class="ks-title ja" data-c="c75">かなの書き取り練習</p>
-          <p class="ks-desc ko" data-c="c76">히라가나·가타카나를 획순대로 따라 쓰는 도구입니다. 휴대폰에서도 손가락으로 바로 쓸 수 있습니다.</p>
-          <p class="ks-desc ja" data-c="c76">ひらがな・カタカナを書き順どおりになぞる練習ツールです。スマホでも指でそのまま書けます。</p>
-        </div>
-        <button class="btn btn-ghost ko" id="open-kana" data-c="c77">연습 열기</button>
-        <button class="btn btn-ghost ja" id="open-kana-ja" data-c="c77">練習を開く</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- 신청 -->
-
   <section class="wrap" id="sponsor">
     <div class="sponsor reveal">
       <div>
@@ -2329,7 +2149,6 @@ body.admin-on .arrival-card:not(.has-photo){border-style:dashed;border-color:#8E
     <button type="button" id="adm-stats-open">통계</button>
     <button type="button" id="adm-signups-open">신청자</button>
     <button type="button" id="adm-reset" disabled title="페이지에서 초기화할 문구를 먼저 눌러 주세요">선택 문구 초기화</button>
-    <button type="button" id="adm-arrival">입구 사진</button>
     <button type="button" class="pri" id="adm-save">저장</button>
     <button type="button" id="adm-exit">종료</button>
   </span>
@@ -2345,8 +2164,7 @@ body.admin-on .arrival-card:not(.has-photo){border-style:dashed;border-color:#8E
 <div id="lb" role="dialog" aria-modal="true" aria-label="사진 크게 보기">
   <button type="button" id="lb-x" aria-label="닫기">✕</button>
   <img alt="">
-  <button type="button" id="lb-prev" class="lb-arrow" aria-label="이전 사진 / 前の写真">‹</button><button type="button" id="lb-next" class="lb-arrow" aria-label="다음 사진 / 次の写真">›</button>
-  <div id="lb-nav" role="status" aria-live="polite"></div>
+  <div id="lb-nav" aria-hidden="true"></div>
 </div>
 
 <!-- 가나 연습 오버레이 -->
@@ -2740,7 +2558,7 @@ window.IROLANG = (function(){
     if (!box) return;
     var d = document.getElementById('f-date');
     var c = d && d.value ? COUNTS[d.value] : null;
-    if (!c || (c.total == null ? c.n : c.total) < COUNT_MIN) { box.hidden = true; return; }
+    if (!c || c.n < COUNT_MIN) { box.hidden = true; return; }
 
     var ko = document.body.dataset.lang === 'ko';
     var a = d.value.split('-');
@@ -2753,15 +2571,14 @@ window.IROLANG = (function(){
     box.innerHTML = '';
     var s1 = document.createElement('span'); s1.className = 'dc-when'; s1.textContent = when;
     var s2 = document.createElement('span'); s2.className = 'dc-n';
-    s2.appendChild(document.createTextNode(String(c.total == null ? c.n : c.total)));
+    s2.appendChild(document.createTextNode(String(c.n)));
     var em = document.createElement('em');
-    em.textContent = ko ? '명 · 스탭 포함' : '名 · スタッフ含む';
+    em.textContent = ko ? '명 신청' : '名 お申し込み';
     s2.appendChild(em);
 
     var s3 = document.createElement('span'); s3.className = 'dc-mix';
-    var total=c.total == null ? c.n : c.total, japan=c.totalJa == null ? c.ja : c.totalJa;
-    [ko ? '일본 ' + japan + '명' : '日本 ' + japan + '名',
-     ko ? '한국 ' + (total - japan) + '명' : '韓国 ' + (total - japan) + '名'
+    [ko ? '일본 ' + c.ja + '명' : '日本 ' + c.ja + '名',
+     ko ? '한국 ' + (c.n - c.ja) + '명' : '韓国 ' + (c.n - c.ja) + '名'
     ].forEach(function(t){
       var b = document.createElement('span'); b.textContent = t; s3.appendChild(b);
     });
@@ -2827,6 +2644,7 @@ window.IROLANG = (function(){
         baseLabel += (+cap.waitlist_on === 0)
           ? (ja ? ' — 締切' : ' — 마감')
           : (ja ? ' — キャンセル待ち' : ' — 대기 접수');
+        if (+cap.waitlist_on === 0) o.disabled = true;
       }
       o.textContent = baseLabel;
       dPick.appendChild(o);
@@ -2851,34 +2669,29 @@ window.IROLANG = (function(){
   function renderGallery(){
     var sec = document.getElementById('gallery');
     if (!sec) return;
-    var grid=sec.querySelector('.gal');
-    grid.replaceChildren();
-    GALLERY.forEach(function(g,i){
-      if(!g || !(g.uri || g.id)) return;
-      var fig=document.createElement('figure'); fig.dataset.ph=i;
-      if(i>=6) fig.classList.add('gal-extra');
-      var img=document.createElement('img');
-      img.alt=document.body.dataset.lang==='ja' ? 'いろとも交流会の様子 '+(i+1) : '이로토모 모임 사진 '+(i+1);
-      img.loading='lazy'; img.decoding='async';
-      img.onload=function(){fig.classList.add('loaded');};
-      img.onerror=function(){
-        if(g.id && img.src.indexOf('lh3.')>=0){img.src=driveAlt(g.id,1600);return;}
-        fig.classList.add('empty');img.hidden=true;
-      };
-      img.src=g.uri || driveUrl(g.id,1600);fig.appendChild(img);
-      var controls=document.createElement('span');controls.className='gal-tools';
-      [['galPick','교체'],['galDel','삭제']].forEach(function(entry){
-        var btn=document.createElement('button');btn.type='button';btn.dataset[entry[0]]=i;btn.textContent=entry[1];btn.disabled=!!galBusy;controls.appendChild(btn);
-      });
-      fig.appendChild(controls);grid.appendChild(fig);
+    sec.querySelectorAll('.gal figure').forEach(function(fig, i){
+      var g = GALLERY[i], img = fig.querySelector('img');
+      if (g && (g.uri || g.id)) {
+        img.onerror = function(){
+          if (g.id && img.src.indexOf('lh3.') >= 0) { img.src = driveAlt(g.id, 1600); return; }
+          img.hidden = true; fig.classList.add('empty');
+        };
+        img.src = g.uri || driveUrl(g.id, 1600);
+        img.hidden = false; fig.classList.remove('empty');
+      } else {
+        img.removeAttribute('src'); img.hidden = true; fig.classList.add('empty');
+      }
     });
+    var any = GALLERY.some(function(g){ return g && (g.uri || g.id); });
+    var count = GALLERY.filter(function(g){return g && (g.uri || g.id);}).length;
     sec.classList.toggle('gal-expanded', GAL_EXPANDED || editing);
     var more=document.getElementById('gal-more');
-    if(more){more.classList.toggle('show',!editing && GALLERY.length>6);
-      more.querySelector('.ko').textContent=GAL_EXPANDED?'사진 접기':'사진 더 보기 ('+GALLERY.length+')';
-      more.querySelector('.ja').textContent=GAL_EXPANDED?'写真を閉じる':'写真をもっと見る（'+GALLERY.length+'）';}
-    sec.hidden=!GALLERY.length && !editing;
-    var add=document.getElementById('gal-add');if(add) add.disabled=!!galBusy;
+    if(more){
+      more.classList.toggle('show', !editing && count>6);
+      more.querySelector('.ko').textContent = GAL_EXPANDED ? '사진 접기' : '사진 더 보기';
+      more.querySelector('.ja').textContent = GAL_EXPANDED ? '写真を閉じる' : '写真をもっと見る';
+    }
+    sec.hidden = !any && !editing;
   }
 
   /* 사진 열기 — createImageBitmap 이 안 되는 브라우저·형식 대비 */
@@ -2949,19 +2762,6 @@ window.IROLANG = (function(){
     if (LOGO_SIZE) r.setProperty('--logo-w', LOGO_SIZE + 'px'); else r.removeProperty('--logo-w');
   }
 
-  var ARRIVAL={building:'',cafe:''}, arrivalBusy=false, arrivalSlot='';
-  function renderArrival(){
-    document.querySelectorAll('[data-arrival]').forEach(function(card){
-      var key=ARRIVAL[card.dataset.arrival], img=card.querySelector('img');
-      card.classList.toggle('has-photo',!!key);img.hidden=!key;
-      if(key){var url=driveUrl(key,1600);if(img.getAttribute('src')!==url)img.src=url;}
-      else img.removeAttribute('src');
-      img.onerror=function(){img.hidden=true;card.classList.remove('has-photo');};
-      card.querySelectorAll('button').forEach(function(btn){btn.disabled=arrivalBusy;});
-    });
-  }
-  renderArrival();
-
   applySchedule();
   renderGallery();
   setTimeout(function(){ track(''); }, 900);
@@ -2979,7 +2779,6 @@ window.IROLANG = (function(){
         GALLERY = d.gallery.map(function(id){ return { id:id }; });
         renderGallery();
       }
-      if(d.arrival){ARRIVAL=d.arrival;renderArrival();}
       if (d.counts) COUNTS = d.counts;
       if (d.capacity) CAPACITY = d.capacity;
       try { seatLinkCheck(); } catch (e) {}
@@ -3742,11 +3541,9 @@ window.IROLANG = (function(){
               ? '음료 마감까지 '+(cd.preHours>=1?cd.preHours+'시간':'1시간 미만')
               : '음료 마감 지남 · 분다버그만 선택 가능')+'</div>':'')
         +(x.note?'<div class="ops-note">'+esc(x.note)+'</div>':'')+'</div><span class="ops-seat '+seat[1]+'">'+seat[0]+'</span></div>'
-        +'<div class="ops-big"><b>'+total+'</b><span>명 신청'
-        +(+x.staff?' · 스탭 '+x.staff+'명 · 자리 '+withStaff+'석':'')+'</span></div>'
+        +'<div class="ops-big"><b>'+total+'</b><span>명 신청</span></div>'
         +'<div class="ops-kpis">'
-        +'<div class="ops-kpi"><span>국적</span><b>🇯🇵 '+ja+' / 🇰🇷 '+ko
-        +(+x.staff?'<i class="ops-sub"> +스탭 '+x.staff+'</i>':'')+'</b></div>'
+        +'<div class="ops-kpi"><span>국적</span><b>🇯🇵 '+ja+' / 🇰🇷 '+ko+'</b></div>'
         +'<div class="ops-kpi"><span>입금</span><b>'+x.paid+' / '+total+(paidPct!==null?' · '+paidPct+'%':'')+'</b></div>'
         +'<div class="ops-kpi"><span>신규</span><b>'+x.new_count+'명</b></div>'
         +'<div class="ops-kpi"><span>재참가</span><b>'+x.repeat_count+'명'+(repPct!==null?' · '+repPct+'%':'')+'</b></div>'
@@ -5351,79 +5148,59 @@ window.IROLANG = (function(){
     $a('logo-size').value = parseInt(LOGO_SIZE, 10) || 380;
   }
 
-  /* Gallery mutations are serialized; completed uploads remain saved on failure. */
-  var galSlot=null, galBusy=false;
-  function galleryMutation(payload){
-    return apiPost(Object.assign({action:'gallery_update',token:ADMIN.token},payload)).then(function(d){
-      if(!d || !d.ok) throw new Error(d && d.error || '저장에 실패했습니다');
-      GALLERY=(d.ids || []).map(function(id){return {id:id};});renderGallery();return d;
+  /* ── 활동 사진: 고르는 즉시 한 장씩 올린다 ────────────────── */
+  var galSlot = 0;
+
+  function pushGallery(){
+    var list = GALLERY.filter(function(x){ return x && (x.id || x.b64); })
+      .map(function(x){ return x.id ? { id:x.id } : { b64:x.b64 }; });
+    return apiPost({ action:'gallery', token:ADMIN.token, gallery:list }).then(function(d){
+      if (!d || !d.ok) throw new Error((d && d.error) || '서버가 응답하지 않았습니다');
+      GALLERY = (d.ids || []).map(function(id){ return { id:id }; });   /* 다음엔 다시 안 올리도록 */
+      renderGallery();
+      return d;
     });
   }
-  on('gal-add','click',function(){
-    if(!editing || galBusy)return;galSlot=null;$a('gal-file').multiple=true;$a('gal-file').click();
-  });
-  $a('gallery').addEventListener('click',async function(e){
-    var pick=e.target.closest('[data-gal-pick]'),del=e.target.closest('[data-gal-del]');
-    if(!pick && !del)return;e.stopPropagation();
-    if(!editing || galBusy)return;
-    if(pick){galSlot=GALLERY[+pick.dataset.galPick].id;$a('gal-file').multiple=false;$a('gal-file').click();return;}
-    if(!confirm('이 사진을 갤러리에서 삭제할까요?'))return;
-    var target=GALLERY[+del.dataset.galDel].id;
-    galBusy=true;renderGallery();setState('gal-state','삭제 중…');
-    try{await galleryMutation({mode:'remove',target:target});setState('gal-state','삭제됨');}
-    catch(err){setState('gal-state',fail(err).slice(0,100),true);}
-    finally{galBusy=false;renderGallery();}
-  });
-  on('gal-more','click',function(){GAL_EXPANDED=!GAL_EXPANDED;renderGallery();});
-  $a('gal-file').addEventListener('change',async function(e){
-    var files=Array.from(e.target.files || []);if(!files.length || galBusy || !editing)return;
-    if(galSlot!==null)files=files.slice(0,1);
-    galBusy=true;renderGallery();var saved=0;
-    try{
-      for(var file of files){
-        setState('gal-state',(saved+1)+' / '+files.length+' · '+file.name+' 업로드 중…');
-        var r=await fitImage(file,[[1800,.84],[1400,.8],[1100,.76]],1000000,false);
-        if(!r.uri)throw new Error(file.name+' 파일을 열 수 없습니다');
-        await galleryMutation({mode:galSlot===null?'append':'replace',target:galSlot,
-          item:{b64:r.uri.split(',')[1],mime:r.uri.slice(5,r.uri.indexOf(';'))}});
-        saved++;
-      }
-      setState('gal-state',saved+'장 저장됨 · 전체 '+GALLERY.length+'장');
-    }catch(err){
-      setState('gal-state',saved+'/'+files.length+'장 저장됨. '+fail(err).slice(0,120),true);
-      alert(saved+'장은 저장되었습니다. 나머지 사진은 다시 선택해 주세요.\n'+fail(err));
-    }finally{galBusy=false;galSlot=null;e.target.value='';renderGallery();}
+
+  document.querySelectorAll('[data-gal-pick]').forEach(function(b2){
+    b2.addEventListener('click', function(e){
+      e.stopPropagation(); galSlot = +b2.dataset.galPick; $a('gal-file').click();
+    });
   });
 
-  on('adm-arrival','click',function(){
-    renderArrival();
-    document.querySelector('.arrival-admin-heading').scrollIntoView({block:'center',behavior:'smooth'});
+  document.querySelectorAll('[data-gal-del]').forEach(function(b2){
+    b2.addEventListener('click', function(e){
+      e.stopPropagation();
+      if (!confirm('이 사진을 지울까요?')) return;
+      GALLERY[+b2.dataset.galDel] = null;
+      renderGallery();
+      setState('gal-state', '지우는 중…');
+      pushGallery().then(function(){ setState('gal-state', '완료'); })
+        .catch(function(err){ setState('gal-state', fail(err).slice(0, 50), true); });
+    });
   });
-  async function saveArrival(slot,item,remove){
-    var d=await apiPost({action:'arrival_photo',token:ADMIN.token,slot:slot,item:item,remove:!!remove});
-    if(!d || !d.ok)throw new Error(d && d.error || '사진을 저장하지 못했습니다');
-    ARRIVAL[slot]=d.id || '';renderArrival();
-  }
-  $a('arrival-photos').addEventListener('click',async function(e){
-    var pick=e.target.closest('[data-arrival-pick]'),del=e.target.closest('[data-arrival-remove]');
-    if((!pick && !del) || !editing || arrivalBusy)return;
-    if(pick){arrivalSlot=pick.dataset.arrivalPick;$a('arrival-file').click();return;}
-    if(!confirm('입구 사진을 삭제할까요?'))return;
-    arrivalBusy=true;renderArrival();$a('arrival-state').textContent='삭제 중…';
-    try{await saveArrival(del.dataset.arrivalRemove,null,true);$a('arrival-state').textContent='삭제됨';}
-    catch(err){$a('arrival-state').textContent=fail(err);}
-    finally{arrivalBusy=false;renderArrival();}
+
+  on('gal-more','click',function(){
+    GAL_EXPANDED=!GAL_EXPANDED;
+    renderGallery();
   });
-  $a('arrival-file').addEventListener('change',async function(e){
-    var file=e.target.files && e.target.files[0];if(!file || !editing || arrivalBusy)return;
-    var slot=arrivalSlot;arrivalBusy=true;renderArrival();$a('arrival-state').textContent='사진 저장 중…';
-    try{
-      var r=await fitImage(file,[[1800,.84],[1400,.8],[1100,.76]],1000000,false);
-      if(!r.uri)throw new Error('이 사진을 열 수 없습니다');
-      await saveArrival(slot,{b64:r.uri.split(',')[1],mime:r.uri.slice(5,r.uri.indexOf(';'))},false);
-      $a('arrival-state').textContent='저장됨 · 방문자 화면에 반영되었습니다';
-    }catch(err){$a('arrival-state').textContent=fail(err);}
-    finally{arrivalBusy=false;e.target.value='';renderArrival();}
+
+  $a('gal-file').addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    setState('gal-state', '사진 여는 중…');
+    fitImage(file, [[1800,0.84],[1400,0.8],[1100,0.76]], 1000000, false).then(function(r){
+      if (!r.uri) throw new Error('이 사진은 열 수 없습니다. JPG 나 PNG 로 저장한 뒤 다시 시도해 주세요.');
+      GALLERY[galSlot] = { b64: r.uri.split(',')[1], uri: r.uri };
+      renderGallery();
+      setState('gal-state', '올리는 중… ' + kb(r.uri));
+      return pushGallery();
+    }).then(function(){
+      setState('gal-state', '저장됨');
+    }).catch(function(err){
+      setState('gal-state', fail(err).slice(0, 50), true);
+      alert('사진을 저장하지 못했습니다.\n\n' + fail(err) + '\n\n연결된 서버: …' + API.slice(-10));
+    }).then(function(){ $a('gal-file').value = ''; });
   });
 
   /* ── 통계 ────────────────────────────────────────────────── */
@@ -5732,34 +5509,30 @@ window.IROLANG = (function(){
   var lb = document.getElementById('lb');
   var lbImg = lb ? lb.querySelector('img') : null;
   var lbNav = document.getElementById('lb-nav');
-  var shots = [], at = 0, shotGroup='.gal figure img', returnFocus=null;
+  var shots = [], at = 0;
 
   function collect(){
     shots = [];
-    document.querySelectorAll(shotGroup).forEach(function(im){
+    document.querySelectorAll('.gal figure img').forEach(function(im){
       if (!im.hidden && (im.currentSrc || im.getAttribute('src'))) shots.push(im);
     });
   }
   function paint(){
     if (!shots.length) return;
     lbImg.src = shots[at].currentSrc || shots[at].src;
-    lbNav.textContent = (at + 1) + ' / ' + shots.length;
-    lbImg.alt=shots[at].alt || '';
-    document.getElementById('lb-prev').hidden=shots.length<2;
-    document.getElementById('lb-next').hidden=shots.length<2;
+    lbNav.innerHTML = shots.map(function(_, i){
+      return '<b class="' + (i === at ? 'on' : '') + '"></b>';
+    }).join('');
   }
   function openLb(i){
     collect(); if (!shots.length) return;
     at = Math.max(0, Math.min(shots.length - 1, i));
-    returnFocus=document.activeElement;
     paint(); lb.classList.add('on');
-    document.getElementById('lb-x').focus();
     document.body.style.overflow = 'hidden';
   }
   function closeLb(){
     if (!lb) return;
     lb.classList.remove('on');
-    if(returnFocus && returnFocus.isConnected)returnFocus.focus();
     if (!document.getElementById('overlay').classList.contains('open')) document.body.style.overflow = '';
   }
   function move(step){
@@ -5769,10 +5542,9 @@ window.IROLANG = (function(){
   }
 
   document.addEventListener('click', function(e){
-    var fig = e.target.closest && e.target.closest('.gal figure, .arrival-card');
+    var fig = e.target.closest && e.target.closest('.gal figure');
     if (!fig || isAdmin() || fig.classList.contains('empty')) return;
-    if (e.target.closest('.gal-tools, .arrival-tools')) return;
-    shotGroup=fig.classList.contains('arrival-card') ? '.arrival-card.has-photo img' : '.gal figure img';
+    if (e.target.closest('.gal-tools')) return;
     collect();
     var im = fig.querySelector('img');
     var idx = shots.indexOf(im);
@@ -5780,18 +5552,10 @@ window.IROLANG = (function(){
   });
   if (lb) {
     document.getElementById('lb-x').addEventListener('click', closeLb);
-    document.getElementById('lb-prev').addEventListener('click',function(){move(-1);});
-    document.getElementById('lb-next').addEventListener('click',function(){move(1);});
     lb.addEventListener('click', function(e){ if (e.target === lb) closeLb(); });
     document.addEventListener('keydown', function(e){
       if (!lb.classList.contains('on')) return;
       if (e.key === 'Escape') closeLb();
-      if(e.key==='Tab'){
-        var buttons=Array.from(lb.querySelectorAll('button')).filter(function(b){return !b.hidden;});
-        var first=buttons[0],last=buttons[buttons.length-1];
-        if(e.shiftKey && document.activeElement===first){e.preventDefault();last.focus();}
-        else if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus();}
-      }
       if (e.key === 'ArrowRight') move(1);
       if (e.key === 'ArrowLeft')  move(-1);
     });
@@ -5807,21 +5571,6 @@ window.IROLANG = (function(){
   }
 
 
-  /* ── 현재 섹션을 상단 메뉴에 표시 ───────────────────────── */
-  (function(){
-    var links=[].slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
-    var targets=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));}).filter(Boolean);
-    function mark(id){links.forEach(function(a){a.classList.toggle('is-active',a.getAttribute('href')==='#'+id);});}
-    if(!targets.length)return;
-    if('IntersectionObserver' in window){
-      var io=new IntersectionObserver(function(entries){
-        entries.forEach(function(e){if(e.isIntersecting)mark(e.target.id);});
-      },{rootMargin:'-28% 0px -60% 0px',threshold:0});
-      targets.forEach(function(t){io.observe(t);});
-    }
-    window.addEventListener('scroll',function(){if(window.scrollY<260)links.forEach(function(a){a.classList.remove('is-active');});},{passive:true});
-  })();
-
   /* ── 6. 활동 사진 : 불러오기 표시 + 스크롤 시 미세한 흔들림 ── */
   var figs = [].slice.call(document.querySelectorAll('.gal figure'));
 
@@ -5832,7 +5581,6 @@ window.IROLANG = (function(){
     fig.classList.toggle('loaded', !!on);
   }
   function watchShots(){
-    figs = [].slice.call(document.querySelectorAll('.gal figure'));
     figs.forEach(function(fig){
       var im = fig.querySelector('img');
       if (!im) return;
@@ -5857,7 +5605,7 @@ window.IROLANG = (function(){
       if (galQueued) return;
       galQueued = true;
       requestAnimationFrame(function(){ galQueued = false; watchShots(); });
-    }).observe(galSec, {childList:true, attributes:true, subtree:true, attributeFilter:['src','hidden']});
+    }).observe(galSec, {attributes:true, subtree:true, attributeFilter:['src','hidden']});
   }
   watchShots();
 
