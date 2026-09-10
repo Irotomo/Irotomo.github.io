@@ -1441,7 +1441,7 @@ body.admin-on .gal-more{display:none!important}
         <div class="next-meeting" id="next-meeting" aria-live="polite">
 <p class="eyebrow"><span class="ko">다음 신청 가능 모임</span><span class="ja">次のお申し込み可能な日程</span></p>
 <p id="next-meeting-date"><span class="ko">일정 확인 중…</span><span class="ja">日程を確認中…</span></p>
-<p class="next-price"><span class="ko">한국인 총 16,000원 · 일본인 총 6,000원<br>음료 한 잔 포함 · 여의도</span><span class="ja">日本人 合計6,000ウォン · 韓国人 合計16,000ウォン<br>ドリンク1杯込み · ヨイド</span></p>
+<p class="next-price"><span class="ko"><span class="next-price-item">한국인 16,000원</span> · <wbr><span class="next-price-item">일본인 6,000원</span><br>모두 음료 한 잔 포함</span><span class="ja"><span class="next-price-item">日本人 6,000ウォン</span> · <wbr><span class="next-price-item">韓国人 16,000ウォン</span><br>どちらもドリンク1杯込み</span></p>
 <a href="#apply" id="next-meeting-apply" class="btn btn-primary" hidden><span class="ko">이 날짜로 신청하기</span><span class="ja">この日程で申し込む</span></a>
 </div>
         <div class="hero-cta">
@@ -5635,6 +5635,7 @@ window.IROLANG = (function(){
 .next-meeting{border:1px solid var(--line,#ddd);border-radius:16px;padding:22px;margin:24px 0;background:rgba(255,255,255,.75)}
 #next-meeting-date{font-size:clamp(20px,3vw,27px);font-weight:700;margin:8px 0;line-height:1.45}
 .next-price{font-size:15px;line-height:1.7;margin-bottom:16px}
+.next-price{white-space:normal}.next-price-item{display:inline-block;white-space:nowrap}
 .receipt-summary{padding:18px;border:1px solid #ddd;border-radius:12px;overflow-wrap:anywhere;line-height:1.8}
 .selection-fee{padding:16px;border-left:3px solid #b6924d;line-height:1.7}
 #somoim-card{margin:0;padding:20px}#somoim-card p{margin-bottom:12px;line-height:1.7}
