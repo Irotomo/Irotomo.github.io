@@ -1615,8 +1615,8 @@ body.admin-on .gal-more{display:none!important}
       </div>
     </div>
     <div class="fee-guidance"><h3><span class="ko">입금 · 음료 선택 · 환불 안내</span><span class="ja">お支払い・ドリンク選択・返金</span></h3>
-    <div id="fee-essentials" class="fee-essentials" hidden><p class="ko" id="fee-essential-ko"></p><p class="ja" id="fee-essential-ja"></p></div>
-    <details class="notice-fold" id="fee-details" open><summary><span class="ko">음료 선택 · 취소 및 환불 자세히</span><span class="ja">ドリンク選択・キャンセル・返金の詳細</span></summary><div class="notice-body">
+    <div id="fee-essentials" class="fee-essentials" hidden><div class="ko" id="fee-essential-ko"></div><div class="ja" id="fee-essential-ja"></div></div>
+    <details class="notice-fold" id="fee-details" open><summary><span class="ko">추가 안내</span><span class="ja">補足のご案内</span></summary><div class="notice-body"><div id="fee-extra-copy" hidden><div class="ko" id="fee-extra-ko"></div><div class="ja" id="fee-extra-ja"></div></div><div class="fee-original"><p class="fee-edit-hint"><span class="ko">전체 안내 원문 편집 · 방문자 화면에는 중복 없이 나누어 표시됩니다.</span><span class="ja">案内全文の編集欄 · 訪問者には重複しないよう分けて表示します。</span></p>
     <p class="fee-note ko" data-c="v2-c44">음료비 6,000원은 신청 후 안내 메일을 확인하고 미리 입금해 주세요. 한국인 참가비 10,000원은 당일 현장에서 받습니다.
 • 더치커피·밀크티 선택 마감: 금요일 정오 12시
 • 음료비 취소·환불 접수 마감: 금요일 정오 12시
@@ -1625,6 +1625,7 @@ body.admin-on .gal-more{display:none!important}
 • ダッチコーヒー・ミルクティーの選択期限：金曜12時（正午）
 • ドリンク代のキャンセル・返金受付期限：金曜12時（正午）
 • 以降も受付中の日程は、バンダバーグのライム・ピンクグレープフルーツをお選びいただけます。</p>
+    </div>
     </div></details>
     </div>
   </section>
@@ -5824,23 +5825,56 @@ body.admin-on .fee-essentials{display:none}
   copy.querySelectorAll('p,div,li').forEach(function(el){el.appendChild(document.createTextNode('\n'));});
   return copy.textContent.split(/\n+/).map(function(line){return line.trim();}).filter(Boolean);
  }
- function essentials(lines){
-  return lines.filter(function(line,i){return i===0||/입금|송금|계좌|마감|기한|금요일|현장|振込|振り込|口座|支払|期限|締切|締め切|金曜|まで/.test(line);}).join('\n');
+ function splitNotice(lines){
+  var result={essential:[],extra:[]};
+  lines.forEach(function(line,i){var key=i===0||/입금|송금|계좌|마감|기한|금요일|현장|振込|振り込|口座|支払|期限|締切|締め切|金曜|まで/.test(line)?'essential':'extra';result[key].push(line);});
+  return result;
+ }
+ function paintLines(target,lines){target.replaceChildren();lines.forEach(function(line){var p=document.createElement('p');p.textContent=line;target.appendChild(p);});}
+ var extras={ko:false,ja:false};
+ function updateMode(){
+  var admin=document.body.classList.contains('admin-on'),lang=document.body.dataset.lang==='ko'?'ko':'ja';
+  var detail=document.getElementById('fee-details'),valid=document.querySelector('.fee-guidance').classList.contains('notice-ready');
+  detail.hidden=valid&&!admin&&!extras[lang];
+  if(admin){document.querySelectorAll('.notice-fold').forEach(function(d){d.open=true;});}
  }
  function refreshNotices(){
   var valid=sources.length===2;
-  sources.forEach(function(source){var lang=source.classList.contains('ko')?'ko':'ja';var text=essentials(linesFrom(source));document.getElementById('fee-essential-'+lang).textContent=text;if(!text)valid=false;});
+  sources.forEach(function(source){var lang=source.classList.contains('ko')?'ko':'ja';var parts=splitNotice(linesFrom(source));paintLines(document.getElementById('fee-essential-'+lang),parts.essential);paintLines(document.getElementById('fee-extra-'+lang),parts.extra);extras[lang]=parts.extra.length>0;if(!parts.essential.length)valid=false;});
   document.getElementById('fee-essentials').hidden=!valid;
+  document.getElementById('fee-extra-copy').hidden=!valid;
+  document.querySelector('.fee-guidance').classList.toggle('notice-ready',valid);
   var detail=document.getElementById('fee-details');
   if(!initialized&&valid&&!document.body.classList.contains('admin-on')){detail.open=false;initialized=true;}
   if(!valid)detail.open=true;
+  updateMode();
  }
  sources.forEach(function(source){new MutationObserver(refreshNotices).observe(source,{childList:true,subtree:true,characterData:true});});
  window.addEventListener('iro-content-ready',refreshNotices);
- function editMode(){if(document.body.classList.contains('admin-on'))document.querySelectorAll('.notice-fold').forEach(function(d){d.open=true;});}
- new MutationObserver(editMode).observe(document.body,{attributes:true,attributeFilter:['class']});
- refreshNotices();editMode();
+ new MutationObserver(updateMode).observe(document.body,{attributes:true,attributeFilter:['class','data-lang']});
+ refreshNotices();
+
 })();
 </script>
+<style id="notice-duplication-fix">
+/* Reset inherited FAQ chevron borders before drawing a plus/minus. */
+.notice-fold>summary::after{content:'+';display:grid;place-items:center;position:static;inset:auto;width:22px;height:22px;min-width:22px;margin:0;padding:0;border:0!important;border-radius:0;background:none;box-shadow:none;transform:none!important;flex:0 0 22px;font:400 22px/1 system-ui,sans-serif;letter-spacing:0;transition:none}
+.notice-fold[open]>summary::after{content:'−';transform:none!important}
+.fee-guidance.notice-ready .fee-original{display:none}
+.fee-edit-hint{display:none}
+body.admin-on .fee-guidance .fee-original{display:block}
+body.admin-on .fee-guidance #fee-extra-copy{display:none!important}
+body.admin-on .fee-edit-hint{display:block;font-size:13px;color:var(--muted);line-height:1.6;margin:0 0 12px}
+.fee-essentials p,#fee-extra-copy p{white-space:normal;overflow-wrap:anywhere;font-size:14px;line-height:1.8;margin:0 0 10px}
+.fee-essentials p:first-child{margin-bottom:14px}.fee-essentials p:last-child,#fee-extra-copy p:last-child{margin-bottom:0}
+.fee-guidance #fee-essentials{margin:0 0 16px}
+.fee-guidance:has(#fee-details[hidden]) #fee-essentials{margin-bottom:0}
+#fee-details{border:0;border-top:1px solid #dcd8cd;border-radius:0;background:transparent}
+#fee-details>summary{padding:13px 0;min-height:48px;font-size:14px}
+#fee-details[open]>summary{border-bottom:0}
+#fee-details .notice-body{padding:0 0 4px}
+body.admin-on #fee-details .notice-body{padding:12px 0}
+@media(min-width:961px){.fee-guidance{padding:24px 28px}.fee-essentials p,#fee-extra-copy p,.fee-original{max-width:76ch}}
+</style>
 </body>
 </html>
