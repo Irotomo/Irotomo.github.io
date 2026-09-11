@@ -2581,7 +2581,11 @@ window.IROLANG = (function(){
     if (!box) return;
     var d = document.getElementById('f-date');
     var c = d && d.value ? COUNTS[d.value] : null;
-    if (!c || c.n < COUNT_MIN) { box.hidden = true; return; }
+    /* 공개 신청현황은 입금 여부와 상관없이 모든 일반 신청 + 스탭을 포함합니다.
+       대기자는 아직 참가 확정 인원이 아니므로 기존처럼 제외합니다. */
+    var shownN = c ? (+c.total || +c.n || 0) : 0;
+    var shownJa = c ? (+c.totalJa || +c.ja || 0) : 0;
+    if (!c || shownN < COUNT_MIN) { box.hidden = true; return; }
 
     var ko = document.body.dataset.lang === 'ko';
     var a = d.value.split('-');
@@ -2594,18 +2598,25 @@ window.IROLANG = (function(){
     box.innerHTML = '';
     var s1 = document.createElement('span'); s1.className = 'dc-when'; s1.textContent = when;
     var s2 = document.createElement('span'); s2.className = 'dc-n';
-    s2.appendChild(document.createTextNode(String(c.n)));
+    s2.appendChild(document.createTextNode(String(shownN)));
     var em = document.createElement('em');
     em.textContent = ko ? '명 신청' : '名 お申し込み';
     s2.appendChild(em);
 
     var s3 = document.createElement('span'); s3.className = 'dc-mix';
-    [ko ? '일본 ' + c.ja + '명' : '日本 ' + c.ja + '名',
-     ko ? '한국·기타 ' + (c.n - c.ja) + '명' : '韓国・その他 ' + (c.n - c.ja) + '名'
+    [ko ? '일본 ' + shownJa + '명' : '日本 ' + shownJa + '名',
+     ko ? '한국·기타 ' + (shownN - shownJa) + '명' : '韓国・その他 ' + (shownN - shownJa) + '名'
     ].forEach(function(t){
       var b = document.createElement('span'); b.textContent = t; s3.appendChild(b);
     });
     box.appendChild(s1); box.appendChild(s2); box.appendChild(s3);
+    if (+c.staff > 0) {
+      var sStaff = document.createElement('span'); sStaff.className = 'dc-mix';
+      sStaff.textContent = ko
+        ? ('스탭 ' + c.staff + '명 포함 · 미입금 포함')
+        : ('スタッフ ' + c.staff + '名を含む · 未入金を含む');
+      box.appendChild(sStaff);
+    }
     var cap = CAPACITY[d.value] || {};
     if (+cap.capacity > 0) {
       var s4=document.createElement('span'); s4.className='dc-mix';
