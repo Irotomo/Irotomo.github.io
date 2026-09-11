@@ -176,6 +176,56 @@ h1{
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px}
 .hero-note{margin-top:20px;font-size:var(--fs-sm);color:var(--muted)}
 .hero-logo{justify-self:center;width:min(100%,var(--logo-w,380px));aspect-ratio:var(--logo-ar,990/962);background-image:var(--logo);background-size:contain;background-repeat:no-repeat;background-position:center;animation:float 7s ease-in-out infinite}
+
+.hero-logo.has-hero{
+  width:min(100%,560px);
+  aspect-ratio:16/10;
+  background-image:none!important;
+  border:1px solid rgba(20,27,46,.08);
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:0 24px 64px -34px rgba(20,27,46,.34);
+  animation:none;
+  isolation:isolate;
+}
+#hero-image{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:var(--hero-pos,50% 50%);
+  display:block;z-index:0;
+}
+.hero-logo.has-hero::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.02) 55%,rgba(247,243,234,.10) 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);
+  border-radius:inherit;
+}
+#hero-tools{
+  position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
+  display:none;align-items:center;gap:6px;z-index:8;
+  padding:6px 8px;border:1px solid rgba(20,27,46,.12);border-radius:999px;
+  background:rgba(255,255,255,.94);box-shadow:0 10px 30px -18px rgba(20,27,46,.55);
+  backdrop-filter:blur(8px);white-space:nowrap;
+}
+body.admin-on #hero-tools{display:flex}
+#hero-tools button,#hero-tools select{
+  min-height:30px;border-radius:999px;font:600 .72rem var(--font);
+}
+#hero-tools button{
+  border:1px solid var(--navy-900);background:var(--navy-900);color:#fff;
+  padding:.45em .85em;cursor:pointer;
+}
+#hero-tools button.sub{background:#fff;color:var(--ink);border-color:var(--line)}
+#hero-tools select{
+  border:1px solid var(--line);background:#fff;color:var(--ink);padding:.38em .65em;
+}
+#hero-state{font:600 .7rem var(--font);color:var(--muted);max-width:90px;overflow:hidden;text-overflow:ellipsis}
+#hero-state.err{color:#A6382E}
+.hero-logo.has-hero #logo-tools{display:none!important}
+body.admin-on .hero-logo.has-hero{
+  outline:1px dashed rgba(223,165,58,.65);
+  outline-offset:8px;border-radius:28px;
+}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
 /* ---------- 팩트 스트립 ---------- */
@@ -1461,7 +1511,20 @@ body.admin-on .gal-more{display:none!important}
         <p class="hero-note ko" data-c="c14">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
         <p class="hero-note ja" data-c="c14">事前申込制です。当日参加は受け付けておりません。</p>
       </div>
-      <div class="hero-logo" role="img" aria-label="いろとも 日韓交流会 로고">
+      <div class="hero-logo" id="hero-visual" role="img" aria-label="이로토모 한일교류회">
+          <img id="hero-image"
+               alt="이로토모 한일교류회 모임 일러스트"
+               decoding="async" fetchpriority="high" hidden>
+          <span id="hero-tools">
+            <button type="button" id="hero-pick">대표 이미지</button>
+            <select id="hero-pos" aria-label="대표 이미지 초점 위치">
+              <option value="left">왼쪽</option>
+              <option value="center">중앙</option>
+              <option value="right">오른쪽</option>
+            </select>
+            <button type="button" class="sub" id="hero-remove">이미지 제거</button>
+            <span id="hero-state"></span>
+          </span>
           <span id="logo-tools">
             <button type="button" id="logo-pick">이미지</button>
             <input type="range" id="logo-size" min="140" max="620" step="10" aria-label="로고 크기">
@@ -1469,6 +1532,7 @@ body.admin-on .gal-more{display:none!important}
             <span id="logo-state"></span>
           </span>
         </div>
+        <input type="file" id="hero-file" accept="image/*" hidden>
         <input type="file" id="logo-file" accept="image/*" hidden>
     </div>
   </div>
@@ -2388,6 +2452,7 @@ window.IROLANG = (function(){
   var API = 'https://api.irotomo.com';
   var SCHED = { mode:'weekly', time:'15:00 – 17:30', weeks:12, dates:[] };
   var LOGO = '', LOGO_ID = '', LOGO_AR = '', LOGO_SIZE = '';
+  var HERO_ID = '', HERO_AR = '', HERO_POS = 'center';
 
   function esc(v){
     return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
@@ -2789,6 +2854,39 @@ window.IROLANG = (function(){
     if (LOGO_SIZE) r.setProperty('--logo-w', LOGO_SIZE + 'px'); else r.removeProperty('--logo-w');
   }
 
+  function heroPosCss(pos){
+    if (pos === 'left') return '28% 50%';
+    if (pos === 'right') return '72% 50%';
+    return '50% 50%';
+  }
+
+  function applyHero(){
+    var box = document.getElementById('hero-visual');
+    var img = document.getElementById('hero-image');
+    var pos = document.getElementById('hero-pos');
+    if (!box || !img) return;
+
+    if (pos) pos.value = HERO_POS || 'center';
+    box.style.setProperty('--hero-pos', heroPosCss(HERO_POS));
+
+    if (!HERO_ID) {
+      img.hidden = true;
+      img.removeAttribute('src');
+      box.classList.remove('has-hero');
+      applyLogo();
+      return;
+    }
+
+    box.classList.add('has-hero');
+    box.style.backgroundImage = 'none';
+    img.hidden = false;
+    img.src = driveUrl(HERO_ID, 1800);
+    img.onerror = function(){
+      img.onerror = null;
+      img.src = driveAlt(HERO_ID, 1800);
+    };
+  }
+
   applySchedule();
   renderGallery();
   setTimeout(function(){ track(''); }, 900);
@@ -2802,6 +2900,10 @@ window.IROLANG = (function(){
       if (d.logoAr) LOGO_AR = d.logoAr;
       if (d.logoSize) LOGO_SIZE = d.logoSize;
       if (d.logo || d.logoId || d.logoSize) applyLogo();
+      if (d.heroId) HERO_ID = d.heroId;
+      if (d.heroAr) HERO_AR = d.heroAr;
+      if (d.heroPos) HERO_POS = d.heroPos;
+      applyHero();
       if (d.gallery && d.gallery.length) {
         GALLERY = d.gallery.map(function(id){ return { id:id }; });
         renderGallery();
@@ -5137,6 +5239,92 @@ window.IROLANG = (function(){
   });
 
 
+  /* ── PC 메인 대표 이미지 ───────────────────────────────────
+     모바일(960px 이하)에서는 CSS에서 숨겨 갤러리와 중복되지 않게 합니다. */
+  function setHeroState(msg, isErr){
+    var el=$a('hero-state'); if(!el) return;
+    el.textContent=msg||'';
+    el.classList.toggle('err',!!isErr);
+    if(msg && !isErr && /저장|완료/.test(msg)){
+      setTimeout(function(){ if(el.textContent===msg) el.textContent=''; },1800);
+    }
+  }
+
+  function pushHero(uri, remove){
+    var body={
+      action:'hero_image', token:ADMIN.token,
+      heroAr:HERO_AR, heroPos:HERO_POS
+    };
+    if(remove===true){
+      body.remove=true;
+    }else if(typeof uri==='string'){
+      body.b64=uri.split(',')[1]||'';
+      body.mime=uri.indexOf('image/png')>=0?'image/png':
+                uri.indexOf('image/webp')>=0?'image/webp':'image/jpeg';
+    }
+    return apiPost(body).then(function(d){
+      if(!d || !d.ok) throw new Error((d&&d.error)||'서버가 응답하지 않았습니다');
+      return d;
+    });
+  }
+
+  $a('hero-pick').addEventListener('click',function(e){
+    e.stopPropagation(); $a('hero-file').click();
+  });
+
+  $a('hero-pos').addEventListener('click',function(e){e.stopPropagation();});
+  $a('hero-pos').addEventListener('change',function(){
+    HERO_POS=this.value||'center';
+    applyHero();
+    if(!HERO_ID) return;
+    setHeroState('위치 저장 중…');
+    pushHero().then(function(){setHeroState('저장됨');})
+      .catch(function(e){setHeroState(fail(e).slice(0,48),true);});
+  });
+
+  $a('hero-remove').addEventListener('click',function(e){
+    e.stopPropagation();
+    if(!HERO_ID) return;
+    if(!confirm('메인 대표 이미지를 제거하고 기존 로고 화면으로 되돌릴까요?')) return;
+    setHeroState('제거 중…');
+    pushHero('',true).then(function(){
+      HERO_ID=''; HERO_AR='';
+      applyHero();
+      setHeroState('완료');
+    }).catch(function(err){
+      setHeroState(fail(err).slice(0,48),true);
+    });
+  });
+
+  $a('hero-file').addEventListener('change',function(e){
+    var file=e.target.files&&e.target.files[0];
+    if(!file) return;
+    setHeroState('이미지 준비 중…');
+
+    /* 메인 이미지는 실제 화면보다 큰 1800px까지만 남기고 JPEG로 압축합니다.
+       생성형 일러스트 PNG도 그대로 수 MB 올리지 않게 합니다. */
+    fitImage(
+      file,
+      [[1800,0.90],[1500,0.88],[1300,0.86],[1100,0.84]],
+      1500000,
+      false
+    ).then(function(r){
+      if(!r.uri) throw new Error('이 이미지는 열 수 없습니다.');
+      HERO_AR=r.ar;
+      setHeroState('업로드 중… '+kb(r.uri));
+      return pushHero(r.uri,false);
+    }).then(function(d){
+      if(d&&d.id) HERO_ID=d.id;
+      applyHero();
+      setHeroState('저장됨');
+    }).catch(function(err){
+      setHeroState(fail(err).slice(0,48),true);
+      alert('대표 이미지를 저장하지 못했습니다.\n\n'+fail(err));
+    }).then(function(){
+      $a('hero-file').value='';
+    });
+  });
+
   /* ── 로고: 고르는 즉시 따로 저장한다 ─────────────────────── */
   function setState(id, msg, isErr){
     var el = $a(id); if (!el) return;
@@ -5686,6 +5874,7 @@ window.IROLANG = (function(){
 .selection-fee{padding:16px;border-left:3px solid #b6924d;line-height:1.7}
 #somoim-card{margin:0;padding:20px}#somoim-card p{margin-bottom:12px;line-height:1.7}
 [hidden]{display:none!important}
+/* 모바일은 아래 갤러리와 이미지가 겹쳐 보이지 않도록 메인 우측 비주얼 자체를 숨깁니다. */
 @media(max-width:960px){.nav-links a[href="board.html"],.nav-links [data-open-kana],.nav-links a[href="#flow"]{display:none}.next-meeting{padding:18px;margin:18px 0}.hero-logo{display:none} .hero-cta{gap:10px}}
 </style>
 <script>
