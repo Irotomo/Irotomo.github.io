@@ -2610,13 +2610,6 @@ window.IROLANG = (function(){
       var b = document.createElement('span'); b.textContent = t; s3.appendChild(b);
     });
     box.appendChild(s1); box.appendChild(s2); box.appendChild(s3);
-    if (+c.staff > 0) {
-      var sStaff = document.createElement('span'); sStaff.className = 'dc-mix';
-      sStaff.textContent = ko
-        ? ('스탭 ' + c.staff + '명 포함 · 미입금 포함')
-        : ('スタッフ ' + c.staff + '名を含む · 未入金を含む');
-      box.appendChild(sStaff);
-    }
     var cap = CAPACITY[d.value] || {};
     if (+cap.capacity > 0) {
       var s4=document.createElement('span'); s4.className='dc-mix';
