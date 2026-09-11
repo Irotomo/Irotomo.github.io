@@ -1091,6 +1091,9 @@ body.admin-on .gal figure .zoom{display:none}
   border:1px solid #f0d8d8;background:#fdf6f6;color:#9d4b4b;font-size:12px;cursor:pointer;white-space:nowrap}
 .sg-paid.on{border-color:#cfe6d8;background:#f2faf5;color:#2f6f4c}
 .sg-paid input{accent-color:#3E8A5F;margin:0}
+.sg-onsite{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;border:1px solid #D8DFEC;background:#fff;color:#5C6880;font:600 12px var(--font);cursor:pointer}
+.sg-onsite.on{border-color:#BFD0E5;background:#EEF4FB;color:#315E92;font-weight:700}
+.sg-onsite:disabled{opacity:.45;cursor:not-allowed}
 .sg-att{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;
   border:1px solid #ddd9ec;background:#f8f7fc;color:#716c87;font-size:12px;cursor:pointer;white-space:nowrap}
 .sg-att.on{border-color:#c9d9f2;background:#f1f6fd;color:#315f9b;font-weight:600}
@@ -1339,6 +1342,7 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
 .checkin-meta{font-size:11.5px;color:#8a86a0;margin-top:2px}
 .checkin-pay{font-size:11.5px;padding:4px 8px;border-radius:999px;background:#f7eded;color:#a34b4b}
 .checkin-pay.ok{background:#eef8f2;color:#327654}
+.checkin-pay.onsite{background:#EEF4FB;color:#315E92}
 .checkin-go{min-width:84px;padding:9px 12px;border:1px solid #dcd9e8;background:#fff;border-radius:9px;font:700 12.5px var(--font);cursor:pointer}
 .checkin-row.done .checkin-go{background:#327654;color:#fff;border-color:#327654}
 .sg-dup{padding:4px 8px;border-radius:999px;background:#fff1d8;color:#8a6416;font-size:11px;font-weight:800}
@@ -3504,7 +3508,7 @@ window.IROLANG = (function(){
 
     next.forEach(function(x){
       var c = opsCountdown(x.date), when = opsDateLabel(x.date).slice(5);
-      var total = +x.guests || 0, unpaid = total - (+x.paid || 0), waiting=+x.waitlist_count||0;
+      var total = +x.guests || 0, onsite = +x.onsite || 0, unpaid = total - (+x.paid || 0) - onsite, waiting=+x.waitlist_count||0;
       if(waiting>0) out.push(['warn', when+' · 대기 '+waiting+'명 — 취소 자리 발생 시 참가 전환']);
 
       if (unpaid > 0 && c && c.preOpen && c.preHours <= 36)
@@ -3552,7 +3556,8 @@ window.IROLANG = (function(){
       var withStaff=total+(+x.staff||0);
       var cd=opsCountdown(x.date);
       var jaPct=total ? Math.round(ja*100/total) : 0, koPct=Math.max(0,100-jaPct);
-      var paidPct=opsPct(+x.paid||0,total);
+      var confirmed=(+x.paid||0)+(+x.onsite||0);
+      var paidPct=opsPct(confirmed,total);
       var repPct=opsPct(+x.repeat_count||0,total);
       var drinks=[];
       if(+x.dutch) drinks.push('더치 '+x.dutch);
@@ -3570,7 +3575,7 @@ window.IROLANG = (function(){
         +'<div class="ops-big"><b>'+total+'</b><span>명 신청</span></div>'
         +'<div class="ops-kpis">'
         +'<div class="ops-kpi"><span>국적</span><b>🇯🇵 '+ja+' / 🇰🇷 '+ko+'</b></div>'
-        +'<div class="ops-kpi"><span>입금</span><b>'+x.paid+' / '+total+(paidPct!==null?' · '+paidPct+'%':'')+'</b></div>'
+        +'<div class="ops-kpi"><span>결제/확정</span><b>입금 '+x.paid+(+x.onsite?' · 현장 '+x.onsite:'')+' / '+total+(paidPct!==null?' · '+paidPct+'%':'')+'</b></div>'
         +'<div class="ops-kpi"><span>신규</span><b>'+x.new_count+'명</b></div>'
         +'<div class="ops-kpi"><span>재참가</span><b>'+x.repeat_count+'명'+(repPct!==null?' · '+repPct+'%':'')+'</b></div>'
         +'</div><div class="ops-balance"><i class="ja" style="width:'+jaPct+'%"></i><i class="ko" style="width:'+koPct+'%"></i></div>'
@@ -3580,22 +3585,23 @@ window.IROLANG = (function(){
 
     var recent=d.recent||[], marked=recent.filter(function(x){return (+x.attended||0)>0;});
     var sumGuests=0,sumPaid=0,sumAtt=0,sumNo=0;
-    marked.forEach(function(x){sumGuests+=+x.guests||0;sumPaid+=+x.paid||0;sumAtt+=+x.attended||0;sumNo+=Math.max(0,(+x.paid||0)-(+x.attended||0));});
+    marked.forEach(function(x){var conf=(+x.paid||0)+(+x.onsite||0);sumGuests+=+x.guests||0;sumPaid+=conf;sumAtt+=+x.attended||0;sumNo+=Math.max(0,conf-(+x.attended||0));});
     var ar=opsPct(sumAtt,sumGuests), cr=opsPct(sumAtt,sumPaid);
     var nr=opsPct(sumNo,sumPaid);
     avgBox.innerHTML='<div><span>최근 평균 출석</span><b>'+(marked.length?(Math.round(sumAtt/marked.length*10)/10)+'명':'—')+'</b></div>'
       +'<div><span>신청 → 출석률</span><b>'+(ar===null?'—':ar+'%')+'</b></div>'
-      +'<div><span>입금확정 → 출석률</span><b>'+(cr===null?'—':cr+'%')+'</b></div>'
+      +'<div><span>참가확정 → 출석률</span><b>'+(cr===null?'—':cr+'%')+'</b></div>'
       +'<div><span>노쇼율</span><b>'+(nr===null?'—':nr+'%')+'</b></div>';
 
     if(!recent.length){ histBox.innerHTML='<div class="ops-empty">지난 모임 기록이 없습니다.</div>'; return; }
     histBox.innerHTML='<div class="ops-table-wrap"><table class="ops-table"><thead><tr>'
-      +'<th>날짜</th><th>신청</th><th>입금</th><th>출석</th><th>노쇼</th><th>출석률</th><th>신규/재참가</th>'
+      +'<th>날짜</th><th>신청</th><th>입금/현장</th><th>출석</th><th>노쇼</th><th>출석률</th><th>신규/재참가</th>'
       +'</tr></thead><tbody>'+recent.map(function(x){
-        var recorded=(+x.attended||0)>0, no=recorded?Math.max(0,(+x.paid||0)-(+x.attended||0)):null;
-        var r1=recorded?opsPct(+x.attended||0,+x.guests||0):null, r2=recorded?opsPct(+x.attended||0,+x.paid||0):null;
-        var noRate=recorded?opsPct(no,+x.paid||0):null;
-        return '<tr><td>'+esc(opsDateLabel(x.date))+'</td><td data-l="신청">'+x.guests+'</td><td data-l="입금">'+x.paid+'</td>'
+        var confirmed=(+x.paid||0)+(+x.onsite||0);
+        var recorded=(+x.attended||0)>0, no=recorded?Math.max(0,confirmed-(+x.attended||0)):null;
+        var r1=recorded?opsPct(+x.attended||0,+x.guests||0):null, r2=recorded?opsPct(+x.attended||0,confirmed):null;
+        var noRate=recorded?opsPct(no,confirmed):null;
+        return '<tr><td>'+esc(opsDateLabel(x.date))+'</td><td data-l="신청">'+x.guests+'</td><td data-l="입금/현장">'+x.paid+' / '+(+x.onsite||0)+'</td>'
           +'<td data-l="출석" class="'+(recorded?'':'muted')+'">'+(recorded?x.attended:'미기록')+'</td>'
           +'<td data-l="노쇼" class="'+(recorded?'':'muted')+'">'+(recorded?no:'—')
           +(noRate===null?'':' <i class="ops-sub">'+noRate+'%</i>')+'</td>'
@@ -3762,11 +3768,13 @@ window.IROLANG = (function(){
       var sN = list.filter(function(x){ return +x.staff === 1; }).length;
       var gN = list.length - sN;
       var paidN = list.filter(function(x){ return +x.staff !== 1 && +x.paid === 1; }).length;
+      var onsiteN = list.filter(function(x){ return +x.staff !== 1 && +x.onsite === 1; }).length;
       var attN = list.filter(function(x){ return +x.staff !== 1 && +x.attended === 1; }).length;
       var jaN = list.filter(function(x){ return /日本|일본/.test(x.nat || ''); }).length;
       h.innerHTML = '<b>' + label + '</b><span>전체 ' + list.length
                   + ' · 일본 ' + jaN + ' · 한국 ' + (list.length - jaN)
                   + '</span><span>입금 ' + paidN + '/' + gN
+                  + (onsiteN ? ' · 현장 ' + onsiteN : '')
                   + ' · 출석 ' + attN + '/' + gN
                   + (sN ? ' · 스탭 ' + sN : '') + '</span>';
 
@@ -4049,34 +4057,57 @@ window.IROLANG = (function(){
     }
 
 
-    /* 입금 확인 — 음료비가 들어왔는지 표시합니다 */
+    /* 결제 상태 — 입금 / 현장지불 / 미입금을 분리 관리합니다. */
     var pay = document.createElement('label'); pay.className = 'sg-paid';
     var cb = document.createElement('input'); cb.type = 'checkbox';
-    cb.checked = +r.paid === 1; cb.disabled = +r.waitlisted === 1;
-    var pt = document.createElement('span'); pt.textContent = cb.checked ? '입금' : '미입금';
-    pay.classList.toggle('on', cb.checked);
+    var pt = document.createElement('span');
+    var onsite = document.createElement('button'); onsite.type = 'button'; onsite.className = 'sg-onsite';
+
+    function paintPaymentState(){
+      cb.checked = +r.paid === 1;
+      cb.disabled = +r.waitlisted === 1;
+      pt.textContent = +r.paid === 1 ? '입금' : '미입금';
+      pay.classList.toggle('on', +r.paid === 1);
+      onsite.classList.toggle('on', +r.onsite === 1);
+      onsite.textContent = +r.onsite === 1 ? '현장지불 ✓' : '현장지불';
+      onsite.disabled = +r.waitlisted === 1;
+    }
+    paintPaymentState();
+
     cb.addEventListener('change', function(){
       var v = cb.checked ? 1 : 0;
-      cb.disabled = true;
-      apiPost({ action:'signup_save', token: ADMIN.token, id: r.id, paid: v })
+      cb.disabled = true; onsite.disabled = true;
+      apiPost({action:'signup_save', token:ADMIN.token, id:r.id, paid:v, onsite:v ? 0 : r.onsite})
         .then(function(d){
-          cb.disabled = false;
-          if (!d || !d.ok) { cb.checked = !cb.checked; return; }
-          r.paid = v;
-          pt.textContent = v ? '입금' : '미입금';
-          pay.classList.toggle('on', !!v);
-          if (v && d.paid_confirmed) {
-            if (d.mail_attempted && d.mail === false) {
-              alert('입금 확인은 저장됐지만 참가 확정 메일 발송에 실패했습니다. Worker 로그/Brevo 상태를 확인해 주세요.');
-            } else if (!d.mail_attempted) {
-              alert('입금 확인은 저장됐지만 이메일 주소가 없어 참가 확정 메일은 발송되지 않았습니다.');
-            }
+          if(!d || !d.ok) throw new Error((d&&d.error)||'fail');
+          r.paid=+d.paid||0; r.onsite=+d.onsite||0; paintPaymentState();
+          if(v && d.paid_confirmed){
+            if(d.mail_attempted && d.mail===false) alert('입금 확인은 저장됐지만 참가 확정 메일 발송에 실패했습니다.');
+            else if(!d.mail_attempted) alert('입금 확인은 저장됐지만 이메일 주소가 없어 메일은 발송되지 않았습니다.');
           }
-          paintSgTally();
+          paintSgTally(); checkinPaint(); loadDashboard(true);
         })
-        .catch(function(){ cb.disabled = false; cb.checked = !cb.checked; });
+        .catch(function(){ cb.checked=!cb.checked; paintPaymentState(); });
     });
-    pay.appendChild(cb); pay.appendChild(pt); row.appendChild(pay);
+
+    onsite.addEventListener('click', function(){
+      var turningOn = +r.onsite !== 1;
+      if(turningOn && !confirm((r.name||'이 참가자')+' 님을 「현장지불」로 확정할까요?\\n현장지불 안내 메일이 자동 발송됩니다.')) return;
+      cb.disabled=true; onsite.disabled=true;
+      apiPost({action:'signup_save', token:ADMIN.token, id:r.id, onsite:turningOn?1:0, paid:turningOn?0:r.paid})
+        .then(function(d){
+          if(!d || !d.ok) throw new Error((d&&d.error)||'fail');
+          r.paid=+d.paid||0; r.onsite=+d.onsite||0; paintPaymentState();
+          if(turningOn && d.onsite_confirmed){
+            if(d.mail_attempted && d.mail===false) alert('현장지불 상태는 저장됐지만 안내 메일 발송에 실패했습니다.');
+            else if(!d.mail_attempted) alert('현장지불 상태는 저장됐지만 이메일 주소가 없어 안내 메일은 발송되지 않았습니다.');
+          }
+          paintSgTally(); checkinPaint(); loadDashboard(true);
+        })
+        .catch(function(e){ paintPaymentState(); alert('현장지불 상태를 저장하지 못했습니다. ('+fail(e)+')'); });
+    });
+
+    pay.appendChild(cb); pay.appendChild(pt); row.appendChild(pay); row.appendChild(onsite);
 
     /* 실제 출석 여부 — 현장에서 체크하면 D1에 바로 저장됩니다. */
     var att = document.createElement('label'); att.className = 'sg-att';
@@ -4143,8 +4174,8 @@ window.IROLANG = (function(){
     });
     var all=(SG.rows||[]).filter(function(r){return r.date===d&&+r.waitlisted!==1;});
     var done=all.filter(function(r){return +r.attended===1;}).length;
-    var paid=all.filter(function(r){return +r.staff===1||+r.paid===1;}).length;
-    sum.innerHTML='<span>출석 '+done+'/'+all.length+'</span><span>입금/스탭 '+paid+'/'+all.length+'</span>';
+    var confirmed=all.filter(function(r){return +r.staff===1||+r.paid===1||+r.onsite===1;}).length;
+    sum.innerHTML='<span>출석 '+done+'/'+all.length+'</span><span>참가확정 '+confirmed+'/'+all.length+'</span>';
     box.innerHTML='';
     if(!rows.length){box.innerHTML='<p class="seat-empty">표시할 참가자가 없습니다.</p>';return;}
     rows.forEach(function(r){
@@ -4154,8 +4185,9 @@ window.IROLANG = (function(){
       var meta=document.createElement('div');meta.className='checkin-meta';
       meta.textContent=(+r.staff===1?'스탭 · ':'')+(seatIsJa(r)?'일본':'한국');
       info.appendChild(n);info.appendChild(meta);
-      var pay=document.createElement('span');pay.className='checkin-pay'+((+r.staff===1||+r.paid===1)?' ok':'');
-      pay.textContent=(+r.staff===1?'스탭':(+r.paid===1?'입금':'미입금'));
+      var pay=document.createElement('span');
+      pay.className='checkin-pay'+((+r.staff===1||+r.paid===1)?' ok':(+r.onsite===1?' onsite':''));
+      pay.textContent=(+r.staff===1?'스탭':(+r.paid===1?'입금':(+r.onsite===1?'현장지불':'미입금')));
       var go=document.createElement('button');go.type='button';go.className='checkin-go';
       go.textContent=+r.attended===1?'출석 완료':'출석 체크';
       go.addEventListener('click',function(){
@@ -4221,7 +4253,7 @@ window.IROLANG = (function(){
     return (SG.rows||[]).filter(function(r){
       if (r.date!==d || +r.waitlisted===1) return false;
       if (!paidOnly) return true;
-      return +r.staff===1 || +r.paid===1;
+      return +r.staff===1 || +r.paid===1 || +r.onsite===1;
     });
   }
 
@@ -4969,7 +5001,7 @@ window.IROLANG = (function(){
   }
 
   function rosterCsvLines(rows){
-    var HEAD = ['No.','구분','이름','국적','음료','입금','메모','출석'];
+    var HEAD = ['No.','구분','이름','국적','음료','결제상태','메모','출석'];
     var isJa = function(r){ return /日本|일본/.test(String(r.nat || '')); };
     /* 일본인은 오십음순, 한국인은 가나다순으로 세웁니다 */
     var blocks = [
@@ -4992,7 +5024,7 @@ window.IROLANG = (function(){
           r.name || '',
           r.nat || '',
           SG_DRINK[r.drink] || '',
-          (+r.paid === 1 ? '입금' : '미입금'),
+          (+r.paid === 1 ? '입금' : (+r.onsite === 1 ? '현장지불' : '미입금')),
           r.memo || '',
           (+r.attended === 1 ? '출석' : '')
         ].map(csvQuote).join(','));
