@@ -161,7 +161,13 @@ body[data-lang="ja"] .ko{display:none!important}
 
 /* ---------- 히어로 ---------- */
 .hero{padding:92px 0 76px}
-.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+.hero.wrap{max-width:1240px}
+.hero-grid{
+  display:grid;
+  grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);
+  gap:44px;
+  align-items:center;
+}
 .pill{
   display:inline-flex;align-items:center;gap:.6em;
   background:#fff;border:1px solid var(--line);border-radius:999px;
@@ -178,7 +184,10 @@ h1{
 .hero-logo{justify-self:center;width:min(100%,var(--logo-w,380px));aspect-ratio:var(--logo-ar,990/962);background-image:var(--logo);background-size:contain;background-repeat:no-repeat;background-position:center;animation:float 7s ease-in-out infinite}
 
 .hero-logo.has-hero{
-  width:min(100%,560px);
+  width:100%;
+  max-width:640px;
+  justify-self:end;
+  transform:translateY(-10px);
   aspect-ratio:16/10;
   background-image:none!important;
   border:1px solid rgba(20,27,46,.08);
@@ -1299,6 +1308,11 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
 @media (min-width:961px){
   .hero-logo{width:min(100%,var(--logo-w,300px))}
   .hero h1{font-size:clamp(2.2rem,4.8vw,3.4rem)}
+}
+@media (min-width:961px) and (max-width:1180px){
+  .hero.wrap{max-width:1140px}
+  .hero-grid{grid-template-columns:1fr .95fr;gap:36px}
+  .hero-logo.has-hero{max-width:560px;transform:translateY(-4px)}
 }
 
 
@@ -5874,8 +5888,39 @@ window.IROLANG = (function(){
 .selection-fee{padding:16px;border-left:3px solid #b6924d;line-height:1.7}
 #somoim-card{margin:0;padding:20px}#somoim-card p{margin-bottom:12px;line-height:1.7}
 [hidden]{display:none!important}
-/* 모바일은 아래 갤러리와 이미지가 겹쳐 보이지 않도록 메인 우측 비주얼 자체를 숨깁니다. */
-@media(max-width:960px){.nav-links a[href="board.html"],.nav-links [data-open-kana],.nav-links a[href="#flow"]{display:none}.next-meeting{padding:18px;margin:18px 0}.hero-logo{display:none} .hero-cta{gap:10px}}
+/* 모바일: 갤러리와 구분되도록 대표 일러스트만 컴팩트하게 노출합니다.
+   기존 로고만 있는 경우에는 첫 화면을 길게 만들지 않도록 계속 숨깁니다. */
+@media(max-width:960px){
+  .nav-links a[href="board.html"],.nav-links [data-open-kana],.nav-links a[href="#flow"]{display:none}
+  .next-meeting{padding:18px;margin:18px 0}
+  .hero-logo{display:none}
+  .hero-logo.has-hero{
+    display:block;
+    order:0;
+    width:min(100%,620px);
+    max-width:620px;
+    justify-self:center;
+    margin:4px auto 2px;
+    transform:none;
+    aspect-ratio:16/10;
+    border-radius:22px;
+    box-shadow:0 18px 46px -30px rgba(20,27,46,.34);
+  }
+  .hero-logo.has-hero::after{
+    background:linear-gradient(180deg,rgba(255,255,255,.01) 60%,rgba(247,243,234,.08) 100%);
+  }
+  .hero-cta{gap:10px}
+}
+@media(max-width:520px){
+  .hero-grid{gap:22px}
+  .hero-logo.has-hero{
+    width:100%;
+    max-width:none;
+    margin:2px auto 0;
+    border-radius:18px;
+    box-shadow:0 14px 34px -26px rgba(20,27,46,.34);
+  }
+}
 </style>
 <script>
 (function(){
