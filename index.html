@@ -2174,7 +2174,8 @@ body.admin-on .gal-more{display:none!important}
         <div class="seat-actions">
           <button type="button" class="primary" id="seat-run">랜덤 배정</button>
           <button type="button" id="seat-reroll">다시 섞기</button>
-          <button type="button" id="seat-csv">배정 CSV</button>
+          <button type="button" id="seat-table-csv">테이블표 CSV</button>
+          <button type="button" id="seat-csv">원본 CSV</button>
           <button type="button" class="primary" id="seat-publish">저장 · 참가자 공개</button>
           <button type="button" id="seat-hide">공개 중지</button>
           <button type="button" id="seat-save-set">설정 저장</button>
@@ -4981,6 +4982,53 @@ window.IROLANG = (function(){
     });
   }
 
+  /* ── 운영용 테이블표 CSV ─────────────────────────────────
+     엑셀에서 바로 열었을 때 아래처럼 보이도록 만듭니다.
+
+       1회차
+       테이블 1 | 1 | 김개똥
+                | 2 | 이아무개
+                | 3 | 상구
+       테이블 2 | 1 | ...
+
+     CSV는 셀 병합 자체를 저장할 수 없으므로,
+     테이블명은 각 테이블의 첫 번째 행에만 쓰고 아래 행은 비웁니다.
+     회차는 실제 생성된 회차 수만큼(1~6회) 자동 출력됩니다. */
+  function seatTableCsv(){
+    var res=SEAT.result;
+    if(!res) return alert('먼저 자리 배정을 해 주세요.');
+
+    var lines=[];
+    lines.push([res.date+' 자리배정','',''].map(csvQuote).join(','));
+    lines.push('');
+
+    res.rounds.forEach(function(tables,ri){
+      lines.push([String(ri+1)+'회차','',''].map(csvQuote).join(','));
+
+      tables.forEach(function(tb,ti){
+        /* 관리자 화면과 동일하게 일본 → 한국 순, 각 그룹 안 이름순 */
+        var ordered=nameSort(tb.filter(function(r){return seatIsJa(r);}),true)
+          .concat(nameSort(tb.filter(function(r){return !seatIsJa(r);}),false));
+
+        ordered.forEach(function(p,pi){
+          lines.push([
+            pi===0 ? ('테이블 '+(ti+1)) : '',
+            pi+1,
+            p.name || '이름 없음'
+          ].map(csvQuote).join(','));
+        });
+      });
+
+      /* 회차 사이 한 줄 비우기 */
+      if(ri < res.rounds.length-1) lines.push('');
+    });
+
+    triggerCsvDownload(
+      'irotomo-테이블표-'+res.date+'.csv',
+      lines.join('\r\n')
+    );
+  }
+
   function seatCsv(){
     var res=SEAT.result; if(!res) return alert('먼저 자리 배정을 해 주세요.');
     var lines=[['날짜','회차','테이블','구분','이름','국적'].map(csvQuote).join(',')];
@@ -5125,6 +5173,7 @@ window.IROLANG = (function(){
   on('seat-load-set','click',seatPresetLoad);
   on('seat-run','click',seatGenerate);
   on('seat-reroll','click',seatGenerate);
+  on('seat-table-csv','click',seatTableCsv);
   on('seat-csv','click',seatCsv);
   on('seat-publish','click',seatPublish);
   on('seat-hide','click',seatHide);
