@@ -2174,6 +2174,7 @@ body.admin-on .gal-more{display:none!important}
         <div class="seat-actions">
           <button type="button" class="primary" id="seat-run">랜덤 배정</button>
           <button type="button" id="seat-reroll">다시 섞기</button>
+          <button type="button" id="seat-xlsx">테이블표 XLSX</button>
           <button type="button" id="seat-table-csv">테이블표 CSV</button>
           <button type="button" id="seat-csv">원본 CSV</button>
           <button type="button" class="primary" id="seat-publish">저장 · 참가자 공개</button>
@@ -4982,6 +4983,179 @@ window.IROLANG = (function(){
     });
   }
 
+  /* ── 자리배정 XLSX ─────────────────────────────────────────
+     XLSX 기능은 관리자 버튼을 누를 때만 외부 라이브러리를 불러옵니다.
+     일반 방문자의 초기 페이지 로딩에는 영향을 주지 않습니다. */
+  var SEAT_XLSX_LOADING = null;
+
+  function seatEnsureXlsx(){
+    if(window.XLSX && window.XLSX.utils && window.XLSX.writeFile){
+      return Promise.resolve(window.XLSX);
+    }
+    if(SEAT_XLSX_LOADING) return SEAT_XLSX_LOADING;
+
+    var urls=[
+      'https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js',
+      'https://unpkg.com/xlsx-js-style@1.2.0/dist/xlsx.bundle.js'
+    ];
+
+    SEAT_XLSX_LOADING = new Promise(function(resolve,reject){
+      function tryUrl(i){
+        if(i>=urls.length){
+          SEAT_XLSX_LOADING=null;
+          reject(new Error('XLSX 라이브러리를 불러오지 못했습니다.'));
+          return;
+        }
+        var sc=document.createElement('script');
+        sc.src=urls[i];
+        sc.async=true;
+        sc.onload=function(){
+          if(window.XLSX && window.XLSX.utils && window.XLSX.writeFile){
+            resolve(window.XLSX);
+          }else{
+            try{sc.remove();}catch(e){}
+            tryUrl(i+1);
+          }
+        };
+        sc.onerror=function(){
+          try{sc.remove();}catch(e){}
+          tryUrl(i+1);
+        };
+        document.head.appendChild(sc);
+      }
+      tryUrl(0);
+    });
+
+    return SEAT_XLSX_LOADING;
+  }
+
+  function seatOrderedTable(tb){
+    return nameSort(tb.filter(function(r){return seatIsJa(r);}),true)
+      .concat(nameSort(tb.filter(function(r){return !seatIsJa(r);}),false));
+  }
+
+  function seatSheetRows(tables, roundNo, date){
+    var aoa=[];
+    aoa.push([date+' · '+roundNo+'회차 자리배정','','']);
+    aoa.push(['테이블','No.','이름']);
+
+    var merges=[];
+    var rowIndex=2; /* 0-based: 실제 참가자 첫 행은 엑셀 3행 */
+
+    tables.forEach(function(tb,ti){
+      var ordered=seatOrderedTable(tb);
+      if(!ordered.length) return;
+
+      var start=rowIndex;
+      ordered.forEach(function(p,pi){
+        aoa.push([
+          pi===0 ? ('테이블 '+(ti+1)) : '',
+          pi+1,
+          p.name || '이름 없음'
+        ]);
+        rowIndex++;
+      });
+
+      if(ordered.length>1){
+        merges.push({s:{r:start,c:0},e:{r:rowIndex-1,c:0}});
+      }
+    });
+
+    return {aoa:aoa,merges:merges};
+  }
+
+  function seatStyleSheet(ws, merges){
+    var XLSX=window.XLSX;
+    var ref=XLSX.utils.decode_range(ws['!ref'] || 'A1:C1');
+
+    var thin={style:'thin',color:{rgb:'B8BDC7'}};
+    var border={top:thin,bottom:thin,left:thin,right:thin};
+
+    for(var R=ref.s.r; R<=ref.e.r; R++){
+      for(var C=ref.s.c; C<=ref.e.c; C++){
+        var addr=XLSX.utils.encode_cell({r:R,c:C});
+        if(!ws[addr]) ws[addr]={t:'s',v:''};
+
+        var style={
+          font:{name:'Arial',sz:11,color:{rgb:'172033'}},
+          alignment:{
+            vertical:'center',
+            horizontal:C===2?'left':'center',
+            wrapText:true
+          },
+          border:border,
+          fill:{patternType:'solid',fgColor:{rgb:'FFFFFF'}}
+        };
+
+        if(R===0){
+          style.font={name:'Arial',sz:14,bold:true,color:{rgb:'172033'}};
+          style.fill={patternType:'solid',fgColor:{rgb:'F6F1E6'}};
+          style.alignment={vertical:'center',horizontal:'left'};
+        }else if(R===1){
+          style.font={name:'Arial',sz:10,bold:true,color:{rgb:'5C6480'}};
+          style.fill={patternType:'solid',fgColor:{rgb:'F7F8FA'}};
+          style.alignment={vertical:'center',horizontal:'center'};
+        }else if(C===0){
+          style.font={name:'Arial',sz:11,bold:true,color:{rgb:'172033'}};
+          style.fill={patternType:'solid',fgColor:{rgb:'FFF9ED'}};
+          style.alignment={vertical:'center',horizontal:'center',wrapText:true};
+        }
+
+        ws[addr].s=style;
+      }
+    }
+
+    ws['!merges']=(ws['!merges']||[]).concat(merges||[]);
+    /* 제목도 A1:C1 병합 */
+    ws['!merges'].push({s:{r:0,c:0},e:{r:0,c:2}});
+
+    ws['!cols']=[
+      {wch:14},
+      {wch:7},
+      {wch:22}
+    ];
+
+    ws['!rows']=[];
+    for(var r=0;r<=ref.e.r;r++){
+      ws['!rows'][r]={hpt:r===0?25:(r===1?20:22)};
+    }
+  }
+
+  function seatXlsx(){
+    var res=SEAT.result;
+    if(!res) return alert('먼저 자리 배정을 해 주세요.');
+
+    var btn=$a('seat-xlsx');
+    var oldText=btn ? btn.textContent : '';
+    if(btn){btn.disabled=true;btn.textContent='XLSX 만드는 중…';}
+
+    seatEnsureXlsx().then(function(XLSX){
+      var wb=XLSX.utils.book_new();
+
+      res.rounds.forEach(function(tables,ri){
+        var built=seatSheetRows(tables,ri+1,res.date);
+        var ws=XLSX.utils.aoa_to_sheet(built.aoa);
+        seatStyleSheet(ws,built.merges);
+        XLSX.utils.book_append_sheet(wb,ws,String(ri+1)+'회차');
+      });
+
+      XLSX.writeFile(
+        wb,
+        'irotomo-자리배정-'+res.date+'.xlsx',
+        {bookType:'xlsx',cellStyles:true,compression:true}
+      );
+    }).catch(function(err){
+      console.error('xlsx export failed',err);
+      alert(
+        'XLSX 파일을 만들지 못했습니다.\n\n'+
+        '네트워크 또는 브라우저에서 XLSX 라이브러리 로딩이 차단됐을 수 있습니다.\n'+
+        '잠시 후 다시 시도하거나 「테이블표 CSV」를 이용해 주세요.'
+      );
+    }).then(function(){
+      if(btn){btn.disabled=false;btn.textContent=oldText||'테이블표 XLSX';}
+    });
+  }
+
   /* ── 운영용 테이블표 CSV ─────────────────────────────────
      엑셀에서 바로 열었을 때 아래처럼 보이도록 만듭니다.
 
@@ -5007,8 +5181,7 @@ window.IROLANG = (function(){
 
       tables.forEach(function(tb,ti){
         /* 관리자 화면과 동일하게 일본 → 한국 순, 각 그룹 안 이름순 */
-        var ordered=nameSort(tb.filter(function(r){return seatIsJa(r);}),true)
-          .concat(nameSort(tb.filter(function(r){return !seatIsJa(r);}),false));
+        var ordered=seatOrderedTable(tb);
 
         ordered.forEach(function(p,pi){
           lines.push([
@@ -5039,7 +5212,10 @@ window.IROLANG = (function(){
         });
       });
     });
-    download('irotomo-자리배정-'+res.date+'.csv',lines.join('\n'));
+    triggerCsvDownload(
+      'irotomo-자리배정-'+res.date+'.csv',
+      lines.join('\r\n')
+    );
   }
 
   function seatStartMin(){
@@ -5173,6 +5349,7 @@ window.IROLANG = (function(){
   on('seat-load-set','click',seatPresetLoad);
   on('seat-run','click',seatGenerate);
   on('seat-reroll','click',seatGenerate);
+  on('seat-xlsx','click',seatXlsx);
   on('seat-table-csv','click',seatTableCsv);
   on('seat-csv','click',seatCsv);
   on('seat-publish','click',seatPublish);
@@ -5323,18 +5500,38 @@ window.IROLANG = (function(){
   /* 원본 CSV는 기존 기능을 유지하되 공용 helper는 별도로 둡니다. */
   function triggerCsvDownload(filename, text){
     try {
+      var blob = new Blob(['\ufeff', String(text || '')], {
+        type:'text/csv;charset=utf-8'
+      });
+      var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
-      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\ufeff' + text);
+      a.href = url;
       a.download = filename;
+      a.rel = 'noopener';
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
-      setTimeout(function(){ try { a.remove(); } catch(e) {} }, 1000);
+      setTimeout(function(){
+        try { a.remove(); } catch(e) {}
+        try { URL.revokeObjectURL(url); } catch(e) {}
+      }, 1500);
       return true;
     } catch (e) {
       console.error('csv download failed', e);
-      alert('파일을 만들지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
-      return false;
+      /* 아주 오래된/제한된 브라우저용 fallback */
+      try {
+        var b = document.createElement('a');
+        b.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\ufeff' + String(text || ''));
+        b.download = filename;
+        b.style.display = 'none';
+        document.body.appendChild(b);
+        b.click();
+        setTimeout(function(){try{b.remove();}catch(_e){}},1000);
+        return true;
+      } catch (e2) {
+        alert('파일을 만들지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
+        return false;
+      }
     }
   }
 
