@@ -1543,81 +1543,95 @@ body.admin-on .gal-more{display:none!important}
       <div class="hero-copy">
         <span class="pill ko"><i></i><span class="ko" data-c="c09">매주 일요일 15:00 – 17:30 · 서울 여의도</span></span>
         <span class="pill ja"><i></i><span class="ja" data-c="c09">毎週日曜 15:00 – 17:30 · ソウル・ヨイド</span></span>
+
         <h1 class="ko" data-c="c10">매주 일요일,<br>일본어로 이야기하는<br>두 시간 반</h1>
         <h1 class="ja" data-c="c10">毎週日曜、<br>韓国語で話す<br>2時間半</h1>
+
         <p class="lead ko" data-c="v2-c11">일본인 참가자들과 4~6명씩 앉아 이야기하는 한일교류회입니다. 혼자 오시는 분이 대부분이고, 자리는 저희가 배정해 드려요. 간단한 일본어 회화가 가능하면 함께하실 수 있어요.</p>
         <p class="lead ja" data-c="v2-c11">韓国人の参加者と4〜6人でテーブルを囲む日韓交流会です。おひとりでの参加がほとんど。席はこちらでご案内します。韓国語が話せなくても大丈夫です。</p>
-      </div>
-      <div class="hero-logo" id="hero-visual" role="img" aria-label="이로토모 한일교류회">
-          <img id="hero-image"
-               alt="이로토모 한일교류회 모임 일러스트"
-               decoding="async" fetchpriority="high" hidden>
-          <span id="hero-tools">
-            <button type="button" id="hero-pick">대표 이미지</button>
-            <select id="hero-pos" aria-label="대표 이미지 초점 위치">
-              <option value="left">왼쪽</option>
-              <option value="center">중앙</option>
-              <option value="right">오른쪽</option>
-            </select>
-            <button type="button" class="sub" id="hero-remove">이미지 제거</button>
-            <span id="hero-state"></span>
-          </span>
-          <span id="logo-tools">
-            <button type="button" id="logo-pick">이미지</button>
-            <input type="range" id="logo-size" min="140" max="620" step="10" aria-label="로고 크기">
-            <button type="button" class="sub" id="logo-reset">기본</button>
-            <span id="logo-state"></span>
-          </span>
+
+        <div class="hero-proof">
+          <p class="hero-stat"><span class="ko" data-c="c89">지난주에는 일본인 {ja}명 · 한국인 {ko}명이 함께했습니다</span><span class="ja" data-c="c89">先週は日本人{ja}名・韓国人{ko}名の方にご参加いただきました</span></p>
+          <p class="hero-note ko" data-c="c14">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
+          <p class="hero-note ja" data-c="c14">事前申込制です。当日参加は受け付けておりません。</p>
         </div>
+      </div>
+
+      <div class="hero-logo" id="hero-visual" role="img" aria-label="이로토모 한일교류회">
+        <img id="hero-image"
+             alt="이로토모 한일교류회 모임 일러스트"
+             decoding="async" fetchpriority="high" hidden>
+        <span id="hero-tools">
+          <button type="button" id="hero-pick">대표 이미지</button>
+          <select id="hero-pos" aria-label="대표 이미지 초점 위치">
+            <option value="left">왼쪽</option>
+            <option value="center">중앙</option>
+            <option value="right">오른쪽</option>
+          </select>
+          <button type="button" class="sub" id="hero-remove">이미지 제거</button>
+          <span id="hero-state"></span>
+        </span>
+        <span id="logo-tools">
+          <button type="button" id="logo-pick">이미지</button>
+          <input type="range" id="logo-size" min="140" max="620" step="10" aria-label="로고 크기">
+          <button type="button" class="sub" id="logo-reset">기본</button>
+          <span id="logo-state"></span>
+        </span>
+      </div>
+
+      <input type="file" id="hero-file" accept="image/*" hidden>
+      <input type="file" id="logo-file" accept="image/*" hidden>
+    </div>
+
+    <div class="hero-bottom">
       <div class="hero-meta">
         <div class="next-meeting" id="next-meeting" aria-live="polite">
-<p class="eyebrow"><span class="ko">다음 신청 가능 모임</span><span class="ja">次のお申し込み可能な日程</span></p>
-<p id="next-meeting-date"><span class="ko">일정 확인 중…</span><span class="ja">日程を確認中…</span></p>
-<p id="next-meeting-time" hidden></p>
-<p class="next-price"><span class="ko"><span class="next-price-item">한국인 16,000원</span> · <wbr><span class="next-price-item">일본인 6,000원</span><br>모두 음료 한 잔 포함</span><span class="ja"><span class="next-price-item">日本人 6,000ウォン</span> · <wbr><span class="next-price-item">韓国人 16,000ウォン</span><br>どちらもドリンク1杯込み</span></p>
-<a href="#apply" id="next-meeting-apply" class="btn btn-primary" hidden><span class="ko">이 날짜로 신청하기</span><span class="ja">この日程で申し込む</span></a>
-</div>
-        <div class="hero-cta">
-          <a class="btn btn-gold btn-lg ko seat-link" href="seat.html">좌석 확인</a>
-          <a class="btn btn-gold btn-lg ja seat-link" href="seat.html">席の確認</a>
-          <a class="hero-photo-link ko" href="#gallery" data-c="v2-c13">모임 사진 먼저 보기</a>
-          <a class="hero-photo-link ja" href="#gallery" data-c="v2-c13">会の写真を見る</a>
-        </div>
-        <!-- 지난 회차 실적 — 관리자에서 숫자만 고쳐 쓰시면 됩니다.
-             «1/1» 처럼 보이는 문제를 막는 자리입니다. -->
-        <p class="hero-stat"><span class="ko" data-c="c89">지난주에는 일본인 {ja}명 · 한국인 {ko}명이 함께했습니다</span><span class="ja" data-c="c89">先週は日本人{ja}名・韓国人{ko}名の方にご参加いただきました</span></p>
-        <p class="hero-note ko" data-c="c14">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
-        <p class="hero-note ja" data-c="c14">事前申込制です。当日参加は受け付けておりません。</p>
-      </div>
-        <input type="file" id="hero-file" accept="image/*" hidden>
-        <input type="file" id="logo-file" accept="image/*" hidden>
-    </div>
-  </div>
+          <p class="eyebrow"><span class="ko">다음 신청 가능 모임</span><span class="ja">次のお申し込み可能な日程</span></p>
+          <p id="next-meeting-date"><span class="ko">일정 확인 중…</span><span class="ja">日程を確認中…</span></p>
+          <p id="next-meeting-time" hidden></p>
+          <p class="next-price">
+            <span class="ko"><span class="next-price-item">한국인 16,000원</span> · <wbr><span class="next-price-item">일본인 6,000원</span><br>모두 음료 한 잔 포함</span>
+            <span class="ja"><span class="next-price-item">日本人 6,000ウォン</span> · <wbr><span class="next-price-item">韓国人 16,000ウォン</span><br>どちらもドリンク1杯込み</span>
+          </p>
 
-  <!-- 팩트 -->
-  <div class="wrap">
-    <dl class="facts reveal">
-      <div>
-        <dt><span class="ko" data-c="c15">일시</span><span class="ja" data-c="c15">日時</span></dt>
-        <dd class="ko" data-schedule="ko">매주 일요일<br>15:00 – 17:30</dd>
-        <dd class="ja" data-schedule="ja">毎週日曜日<br>15:00 – 17:30</dd>
+          <div class="next-actions">
+            <a href="#apply" id="next-meeting-apply" class="btn btn-primary" hidden>
+              <span class="ko">이 날짜로 신청하기</span>
+              <span class="ja">この日程で申し込む</span>
+            </a>
+            <a class="hero-photo-link" href="#gallery">
+              <span class="ko">모임 사진 먼저 보기</span>
+              <span class="ja">会の写真を見る</span>
+            </a>
+            <a class="btn btn-gold ko seat-link next-seat-link" href="seat.html">좌석 확인</a>
+            <a class="btn btn-gold ja seat-link next-seat-link" href="seat.html">席の確認</a>
+          </div>
+        </div>
       </div>
-      <div>
-        <dt><span class="ko" data-c="c16">장소</span><span class="ja" data-c="c16">場所</span></dt>
-        <dd class="ko" data-c="c17">카페희다 여의도점<br>국제금융로8길 31, 1층</dd>
-        <dd class="ja" data-c="c17">カフェ・ヒダ ヨイド店<br>국제금융로8길 31, 1층</dd>
-      </div>
-      <div>
-        <dt><span class="ko" data-c="c18">참가비</span><span class="ja" data-c="c18">参加費</span></dt>
-        <dd class="ko" data-c="c19">한국인 10,000원 + 음료비 6,000원<br>일본인 음료비 6,000원</dd>
-        <dd class="ja" data-c="c19">日本の方 ドリンク代6,000ウォン<br>韓国の方 10,000ウォン + ドリンク代6,000ウォン</dd>
-      </div>
-      <div>
-        <dt><span class="ko" data-c="c20">신청</span><span class="ja" data-c="c20">申込</span></dt>
-        <dd class="ko" data-c="c21">사전 신청제<br>당일 참가 불가</dd>
-        <dd class="ja" data-c="c21">事前申込制<br>当日参加は不可</dd>
-      </div>
-    </dl>
+
+      <dl class="facts reveal">
+        <div>
+          <dt><span class="ko" data-c="c15">일시</span><span class="ja" data-c="c15">日時</span></dt>
+          <dd class="ko" data-schedule="ko">매주 일요일<br>15:00 – 17:30</dd>
+          <dd class="ja" data-schedule="ja">毎週日曜日<br>15:00 – 17:30</dd>
+        </div>
+        <div>
+          <dt><span class="ko" data-c="c16">장소</span><span class="ja" data-c="c16">場所</span></dt>
+          <dd class="ko" data-c="c17">카페희다 여의도점<br>국제금융로8길 31, 1층</dd>
+          <dd class="ja" data-c="c17">カフェ・ヒダ ヨイド店<br>국제금융로8길 31, 1층</dd>
+        </div>
+        <div>
+          <dt><span class="ko" data-c="c18">참가비</span><span class="ja" data-c="c18">参加費</span></dt>
+          <dd class="ko" data-c="c19">한국인 10,000원 + 음료비 6,000원<br>일본인 음료비 6,000원</dd>
+          <dd class="ja" data-c="c19">日本の方 ドリンク代6,000ウォン<br>韓国の方 10,000ウォン + ドリンク代6,000ウォン</dd>
+        </div>
+        <div>
+          <dt><span class="ko" data-c="c20">신청</span><span class="ja" data-c="c20">申込</span></dt>
+          <dd class="ko" data-c="c21">사전 신청제<br>당일 참가 불가</dd>
+          <dd class="ja" data-c="c21">事前申込制<br>当日参加は不可</dd>
+        </div>
+      </dl>
+    </div>
   </div>
 
   <!-- 활동 사진 -->
@@ -6077,6 +6091,208 @@ window.IROLANG = (function(){
     box-shadow:0 14px 34px -26px rgba(20,27,46,.34);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   cf47 HERO 최종 구조
+   PC : 카피 + 대형 일러스트 / 아래 일정 CTA + 핵심 정보
+   MOB: 카피 → 일러스트 → 일정 CTA → 핵심 정보
+   ═══════════════════════════════════════════════════════════ */
+.hero-grid{
+  grid-template-columns:minmax(0,.36fr) minmax(0,.64fr)!important;
+  grid-template-areas:"copy visual"!important;
+  gap:34px!important;
+  align-items:center!important;
+}
+.hero-copy{grid-area:copy!important;max-width:470px!important}
+.hero-logo{grid-area:visual!important}
+
+.hero-proof{
+  margin-top:24px;
+  padding-top:20px;
+  border-top:1px solid var(--line-2);
+}
+.hero-proof .hero-stat{
+  margin:0;
+  font-size:clamp(17px,1.45vw,20px);
+  font-weight:700;
+  line-height:1.65;
+}
+.hero-proof .hero-note{
+  margin-top:14px;
+  font-size:13px;
+}
+
+.hero-bottom{
+  display:grid;
+  grid-template-columns:minmax(300px,.36fr) minmax(0,.64fr);
+  gap:20px;
+  align-items:stretch;
+  margin-top:30px;
+}
+.hero-bottom .hero-meta{
+  max-width:none!important;
+  margin:0!important;
+  min-height:0!important;
+}
+.hero-bottom .next-meeting{
+  position:relative!important;
+  left:auto!important;
+  top:auto!important;
+  width:100%!important;
+  height:100%;
+  margin:0!important;
+  padding:20px 22px!important;
+  border-radius:17px!important;
+  background:#fffdf8!important;
+  backdrop-filter:none!important;
+  box-shadow:0 14px 34px -28px rgba(32,39,64,.30)!important;
+}
+.hero-bottom #next-meeting-date{
+  font-size:clamp(26px,2.1vw,30px)!important;
+}
+.hero-bottom #next-meeting-time{
+  font-size:16px!important;
+  margin:5px 0 11px!important;
+}
+.hero-bottom .next-price{
+  font-size:13.5px!important;
+  line-height:1.65!important;
+  margin:0 0 14px!important;
+}
+.next-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  align-items:stretch;
+}
+.next-actions #next-meeting-apply,
+.next-actions .hero-photo-link{
+  width:100%;
+  min-height:46px!important;
+  padding:10px 12px!important;
+  justify-content:center;
+}
+.next-actions .next-seat-link{
+  grid-column:1/-1;
+  width:100%;
+  min-height:42px;
+  justify-content:center;
+}
+
+.hero-bottom .facts{
+  max-width:none!important;
+  width:100%;
+  height:100%;
+  margin:0!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  border-radius:17px;
+}
+.hero-bottom .facts>div{
+  min-width:0;
+  padding:20px 18px!important;
+}
+.hero-bottom .facts dt{
+  font-size:11px!important;
+  margin-bottom:8px;
+}
+.hero-bottom .facts dd{
+  font-size:clamp(14px,1.05vw,16px)!important;
+  line-height:1.55!important;
+}
+
+@media (min-width:961px) and (max-width:1180px){
+  .hero-grid{
+    grid-template-columns:minmax(0,.39fr) minmax(0,.61fr)!important;
+    gap:26px!important;
+  }
+  .hero-bottom{
+    grid-template-columns:minmax(300px,.39fr) minmax(0,.61fr);
+    gap:16px;
+  }
+  .hero-bottom .facts{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .hero-bottom .facts>div:nth-child(2){
+    border-right:0;
+  }
+  .hero-bottom .facts>div:nth-child(-n+2){
+    border-bottom:1px solid var(--line-2);
+  }
+}
+
+@media (max-width:960px){
+  .hero-grid{
+    grid-template-columns:1fr!important;
+    grid-template-areas:
+      "copy"
+      "visual"!important;
+    gap:20px!important;
+    text-align:left!important;
+  }
+  .hero-copy{max-width:none!important}
+  .hero-proof{
+    margin-top:20px;
+    padding-top:16px;
+  }
+  .hero-proof .hero-stat{
+    font-size:17px;
+  }
+  .hero-logo.has-hero{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    transform:none!important;
+  }
+
+  .hero-bottom{
+    grid-template-columns:1fr;
+    gap:14px;
+    margin-top:18px;
+  }
+  .hero-bottom .next-meeting{
+    padding:18px!important;
+  }
+  .next-actions{
+    grid-template-columns:1fr 1fr;
+  }
+  .hero-bottom .facts{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .hero-bottom .facts>div:nth-child(2){
+    border-right:0;
+  }
+  .hero-bottom .facts>div:nth-child(-n+2){
+    border-bottom:1px solid var(--line-2);
+  }
+}
+
+@media (max-width:520px){
+  .hero-bottom{
+    gap:12px;
+    margin-top:16px;
+  }
+  .next-actions{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .next-actions #next-meeting-apply,
+  .next-actions .hero-photo-link{
+    min-height:48px!important;
+    font-size:13px!important;
+  }
+  .hero-bottom .facts{
+    grid-template-columns:1fr!important;
+  }
+  .hero-bottom .facts>div{
+    border-right:0!important;
+    border-bottom:1px solid var(--line-2)!important;
+    padding:17px 18px!important;
+  }
+  .hero-bottom .facts>div:last-child{
+    border-bottom:0!important;
+  }
+}
+
 </style>
 <script>
 (function(){
