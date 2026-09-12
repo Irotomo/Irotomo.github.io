@@ -6506,5 +6506,377 @@ body.admin-on #fee-details .notice-body{padding:12px 0}
  syncNoticeEditor();
 })();
 </script>
+
+<style id="cf48-hero-layout-hotfix">
+/* cf48: cf47에서 hero-meta의 기존 grid-area:meta가 hero-bottom 안에서도 살아남아
+   카드/팩트가 엉뚱한 implicit grid에 배치되던 문제를 강제로 정리합니다. */
+
+@media (min-width:961px){
+  .hero.wrap{
+    max-width:1240px!important;
+  }
+
+  .hero-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,.36fr) minmax(0,.64fr)!important;
+    grid-template-areas:"copy visual"!important;
+    gap:32px!important;
+    align-items:center!important;
+    min-height:0!important;
+  }
+
+  .hero-copy{
+    grid-area:copy!important;
+    max-width:470px!important;
+    min-width:0!important;
+  }
+
+  .hero-logo{
+    grid-area:visual!important;
+  }
+
+  .hero-logo.has-hero{
+    width:100%!important;
+    max-width:none!important;
+    min-height:0!important;
+    margin:0!important;
+    transform:none!important;
+    justify-self:stretch!important;
+    align-self:center!important;
+    aspect-ratio:16/10!important;
+  }
+
+  .hero-proof{
+    margin-top:22px!important;
+    padding-top:18px!important;
+  }
+
+  /* 핵심: 아래 영역은 이름 없는 implicit grid가 아니라 명시적 CTA / FACTS 영역 */
+  .hero-bottom{
+    display:grid!important;
+    grid-template-columns:minmax(300px,.36fr) minmax(0,.64fr)!important;
+    grid-template-areas:"cta facts"!important;
+    gap:20px!important;
+    width:100%!important;
+    margin:30px 0 0!important;
+    align-items:stretch!important;
+  }
+
+  .hero-bottom .hero-meta{
+    grid-area:cta!important;
+    position:static!important;
+    inset:auto!important;
+    width:auto!important;
+    max-width:none!important;
+    min-width:0!important;
+    min-height:0!important;
+    margin:0!important;
+  }
+
+  .hero-bottom .next-meeting{
+    position:relative!important;
+    inset:auto!important;
+    width:100%!important;
+    height:100%!important;
+    margin:0!important;
+    padding:20px 22px!important;
+    border-radius:17px!important;
+    box-sizing:border-box!important;
+    background:#fffdf8!important;
+    backdrop-filter:none!important;
+    box-shadow:0 14px 34px -28px rgba(32,39,64,.30)!important;
+  }
+
+  .hero-bottom #next-meeting-date{
+    font-size:clamp(26px,2.1vw,30px)!important;
+    margin:0!important;
+  }
+
+  .hero-bottom #next-meeting-time{
+    margin:5px 0 11px!important;
+    font-size:16px!important;
+  }
+
+  .hero-bottom .next-price{
+    margin:0 0 14px!important;
+    font-size:13.5px!important;
+    line-height:1.65!important;
+  }
+
+  .next-actions{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:9px!important;
+    align-items:stretch!important;
+  }
+
+  .next-actions #next-meeting-apply,
+  .next-actions .hero-photo-link{
+    width:100%!important;
+    min-width:0!important;
+    min-height:46px!important;
+    padding:10px 12px!important;
+    justify-content:center!important;
+    box-sizing:border-box!important;
+  }
+
+  .next-actions .next-seat-link{
+    grid-column:1/-1!important;
+    width:100%!important;
+    min-height:42px!important;
+    justify-content:center!important;
+  }
+
+  .hero-bottom .facts{
+    grid-area:facts!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    width:100%!important;
+    max-width:none!important;
+    height:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    border-radius:17px!important;
+    overflow:hidden!important;
+  }
+
+  .hero-bottom .facts>div{
+    min-width:0!important;
+    padding:20px 18px!important;
+    box-sizing:border-box!important;
+  }
+
+  .hero-bottom .facts dt{
+    font-size:11px!important;
+    margin-bottom:8px!important;
+  }
+
+  .hero-bottom .facts dd{
+    font-size:clamp(14px,1.05vw,16px)!important;
+    line-height:1.55!important;
+    overflow-wrap:anywhere!important;
+    word-break:keep-all!important;
+  }
+}
+
+@media (min-width:961px) and (max-width:1180px){
+  .hero-grid{
+    grid-template-columns:minmax(0,.39fr) minmax(0,.61fr)!important;
+    gap:24px!important;
+  }
+
+  .hero-bottom{
+    grid-template-columns:minmax(290px,.39fr) minmax(0,.61fr)!important;
+    gap:16px!important;
+  }
+
+  .hero-bottom .facts{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  .hero-bottom .facts>div:nth-child(2){
+    border-right:0!important;
+  }
+
+  .hero-bottom .facts>div:nth-child(-n+2){
+    border-bottom:1px solid var(--line-2)!important;
+  }
+}
+
+@media (max-width:960px){
+  .hero-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-areas:
+      "copy"
+      "visual"!important;
+    gap:20px!important;
+    min-height:0!important;
+    text-align:left!important;
+  }
+
+  .hero-copy{
+    grid-area:copy!important;
+    max-width:none!important;
+  }
+
+  .hero-logo{
+    grid-area:visual!important;
+  }
+
+  .hero-logo.has-hero{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    min-height:0!important;
+    margin:0!important;
+    transform:none!important;
+    justify-self:stretch!important;
+    aspect-ratio:16/10!important;
+  }
+
+  .hero-bottom{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-areas:
+      "cta"
+      "facts"!important;
+    gap:14px!important;
+    width:100%!important;
+    margin:18px 0 0!important;
+  }
+
+  .hero-bottom .hero-meta{
+    grid-area:cta!important;
+    position:static!important;
+    inset:auto!important;
+    width:auto!important;
+    max-width:none!important;
+    min-height:0!important;
+    margin:0!important;
+  }
+
+  .hero-bottom .next-meeting{
+    position:relative!important;
+    inset:auto!important;
+    width:100%!important;
+    height:auto!important;
+    margin:0!important;
+    padding:18px!important;
+    box-sizing:border-box!important;
+    backdrop-filter:none!important;
+  }
+
+  .next-actions{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;
+  }
+
+  .next-actions #next-meeting-apply,
+  .next-actions .hero-photo-link{
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  .hero-bottom .facts{
+    grid-area:facts!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+
+  .hero-bottom .facts>div{
+    min-width:0!important;
+  }
+
+  .hero-bottom .facts>div:nth-child(2){
+    border-right:0!important;
+  }
+
+  .hero-bottom .facts>div:nth-child(-n+2){
+    border-bottom:1px solid var(--line-2)!important;
+  }
+}
+
+@media (max-width:520px){
+  .hero-bottom{
+    gap:12px!important;
+    margin-top:16px!important;
+  }
+
+  .next-actions{
+    grid-template-columns:1fr 1fr!important;
+  }
+
+  .next-actions #next-meeting-apply,
+  .next-actions .hero-photo-link{
+    min-height:48px!important;
+    padding:10px!important;
+    font-size:13px!important;
+  }
+
+  .hero-bottom .facts{
+    grid-template-columns:1fr!important;
+  }
+
+  .hero-bottom .facts>div{
+    border-right:0!important;
+    border-bottom:1px solid var(--line-2)!important;
+    padding:17px 18px!important;
+  }
+
+  .hero-bottom .facts>div:last-child{
+    border-bottom:0!important;
+  }
+}
+</style>
+
+
+<style id="cf48a-consent-stable">
+/* 개인정보 동의 영역
+   펼친 상태의 높이를 기준으로 레이아웃을 고정합니다.
+   접었을 때는 상세 본문만 시각적으로 숨기고 공간은 그대로 유지합니다. */
+
+#apply-form .form-foot{
+  align-items:stretch;
+}
+
+#apply-form .consent{
+  flex:1 1 680px;
+  min-width:0;
+  box-sizing:border-box;
+}
+
+#apply-form .consent details{
+  position:relative;
+}
+
+/* 브라우저의 closed-details display:none 동작을 덮어써서
+   상세 본문이 차지하는 공간은 유지합니다. */
+#apply-form .consent details:not([open]) > p{
+  display:block;
+  visibility:hidden;
+  opacity:0;
+  pointer-events:none;
+  user-select:none;
+}
+
+#apply-form .consent details[open] > p{
+  visibility:visible;
+  opacity:1;
+  transition:opacity .16s ease;
+}
+
+/* 접고 펼쳐도 신청 버튼이 위/아래로 흔들리지 않게 가운데 고정 */
+#apply-form #submit{
+  align-self:center;
+  flex:none;
+}
+
+/* 폼 폭이 좁아지면 버튼은 아래로 내려가되 동의 박스 폭은 100% 유지 */
+@media(max-width:960px){
+  #apply-form .form-foot{
+    align-items:stretch;
+  }
+  #apply-form .consent{
+    flex:1 1 100%;
+    width:100%;
+  }
+  #apply-form #submit{
+    align-self:center;
+  }
+}
+
+@media(max-width:620px){
+  #apply-form #submit{
+    width:100%;
+    justify-content:center;
+  }
+}
+</style>
+
 </body>
 </html>
