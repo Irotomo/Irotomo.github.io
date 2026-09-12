@@ -205,9 +205,9 @@ h1{
   max-width:none;
   justify-self:end;
   align-self:center;
-  margin-left:-160px;
+  margin-left:-235px;
   margin-right:-22px;
-  transform:translateY(6px);
+  transform:translateY(4px);
   aspect-ratio:16/10;
   background-image:none!important;
   border:0;
@@ -227,10 +227,10 @@ h1{
   background:
     linear-gradient(90deg,
       rgba(247,243,234,.98) 0%,
-      rgba(247,243,234,.92) 14%,
-      rgba(247,243,234,.66) 26%,
-      rgba(247,243,234,.22) 40%,
-      rgba(247,243,234,0) 54%);
+      rgba(247,243,234,.88) 10%,
+      rgba(247,243,234,.52) 20%,
+      rgba(247,243,234,.16) 31%,
+      rgba(247,243,234,0) 40%);
   border-radius:inherit;
 }
 .hero-logo.has-hero::after{
@@ -1349,7 +1349,7 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
   .hero-copy,.hero-meta{max-width:520px}
   .hero-logo.has-hero{
     width:clamp(600px,56vw,720px);
-    margin-left:-100px;
+    margin-left:-155px;
     margin-right:-8px;
     transform:translateY(2px);
   }
@@ -5929,6 +5929,41 @@ window.IROLANG = (function(){
 .selection-fee{padding:16px;border-left:3px solid #b6924d;line-height:1.7}
 #somoim-card{margin:0;padding:20px}#somoim-card p{margin-bottom:12px;line-height:1.7}
 [hidden]{display:none!important}
+
+@media (min-width:961px){
+  .hero-grid{min-height:610px}
+  .hero-meta{
+    position:relative;
+    min-height:180px;
+  }
+  .hero-meta .next-meeting{
+    position:absolute;
+    z-index:6;
+    width:min(520px,43vw);
+    left:clamp(250px,28vw,390px);
+    top:-250px;
+    margin:0;
+    background:rgba(255,253,248,.96);
+    backdrop-filter:blur(10px);
+    box-shadow:0 24px 60px -34px rgba(20,27,46,.46);
+  }
+  .hero-meta .hero-cta{
+    margin-top:0;
+  }
+  .hero-logo.has-hero{
+    min-height:500px;
+  }
+}
+@media (min-width:961px) and (max-width:1180px){
+  .hero-grid{min-height:570px}
+  .hero-meta .next-meeting{
+    width:min(470px,44vw);
+    left:clamp(190px,24vw,285px);
+    top:-225px;
+  }
+  .hero-logo.has-hero{min-height:455px}
+}
+
 /* 모바일: 대표 일러스트가 있으면 제목/설명 바로 아래에 보여줍니다.
    다음 신청 카드보다 먼저 노출되어 메인 비주얼 역할을 하도록 조정했습니다. */
 @media(max-width:960px){
@@ -5943,6 +5978,16 @@ window.IROLANG = (function(){
     text-align:left;
   }
   .hero-copy,.hero-meta{max-width:none}
+  .hero-meta{position:relative;min-height:0}
+  .hero-meta .next-meeting{
+    position:relative;
+    width:auto;
+    left:auto;
+    top:auto;
+    margin:6px 0 10px;
+    backdrop-filter:none;
+  }
+
   .next-meeting{padding:18px;margin:6px 0 10px}
   .hero-logo{display:none}
   .hero-logo.has-hero{
@@ -5993,7 +6038,10 @@ function refresh(){
  var fee=document.getElementById('selection-fee');fee.hidden=!nat.value;
  fee.textContent=korean?(ja()?'合計16,000ウォン：ドリンク代6,000ウォンは事前振込、参加費10,000ウォンは当日お支払い。':'총 16,000원: 음료비 6,000원은 사전 입금, 참가비 10,000원은 당일 현장 결제입니다。'.replace('。','.')):japanese?(ja()?'合計6,000ウォン（ドリンク1杯込み）。お振込み先はメールでご案内します。':'총 6,000원(음료 한 잔 포함). 입금 계좌는 이메일로 안내드립니다.'):(ja()?'参加費の区分は info@irotomo.com へお問い合わせください。':'참가비 구분은 info@irotomo.com으로 문의해 주세요.');
  var available=Array.from(dp.options).find(function(o){return o.value&&!o.disabled;});
- quick.hidden=!ready||!available;
+ /* 날짜 옵션이 이미 로드돼 있으면 content-ready 이벤트를 놓쳤더라도
+    가장 빠른 일정 신청 버튼을 즉시 복원합니다. */
+ if(available) ready=true;
+ quick.hidden=!available;
  quick.dataset.date=available?available.value:'';
  document.getElementById('next-meeting-date').textContent=failed?(ja()?'日程を読み込めませんでした。再読み込みしてください。':'일정을 불러오지 못했어요. 새로고침해 주세요.'):!ready?(ja()?'日程を確認中…':'일정 확인 중…'):available?available.textContent:(ja()?'現在お申し込み可能な日程はありません。':'현재 신청 가능한 일정이 없습니다.');
  var timeNode=document.getElementById('next-meeting-time');
@@ -6011,7 +6059,11 @@ function refresh(){
 quick.addEventListener('click',function(){dp.value=quick.dataset.date;dp.dispatchEvent(new Event('change'));});
 nat.addEventListener('change',refresh);
 new MutationObserver(refresh).observe(document.body,{attributes:true,attributeFilter:['data-lang']});
-new MutationObserver(refresh).observe(dp,{childList:true,subtree:true,characterData:true});
+new MutationObserver(function(){
+  var usable=Array.from(dp.options).some(function(o){return o.value&&!o.disabled;});
+  if(usable) ready=true;
+  refresh();
+}).observe(dp,{childList:true,subtree:true,characterData:true,attributes:true});
 window.addEventListener('iro-content-ready',function(){ready=true;refresh();});
 window.addEventListener('iro-content-error',function(){failed=true;refresh();});
 document.getElementById('copy-address').addEventListener('click',async function(){
