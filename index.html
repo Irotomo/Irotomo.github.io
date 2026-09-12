@@ -1334,6 +1334,7 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
   transition:transform .2s ease}
 .consent details[open] summary::after{transform:rotate(-135deg);margin-top:2px}
 .consent details p{margin:10px 0 0;font-size:var(--fs-xs);line-height:1.8;color:#5C6480}
+.consent details p + p{margin-top:8px}
 
 /* ── 7. 히어로 균형 — 로고를 조금 줄이고 제목을 키웁니다 ── */
 @media (min-width:961px){
@@ -1568,6 +1569,26 @@ body.admin-on .gal-more{display:none!important}
             <span id="logo-state"></span>
           </span>
         </div>
+      <div class="hero-meta">
+        <div class="next-meeting" id="next-meeting" aria-live="polite">
+<p class="eyebrow"><span class="ko">다음 신청 가능 모임</span><span class="ja">次のお申し込み可能な日程</span></p>
+<p id="next-meeting-date"><span class="ko">일정 확인 중…</span><span class="ja">日程を確認中…</span></p>
+<p id="next-meeting-time" hidden></p>
+<p class="next-price"><span class="ko"><span class="next-price-item">한국인 16,000원</span> · <wbr><span class="next-price-item">일본인 6,000원</span><br>모두 음료 한 잔 포함</span><span class="ja"><span class="next-price-item">日本人 6,000ウォン</span> · <wbr><span class="next-price-item">韓国人 16,000ウォン</span><br>どちらもドリンク1杯込み</span></p>
+<a href="#apply" id="next-meeting-apply" class="btn btn-primary" hidden><span class="ko">이 날짜로 신청하기</span><span class="ja">この日程で申し込む</span></a>
+</div>
+        <div class="hero-cta">
+          <a class="btn btn-gold btn-lg ko seat-link" href="seat.html">좌석 확인</a>
+          <a class="btn btn-gold btn-lg ja seat-link" href="seat.html">席の確認</a>
+          <a class="hero-photo-link ko" href="#gallery" data-c="v2-c13">모임 사진 먼저 보기</a>
+          <a class="hero-photo-link ja" href="#gallery" data-c="v2-c13">会の写真を見る</a>
+        </div>
+        <!-- 지난 회차 실적 — 관리자에서 숫자만 고쳐 쓰시면 됩니다.
+             «1/1» 처럼 보이는 문제를 막는 자리입니다. -->
+        <p class="hero-stat"><span class="ko" data-c="c89">지난주에는 일본인 {ja}명 · 한국인 {ko}명이 함께했습니다</span><span class="ja" data-c="c89">先週は日本人{ja}名・韓国人{ko}名の方にご参加いただきました</span></p>
+        <p class="hero-note ko" data-c="c14">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
+        <p class="hero-note ja" data-c="c14">事前申込制です。当日参加は受け付けておりません。</p>
+      </div>
         <input type="file" id="hero-file" accept="image/*" hidden>
         <input type="file" id="logo-file" accept="image/*" hidden>
     </div>
@@ -1760,26 +1781,7 @@ body.admin-on .gal-more{display:none!important}
               <a href="https://map.naver.com/p/search/%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C8%EA%B8%B8%2031" target="_blank" rel="noopener">NAVER Map</a>
               <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5198049,126.9280064" target="_blank" rel="noopener">Google Maps</a>
             </div>
-      <div class="hero-meta">
-        <div class="next-meeting" id="next-meeting" aria-live="polite">
-<p class="eyebrow"><span class="ko">다음 신청 가능 모임</span><span class="ja">次のお申し込み可能な日程</span></p>
-<p id="next-meeting-date"><span class="ko">일정 확인 중…</span><span class="ja">日程を確認中…</span></p>
-<p id="next-meeting-time" hidden></p>
-<p class="next-price"><span class="ko"><span class="next-price-item">한국인 16,000원</span> · <wbr><span class="next-price-item">일본인 6,000원</span><br>모두 음료 한 잔 포함</span><span class="ja"><span class="next-price-item">日本人 6,000ウォン</span> · <wbr><span class="next-price-item">韓国人 16,000ウォン</span><br>どちらもドリンク1杯込み</span></p>
-<a href="#apply" id="next-meeting-apply" class="btn btn-primary" hidden><span class="ko">이 날짜로 신청하기</span><span class="ja">この日程で申し込む</span></a>
-</div>
-        <div class="hero-cta">
-          <a class="btn btn-gold btn-lg ko seat-link" href="seat.html">좌석 확인</a>
-          <a class="btn btn-gold btn-lg ja seat-link" href="seat.html">席の確認</a>
-          <a class="hero-photo-link ko" href="#gallery" data-c="v2-c13">모임 사진 먼저 보기</a>
-          <a class="hero-photo-link ja" href="#gallery" data-c="v2-c13">会の写真を見る</a>
-        </div>
-        <!-- 지난 회차 실적 — 관리자에서 숫자만 고쳐 쓰시면 됩니다.
-             «1/1» 처럼 보이는 문제를 막는 자리입니다. -->
-        <p class="hero-stat"><span class="ko" data-c="c89">지난주에는 일본인 {ja}명 · 한국인 {ko}명이 함께했습니다</span><span class="ja" data-c="c89">先週は日本人{ja}名・韓国人{ko}名の方にご参加いただきました</span></p>
-        <p class="hero-note ko" data-c="c14">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
-        <p class="hero-note ja" data-c="c14">事前申込制です。当日参加は受け付けておりません。</p>
-      </div>
+
     </div>
       <div class="map-side">
         <p class="mlabel ko" data-c="c47">카페희다 여의도점</p><p class="mlabel ja" data-c="c47">カフェ・ヒダ ヨイド店</p>
@@ -1957,19 +1959,18 @@ body.admin-on .gal-more{display:none!important}
             <div class="consent">
               <label>
                 <input type="checkbox" id="f-agree" required>
-                <span class="ko"><b>개인정보 수집·이용에 동의합니다</b> <span class="req">[필수]</span><br>
-                이름·국적·이메일·참가일·음료 선택과 입금 확인 여부를 신청 접수와 안내를 위해 보관하고, 모임 종료 후 6개월이 지나면 삭제합니다.</span>
-                <span class="ja"><b>個人情報の取得・利用に同意します</b> <span class="req">[必須]</span><br>
-                お名前・国籍・メールアドレス・ご参加日・お飲み物のご選択と入金確認の記録を、お申し込みの受付とご案内のためにお預かりし、会の終了後6か月で削除いたします。</span>
+                <span class="ko"><b>개인정보 수집·이용에 동의합니다</b> <span class="req">[필수]</span></span>
+                <span class="ja"><b>個人情報の取得・利用に同意します</b> <span class="req">[必須]</span></span>
               </label>
-              <!-- 자세한 고지는 접어 둡니다. 필수 항목은 위에 남기고,
-                   위탁·국외이전처럼 긴 설명만 «자세히» 안으로 넣었습니다. -->
               <details>
                 <summary><span class="ko">자세히 보기</span><span class="ja">詳しく見る</span></summary>
+                <p class="ko">이름·국적·이메일·참가일·음료 선택과 입금 확인 여부를 신청 접수와 안내를 위해 보관하고, 모임 종료 후 6개월이 지나면 삭제합니다.</p>
+                <p class="ja">お名前・国籍・メールアドレス・ご参加日・お飲み物のご選択と入金確認の記録を、お申し込みの受付とご案内のためにお預かりし、会の終了後6か月で削除いたします。</p>
                 <p class="ko">정보는 Cloudflare, Inc.(미국) 서버에 저장하고, 메일 발송에는 Brevo(Sendinblue SAS·프랑스)를 이용합니다. 자세한 내용은 <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>을 확인해 주세요.</p>
-                <p class="ja">情報は Cloudflare, Inc.（米国）のサーバーで保管し、メールの送信には Brevo（Sendinblue SAS・フランス）を利用しています。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。</p>
+                <p class="ja">情報は Cloudflare, Inc.（米国）のサーバーで保管し、メールの送信には Brevo（Sendinblue SAS・フランス）を利用しています。詳しくは <a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a> をご覧ください。</p>
+                <p class="ko">동의는 언제든 철회할 수 있고, 삭제를 원하시면 info@irotomo.com 으로 연락해 주세요. 철회하셔도 참가에는 영향이 없습니다.</p>
+                <p class="ja">同意はいつでも撤回でき、削除をご希望の場合は info@irotomo.com までご連絡ください。撤回されても、ご参加に影響はありません。</p>
               </details>
-              <p class="sub"><span class="ko">동의는 언제든 철회할 수 있고, 삭제를 원하시면 info@irotomo.com 으로 연락해 주세요. 철회하셔도 참가에는 영향이 없습니다.</span><span class="ja">同意はいつでも撤回でき、削除をご希望の場合は info@irotomo.com までご連絡ください。撤回されても、ご参加に影響はありません。</span></p>
             </div>
             <button class="btn btn-primary btn-lg" id="submit" type="submit"><span class="ko">신청하기</span><span class="ja">申し込む</span></button>
           </div>
@@ -5931,37 +5932,90 @@ window.IROLANG = (function(){
 [hidden]{display:none!important}
 
 @media (min-width:961px){
-  .hero-grid{min-height:610px}
+  .hero-grid{
+    min-height:unset;
+    gap:24px 28px;
+    align-items:start;
+  }
   .hero-meta{
     position:relative;
-    min-height:180px;
+    min-height:0;
+    max-width:470px;
+    margin-top:4px;
   }
   .hero-meta .next-meeting{
-    position:absolute;
-    z-index:6;
-    width:min(520px,43vw);
-    left:clamp(250px,28vw,390px);
-    top:-250px;
+    position:relative;
+    z-index:1;
+    width:100%;
+    left:auto;
+    top:auto;
     margin:0;
-    background:rgba(255,253,248,.96);
-    backdrop-filter:blur(10px);
-    box-shadow:0 24px 60px -34px rgba(20,27,46,.46);
+    padding:18px 20px 19px;
+    border-radius:18px;
+    background:rgba(255,253,248,.94);
+    backdrop-filter:blur(12px) saturate(1.04);
+    box-shadow:0 18px 42px -32px rgba(20,27,46,.34);
+  }
+  .hero-meta .next-meeting .eyebrow{
+    margin-bottom:8px;
+    font-size:11px;
+  }
+  .hero-meta #next-meeting-date{
+    font-size:clamp(26px,2.2vw,30px);
+    margin:0;
+  }
+  .hero-meta #next-meeting-time{
+    margin:5px 0 11px;
+    font-size:16px;
+  }
+  .hero-meta .next-price{
+    margin:0 0 12px;
+    font-size:13.5px;
+    line-height:1.65;
+  }
+  .hero-meta #next-meeting-apply{
+    min-height:44px;
+    padding:.72em 1.2em;
+    font-size:14px;
   }
   .hero-meta .hero-cta{
-    margin-top:0;
+    margin-top:14px;
+    justify-content:flex-start;
+    align-items:center;
+    gap:14px 18px;
   }
   .hero-logo.has-hero{
     min-height:500px;
   }
+
+  /* 히어로 아래 요약 카드(일시/장소/참가비/신청)는 PC에서 조금 더 컴팩트하게 */
+  .facts{
+    max-width:1080px;
+    margin:0 auto;
+  }
+  .facts > div{
+    padding:22px 24px;
+  }
 }
 @media (min-width:961px) and (max-width:1180px){
-  .hero-grid{min-height:570px}
-  .hero-meta .next-meeting{
-    width:min(470px,44vw);
-    left:clamp(190px,24vw,285px);
-    top:-225px;
+  .hero-grid{
+    min-height:unset;
+    gap:20px 22px;
   }
+  .hero-meta{
+    max-width:430px;
+  }
+  .hero-meta .next-meeting{
+    padding:17px 18px 18px;
+  }
+  .hero-meta #next-meeting-date{font-size:27px}
   .hero-logo.has-hero{min-height:455px}
+  .facts{
+    max-width:980px;
+  }
+  .facts > div{
+    padding:20px 20px;
+  }
 }
 
 /* 모바일: 대표 일러스트가 있으면 제목/설명 바로 아래에 보여줍니다.
@@ -5978,17 +6032,21 @@ window.IROLANG = (function(){
     text-align:left;
   }
   .hero-copy,.hero-meta{max-width:none}
-  .hero-meta{position:relative;min-height:0}
+  .hero-meta{
+    position:relative;
+    min-height:0;
+    margin-top:-2px;
+  }
   .hero-meta .next-meeting{
     position:relative;
     width:auto;
     left:auto;
     top:auto;
-    margin:6px 0 10px;
+    margin:8px 0 10px;
     backdrop-filter:none;
   }
 
-  .next-meeting{padding:18px;margin:6px 0 10px}
+  .next-meeting{padding:18px;margin:8px 0 10px}
   .hero-logo{display:none}
   .hero-logo.has-hero{
     display:block;
