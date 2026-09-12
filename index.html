@@ -2177,6 +2177,10 @@ body.admin-on .gal-more{display:none!important}
           <button type="button" id="seat-xlsx">테이블표 XLSX</button>
           <button type="button" id="seat-table-csv">테이블표 CSV</button>
           <button type="button" id="seat-csv">원본 CSV</button>
+          <a id="seat-download-link" hidden
+             style="display:inline-flex;align-items:center;min-height:34px;padding:0 10px;border:1px solid #b9c0ce;border-radius:8px;background:#fff;color:#24304f;font-size:12px;font-weight:700;text-decoration:none">
+             다운로드 다시 클릭
+          </a>
           <button type="button" class="primary" id="seat-publish">저장 · 참가자 공개</button>
           <button type="button" id="seat-hide">공개 중지</button>
           <button type="button" id="seat-save-set">설정 저장</button>
@@ -4983,142 +4987,328 @@ window.IROLANG = (function(){
     });
   }
 
-  /* ── 자리배정 XLSX ─────────────────────────────────────────
-     XLSX 기능은 관리자 버튼을 누를 때만 외부 라이브러리를 불러옵니다.
-     일반 방문자의 초기 페이지 로딩에는 영향을 주지 않습니다. */
-  var SEAT_XLSX_LOADING = null;
-
-  function seatEnsureXlsx(){
-    if(window.XLSX && window.XLSX.utils && window.XLSX.writeFile){
-      return Promise.resolve(window.XLSX);
-    }
-    if(SEAT_XLSX_LOADING) return SEAT_XLSX_LOADING;
-
-    var urls=[
-      'https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js',
-      'https://unpkg.com/xlsx-js-style@1.2.0/dist/xlsx.bundle.js'
-    ];
-
-    SEAT_XLSX_LOADING = new Promise(function(resolve,reject){
-      function tryUrl(i){
-        if(i>=urls.length){
-          SEAT_XLSX_LOADING=null;
-          reject(new Error('XLSX 라이브러리를 불러오지 못했습니다.'));
-          return;
-        }
-        var sc=document.createElement('script');
-        sc.src=urls[i];
-        sc.async=true;
-        sc.onload=function(){
-          if(window.XLSX && window.XLSX.utils && window.XLSX.writeFile){
-            resolve(window.XLSX);
-          }else{
-            try{sc.remove();}catch(e){}
-            tryUrl(i+1);
-          }
-        };
-        sc.onerror=function(){
-          try{sc.remove();}catch(e){}
-          tryUrl(i+1);
-        };
-        document.head.appendChild(sc);
-      }
-      tryUrl(0);
-    });
-
-    return SEAT_XLSX_LOADING;
-  }
+  /* ── 자리배정 XLSX : 외부 라이브러리 없이 직접 생성 ────────
+     XLSX는 ZIP 안에 XML 파일들이 들어 있는 구조입니다.
+     여기서는 필요한 최소 XLSX 구조를 브라우저에서 직접 만들어
+     CDN/SheetJS 로딩 없이 바로 다운로드합니다. */
 
   function seatOrderedTable(tb){
     return nameSort(tb.filter(function(r){return seatIsJa(r);}),true)
       .concat(nameSort(tb.filter(function(r){return !seatIsJa(r);}),false));
   }
 
-  function seatSheetRows(tables, roundNo, date){
-    var aoa=[];
-    aoa.push([date+' · '+roundNo+'회차 자리배정','','']);
-    aoa.push(['테이블','No.','이름']);
+  function seatXmlEsc(v){
+    return String(v == null ? '' : v)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&apos;');
+  }
 
-    var merges=[];
-    var rowIndex=2; /* 0-based: 실제 참가자 첫 행은 엑셀 3행 */
+  function seatColName(n){
+    var s='';
+    while(n>0){ n--; s=String.fromCharCode(65+(n%26))+s; n=Math.floor(n/26); }
+    return s;
+  }
 
+  function seatInlineCell(ref, value, style){
+    return '<c r="'+ref+'" s="'+(style||0)+'" t="inlineStr"><is><t xml:space="preserve">'
+      +seatXmlEsc(value)+'</t></is></c>';
+  }
+
+  function seatNumberCell(ref, value, style){
+    return '<c r="'+ref+'" s="'+(style||0)+'"><v>'+Number(value||0)+'</v></c>';
+  }
+
+  function seatRoundSheetXml(tables, roundNo, date){
+    var rows=[];
+    var merges=['A1:C1'];
+    var r=1;
+
+    rows.push(
+      '<row r="1" ht="25" customHeight="1">'
+      +seatInlineCell('A1',date+' · '+roundNo+'회차 자리배정',1)
+      +'</row>'
+    );
+
+    r=2;
+    rows.push(
+      '<row r="2" ht="20" customHeight="1">'
+      +seatInlineCell('A2','테이블',2)
+      +seatInlineCell('B2','No.',2)
+      +seatInlineCell('C2','이름',2)
+      +'</row>'
+    );
+
+    r=3;
     tables.forEach(function(tb,ti){
       var ordered=seatOrderedTable(tb);
       if(!ordered.length) return;
 
-      var start=rowIndex;
+      var startRow=r;
       ordered.forEach(function(p,pi){
-        aoa.push([
-          pi===0 ? ('테이블 '+(ti+1)) : '',
-          pi+1,
-          p.name || '이름 없음'
-        ]);
-        rowIndex++;
+        var cells='';
+        if(pi===0) cells+=seatInlineCell('A'+r,'테이블 '+(ti+1),3);
+        cells+=seatNumberCell('B'+r,pi+1,4);
+        cells+=seatInlineCell('C'+r,p.name||'이름 없음',5);
+        rows.push('<row r="'+r+'" ht="22" customHeight="1">'+cells+'</row>');
+        r++;
       });
 
       if(ordered.length>1){
-        merges.push({s:{r:start,c:0},e:{r:rowIndex-1,c:0}});
+        merges.push('A'+startRow+':A'+(r-1));
       }
     });
 
-    return {aoa:aoa,merges:merges};
+    var mergeXml='<mergeCells count="'+merges.length+'">'
+      +merges.map(function(m){return '<mergeCell ref="'+m+'"/>';}).join('')
+      +'</mergeCells>';
+
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      +'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+      +'<sheetViews><sheetView workbookViewId="0"/></sheetViews>'
+      +'<sheetFormatPr defaultRowHeight="15"/>'
+      +'<cols>'
+      +'<col min="1" max="1" width="14" customWidth="1"/>'
+      +'<col min="2" max="2" width="7" customWidth="1"/>'
+      +'<col min="3" max="3" width="22" customWidth="1"/>'
+      +'</cols>'
+      +'<sheetData>'+rows.join('')+'</sheetData>'
+      +mergeXml
+      +'<pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.2" footer="0.2"/>'
+      +'</worksheet>';
   }
 
-  function seatStyleSheet(ws, merges){
-    var XLSX=window.XLSX;
-    var ref=XLSX.utils.decode_range(ws['!ref'] || 'A1:C1');
+  function seatStylesXml(){
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      +'<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+      +'<fonts count="3">'
+      +'<font><sz val="11"/><name val="Arial"/></font>'
+      +'<font><b/><sz val="14"/><color rgb="FF172033"/><name val="Arial"/></font>'
+      +'<font><b/><sz val="11"/><color rgb="FF172033"/><name val="Arial"/></font>'
+      +'</fonts>'
+      +'<fills count="5">'
+      +'<fill><patternFill patternType="none"/></fill>'
+      +'<fill><patternFill patternType="gray125"/></fill>'
+      +'<fill><patternFill patternType="solid"><fgColor rgb="FFF6F1E6"/><bgColor indexed="64"/></patternFill></fill>'
+      +'<fill><patternFill patternType="solid"><fgColor rgb="FFF7F8FA"/><bgColor indexed="64"/></patternFill></fill>'
+      +'<fill><patternFill patternType="solid"><fgColor rgb="FFFFF9ED"/><bgColor indexed="64"/></patternFill></fill>'
+      +'</fills>'
+      +'<borders count="2">'
+      +'<border><left/><right/><top/><bottom/><diagonal/></border>'
+      +'<border>'
+      +'<left style="thin"><color rgb="FFB8BDC7"/></left>'
+      +'<right style="thin"><color rgb="FFB8BDC7"/></right>'
+      +'<top style="thin"><color rgb="FFB8BDC7"/></top>'
+      +'<bottom style="thin"><color rgb="FFB8BDC7"/></bottom>'
+      +'<diagonal/>'
+      +'</border>'
+      +'</borders>'
+      +'<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
+      +'<cellXfs count="6">'
+      +'<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
+      +'<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>'
+      +'<xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'
+      +'<xf numFmtId="0" fontId="2" fillId="4" borderId="1" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>'
+      +'<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'
+      +'<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>'
+      +'</cellXfs>'
+      +'<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>'
+      +'</styleSheet>';
+  }
 
-    var thin={style:'thin',color:{rgb:'B8BDC7'}};
-    var border={top:thin,bottom:thin,left:thin,right:thin};
+  function seatWorkbookXml(roundCount){
+    var sheets=[];
+    for(var i=1;i<=roundCount;i++){
+      sheets.push('<sheet name="'+i+'회차" sheetId="'+i+'" r:id="rId'+i+'"/>');
+    }
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      +'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+      +'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+      +'<bookViews><workbookView/></bookViews>'
+      +'<sheets>'+sheets.join('')+'</sheets>'
+      +'</workbook>';
+  }
 
-    for(var R=ref.s.r; R<=ref.e.r; R++){
-      for(var C=ref.s.c; C<=ref.e.c; C++){
-        var addr=XLSX.utils.encode_cell({r:R,c:C});
-        if(!ws[addr]) ws[addr]={t:'s',v:''};
+  function seatWorkbookRelsXml(roundCount){
+    var rels=[];
+    for(var i=1;i<=roundCount;i++){
+      rels.push(
+        '<Relationship Id="rId'+i+'" '
+        +'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" '
+        +'Target="worksheets/sheet'+i+'.xml"/>'
+      );
+    }
+    rels.push(
+      '<Relationship Id="rId'+(roundCount+1)+'" '
+      +'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" '
+      +'Target="styles.xml"/>'
+    );
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      +rels.join('')
+      +'</Relationships>';
+  }
 
-        var style={
-          font:{name:'Arial',sz:11,color:{rgb:'172033'}},
-          alignment:{
-            vertical:'center',
-            horizontal:C===2?'left':'center',
-            wrapText:true
-          },
-          border:border,
-          fill:{patternType:'solid',fgColor:{rgb:'FFFFFF'}}
-        };
+  function seatContentTypesXml(roundCount){
+    var sheets='';
+    for(var i=1;i<=roundCount;i++){
+      sheets+='<Override PartName="/xl/worksheets/sheet'+i+'.xml" '
+        +'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>';
+    }
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      +'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+      +'<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+      +'<Default Extension="xml" ContentType="application/xml"/>'
+      +'<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+      +'<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+      +sheets
+      +'</Types>';
+  }
 
-        if(R===0){
-          style.font={name:'Arial',sz:14,bold:true,color:{rgb:'172033'}};
-          style.fill={patternType:'solid',fgColor:{rgb:'F6F1E6'}};
-          style.alignment={vertical:'center',horizontal:'left'};
-        }else if(R===1){
-          style.font={name:'Arial',sz:10,bold:true,color:{rgb:'5C6480'}};
-          style.fill={patternType:'solid',fgColor:{rgb:'F7F8FA'}};
-          style.alignment={vertical:'center',horizontal:'center'};
-        }else if(C===0){
-          style.font={name:'Arial',sz:11,bold:true,color:{rgb:'172033'}};
-          style.fill={patternType:'solid',fgColor:{rgb:'FFF9ED'}};
-          style.alignment={vertical:'center',horizontal:'center',wrapText:true};
-        }
+  function seatRootRelsXml(){
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      +'<Relationship Id="rId1" '
+      +'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" '
+      +'Target="xl/workbook.xml"/>'
+      +'</Relationships>';
+  }
 
-        ws[addr].s=style;
+  var SEAT_CRC_TABLE=null;
+  function seatCrc32(bytes){
+    if(!SEAT_CRC_TABLE){
+      SEAT_CRC_TABLE=[];
+      for(var n=0;n<256;n++){
+        var c=n;
+        for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);
+        SEAT_CRC_TABLE[n]=c>>>0;
       }
     }
+    var crc=0xFFFFFFFF;
+    for(var i=0;i<bytes.length;i++){
+      crc=SEAT_CRC_TABLE[(crc^bytes[i])&255]^(crc>>>8);
+    }
+    return (crc^0xFFFFFFFF)>>>0;
+  }
 
-    ws['!merges']=(ws['!merges']||[]).concat(merges||[]);
-    /* 제목도 A1:C1 병합 */
-    ws['!merges'].push({s:{r:0,c:0},e:{r:0,c:2}});
+  function seatWriteU16(view,off,v){ view.setUint16(off,v,true); }
+  function seatWriteU32(view,off,v){ view.setUint32(off,v>>>0,true); }
 
-    ws['!cols']=[
-      {wch:14},
-      {wch:7},
-      {wch:22}
+  function seatZipBlob(files){
+    var enc=new TextEncoder();
+    var localParts=[];
+    var centralParts=[];
+    var offset=0;
+    var centralSize=0;
+
+    files.forEach(function(file){
+      var nameBytes=enc.encode(file.name);
+      var dataBytes=typeof file.data==='string' ? enc.encode(file.data) : file.data;
+      var crc=seatCrc32(dataBytes);
+
+      var local=new Uint8Array(30+nameBytes.length);
+      var lv=new DataView(local.buffer);
+      seatWriteU32(lv,0,0x04034b50);
+      seatWriteU16(lv,4,20);
+      seatWriteU16(lv,6,0x0800); /* UTF-8 */
+      seatWriteU16(lv,8,0);      /* STORE */
+      seatWriteU16(lv,10,0);
+      seatWriteU16(lv,12,0);
+      seatWriteU32(lv,14,crc);
+      seatWriteU32(lv,18,dataBytes.length);
+      seatWriteU32(lv,22,dataBytes.length);
+      seatWriteU16(lv,26,nameBytes.length);
+      seatWriteU16(lv,28,0);
+      local.set(nameBytes,30);
+
+      var central=new Uint8Array(46+nameBytes.length);
+      var cv=new DataView(central.buffer);
+      seatWriteU32(cv,0,0x02014b50);
+      seatWriteU16(cv,4,20);
+      seatWriteU16(cv,6,20);
+      seatWriteU16(cv,8,0x0800);
+      seatWriteU16(cv,10,0);
+      seatWriteU16(cv,12,0);
+      seatWriteU16(cv,14,0);
+      seatWriteU32(cv,16,crc);
+      seatWriteU32(cv,20,dataBytes.length);
+      seatWriteU32(cv,24,dataBytes.length);
+      seatWriteU16(cv,28,nameBytes.length);
+      seatWriteU16(cv,30,0);
+      seatWriteU16(cv,32,0);
+      seatWriteU16(cv,34,0);
+      seatWriteU16(cv,36,0);
+      seatWriteU32(cv,38,0);
+      seatWriteU32(cv,42,offset);
+      central.set(nameBytes,46);
+
+      localParts.push(local,dataBytes);
+      centralParts.push(central);
+      offset += local.length + dataBytes.length;
+      centralSize += central.length;
+    });
+
+    var end=new Uint8Array(22);
+    var ev=new DataView(end.buffer);
+    seatWriteU32(ev,0,0x06054b50);
+    seatWriteU16(ev,4,0);
+    seatWriteU16(ev,6,0);
+    seatWriteU16(ev,8,files.length);
+    seatWriteU16(ev,10,files.length);
+    seatWriteU32(ev,12,centralSize);
+    seatWriteU32(ev,16,offset);
+    seatWriteU16(ev,20,0);
+
+    return new Blob(
+      localParts.concat(centralParts).concat([end]),
+      {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}
+    );
+  }
+
+  function seatBuildXlsxBlob(res){
+    var files=[
+      {name:'[Content_Types].xml',data:seatContentTypesXml(res.rounds.length)},
+      {name:'_rels/.rels',data:seatRootRelsXml()},
+      {name:'xl/workbook.xml',data:seatWorkbookXml(res.rounds.length)},
+      {name:'xl/_rels/workbook.xml.rels',data:seatWorkbookRelsXml(res.rounds.length)},
+      {name:'xl/styles.xml',data:seatStylesXml()}
     ];
 
-    ws['!rows']=[];
-    for(var r=0;r<=ref.e.r;r++){
-      ws['!rows'][r]={hpt:r===0?25:(r===1?20:22)};
+    res.rounds.forEach(function(tables,ri){
+      files.push({
+        name:'xl/worksheets/sheet'+(ri+1)+'.xml',
+        data:seatRoundSheetXml(tables,ri+1,res.date)
+      });
+    });
+
+    return seatZipBlob(files);
+  }
+
+  function seatOfferDownload(blob,filename){
+    var link=$a('seat-download-link');
+    var url=URL.createObjectURL(blob);
+
+    if(link){
+      var old=link.dataset.url;
+      if(old){ try{URL.revokeObjectURL(old);}catch(e){} }
+      link.href=url;
+      link.download=filename;
+      link.dataset.url=url;
+      link.hidden=false;
+      link.style.display='inline-flex';
+      link.textContent='다운로드 다시 클릭';
     }
+
+    var a=document.createElement('a');
+    a.href=url;
+    a.download=filename;
+    a.rel='noopener';
+    a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){try{a.remove();}catch(e){}},300);
   }
 
   function seatXlsx(){
@@ -5126,34 +5316,17 @@ window.IROLANG = (function(){
     if(!res) return alert('먼저 자리 배정을 해 주세요.');
 
     var btn=$a('seat-xlsx');
-    var oldText=btn ? btn.textContent : '';
-    if(btn){btn.disabled=true;btn.textContent='XLSX 만드는 중…';}
-
-    seatEnsureXlsx().then(function(XLSX){
-      var wb=XLSX.utils.book_new();
-
-      res.rounds.forEach(function(tables,ri){
-        var built=seatSheetRows(tables,ri+1,res.date);
-        var ws=XLSX.utils.aoa_to_sheet(built.aoa);
-        seatStyleSheet(ws,built.merges);
-        XLSX.utils.book_append_sheet(wb,ws,String(ri+1)+'회차');
-      });
-
-      XLSX.writeFile(
-        wb,
-        'irotomo-자리배정-'+res.date+'.xlsx',
-        {bookType:'xlsx',cellStyles:true,compression:true}
-      );
-    }).catch(function(err){
-      console.error('xlsx export failed',err);
-      alert(
-        'XLSX 파일을 만들지 못했습니다.\n\n'+
-        '네트워크 또는 브라우저에서 XLSX 라이브러리 로딩이 차단됐을 수 있습니다.\n'+
-        '잠시 후 다시 시도하거나 「테이블표 CSV」를 이용해 주세요.'
-      );
-    }).then(function(){
+    var oldText=btn?btn.textContent:'';
+    try{
+      if(btn){btn.disabled=true;btn.textContent='XLSX 만드는 중…';}
+      var blob=seatBuildXlsxBlob(res);
+      seatOfferDownload(blob,'irotomo-자리배정-'+res.date+'.xlsx');
+    }catch(err){
+      console.error('native xlsx export failed',err);
+      alert('XLSX 파일을 만들지 못했습니다.\n\n'+(err&&err.message?err.message:String(err)));
+    }finally{
       if(btn){btn.disabled=false;btn.textContent=oldText||'테이블표 XLSX';}
-    });
+    }
   }
 
   /* ── 운영용 테이블표 CSV ─────────────────────────────────
@@ -5503,35 +5676,12 @@ window.IROLANG = (function(){
       var blob = new Blob(['\ufeff', String(text || '')], {
         type:'text/csv;charset=utf-8'
       });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.rel = 'noopener';
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function(){
-        try { a.remove(); } catch(e) {}
-        try { URL.revokeObjectURL(url); } catch(e) {}
-      }, 1500);
+      seatOfferDownload(blob,filename);
       return true;
     } catch (e) {
       console.error('csv download failed', e);
-      /* 아주 오래된/제한된 브라우저용 fallback */
-      try {
-        var b = document.createElement('a');
-        b.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\ufeff' + String(text || ''));
-        b.download = filename;
-        b.style.display = 'none';
-        document.body.appendChild(b);
-        b.click();
-        setTimeout(function(){try{b.remove();}catch(_e){}},1000);
-        return true;
-      } catch (e2) {
-        alert('파일을 만들지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
-        return false;
-      }
+      alert('파일을 만들지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
+      return false;
     }
   }
 
