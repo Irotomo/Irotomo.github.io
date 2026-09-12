@@ -161,12 +161,17 @@ body[data-lang="ja"] .ko{display:none!important}
 
 /* ---------- 히어로 ---------- */
 .hero{padding:92px 0 76px}
-.hero.wrap{max-width:1240px}
+.hero.wrap{max-width:1280px}
 .hero-grid{
   display:grid;
-  grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);
-  gap:44px;
-  align-items:center;
+  grid-template-columns:minmax(0,.76fr) minmax(0,1.24fr);
+  grid-template-areas:
+    "copy visual"
+    "meta visual";
+  gap:18px 28px;
+  align-items:start;
+  position:relative;
+  isolation:isolate;
 }
 .pill{
   display:inline-flex;align-items:center;gap:.6em;
@@ -174,26 +179,41 @@ body[data-lang="ja"] .ko{display:none!important}
   padding:.42em 1em;font-size:var(--fs-xs);font-weight:600;color:var(--muted);
 }
 .pill i{width:6px;height:6px;border-radius:50%;background:var(--gold);display:block;font-style:normal}
+.hero-copy{grid-area:copy;position:relative;z-index:3;max-width:560px;padding-top:8px}
+.hero-meta{grid-area:meta;position:relative;z-index:3;max-width:560px}
 h1{
   margin-top:26px;font-size:clamp(2rem,4.4vw,3rem);font-weight:800;
   line-height:1.14;letter-spacing:-.035em;
 }
-.hero p.lead{margin-top:24px;font-size:var(--fs-lg);color:var(--muted);max-width:42ch;line-height:1.75}
-.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px}
+.hero p.lead{margin-top:24px;font-size:var(--fs-lg);color:var(--muted);max-width:40ch;line-height:1.75}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
 .hero-note{margin-top:20px;font-size:var(--fs-sm);color:var(--muted)}
-.hero-logo{justify-self:center;width:min(100%,var(--logo-w,380px));aspect-ratio:var(--logo-ar,990/962);background-image:var(--logo);background-size:contain;background-repeat:no-repeat;background-position:center;animation:float 7s ease-in-out infinite}
+.hero-logo{
+  grid-area:visual;
+  justify-self:center;
+  width:min(100%,var(--logo-w,380px));
+  aspect-ratio:var(--logo-ar,990/962);
+  background-image:var(--logo);
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-position:center;
+  animation:float 7s ease-in-out infinite;
+}
 
 .hero-logo.has-hero{
-  width:100%;
-  max-width:640px;
+  width:clamp(700px,58vw,860px);
+  max-width:none;
   justify-self:end;
-  transform:translateY(-10px);
+  align-self:center;
+  margin-left:-160px;
+  margin-right:-22px;
+  transform:translateY(6px);
   aspect-ratio:16/10;
   background-image:none!important;
-  border:1px solid rgba(20,27,46,.08);
-  border-radius:28px;
+  border:0;
+  border-radius:30px;
   overflow:hidden;
-  box-shadow:0 24px 64px -34px rgba(20,27,46,.34);
+  box-shadow:0 28px 72px -38px rgba(20,27,46,.34);
   animation:none;
   isolation:isolate;
 }
@@ -202,10 +222,21 @@ h1{
   object-fit:cover;object-position:var(--hero-pos,50% 50%);
   display:block;z-index:0;
 }
-.hero-logo.has-hero::after{
+.hero-logo.has-hero::before{
   content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:
-    linear-gradient(180deg,rgba(255,255,255,.02) 55%,rgba(247,243,234,.10) 100%);
+    linear-gradient(90deg,
+      rgba(247,243,234,.98) 0%,
+      rgba(247,243,234,.92) 14%,
+      rgba(247,243,234,.66) 26%,
+      rgba(247,243,234,.22) 40%,
+      rgba(247,243,234,0) 54%);
+  border-radius:inherit;
+}
+.hero-logo.has-hero::after{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.02) 55%,rgba(247,243,234,.08) 100%);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);
   border-radius:inherit;
 }
@@ -1310,9 +1341,18 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
   .hero h1{font-size:clamp(2.2rem,4.8vw,3.4rem)}
 }
 @media (min-width:961px) and (max-width:1180px){
-  .hero.wrap{max-width:1140px}
-  .hero-grid{grid-template-columns:1fr .95fr;gap:36px}
-  .hero-logo.has-hero{max-width:560px;transform:translateY(-4px)}
+  .hero.wrap{max-width:1180px}
+  .hero-grid{
+    grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+    gap:14px 22px;
+  }
+  .hero-copy,.hero-meta{max-width:520px}
+  .hero-logo.has-hero{
+    width:clamp(600px,56vw,720px);
+    margin-left:-100px;
+    margin-right:-8px;
+    transform:translateY(2px);
+  }
 }
 
 
@@ -1499,31 +1539,13 @@ body.admin-on .gal-more{display:none!important}
   <!-- HERO -->
   <div class="hero wrap">
     <div class="hero-grid">
-      <div>
+      <div class="hero-copy">
         <span class="pill ko"><i></i><span class="ko" data-c="c09">매주 일요일 15:00 – 17:30 · 서울 여의도</span></span>
         <span class="pill ja"><i></i><span class="ja" data-c="c09">毎週日曜 15:00 – 17:30 · ソウル・ヨイド</span></span>
         <h1 class="ko" data-c="c10">매주 일요일,<br>일본어로 이야기하는<br>두 시간 반</h1>
         <h1 class="ja" data-c="c10">毎週日曜、<br>韓国語で話す<br>2時間半</h1>
         <p class="lead ko" data-c="v2-c11">일본인 참가자들과 4~6명씩 앉아 이야기하는 한일교류회입니다. 혼자 오시는 분이 대부분이고, 자리는 저희가 배정해 드려요. 간단한 일본어 회화가 가능하면 함께하실 수 있어요.</p>
         <p class="lead ja" data-c="v2-c11">韓国人の参加者と4〜6人でテーブルを囲む日韓交流会です。おひとりでの参加がほとんど。席はこちらでご案内します。韓国語が話せなくても大丈夫です。</p>
-        <div class="next-meeting" id="next-meeting" aria-live="polite">
-<p class="eyebrow"><span class="ko">다음 신청 가능 모임</span><span class="ja">次のお申し込み可能な日程</span></p>
-<p id="next-meeting-date"><span class="ko">일정 확인 중…</span><span class="ja">日程を確認中…</span></p>
-<p id="next-meeting-time" hidden></p>
-<p class="next-price"><span class="ko"><span class="next-price-item">한국인 16,000원</span> · <wbr><span class="next-price-item">일본인 6,000원</span><br>모두 음료 한 잔 포함</span><span class="ja"><span class="next-price-item">日本人 6,000ウォン</span> · <wbr><span class="next-price-item">韓国人 16,000ウォン</span><br>どちらもドリンク1杯込み</span></p>
-<a href="#apply" id="next-meeting-apply" class="btn btn-primary" hidden><span class="ko">이 날짜로 신청하기</span><span class="ja">この日程で申し込む</span></a>
-</div>
-        <div class="hero-cta">
-          <a class="btn btn-gold btn-lg ko seat-link" href="seat.html">좌석 확인</a>
-          <a class="btn btn-gold btn-lg ja seat-link" href="seat.html">席の確認</a>
-          <a class="hero-photo-link ko" href="#gallery" data-c="v2-c13">모임 사진 먼저 보기</a>
-          <a class="hero-photo-link ja" href="#gallery" data-c="v2-c13">会の写真を見る</a>
-        </div>
-        <!-- 지난 회차 실적 — 관리자에서 숫자만 고쳐 쓰시면 됩니다.
-             «1/1» 처럼 보이는 문제를 막는 자리입니다. -->
-        <p class="hero-stat"><span class="ko" data-c="c89">지난주에는 일본인 {ja}명 · 한국인 {ko}명이 함께했습니다</span><span class="ja" data-c="c89">先週は日本人{ja}名・韓国人{ko}名の方にご参加いただきました</span></p>
-        <p class="hero-note ko" data-c="c14">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
-        <p class="hero-note ja" data-c="c14">事前申込制です。当日参加は受け付けておりません。</p>
       </div>
       <div class="hero-logo" id="hero-visual" role="img" aria-label="이로토모 한일교류회">
           <img id="hero-image"
@@ -1738,8 +1760,27 @@ body.admin-on .gal-more{display:none!important}
               <a href="https://map.naver.com/p/search/%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C8%EA%B8%B8%2031" target="_blank" rel="noopener">NAVER Map</a>
               <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5198049,126.9280064" target="_blank" rel="noopener">Google Maps</a>
             </div>
-          </div>
+      <div class="hero-meta">
+        <div class="next-meeting" id="next-meeting" aria-live="polite">
+<p class="eyebrow"><span class="ko">다음 신청 가능 모임</span><span class="ja">次のお申し込み可能な日程</span></p>
+<p id="next-meeting-date"><span class="ko">일정 확인 중…</span><span class="ja">日程を確認中…</span></p>
+<p id="next-meeting-time" hidden></p>
+<p class="next-price"><span class="ko"><span class="next-price-item">한국인 16,000원</span> · <wbr><span class="next-price-item">일본인 6,000원</span><br>모두 음료 한 잔 포함</span><span class="ja"><span class="next-price-item">日本人 6,000ウォン</span> · <wbr><span class="next-price-item">韓国人 16,000ウォン</span><br>どちらもドリンク1杯込み</span></p>
+<a href="#apply" id="next-meeting-apply" class="btn btn-primary" hidden><span class="ko">이 날짜로 신청하기</span><span class="ja">この日程で申し込む</span></a>
+</div>
+        <div class="hero-cta">
+          <a class="btn btn-gold btn-lg ko seat-link" href="seat.html">좌석 확인</a>
+          <a class="btn btn-gold btn-lg ja seat-link" href="seat.html">席の確認</a>
+          <a class="hero-photo-link ko" href="#gallery" data-c="v2-c13">모임 사진 먼저 보기</a>
+          <a class="hero-photo-link ja" href="#gallery" data-c="v2-c13">会の写真を見る</a>
         </div>
+        <!-- 지난 회차 실적 — 관리자에서 숫자만 고쳐 쓰시면 됩니다.
+             «1/1» 처럼 보이는 문제를 막는 자리입니다. -->
+        <p class="hero-stat"><span class="ko" data-c="c89">지난주에는 일본인 {ja}명 · 한국인 {ko}명이 함께했습니다</span><span class="ja" data-c="c89">先週は日本人{ja}名・韓国人{ko}名の方にご参加いただきました</span></p>
+        <p class="hero-note ko" data-c="c14">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
+        <p class="hero-note ja" data-c="c14">事前申込制です。当日参加は受け付けておりません。</p>
+      </div>
+    </div>
       <div class="map-side">
         <p class="mlabel ko" data-c="c47">카페희다 여의도점</p><p class="mlabel ja" data-c="c47">カフェ・ヒダ ヨイド店</p>
         <p class="mtext ko" data-c="c48">서울 영등포구 국제금융로8길 31, SK증권빌딩 1층<br>여의도역 도보 5분 (5호선 · 9호선)</p>
@@ -5888,23 +5929,35 @@ window.IROLANG = (function(){
 .selection-fee{padding:16px;border-left:3px solid #b6924d;line-height:1.7}
 #somoim-card{margin:0;padding:20px}#somoim-card p{margin-bottom:12px;line-height:1.7}
 [hidden]{display:none!important}
-/* 모바일: 갤러리와 구분되도록 대표 일러스트만 컴팩트하게 노출합니다.
-   기존 로고만 있는 경우에는 첫 화면을 길게 만들지 않도록 계속 숨깁니다. */
+/* 모바일: 대표 일러스트가 있으면 제목/설명 바로 아래에 보여줍니다.
+   다음 신청 카드보다 먼저 노출되어 메인 비주얼 역할을 하도록 조정했습니다. */
 @media(max-width:960px){
   .nav-links a[href="board.html"],.nav-links [data-open-kana],.nav-links a[href="#flow"]{display:none}
-  .next-meeting{padding:18px;margin:18px 0}
+  .hero-grid{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "copy"
+      "visual"
+      "meta";
+    gap:20px;
+    text-align:left;
+  }
+  .hero-copy,.hero-meta{max-width:none}
+  .next-meeting{padding:18px;margin:6px 0 10px}
   .hero-logo{display:none}
   .hero-logo.has-hero{
     display:block;
-    order:0;
-    width:min(100%,620px);
-    max-width:620px;
-    justify-self:center;
-    margin:4px auto 2px;
+    width:100%;
+    max-width:none;
+    justify-self:stretch;
+    margin:0;
     transform:none;
     aspect-ratio:16/10;
     border-radius:22px;
     box-shadow:0 18px 46px -30px rgba(20,27,46,.34);
+  }
+  .hero-logo.has-hero::before{
+    background:linear-gradient(180deg,rgba(255,255,255,.03) 0%,rgba(255,255,255,0) 22%);
   }
   .hero-logo.has-hero::after{
     background:linear-gradient(180deg,rgba(255,255,255,.01) 60%,rgba(247,243,234,.08) 100%);
@@ -5912,11 +5965,11 @@ window.IROLANG = (function(){
   .hero-cta{gap:10px}
 }
 @media(max-width:520px){
-  .hero-grid{gap:22px}
+  .hero-grid{gap:18px}
   .hero-logo.has-hero{
     width:100%;
     max-width:none;
-    margin:2px auto 0;
+    margin:0;
     border-radius:18px;
     box-shadow:0 14px 34px -26px rgba(20,27,46,.34);
   }
