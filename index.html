@@ -1177,6 +1177,13 @@ body.admin-on .gal figure .zoom{display:none}
 
 /* ── 신청자 목록 : 음료 · 입금 ─────────────────────────── */
 .sg-f select{padding:7px 9px;border:1px solid #e2dfec;border-radius:7px;font:inherit;font-size:13px;background:#fff}
+.sg-f select:focus{outline:2px solid #cfc9f0;border-color:transparent}
+.sg-created-value{
+  min-height:34px;display:flex;align-items:center;
+  padding:7px 9px;border:1px solid #ece9f2;border-radius:7px;
+  background:#f8f7fb;color:#5c6480;font-size:12px;
+  font-variant-numeric:tabular-nums;white-space:nowrap
+}
 .sg-paid{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;
   border:1px solid #f0d8d8;background:#fdf6f6;color:#9d4b4b;font-size:12px;cursor:pointer;white-space:nowrap}
 .sg-paid.on{border-color:#cfe6d8;background:#f2faf5;color:#2f6f4c}
@@ -4147,6 +4154,33 @@ window.IROLANG = (function(){
     }).length;
   }
 
+  function sgNatCanonical(v){
+    var t=String(v||'').trim();
+    if(/日本|일본|^jp$|^ja$/i.test(t)) return '日本 / 일본';
+    if(/韓国|한국|^kr$|^ko$/i.test(t)) return '韓国 / 한국';
+    if(t) return 'その他 / 그 외';
+    return '';
+  }
+
+  function sgCreatedText(v){
+    if(v===undefined || v===null || v==='') return '—';
+    var n=Number(v);
+    /* 예전 데이터가 초 단위 timestamp인 경우도 같이 처리 */
+    if(Number.isFinite(n) && n>0 && n<1000000000000) n*=1000;
+    var d=Number.isFinite(n) && n>0 ? new Date(n) : new Date(v);
+    if(!d || isNaN(d.getTime())) return '—';
+    try{
+      return d.toLocaleString('ko-KR',{
+        timeZone:'Asia/Seoul',
+        year:'numeric',month:'2-digit',day:'2-digit',
+        hour:'2-digit',minute:'2-digit',
+        hour12:false
+      }).replace(/\.$/,'');
+    }catch(e){
+      return d.toLocaleString('ko-KR');
+    }
+  }
+
   function sgRow(r){
     var row = document.createElement('div'); row.className = 'sg-row' + (+r.waitlisted===1 ? ' waitlisted' : '');
     SG_COLS.forEach(function(c){
@@ -4164,6 +4198,20 @@ window.IROLANG = (function(){
           o.value = k; o.textContent = SG_DRINK[k];
           inp.appendChild(o);
         });
+      } else if (c[0] === 'nat') {
+        /* 국적도 고르는 방식으로 통일합니다.
+           기존 데이터의 표기가 달라도 한국/일본/기타로 자동 매칭합니다. */
+        inp = document.createElement('select');
+        [
+          ['', '—'],
+          ['韓国 / 한국', '🇰🇷 한국'],
+          ['日本 / 일본', '🇯🇵 일본'],
+          ['その他 / 그 외', '기타']
+        ].forEach(function(x){
+          var o=document.createElement('option');
+          o.value=x[0]; o.textContent=x[1];
+          inp.appendChild(o);
+        });
       } else {
         inp = document.createElement(c[0] === 'memo' ? 'textarea' : 'input');
         if (c[0] === 'memo') inp.rows = 2;
@@ -4173,7 +4221,7 @@ window.IROLANG = (function(){
           inp.title = '참가일을 선택해 주세요.';
         }
       }
-      inp.value = r[c[0]] || '';
+      inp.value = c[0] === 'nat' ? sgNatCanonical(r[c[0]]) : (r[c[0]] || '');
       inp.addEventListener('change', function(){
         var before = r[c[0]] || '';
         if (c[0] === 'date' && !/^\d{4}-\d{2}-\d{2}$/.test(inp.value)) {
@@ -4192,9 +4240,11 @@ window.IROLANG = (function(){
             return;
           }
           inp.classList.remove('bad'); r[c[0]] = inp.value;
-          if (c[0] === 'date') {
-            /* 날짜를 바꾸면 그룹/신규·재참가 계산도 바뀌므로 서버에서 다시 불러옵니다. */
+          if (c[0] === 'date' || c[0] === 'nat') {
+            /* 날짜/국적을 바꾸면 그룹, 국적비율, 자리배정 기준까지 달라지므로
+               서버에서 다시 불러와 관리자 화면 전체를 즉시 맞춥니다. */
             loadSignups();
+            loadDashboard(true);
             return;
           }
           inp.classList.add('saved'); setTimeout(function(){ inp.classList.remove('saved'); }, 900);
@@ -4205,6 +4255,20 @@ window.IROLANG = (function(){
       });
       f.appendChild(s); f.appendChild(inp); row.appendChild(f);
     });
+
+    /* 신청시간 — 서버에 저장된 createdAt을 한국시간으로 표시합니다.
+       수정용 값이 아니라 접수 순서/시각 확인용 read-only 항목입니다. */
+    var created=document.createElement('div');
+    created.className='sg-f sg-created';
+    var createdLab=document.createElement('span');
+    createdLab.textContent='신청시간';
+    var createdVal=document.createElement('div');
+    createdVal.className='sg-created-value';
+    createdVal.textContent=sgCreatedText(r.createdAt);
+    createdVal.title='신청 접수 시각 · 한국시간';
+    created.appendChild(createdLab);
+    created.appendChild(createdVal);
+    row.appendChild(created);
 
     /* 신규 / 재참가 — 과거 전체 D1 신청 이력 기준 */
     if (+r.staff !== 1) {
