@@ -1969,8 +1969,8 @@ body.admin-on .gal-more{display:none!important}
             <label for="f-name"><span class="ko">이름</span><span class="ja">お名前</span></label>
             <input id="f-name" name="entry.347162766" required type="text" autocomplete="name">
             <p class="field-help name-exact-note">
-              <span class="ko">※ 이름은 좌석번호 조회 시 사용합니다. 띄어쓰기·전각/반각도 구분되므로 정확하게 입력해 주세요.</span>
-              <span class="ja">※お名前は席番号の照会に使用します。全角・半角やスペースも区別されますので、正確にご入力ください。</span>
+              <span class="ko">※ 이름은 좌석번호 조회에 사용합니다. 신청 시 입력한 이름과 띄어쓰기를 기억해 주세요. 이름이 같으면 조회가 제한될 수 있습니다.</span>
+              <span class="ja">※お名前は席番号の照会に使用します。スペースを含め、申込時のお名前をお控えください。同姓同名の場合はスタッフがご案内します。</span>
             </p>
           </div>
           <div class="field">
@@ -2050,6 +2050,10 @@ body.admin-on .gal-more{display:none!important}
             <div class="done-check"><svg viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6.5"></polyline></svg></div>
             <h3 id="done-title"><span class="ko">신청해 주셔서 감사합니다</span><span class="ja">お申し込みありがとうございます</span></h3>
             <p id="done-desc"><span class="ko">입력하신 이메일로 <b>음료비 6,000원 입금 계좌</b>를 보내드렸습니다. 입금이 확인되면 참가가 확정됩니다. 메일이 오지 않으면 스팸함을 확인해 주세요.</span><span class="ja">ご入力のメールアドレス宛に<b>ドリンク代6,000ウォンのお振込み先</b>をお送りしました。入金の確認をもってご参加が確定します。メールが届かない場合は迷惑メールフォルダをご確認ください。</span></p>
+          </div>
+          <div class="seat-help" style="margin:12px 0 18px;padding:15px 17px;background:#F7F8FC;border:1px solid #DEE4EF;border-radius:12px;line-height:1.8;font-size:13px">
+            <span class="ko"><b>당일 자리 확인</b><br>현장에 안내된 비밀번호(예: 9월 20일 → 0920)와 신청 시 입력한 이름을 사용해 <a href="seat.html">자리 조회 페이지</a>에서 확인해 주세요.</span>
+            <span class="ja"><b>当日のお席の確認</b><br>当日ご案内するパスワード（例：9月20日 → 0920）と申込時のお名前で、<a href="seat.html">お席の確認ページ</a>からご確認ください。</span>
           </div>
           <div class="done-map">
             <div class="gmap" data-gmap style="min-height:280px">
@@ -2315,6 +2319,7 @@ body.admin-on .gal-more{display:none!important}
         <h4 style="margin:0 0 5px">음료 종류 관리 · 추가 / 숨김</h4>
         <p class="sg-dg-note">음료 추가·숨김은 모든 향후 회차에 적용됩니다. 특정 날짜만 품절/재판매하려면 아래 날짜별 버튼을 눌러 주세요. 기존 신청 내역은 바뀌지 않습니다.</p>
         <div id="drink-catalog-list" class="drink-catalog-list"></div>
+        <p style="font-size:12px;line-height:1.65;color:#626B80;margin:5px 0 14px">품절·신청 숨김은 <b>신규 신청에만 적용</b>됩니다. 기존 신청·발송된 메일은 자동으로 바뀌지 않습니다. 기존 참가자의 음료를 변경하려면 아래 신청 내역에서 수정하세요. 변경 시 안내 메일을 보냅니다.</p>
         <div class="drink-add-form">
           <input id="drink-add-ko" type="text" maxlength="45" placeholder="새 음료 이름 (한국어)" aria-label="새 음료 이름 한국어">
           <input id="drink-add-ja" type="text" maxlength="45" placeholder="新しいドリンク名 (日本語)" aria-label="새 음료 이름 일본어">
@@ -3168,10 +3173,10 @@ window.IROLANG = (function(){
           no_drink: ja ? 'お飲み物をお選びください。' : '음료를 선택해 주세요.',
           drink_closed: ja ? 'そのお飲み物は金曜12時（正午）で締め切りました。別のお飲み物をお選びください。'
                            : '해당 음료는 금요일 정오 12시에 마감되었습니다. 다른 음료를 선택해 주세요.',
-          drink_soldout: ja ? 'そのお飲み物は完売いたしました。他のものをお選びください。'
-                            : '해당 음료는 준비된 수량이 모두 나갔습니다. 다른 음료를 선택해 주세요.',
           drink_soldout: ja ? 'そのお飲み物は完売しました。他のものをお選びください。'
                             : '해당 음료는 품절되었습니다. 다른 음료를 선택해 주세요.',
+          drink_unavailable: ja ? 'そのお飲み物は現在お申し込みいただけません。別のお飲み物をお選びください。'
+                               : '현재 신청할 수 없는 음료입니다. 다른 음료를 선택해 주세요.',
           missing:  ja ? 'お名前とメールアドレスをご確認ください。'
                        : '이름과 이메일을 확인해 주세요.',
           bad_date: ja ? '参加日を選択してください。'
@@ -3181,7 +3186,14 @@ window.IROLANG = (function(){
           full: ja ? 'この回は定員に達し、キャンセル待ちも受け付けていません。'
                    : '이 회차는 정원이 마감되었고 대기 신청도 받지 않습니다.'
         };
-        if (MSG[code]) { alert(MSG[code]); return; }
+        if (MSG[code]) {
+          if(code==='drink_soldout'||code==='drink_closed'||code==='drink_unavailable'){
+            fetch(API+'?action=content&t='+Date.now()).then(function(r){return r.json();}).then(function(d){
+              if(d&&d.ok){if(d.drinks)applyDrinkCatalog(d.drinks);if(d.closed)CLOSED=d.closed;syncDrinks();}
+            }).catch(function(){});
+          }
+          alert(MSG[code]); return;
+        }
         alert((ja ? '送信できませんでした。しばらくしてからもう一度お試しください。'
                   : '전송하지 못했습니다. 잠시 후 다시 시도해 주세요.')
               + (code ? ' (' + code + ')' : ''));
@@ -4356,7 +4368,17 @@ window.IROLANG = (function(){
         inp.appendChild(blank);
         Object.keys(SG_DRINK).forEach(function(k){
           var o = document.createElement('option');
-          o.value = k; o.textContent = SG_DRINK[k];
+          var def=ADMIN_DRINK_CATALOG.find(function(d){return d.id===k;});
+          var hidden=def && !def.enabled;
+          var soldout=((CLOSED[r.date]||[]).indexOf(k)>=0);
+          var late=def && def.preorder && r.date && (function(){
+            var t=Date.parse(r.date+'T15:00:00+09:00');return Number.isFinite(t) && t-Date.now()<51*3600000;
+          })();
+          var unavailable=hidden || soldout || late;
+          o.value=k;
+          o.textContent=SG_DRINK[k]+(hidden?' · 신청 숨김':soldout?' · 품절':late?' · 접수 마감':'');
+          /* 이미 선택한 음료는 품절 이후에도 기존 예약으로 유지하고, 다른 품절 음료로 변경하지는 못하도록 합니다. */
+          o.disabled=(hidden || soldout) && k!==(r.drink||'');
           inp.appendChild(o);
         });
       } else if (c[0] === 'nat') {
@@ -4390,6 +4412,15 @@ window.IROLANG = (function(){
           inp.value = before;
           return;
         }
+        if (c[0] === 'drink' && before !== inp.value) {
+          var nowName=SG_DRINK[inp.value]||'미선택';
+          var chosen=ADMIN_DRINK_CATALOG.find(function(x){return x.id===inp.value;});
+          var cutoff=chosen && chosen.preorder && r.date && Date.parse(r.date+'T15:00:00+09:00')-Date.now()<51*3600000;
+          var extraWarning=cutoff?'\n\n※ 사전 준비 음료 신청 마감 후 관리자 변경입니다. 카페 제공 가능 여부를 먼저 확인해 주세요.':'';
+          if(!confirm((r.name||'참가자')+' 님 음료를 '+(SG_DRINK[before]||'미선택')+' → '+nowName+'(으)로 변경할까요?\n\n저장 후 참가자에게 한국어/일본어 음료 변경 안내 메일이 자동 발송됩니다.'+extraWarning)) {
+            inp.value=before;return;
+          }
+        }
         var patch = { action:'signup_save', token: ADMIN.token, id: r.id };
         patch[c[0]] = inp.value;
         inp.classList.add('saving');
@@ -4397,10 +4428,15 @@ window.IROLANG = (function(){
           inp.classList.remove('saving');
           if (!d || !d.ok) {
             inp.classList.add('bad');
-            if (c[0] === 'date') inp.value = before;
+            inp.value=before;
+            alert((d.error==='drink_unavailable'?'해당 음료가 품절·숨김·신청 마감 상태입니다. 다른 음료를 선택해 주세요.':'변경사항을 저장하지 못했습니다. ('+(d.error||'fail')+')'));
             return;
           }
           inp.classList.remove('bad'); r[c[0]] = inp.value;
+          if(c[0]==='drink' && before!==inp.value && +r.staff!==1){
+            if(d.drink_change_mail_attempted && d.drink_change_mail===false) alert('음료 변경은 저장됐지만 안내 메일 발송에 실패했습니다. 참가자에게 별도로 안내해 주세요.');
+            else if(!d.drink_change_mail_attempted) alert('음료는 변경됐지만 안내 메일을 보낼 수 있는 이메일이 없습니다. 참가자에게 별도로 안내해 주세요.');
+          }
           if (c[0] === 'date' || c[0] === 'nat') {
             /* 날짜/국적을 바꾸면 그룹, 국적비율, 자리배정 기준까지 달라지므로
                서버에서 다시 불러와 관리자 화면 전체를 즉시 맞춥니다. */
@@ -4411,7 +4447,8 @@ window.IROLANG = (function(){
           inp.classList.add('saved'); setTimeout(function(){ inp.classList.remove('saved'); }, 900);
         }).catch(function(){
           inp.classList.remove('saving'); inp.classList.add('bad');
-          if (c[0] === 'date') inp.value = before;
+          inp.value = before;
+          alert('변경사항을 저장하지 못했습니다. 네트워크 상태를 확인하고 다시 시도해 주세요.');
         });
       });
       f.appendChild(s); f.appendChild(inp); row.appendChild(f);
