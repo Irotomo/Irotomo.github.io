@@ -1283,6 +1283,16 @@ body.admin-on .gal figure .zoom{display:none}
   .date-count .dc-n{font-size:2.25rem}}
 @media (prefers-reduced-motion:reduce){ .date-count::before{animation:none} }
 
+/* cf57 음료 종류 관리 */
+.drinks-admin-card{background:#f7f8fc;border:1px solid #dbe0eb;border-radius:12px;padding:15px;margin:12px 0}
+.drink-catalog-list{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.drink-catalog-entry{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:#fff;border:1px solid #dbe0eb;border-radius:9px;padding:6px 9px;font-size:12px}
+.drink-catalog-entry.is-off{opacity:.66}
+.drink-catalog-entry button{padding:4px 9px;border-radius:7px;border:1px solid #bfc7d6;background:#fff;cursor:pointer}
+.drink-add-form{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.drink-add-form input[type=text]{width:165px;max-width:100%;padding:8px;border:1px solid #d1d5e0;border-radius:8px;font:inherit}
+.drink-add-form button{border:0;border-radius:8px;background:#203654;color:white;padding:8px 12px;cursor:pointer}
+.drink-add-pre{font-size:12px;display:inline-flex;align-items:center;gap:4px}
 /* ── 관리자 : 음료 품절 ─────────────────────────────────── */
 .mt-drinks{display:flex;gap:5px;flex-wrap:wrap}
 .mt-drinks button{
@@ -1983,8 +1993,7 @@ body.admin-on .gal-more{display:none!important}
             <input id="f-mail" name="entry.1787738691" required type="email" autocomplete="email">
           </div>
 
-          <!-- 음료 : 음료비로 미리 받는 한 잔입니다.
-               값(value)은 worker.js 의 DRINKS 와 반드시 같아야 합니다. -->
+          <!-- 음료: Worker가 내려주는 목록으로 자동 갱신 (기본 4종 + 관리자 추가 상품) -->
           <div class="field">
             <label for="f-drink"><span class="ko">음료 <span class="lab-note">— 음료비 6,000원 (사전 결제)</span></span><span class="ja">お飲み物 <span class="lab-note">— ドリンク代6,000ウォン（事前払い）</span></span></label>
             <select id="f-drink" required>
@@ -2013,7 +2022,7 @@ body.admin-on .gal-more{display:none!important}
             <textarea id="f-msg" name="entry.1088686635"></textarea>
           </div>
           <div class="form-foot">
-            <p class="draft" id="note"><span class="ko">신청 후 안내 메일을 확인해 주세요. 더치커피·밀크티 선택과 음료비 취소·환불 접수는 <b>금요일 정오 12시</b>에 마감합니다. 이후에도 신청 가능한 회차는 분다버그 중 선택할 수 있습니다.</span><span class="ja">お申し込み後の案内メールをご確認ください。ダッチコーヒー・ミルクティーの選択、およびドリンク代のキャンセル・返金受付は<b>金曜12時（正午）まで</b>です。以降も受付中の日程はバンダバーグをお選びいただけます。</span></p>
+            <p class="draft" id="note"><span class="ko">신청 후 안내 메일을 확인해 주세요. 사전 준비 음료 선택과 음료비 취소·환불 접수는 <b>금요일 정오 12시</b>에 마감합니다. 이후에는 선택 가능한 다른 음료로 신청할 수 있습니다.</span><span class="ja">お申し込み後の案内メールをご確認ください。事前準備が必要なお飲み物の選択、およびドリンク代のキャンセル・返金受付は<b>金曜12時（正午）まで</b>です。以降は選択可能な別のお飲み物をお選びください。</span></p>
             <div class="consent">
               <label>
                 <input type="checkbox" id="f-agree" required>
@@ -2302,6 +2311,18 @@ body.admin-on .gal-more{display:none!important}
       <p class="sg-dg-note" style="margin:0 0 14px">
         맨 위 요약 카드의 「일시 / 日時」 아랫줄에 이 글자가 그대로 들어갑니다.
         고치는 즉시 뒤쪽 카드가 바뀌니 보면서 맞추시면 됩니다.</p>
+      <div class="drinks-admin-card">
+        <h4 style="margin:0 0 5px">음료 종류 관리 · 추가 / 숨김</h4>
+        <p class="sg-dg-note">음료 추가·숨김은 모든 향후 회차에 적용됩니다. 특정 날짜만 품절/재판매하려면 아래 날짜별 버튼을 눌러 주세요. 기존 신청 내역은 바뀌지 않습니다.</p>
+        <div id="drink-catalog-list" class="drink-catalog-list"></div>
+        <div class="drink-add-form">
+          <input id="drink-add-ko" type="text" maxlength="45" placeholder="새 음료 이름 (한국어)" aria-label="새 음료 이름 한국어">
+          <input id="drink-add-ja" type="text" maxlength="45" placeholder="新しいドリンク名 (日本語)" aria-label="새 음료 이름 일본어">
+          <label class="drink-add-pre"><input id="drink-add-pre" type="checkbox"> 금요일 정오에 신청 마감</label>
+          <button type="button" id="drink-add-btn">음료 추가</button>
+          <span id="drink-add-state" role="status"></span>
+        </div>
+      </div>
       <div id="mt-list"><p class="sg-dg-note">여는 중…</p></div>
       <div class="sg-dg-row" style="margin-top:12px">
         <input type="date" id="mt-new">
@@ -2631,6 +2652,7 @@ window.IROLANG = (function(){
      모임 51시간 전(일요일 15시 기준 = 금요일 정오 12시)에 마감합니다.
      worker.js 의 PREORDER_LEAD_HOURS 와 같은 값이어야 합니다. */
   var PREORDER_DRINKS = ['dutch', 'milk'];
+  var DRINK_CATALOG = []; // 서버에서 불러온 전체 목록 (종류별 신청 가능 여부 포함)
   var PREORDER_LEAD_HOURS = 51;
 
   function meetStartMs(ymd){
@@ -2664,7 +2686,7 @@ window.IROLANG = (function(){
       var off = soldout || (pre && !open);
       o.disabled = off;
       var t = DRINK_LABEL[o.value];
-      if (soldout) {
+      if (soldout && t) {
         o.textContent = t[L] + (L === 'ko' ? ' — 품절' : ' — 完売');
         if (dr.value === o.value) blocked = true;
         return;
@@ -2690,8 +2712,8 @@ window.IROLANG = (function(){
     }
     if (date && !open) {
       note.textContent = L === 'ko'
-        ? '더치커피·밀크티 선택과 음료비 취소·환불 접수는 금요일 정오 12시에 마감했습니다. 지금은 분다버그 중 선택해 신청할 수 있습니다.'
-        : 'ダッチコーヒー・ミルクティーの選択、およびドリンク代のキャンセル・返金受付は金曜12時（正午）に終了しました。現在はバンダバーグを選んでお申し込みいただけます。';
+        ? '사전 준비 음료 선택과 음료비 취소·환불 접수는 금요일 정오 12시에 마감했습니다. 현재 선택 가능한 다른 음료를 골라 주세요.'
+        : '事前準備が必要なお飲み物の選択、およびドリンク代のキャンセル・返金受付は金曜12時（正午）に終了しました。現在お選びいただける別のお飲み物をご選択ください。';
       note.hidden = false;
     } else {
       note.hidden = true;
@@ -2704,6 +2726,28 @@ window.IROLANG = (function(){
   var COUNTS = {};
   var CAPACITY = {};   /* 날짜별 {capacity,waitlist_on} */
   var CLOSED = {};      /* 날짜별로 닫아 둔 음료 — { '2026-09-13': ['lime'] } */
+  function applyDrinkCatalog(items){
+    if (!Array.isArray(items) || !items.length) return;
+    DRINK_CATALOG=items.slice();
+    DRINK_LABEL={}; PREORDER_DRINKS=[];
+    items.forEach(function(d){
+      DRINK_LABEL[d.id]={ko:d.ko,ja:d.ja};
+      if(d.preorder) PREORDER_DRINKS.push(d.id);
+    });
+    var el=document.getElementById('f-drink');
+    if(el){
+      var old=el.value;
+      while(el.options.length>1) el.remove(1);
+      items.filter(function(d){return d.enabled;}).forEach(function(d){
+        var o=document.createElement('option'); o.value=d.id; el.appendChild(o);
+      });
+      if(items.some(function(d){return d.id===old && d.enabled;})) el.value=old;
+      else el.value='';
+      try {fillPicks();} catch(e) {try {syncDrinks();} catch(_) {}}
+    }
+    window.dispatchEvent(new CustomEvent('iro-drinks-updated',{detail:items}));
+  }
+  window.iroApplyDrinkCatalog=applyDrinkCatalog;
 
   /* ── 지난 회차 실적 ──────────────────────────────────────
      문구는 관리자에서 고칠 수 있고, {ja} {ko} 자리에 숫자가 들어갑니다.
@@ -3049,6 +3093,7 @@ window.IROLANG = (function(){
       if (d.counts) COUNTS = d.counts;
       if (d.capacity) CAPACITY = d.capacity;
       try { seatLinkCheck(); } catch (e) {}
+      if (d.drinks) applyDrinkCatalog(d.drinks);
       if (d.closed) { CLOSED = d.closed; try { syncDrinks(); } catch (e) {} }
       if (d.last) LAST = d.last;
       paintLast();
@@ -3099,7 +3144,7 @@ window.IROLANG = (function(){
       .then(function(d){
         if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
         var summary=document.getElementById('done-summary');
-        summary.textContent=receipt.date+' · '+DRINK_LABEL[receipt.drink][document.body.dataset.lang==='ko'?'ko':'ja']+' · '+receipt.email;
+        summary.textContent=receipt.date+' · '+((DRINK_LABEL[receipt.drink]||{})[document.body.dataset.lang==='ko'?'ko':'ja']||receipt.drink)+' · '+receipt.email;
         document.getElementById('next-meeting').hidden=true;
         form.reset();
         form.style.display = 'none';
@@ -3121,8 +3166,8 @@ window.IROLANG = (function(){
           closed:   ja ? 'この回はお申し込みを締め切りました。次の回をお選びください。'
                        : '이 회차는 신청이 마감되었습니다. 다음 회차를 선택해 주세요.',
           no_drink: ja ? 'お飲み物をお選びください。' : '음료를 선택해 주세요.',
-          drink_closed: ja ? 'そのお飲み物は金曜12時（正午）で締め切りました。バンダバーグをお選びください。'
-                           : '해당 음료는 금요일 정오 12시에 마감되었습니다. 분다버그를 선택해 주세요.',
+          drink_closed: ja ? 'そのお飲み物は金曜12時（正午）で締め切りました。別のお飲み物をお選びください。'
+                           : '해당 음료는 금요일 정오 12시에 마감되었습니다. 다른 음료를 선택해 주세요.',
           drink_soldout: ja ? 'そのお飲み物は完売いたしました。他のものをお選びください。'
                             : '해당 음료는 준비된 수량이 모두 나갔습니다. 다른 음료를 선택해 주세요.',
           drink_soldout: ja ? 'そのお飲み物は完売しました。他のものをお選びください。'
@@ -3420,6 +3465,54 @@ window.IROLANG = (function(){
   }
 
   var SG_DRINK = { dutch:'더치커피', milk:'밀크티', lime:'분다버그 라임', grape:'분다버그 핑크자몽' };
+  var ADMIN_DRINK_CATALOG=[];
+  function adminApplyCatalog(items){
+    if (!Array.isArray(items) || !items.length) return;
+    ADMIN_DRINK_CATALOG=items.slice(); SG_DRINK={};
+    items.forEach(function(d){ SG_DRINK[d.id]=d.ko; });
+    if (window.iroApplyDrinkCatalog) window.iroApplyDrinkCatalog(items);
+    paintCatalog();
+  }
+  function paintCatalog(){
+    var box=$a('drink-catalog-list'); if(!box) return;
+    box.textContent='';
+    ADMIN_DRINK_CATALOG.forEach(function(d){
+      var wrap=document.createElement('div'); wrap.className='drink-catalog-entry'+(d.enabled?'':' is-off');
+      var label=document.createElement('span');label.textContent=d.ko+' / '+d.ja+(d.preorder?' · 금 12시 마감':'');
+      var btn=document.createElement('button');btn.type='button';
+      btn.textContent=d.enabled?'신청 숨기기':'다시 신청받기';
+      btn.addEventListener('click',function(){
+        btn.disabled=true;
+        apiPost({action:'drink_update',token:ADMIN.token,id:d.id,enabled:!d.enabled})
+        .then(function(x){if(!x||!x.ok) throw Error(x&&x.error||'fail');adminApplyCatalog(x.drinks);loadMeetups();})
+        .catch(function(e){btn.disabled=false;alert('음료 상태를 변경하지 못했습니다: '+e.message);});
+      });
+      wrap.appendChild(label);wrap.appendChild(btn);box.appendChild(wrap);
+    });
+  }
+  window.addEventListener('iro-drinks-updated',function(e){
+    if(Array.isArray(e.detail) && e.detail.length){
+      ADMIN_DRINK_CATALOG=e.detail.slice(); SG_DRINK={};
+      e.detail.forEach(function(d){SG_DRINK[d.id]=d.ko;});paintCatalog();
+    }
+  });
+  onDrinkAddedInit();
+  function onDrinkAddedInit(){
+    var btn=$a('drink-add-btn'); if(!btn) return;
+    btn.addEventListener('click',function(){
+      var ko=$a('drink-add-ko').value.trim(),ja=$a('drink-add-ja').value.trim();
+      var status=$a('drink-add-state');
+      if(!ko||!ja){status.textContent='한국어·일본어 이름을 모두 입력해 주세요.';return;}
+      btn.disabled=true;status.textContent='추가 중…';
+      apiPost({action:'drink_add',token:ADMIN.token,ko:ko,ja:ja,preorder:$a('drink-add-pre').checked})
+      .then(function(x){
+        if(!x||!x.ok) throw Error(x&&x.error||'fail');
+        adminApplyCatalog(x.drinks);loadMeetups();
+        $a('drink-add-ko').value='';$a('drink-add-ja').value='';$a('drink-add-pre').checked=false;
+        status.textContent='음료가 추가되었습니다.';
+      }).catch(function(e){status.textContent='추가 실패: '+e.message;}).finally(function(){btn.disabled=false;});
+    });
+  }
 
   on('adm-signups-open', 'click', function(){
     openDim($a('adm-signups')); loadSignups();
@@ -3524,6 +3617,7 @@ window.IROLANG = (function(){
     $a('mt-list').innerHTML = '<p class="sg-dg-note">여는 중…</p>';
     apiPost({ action:'meetups', token: ADMIN.token }).then(function(d){
       if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+      if (d.drinks) adminApplyCatalog(d.drinks);
       paintMeetups(d.dates || []);
     }).catch(function(e){
       $a('mt-list').innerHTML = '<p class="sg-dg-note">불러오지 못했습니다 (' + e.message + ')</p>';
@@ -3556,7 +3650,8 @@ window.IROLANG = (function(){
          누르면 그 날짜의 신청 화면에서 «품절» 로 잠깁니다. */
       var shut = (m.closed || []).slice();
       var dbox = document.createElement('div'); dbox.className = 'mt-drinks';
-      [['lime','라임'], ['grape','자몽']].forEach(function(p){
+      ADMIN_DRINK_CATALOG.forEach(function(drinkItem){
+        var p=[drinkItem.id,drinkItem.ko];
         var b = document.createElement('button');
         b.type = 'button';
         var paint = function(){
@@ -3569,9 +3664,17 @@ window.IROLANG = (function(){
         b.addEventListener('click', function(){
           var i = shut.indexOf(p[0]);
           if (i >= 0) shut.splice(i, 1); else shut.push(p[0]);
-          paint();
-          m.closed = shut.slice();
-          saveMeetup(m.date, m.off, note.value, false, shut);
+          b.disabled=true;
+          var requested=shut.slice();
+          apiPost({action:'meetup_save',token:ADMIN.token,date:m.date,closed:requested})
+          .then(function(x){
+            if(!x||!x.ok) throw Error(x&&x.error||'fail');
+            m.closed=requested.slice();
+            if(requested.length) CLOSED[m.date]=requested.slice(); else delete CLOSED[m.date];
+            paint();try{syncDrinks();}catch(e){}
+          }).catch(function(e){
+            shut=(m.closed||[]).slice();paint();alert('품절 상태 저장 실패: '+e.message);
+          }).finally(function(){b.disabled=false;});
         });
         dbox.appendChild(b);
       });
@@ -3692,6 +3795,7 @@ window.IROLANG = (function(){
       SG.rows = d.rows || [];
       try { afterSeed(); } catch (e) {}
       if (d.closed) CLOSED = d.closed;   /* 품절 버튼 상태 */
+      if (d.drinks) adminApplyCatalog(d.drinks);
       fillDigest(d.digest); paintSg(); seatFillDates();
     }).catch(function(e){
       $a('sg-body').innerHTML = '<p class="st-empty">불러오지 못했습니다 (' + e.message + ')</p>';
@@ -3874,6 +3978,7 @@ window.IROLANG = (function(){
       SG.rows = d.rows || [];
       try { afterSeed(); } catch (e) {}
       if (d.closed) CLOSED = d.closed;   /* 품절 버튼 상태 */
+      if (d.drinks) adminApplyCatalog(d.drinks);
       fillDigest(d.digest); paintSg(); seatFillDates(); checkinFillDates(); checkinPaint(); loadDashboard(true);
     }).catch(function(e){
       $a('sg-body').innerHTML = '<p class="st-empty">불러오지 못했습니다 (' + e.message + ')</p>';
