@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="이로토모 한일교류회 지난 모임 사진을 날짜별로 볼 수 있습니다.">
+<title>지난 모임 사진 | 이로토모 · いろとも</title>
+<style>
+:root{--navy:#252e50;--ink:#192237;--muted:#69728a;--border:#e1e3e9;--cream:#fffdf8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:var(--ink);font-family:'Apple SD Gothic Neo','Noto Sans KR','Hiragino Kaku Gothic ProN',Meiryo,system-ui,sans-serif;line-height:1.6}
+a{color:inherit}button,select{font:inherit}.wrap{max-width:1150px;margin:auto;padding:0 24px}
+header{position:sticky;top:0;z-index:4;background:rgba(255,255,255,.96);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+.nav{min-height:66px;display:flex;align-items:center;gap:16px}.brand{font-size:18px;font-weight:800;color:var(--navy);text-decoration:none;margin-right:auto}.brand small{font-size:13px;font-weight:500;margin-left:8px}.go-back{border:1px solid #d4d8e1;border-radius:999px;padding:8px 14px;font-weight:700;text-decoration:none;font-size:13px}
+.lang{border:1px solid var(--border);border-radius:999px;padding:5px;background:#fafafa;display:flex}.lang button{border:0;border-radius:999px;background:transparent;padding:5px 10px;font-size:12px;cursor:pointer;color:var(--muted)}.lang button.on{background:var(--navy);color:white}
+.hero{padding:56px 0 35px;background:radial-gradient(ellipse at 82% 0%,#faf2e7 0%,#fff 65%)}.eyebrow{display:inline-block;color:#a57a2c;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}h1{font-size:clamp(29px,4vw,43px);line-height:1.28;letter-spacing:-.035em;margin:12px 0}.intro{color:var(--muted);font-size:15px;max-width:65ch}.safe-note{font-size:13px;color:#8a6c4f}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding-top:28px}.filters label{font-weight:700;font-size:13px}.filters select{min-width:170px;max-width:100%;padding:11px 14px;border:1px solid #cbd0dc;border-radius:10px;background:#fff;color:var(--ink)}.total{margin-left:auto;color:var(--muted);font-size:13px}.state{min-height:24px;color:var(--muted);font-size:14px;margin:20px 0}
+.album{margin:24px 0 46px}.album h2{font-size:20px;margin:0 0 16px;border-bottom:1px solid var(--border);padding:0 0 11px}.album h2 small{font-size:12px;color:var(--muted);font-weight:400;margin-left:10px}.photos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.photo{border:0;padding:0;background:#f3f0eb;border-radius:15px;overflow:hidden;aspect-ratio:4/3;cursor:zoom-in;position:relative}.photo img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .3s ease}.photo:hover img{transform:scale(1.045)}.photo:focus-visible{outline:3px solid #aa8755;outline-offset:3px}
+.more{display:none;margin:14px auto 55px;background:var(--navy);color:#fff;border:0;border-radius:12px;font-weight:700;min-height:46px;padding:0 32px;cursor:pointer}.more.visible{display:block}.more:disabled{opacity:.55;cursor:wait}
+footer{border-top:1px solid var(--border);padding:24px 0;font-size:13px;color:var(--muted)}
+.viewer{border:0;padding:10px;background:rgba(9,14,28,.95);color:white;position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none}.viewer:not([open]){display:none}.viewer-inner{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px;align-items:center;justify-items:center}.viewer-head{width:100%;display:flex;justify-content:flex-end}.viewer button{border:1px solid rgba(255,255,255,.5);border-radius:12px;padding:7px 14px;background:transparent;color:white;cursor:pointer}.viewer img{max-width:min(100%,1300px);max-height:100%;min-height:0;object-fit:contain}.viewer-bottom{color:#fff;font-size:13px;text-align:center}
+body[data-lang="ko"] .ja,body[data-lang="ja"] .ko{display:none!important}
+@media(max-width:850px){.photos{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.wrap{padding:0 17px}.hero{padding:36px 0 25px}.nav{gap:9px}.brand{font-size:15px}.brand small{display:none}.go-back{padding:6px 9px;font-size:12px}.lang button{padding:4px 7px}.photos{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.photo{border-radius:10px}.filters{align-items:stretch}.filters label{width:100%}.filters select{flex:1}.total{width:100%;margin:0}.album h2{font-size:17px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body data-lang="ko">
+<header><nav class="nav wrap"><a class="brand" href="index.html">이로토모 <small>いろとも</small></a><a class="go-back" href="index.html#gallery"><span class="ko">← 홈페이지</span><span class="ja">← ホームページ</span></a><div class="lang" aria-label="언어 선택"><button type="button" data-language="ko" class="on">한국어</button><button type="button" data-language="ja">日本語</button></div></nav></header>
+<section class="hero"><div class="wrap"><span class="eyebrow">IROTOMO PHOTO ARCHIVE</span><h1><span class="ko">지난 모임 사진</span><span class="ja">これまでの交流会の写真</span></h1><p class="intro"><span class="ko">매주 나누었던 대화와 모임의 풍경을 날짜별로 모아두었습니다. 최신 모임부터 살펴보세요.</span><span class="ja">これまでの交流会の様子を日付ごとにまとめています。新しい開催日からご覧いただけます。</span></p><p class="safe-note"><span class="ko">공개용으로 정리된 사진만 게시합니다.</span><span class="ja">公開用に確認・調整した写真のみ掲載しています。</span></p></div></section>
+<main class="wrap"><div class="filters"><label for="date-filter"><span class="ko">모임 날짜</span><span class="ja">開催日</span></label><select id="date-filter"><option value=""><span class="ko">모든 날짜</span></option></select><span class="total" id="total"></span></div><p class="state" id="state" role="status" aria-live="polite"></p><div id="albums"></div><button id="more" type="button" class="more"><span class="ko">사진 더 보기</span><span class="ja">写真をもっと見る</span></button></main>
+<footer><div class="wrap">이로토모 · いろとも　|　毎週日曜 · 매주 일요일 15:00–17:30</div></footer>
+<dialog class="viewer" id="viewer" aria-label="사진 크게 보기"><div class="viewer-inner"><div class="viewer-head"><button id="close-viewer" type="button"><span class="ko">닫기 ✕</span><span class="ja">閉じる ✕</span></button></div><img id="viewer-image" alt=""><div class="viewer-bottom" id="viewer-caption"></div></div></dialog>
+<script>
+(function(){
+  'use strict';
+  var API='https://api.irotomo.com';
+  var $=function(id){return document.getElementById(id);};
+  var dateSelect=$('date-filter'),albums=$('albums'),state=$('state'),more=$('more');
+  var viewer=$('viewer'), viewerImage=$('viewer-image'),viewerCaption=$('viewer-caption');
+  var cursor=null,loading=false,requestNo=0,lastDate='',lastGrid=null,pendingReload=false;
+  function lang(){return document.body.dataset.lang==='ja'?'ja':'ko';}
+  function t(ko,ja){return lang()==='ja'?ja:ko;}
+  function updateLang(newLang){
+    document.body.dataset.lang=newLang;
+    document.documentElement.lang=newLang;
+    document.querySelectorAll('[data-language]').forEach(function(b){b.classList.toggle('on',b.dataset.language===newLang);b.setAttribute('aria-pressed',String(b.dataset.language===newLang));});
+    var all=dateSelect.querySelector('option[value=""]');if(all)all.textContent=t('모든 날짜','すべての開催日');
+    refreshDateLabels();
+    if(!loading){state.textContent=albums.children.length?'':t('사진을 불러오고 있습니다…','写真を読み込み中です…');}
+  }
+  var dates=[];
+  function refreshDateLabels(){
+    dates.forEach(function(d){var opt=dateSelect.querySelector('option[value="'+d.date+'"]');if(opt)opt.textContent=d.date+' ('+Number(d.count||0)+t('장','枚')+')';});
+    document.querySelectorAll('.album h2 small').forEach(function(n){n.textContent=t('모임 사진','交流会の写真');});
+  }
+  document.querySelectorAll('[data-language]').forEach(function(b){b.addEventListener('click',function(){updateLang(b.dataset.language);});});
+  function photoUrl(key){return API+'/photo/'+String(key||'').split('/').map(encodeURIComponent).join('/');}
+  function fetchPage(date,before){
+    var q=new URLSearchParams({action:'gallery_archive_list',date:date||'',limit:'24'});
+    if(before)q.set('cursor',before);
+    return fetch(API+'?'+q.toString(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('network');return r.json();})
+      .then(function(d){if(!d||!d.ok)throw new Error(d&&d.error||'server');return d;});
+  }
+  function renderDates(list){
+    dates=list||[];
+    var selected=dateSelect.value;
+    dateSelect.textContent='';
+    var opt=document.createElement('option');opt.value='';opt.textContent=t('모든 날짜','すべての開催日');dateSelect.appendChild(opt);
+    dates.forEach(function(item){var x=document.createElement('option');x.value=item.date;x.textContent=item.date+' ('+item.count+t('장','枚')+')';dateSelect.appendChild(x);});
+    if(selected)dateSelect.value=selected;
+  }
+  function groupForDate(date){
+    if(lastDate===date&&lastGrid)return lastGrid;
+    var section=document.createElement('section');section.className='album';
+    var title=document.createElement('h2');title.appendChild(document.createTextNode(date+' '));
+    var subtitle=document.createElement('small');subtitle.textContent=t('모임 사진','交流会の写真');title.appendChild(subtitle);
+    var grid=document.createElement('div');grid.className='photos';
+    section.appendChild(title);section.appendChild(grid);albums.appendChild(section);
+    lastDate=date;lastGrid=grid;return grid;
+  }
+  function renderItems(items){
+    items.forEach(function(item){
+      var grid=groupForDate(item.date),button=document.createElement('button'),img=document.createElement('img');
+      button.type='button';button.className='photo';button.setAttribute('aria-label',item.date+t(' 모임 사진 크게 보기',' 交流会の写真を拡大'));
+      img.src=photoUrl(item.key);img.loading='lazy';img.decoding='async';img.alt=item.date+t(' 모임 사진',' 交流会の写真');
+      img.onerror=function(){button.style.display='none';};
+      button.appendChild(img);button.addEventListener('click',function(){viewerImage.src=img.src;viewerImage.alt=img.alt;viewerCaption.textContent=item.date;viewer.showModal();});
+      grid.appendChild(button);
+    });
+  }
+  function load(append){
+    if(loading){if(!append)pendingReload=true;return;}
+    var call=++requestNo,before=append?cursor:null;
+    loading=true;more.disabled=true;
+    if(!append){albums.textContent='';cursor=null;lastDate='';lastGrid=null;}
+    state.textContent=t('사진을 불러오는 중…','写真を読み込み中です…');
+    fetchPage(dateSelect.value,before).then(function(d){
+      if(call!==requestNo)return;
+      renderDates(d.dates);
+      renderItems(d.items||[]);
+      cursor=d.next_cursor||null;
+      more.classList.toggle('visible',!!cursor);
+      $('total').textContent=d.total?t('총 ','全')+Number(d.total)+t('장 보관','枚保存'):'';
+      state.textContent=albums.children.length?'':t('아직 공개된 사진이 없습니다.','まだ公開されている写真はありません。');
+    }).catch(function(){state.textContent=t('사진을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.','写真を読み込めませんでした。再読み込みしてください。');})
+      .then(function(){loading=false;more.disabled=false;if(pendingReload){pendingReload=false;load(false);}});
+  }
+  dateSelect.addEventListener('change',function(){load(false);});
+  more.addEventListener('click',function(){if(cursor)load(true);});
+  $('close-viewer').addEventListener('click',function(){viewer.close();});
+  viewer.addEventListener('click',function(e){if(e.target===viewer)viewer.close();});
+  updateLang((new URLSearchParams(location.search).get('lang')||'ko')==='ja'?'ja':'ko');
+  load(false);
+})();
+</script>
+</body>
+</html>

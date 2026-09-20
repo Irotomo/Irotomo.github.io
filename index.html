@@ -1477,7 +1477,7 @@ body[data-lang="ja"] .fee > div:nth-child(2){order:1;border-right:1px solid var(
 /* ── 갤러리 확장 ───────────────────────────────────────────── */
 body:not(.admin-on) .gal figure.empty{display:none}
 body:not(.admin-on) .gal figure.gal-extra{display:none}
-body:not(.admin-on) #gallery.gal-expanded .gal figure.gal-extra{display:block}
+body:not(.admin-on) #gallery.gal-expanded .gal figure.gal-extra{display:none}
 .gal-more{display:none;margin:22px auto 0;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:10px 20px;font:700 var(--fs-sm) var(--font);cursor:pointer}
 .gal-more.show{display:block}
 body.admin-on .gal-more{display:none!important}
@@ -1701,7 +1701,28 @@ body.admin-on .gal-more{display:none!important}
         <span class="gal-tools"><button type="button" data-gal-pick="11">사진</button><button type="button" class="sub" data-gal-del="11">✕</button></span>
       </figure>
     </div>
-    <button type="button" id="gal-more" class="gal-more"><span class="ko">사진 더 보기</span><span class="ja">写真をもっと見る</span></button>
+    <div class="gal-archive-link" id="gallery-more-link" hidden>
+      <a href="gallery.html" class="btn btn-ghost ko">MORE · 지난 모임 사진 모두 보기 →</a>
+      <a href="gallery.html?lang=ja" class="btn btn-ghost ja">MORE · これまでの写真を見る →</a>
+    </div>
+    <div class="archive-admin" id="archive-admin">
+      <h3>날짜별 누적 갤러리 · 일괄 업로드</h3>
+      <p>날짜를 선택하여 여러 장 올리면 메인 화면에 최근 모임 사진 6장이 자동 표시됩니다. MORE를 누르면 전체 갤러리로 이동합니다.</p>
+      <p>아래 기존 대표사진 12칸은 이전 사진을 누적 갤러리로 이관하거나, 누적 갤러리가 비었을 때의 대체 이미지로 남겨둡니다.</p>
+      <p class="archive-warning">※ 공개용으로 올리기 전 참가자 얼굴·개인정보를 가리거나 게시 동의를 확인해 주세요.</p>
+      <div class="archive-controls">
+        <label for="archive-date">모임 날짜 <input id="archive-date" type="date" required></label>
+        <button type="button" id="archive-pick" class="btn btn-primary">사진 여러 장 올리기</button>
+        <button type="button" id="archive-import" class="btn btn-ghost">선택한 기존 사진 가져오기</button>
+        <input id="archive-files" type="file" accept="image/*" multiple hidden>
+      </div>
+      <p>예전 대표사진도 메인 최신 사진에 포함하려면 아래에서 해당 날짜 사진을 체크해 누적 갤러리로 가져오세요. 기존 파일은 유지됩니다.</p>
+      <div id="archive-legacy-select" class="archive-legacy-select"></div>
+      <p class="archive-progress" id="archive-progress" role="status" aria-live="polite"></p>
+      <div class="archive-manage-head"><strong>선택한 날짜의 보관 사진</strong><button type="button" id="archive-refresh">새로고침</button></div>
+      <div id="archive-manage-list" class="archive-manage-grid"></div>
+      <button type="button" id="archive-manage-more" hidden>더 보기</button>
+    </div>
     <input type="file" id="gal-file" accept="image/*" hidden>
   </section>
 
@@ -2852,16 +2873,19 @@ window.IROLANG = (function(){
 
   /* 상단 메뉴의 작은 마크는 그대로 두고, 히어로의 큰 로고만 바꾼다 */
   /* ── 활동 사진 ────────────────────────────────────────────── */
-  var GALLERY = [];
-  var GAL_EXPANDED = false;
+  var GALLERY = [];                    /* 과거 12슬롯: 관리 화면과 누적 사진이 없을 때 사용 */
+  var ARCHIVE_LATEST = [];              /* 날짜 내림차순 / 동일 날짜는 최근 업로드 먼저 */
+  var ARCHIVE_PREVIEW_READY = false;
   /* 사진은 Worker 가 내보냅니다 (예전 구글 드라이브 주소 대체) */
   function driveUrl(id, w){ return API + '/photo/' + id; }
   function driveAlt(id, w){ return API + '/photo/' + id; }
   function renderGallery(){
     var sec = document.getElementById('gallery');
     if (!sec) return;
+    var shown = editing ? GALLERY : (ARCHIVE_LATEST.length ? ARCHIVE_LATEST : GALLERY);
     sec.querySelectorAll('.gal figure').forEach(function(fig, i){
-      var g = GALLERY[i], img = fig.querySelector('img');
+      /* 관리자는 예전 12슬롯을 그대로 관리하고, 방문자는 최신 누적 사진 6장만 표시 */
+      var g = i < (editing ? 12 : 6) ? shown[i] : null, img = fig.querySelector('img');
       if (g && (g.uri || g.id)) {
         img.onerror = function(){
           if (g.id && img.src.indexOf('lh3.') >= 0) { img.src = driveAlt(g.id, 1600); return; }
@@ -2873,18 +2897,32 @@ window.IROLANG = (function(){
         img.removeAttribute('src'); img.hidden = true; fig.classList.add('empty');
       }
     });
-    var any = GALLERY.some(function(g){ return g && (g.uri || g.id); });
-    var count = GALLERY.filter(function(g){return g && (g.uri || g.id);}).length;
-    sec.classList.toggle('gal-expanded', GAL_EXPANDED || editing);
-    var more=document.getElementById('gal-more');
-    if(more){
-      more.classList.toggle('show', !editing && count>6);
-      more.querySelector('.ko').textContent = GAL_EXPANDED ? '사진 접기' : '사진 더 보기';
-      more.querySelector('.ja').textContent = GAL_EXPANDED ? '写真を閉じる' : '写真をもっと見る';
-    }
+    var any = shown.some(function(g){return g && (g.uri || g.id);});
+    sec.classList.toggle('gal-expanded', editing);
+    var more = document.getElementById('gallery-more-link');
+    if (more) more.hidden = !ARCHIVE_LATEST.length && !editing;
     sec.hidden = !any && !editing;
+    if (typeof window.iroRefreshArchiveLegacy === 'function') window.iroRefreshArchiveLegacy();
   }
 
+  function refreshLatestGallery(){
+    /* cf54의 기존 공개 API를 그대로 사용. 갤러리 전체는 따로 gallery.html에서 페이지 단위 조회 */
+    return fetch(API + '?action=gallery_archive_list&limit=6', {cache:'no-store'})
+      .then(function(r){if(!r.ok)throw new Error('network');return r.json();})
+      .then(function(d){
+        if(!d || !d.ok || !Array.isArray(d.items))throw new Error('archive');
+        ARCHIVE_LATEST = d.items.slice(0,6).map(function(p){ return {id:p.key}; });
+        ARCHIVE_PREVIEW_READY = true;
+        renderGallery();
+        return d;
+      })
+      .catch(function(err){
+        console.warn('latest gallery preview unavailable; keeping existing photos',err);
+        ARCHIVE_PREVIEW_READY = true;
+        renderGallery();
+      });
+  }
+  window.iroRefreshLatestGallery = refreshLatestGallery;
   /* 사진 열기 — createImageBitmap 이 안 되는 브라우저·형식 대비 */
   function loadImage(file){
     var viaImg = function(){
@@ -2988,6 +3026,7 @@ window.IROLANG = (function(){
 
   applySchedule();
   renderGallery();
+  refreshLatestGallery();
   setTimeout(function(){ track(''); }, 900);
   fetch(API + '?action=content&t=' + Date.now(), { redirect:'follow' })
     .then(function(r){ return r.json(); })
@@ -3233,6 +3272,7 @@ window.IROLANG = (function(){
       mark(el);
     });
     syncSizeInput(); renderGallery();
+    if ($a('archive-refresh')) $a('archive-refresh').click();
     $a('adm-reset').disabled = true;
     fitBar(); count();
   }
@@ -5976,11 +6016,6 @@ window.IROLANG = (function(){
     });
   });
 
-  on('gal-more','click',function(){
-    GAL_EXPANDED=!GAL_EXPANDED;
-    renderGallery();
-  });
-
   $a('gal-file').addEventListener('change', function(e){
     var file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -5998,6 +6033,122 @@ window.IROLANG = (function(){
       alert('사진을 저장하지 못했습니다.\n\n' + fail(err) + '\n\n연결된 서버: …' + API.slice(-10));
     }).then(function(){ $a('gal-file').value = ''; });
   });
+
+  /* ── 누적 갤러리: 별도 보관함 / 기존 12장 대표사진은 그대로 ─── */
+  (function(){
+    var dateEl=$a('archive-date'), pick=$a('archive-pick'), importBtn=$a('archive-import');
+    var filesEl=$a('archive-files'), status=$a('archive-progress'), area=$a('archive-manage-list');
+    var refresh=$a('archive-refresh'), more=$a('archive-manage-more');
+    var cursor=null, busy=false, listing=false, requestNo=0, pendingRefresh=false;
+    if(!dateEl || !pick) return;
+    function today(){
+      try {
+        var parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+        var v={};parts.forEach(function(x){v[x.type]=x.value;});
+        return v.year+'-'+v.month+'-'+v.day;
+      }catch(e){return new Date().toISOString().slice(0,10);}
+    }
+    dateEl.value=today();
+    var legacyBox=$a('archive-legacy-select');
+    window.iroRefreshArchiveLegacy=function(){
+      if(!legacyBox)return;
+      var selected=new Set(Array.from(legacyBox.querySelectorAll('input:checked')).map(function(x){return x.value;}));
+      legacyBox.textContent='';
+      GALLERY.forEach(function(g,i){
+        if(!g||!g.id)return;
+        var lab=document.createElement('label'),im=document.createElement('img'),cb=document.createElement('input'),txt=document.createElement('span');
+        im.src=driveUrl(g.id,300);im.alt='대표사진 '+(i+1);im.loading='lazy';
+        cb.type='checkbox';cb.value=g.id;cb.setAttribute('data-archive-legacy','');cb.checked=selected.has(g.id);
+        txt.textContent=(i+1)+'번 사진 선택';
+        lab.appendChild(im);lab.appendChild(cb);lab.appendChild(txt);legacyBox.appendChild(lab);
+      });
+      if(!legacyBox.children.length)legacyBox.textContent='현재 대표사진이 없습니다.';
+    };
+    window.iroRefreshArchiveLegacy();
+    function say(txt){status.textContent=txt||'';}
+    function post(data){
+      data.token=ADMIN.token;
+      return apiPost(data).then(function(d){if(!d||!d.ok)throw new Error(d&&d.error||'서버 오류');return d;});
+    }
+    function fetchArchive(extra){
+      var q=new URLSearchParams({action:'gallery_archive_list',date:dateEl.value,limit:'24'});
+      if(extra)q.set('cursor',extra);
+      return fetch(API+'?'+q.toString(),{cache:'no-store'}).then(function(r){return r.json();})
+        .then(function(d){if(!d||!d.ok)throw new Error(d&&d.error||'조회 실패');return d;});
+    }
+    function drawItems(items){
+      items.forEach(function(item){
+        var fig=document.createElement('figure'),img=document.createElement('img'),del=document.createElement('button');
+        img.loading='lazy';img.alt=item.date+' 교류회 사진';img.src=driveUrl(item.key,500);
+        del.type='button';del.textContent='보관함에서 삭제';
+        del.onclick=function(){
+          if(busy||!confirm('이 사진을 누적 보관함에서 삭제할까요?'))return;
+          del.disabled=true;
+          post({action:'gallery_archive_delete',id:item.id}).then(function(){fig.remove();say('보관함에서 삭제했습니다.');if(window.iroRefreshLatestGallery)window.iroRefreshLatestGallery();})
+            .catch(function(e){del.disabled=false;say('삭제 실패: '+fail(e));});
+        };
+        fig.appendChild(img);fig.appendChild(del);area.appendChild(fig);
+      });
+    }
+    function loadManage(append){
+      if(listing){if(!append)pendingRefresh=true;return Promise.resolve();}
+      var request=++requestNo,old=append?cursor:null, selectedDate=dateEl.value;
+      listing=true;
+      if(!append){area.textContent='불러오는 중…';more.hidden=true;}
+      return fetchArchive(old).then(function(d){
+        if(request!==requestNo || selectedDate!==dateEl.value){pendingRefresh=true;return;}
+        if(!append)area.textContent='';
+        drawItems(d.items||[]);cursor=d.next_cursor||null;
+        more.hidden=!cursor;
+        if(!area.children.length)area.textContent='이 날짜의 보관 사진이 없습니다.';
+      }).catch(function(e){say('보관함 조회 실패: '+fail(e));})
+        .then(function(){listing=false;if(pendingRefresh){pendingRefresh=false;loadManage(false);}});
+    }
+    dateEl.addEventListener('change',function(){cursor=null;loadManage(false);});
+    refresh.addEventListener('click',function(){cursor=null;loadManage(false);});
+    more.addEventListener('click',function(){if(cursor)loadManage(true);});
+    pick.addEventListener('click',function(){if(!busy)filesEl.click();});
+    filesEl.addEventListener('change',async function(){
+      var selected=Array.from(filesEl.files||[]);filesEl.value='';
+      if(!selected.length)return;
+      var date=dateEl.value;
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){say('먼저 모임 날짜를 선택해 주세요.');return;}
+      if(selected.length>20){say('한 번에 최대 20장까지 선택해 주세요. 나눠서 올리면 계속 누적됩니다.');return;}
+      if(!confirm(date+' 모임 사진 '+selected.length+'장을 누적 갤러리에 공개할까요?\n얼굴 및 개인정보 가림 여부를 확인해 주세요.'))return;
+      busy=true;pick.disabled=true;importBtn.disabled=true;dateEl.disabled=true;
+      var success=0,failed=0;
+      try{
+        for(var i=0;i<selected.length;i++){
+          say('업로드 '+(i+1)+'/'+selected.length+' · '+selected[i].name+' · 성공 '+success+'장');
+          try{
+            var r=await fitImage(selected[i],[[1600,.82],[1300,.78],[1000,.74]],1000000,false);
+            if(!r.uri)throw new Error('지원하지 않는 이미지입니다 (JPG/PNG 권장)');
+            var mime=r.uri.slice(5,r.uri.indexOf(';base64'))||'image/jpeg';
+            await post({action:'gallery_archive_add',date:date,item:{mime:mime,b64:r.uri.split(',')[1]}});
+            success++;
+          }catch(e){failed++;console.error('archive photo upload failed:',selected[i].name,e);}
+        }
+        say('업로드 완료: '+success+'장 성공'+(failed?' · '+failed+'장 실패 (실패 사진만 다시 선택해 주세요)':'')+'.');
+      }finally{
+        busy=false;pick.disabled=false;importBtn.disabled=false;dateEl.disabled=false;
+        cursor=null;loadManage(false);
+        if(window.iroRefreshLatestGallery)window.iroRefreshLatestGallery();
+      }
+    });
+    importBtn.addEventListener('click',function(){
+      if(busy||!dateEl.value)return;
+      var ids=Array.from(legacyBox.querySelectorAll('input[data-archive-legacy]:checked')).map(function(x){return x.value;});
+      if(!ids.length){say('먼저 위에서 기존 사진을 선택해 주세요.');return;}
+      if(!confirm('선택한 기존 사진 '+ids.length+'장을 '+dateEl.value+' 날짜에 보관할까요?\n원본 대표 갤러리 사진은 그대로 유지됩니다.'))return;
+      busy=true;importBtn.disabled=true;
+      post({action:'gallery_archive_import',date:dateEl.value,ids:ids}).then(function(d){
+        say('기존 사진 '+d.added+'장 보관 · 이미 보관된 '+d.existing+'장'+(d.unsupported?' · 가져오지 못한 '+d.unsupported+'장':''));
+        cursor=null;loadManage(false);
+        if(window.iroRefreshLatestGallery)window.iroRefreshLatestGallery();
+      }).catch(function(e){say('가져오기 실패: '+fail(e));})
+        .then(function(){busy=false;importBtn.disabled=false;});
+    });
+  })();
 
   /* ── 통계 ────────────────────────────────────────────────── */
   var statDays = 30, STAT = null;
@@ -7354,5 +7505,32 @@ body.admin-on #fee-details .notice-body{padding:12px 0}
 }
 </style>
 
+<style id="cf54-archive-style">
+.gal-archive-link{display:flex;justify-content:center;margin:20px 0 0}
+.gal-archive-link .btn{border-radius:999px;padding:12px 23px;font-size:14px;font-weight:700}
+.archive-admin{display:none;margin:26px 0 0;padding:22px;border:1px solid #d7dce7;border-radius:16px;background:#f9fafc;color:#24304f}
+body.admin-on .archive-admin{display:block}
+.archive-admin h3{font-size:19px;margin:0 0 10px}
+.archive-admin p{font-size:13px;line-height:1.6;margin:6px 0}
+.archive-admin .archive-warning{color:#96552e}
+.archive-controls{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin:16px 0}
+.archive-controls label{font-weight:700;font-size:13px;display:grid;gap:6px}
+.archive-controls input{padding:9px;border:1px solid #c9ced9;border-radius:8px;background:white}
+.archive-controls .btn{min-height:40px}
+.archive-progress{min-height:22px;font-weight:700;color:#3b577b}
+.archive-manage-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 12px}
+.archive-manage-head button,.archive-manage-grid button,#archive-manage-more{cursor:pointer;padding:7px 10px;border:1px solid #cbd2dc;border-radius:8px;background:white;color:#283550}
+.archive-legacy-select{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px;margin:12px 0}
+.archive-legacy-select label{position:relative;display:grid;gap:5px;font-size:12px;text-align:center;border:1px solid #dce0e9;border-radius:9px;background:white;overflow:hidden;padding:5px;cursor:pointer}
+.archive-legacy-select label:has(input:checked){outline:2px solid #b28a40}
+.archive-legacy-select img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:5px}
+.archive-legacy-select input{accent-color:#b28a40}
+.archive-manage-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.archive-manage-grid figure{margin:0;border-radius:9px;overflow:hidden;border:1px solid #dfe1e8;background:white}
+.archive-manage-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.archive-manage-grid button{margin:5px;width:calc(100% - 10px)}
+#archive-manage-more{margin-top:10px}
+@media(max-width:600px){.archive-admin{padding:14px}.archive-controls{align-items:stretch}.archive-controls label,.archive-controls .btn{width:100%}}
+</style>
 </body>
 </html>
