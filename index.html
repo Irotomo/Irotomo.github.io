@@ -2847,7 +2847,7 @@ window.IROLANG = (function(){
     var cap = CAPACITY[d.value] || {};
     if (+cap.capacity > 0) {
       var s4=document.createElement('span'); s4.className='dc-mix';
-      var full=(+c.n >= +cap.capacity);
+      var full=(+(c.total !== undefined ? c.total : c.n) >= +cap.capacity);
       s4.textContent = ko
         ? ('정원 '+cap.capacity+'명'+(full ? (+cap.waitlist_on===0?' · 마감':' · 대기 접수 중') : ''))
         : ('定員 '+cap.capacity+'名'+(full ? (+cap.waitlist_on===0?' · 締切':' · キャンセル待ち受付中') : ''));
@@ -2901,7 +2901,7 @@ window.IROLANG = (function(){
         ? (+a[0]) + '年' + (+a[1]) + '月' + (+a[2]) + '日（' + WD[dt.getDay()] + '）'
         : (+a[0]) + '년 ' + (+a[1]) + '월 ' + (+a[2]) + '일 (' + WD[dt.getDay()] + ')';
       var cap = CAPACITY[v] || {}, cc = COUNTS[v] || {n:0,wait:0};
-      if (+cap.capacity > 0 && +cc.n >= +cap.capacity) {
+      if (+cap.capacity > 0 && +(cc.total !== undefined ? cc.total : cc.n) >= +cap.capacity) {
         baseLabel += (+cap.waitlist_on === 0)
           ? (ja ? ' — 締切' : ' — 마감')
           : (ja ? ' — キャンセル待ち' : ' — 대기 접수');
@@ -3649,7 +3649,7 @@ window.IROLANG = (function(){
       row.className = 'mt-row' + (m.off ? ' off' : '');
       row.innerHTML =
         '<b>' + m.date.replace(/-/g, '.') + ' (' + wd + ')</b>' +
-        '<span class="mt-n">' + (m.n ? m.n + '명' : '0명') + (m.wait_n ? ' · 대기 '+m.wait_n : '') + '</span>' +
+        '<span class="mt-n">' + (m.n ? m.n + '명' : '0명') + ' / ' + (+m.capacity || 61) + '명 (스탭 ' + (+m.staff_n || 0) + '명 포함)' + (m.wait_n ? ' · 대기 '+m.wait_n : '') + '</span>' +
         (m.auto ? '' : '<span class="mt-tag">추가</span>');
 
       var note = document.createElement('input');
@@ -3693,8 +3693,8 @@ window.IROLANG = (function(){
       row.appendChild(dbox);
 
       var cap=document.createElement('input');
-      cap.type='number';cap.min='0';cap.max='999';cap.value=+m.capacity||0;cap.className='mt-cap';cap.title='정원 (0=제한 없음)';
-      cap.addEventListener('change',function(){m.capacity=Math.max(0,+cap.value||0);saveMeetup(m.date,m.off,note.value,false,shut,m.capacity,m.waitlist_on);});
+      cap.type='number';cap.min='1';cap.max='999';cap.value=+m.capacity||61;cap.className='mt-cap';cap.title='스탭 포함 총정원 (기본 61명)';
+      cap.addEventListener('change',function(){m.capacity=Math.max(1,+cap.value||61);cap.value=m.capacity;saveMeetup(m.date,m.off,note.value,false,shut,m.capacity,m.waitlist_on);});
       row.appendChild(cap);
 
       var wait=document.createElement('button');wait.type='button';wait.className='mt-wait'+(+m.waitlist_on===0?'':' on');
@@ -4077,7 +4077,7 @@ window.IROLANG = (function(){
       apiPost({action:'staff_add',token:ADMIN.token,date:d,name:v,nat:nat.value,drink:pick.value})
         .then(function(x){
           add.disabled=false;
-          if(!x || !x.ok) throw new Error((x&&x.error)||'fail');
+          if(!x || !x.ok) throw new Error((x&&x.error)==='full'?'스탭 포함 정원에 도달해 추가할 수 없습니다.':((x&&x.error)||'fail'));
           name.value='';
           loadSignups();
         })
@@ -4254,7 +4254,7 @@ window.IROLANG = (function(){
                 date: date, name: v, nat: nat.value, drink: pick.value })
         .then(function(d){
           add.disabled = false;
-          if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+          if (!d || !d.ok) throw new Error((d&&d.error)==='full'?'스탭 포함 정원에 도달해 추가할 수 없습니다.':((d && d.error) || 'fail'));
           loadSignups();
         })
         .catch(function(e){ add.disabled = false; alert('추가하지 못했습니다. (' + fail(e) + ')'); });
