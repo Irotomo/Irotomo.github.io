@@ -1845,8 +1845,8 @@ body.admin-on .gal-more{display:none!important}
               <a href="https://map.naver.com/p/search/%EA%B5%AD%EC%A0%9C%EA%B8%88%EC%9C%B5%EB%A1%9C8%EA%B8%B8%2031" target="_blank" rel="noopener">NAVER Map</a>
               <a href="https://www.google.com/maps/search/?api=1&amp;query=37.5198049,126.9280064" target="_blank" rel="noopener">Google Maps</a>
             </div>
-
-    </div>
+          </div>
+        </div>
       <div class="map-side">
         <p class="mlabel ko" data-c="c47">카페희다 여의도점</p><p class="mlabel ja" data-c="c47">カフェ・ヒダ ヨイド店</p>
         <p class="mtext ko" data-c="c48">서울 영등포구 국제금융로8길 31, SK증권빌딩 1층<br>여의도역 도보 5분 (5호선 · 9호선)</p>
@@ -1976,10 +1976,10 @@ body.admin-on .gal-more{display:none!important}
           <div class="field">
             <label for="f-nat"><span class="ko">국적 <span class="lab-note">— 참가비 구분에만 사용합니다</span></span><span class="ja">国籍 <span class="lab-note">— 参加費の区分にのみ使用します</span></span></label>
             <select id="f-nat" name="entry.2086369190" required>
-<option value="" selected disabled>국적 선택 / 国籍を選択</option>
-              <option value="日本 / 일본">日本 / 일본</option>
-              <option value="韓国 / 한국">韓国 / 한국</option>
-              <option value="その他 / 그 외">その他 / 그 외</option>
+<option value="" selected disabled data-ko="국적을 선택해 주세요" data-ja="国籍をお選びください">국적 선택 / 国籍を選択</option>
+              <option value="日本 / 일본" data-ko="일본" data-ja="日本">日本 / 일본</option>
+              <option value="韓国 / 한국" data-ko="한국" data-ja="韓国">韓国 / 한국</option>
+              <option value="その他 / 그 외" data-ko="그 외" data-ja="その他">その他 / 그 외</option>
             </select>
           </div>
           <div class="field full apply-card" id="somoim-card" hidden>
@@ -2011,10 +2011,10 @@ body.admin-on .gal-more{display:none!important}
           <div class="field">
             <label for="f-src"><span class="ko">알게 된 경로</span><span class="ja">この会を知ったきっかけ</span></label>
             <select id="f-src" name="entry.1729227302">
-<option value="" selected>선택해 주세요 / お選びください</option><option value="소모임 / ソモイム">소모임 / ソモイム</option><option value="당근 / タングン">당근 / タングン</option><option value="기타 / その他">기타 / その他</option>
+<option value="" selected data-ko="선택해 주세요" data-ja="お選びください">선택해 주세요 / お選びください</option><option value="소모임 / ソモイム" data-ko="소모임" data-ja="ソモイム">소모임 / ソモイム</option><option value="당근 / タングン" data-ko="당근" data-ja="タングン（당근）">당근 / タングン</option><option value="기타 / その他" data-ko="기타" data-ja="その他">기타 / その他</option>
               <option>Instagram</option><option>Threads</option><option>X (Twitter)</option>
-              <option value="知人の紹介 / 지인 소개">知人の紹介 / 지인 소개</option>
-              <option value="検索 / 검색">検索 / 검색</option>
+              <option value="知人の紹介 / 지인 소개" data-ko="지인 소개" data-ja="知人の紹介">知人の紹介 / 지인 소개</option>
+              <option value="検索 / 검색" data-ko="검색" data-ja="検索">検索 / 검색</option>
             </select>
           </div>
           <div class="field full">
@@ -7678,5 +7678,92 @@ body.admin-on .archive-admin{display:block}
 #archive-manage-more{margin-top:10px}
 @media(max-width:600px){.archive-admin{padding:14px}.archive-controls{align-items:stretch}.archive-controls label,.archive-controls .btn{width:100%}}
 </style>
+
+<style id="cf60-design-polish">
+/* ══ cf60 디자인 정리 ═══════════════════════════════════════
+   기존 규칙 위에 덮어쓰는 마지막 블록입니다. 이 블록만 지우면 원래대로 돌아갑니다.
+   ═══════════════════════════════════════════════════════════ */
+
+/* 2. 한국어는 어절 단위로 줄바꿈 (일본어는 기존 방식 유지) */
+body[data-lang="ko"] :is(header,main,footer,#mcta){word-break:keep-all;overflow-wrap:break-word}
+body[data-lang="ko"] :is(header,main,footer) .ja{word-break:normal}
+:is(main,footer) :is(h1,h2,h3){text-wrap:balance}
+
+
+/* 3. 섹션 간격 통일 — 섹션에 세로 여백이 전혀 없던 문제 */
+main > section.wrap{padding-top:clamp(72px,9vw,112px)!important;padding-bottom:0!important}
+main > section.wrap:has(+ #apply){padding-bottom:clamp(72px,9vw,112px)!important}
+/* 히어로 아래 여백은 다음 섹션의 위 여백이 대신합니다 */
+main > .hero.wrap{padding-bottom:0!important}
+
+/* 4. 데스크톱 기준선 통일 — 헤더·히어로·본문 좌우 끝을 같은 선에 맞춤 */
+:root{--maxw:1296px}
+@media (min-width:961px){
+  .hero.wrap{max-width:var(--maxw)!important;padding-left:28px!important;padding-right:28px!important}
+}
+
+/* 5. 모바일 헤더 한 줄로 — 신청 버튼은 하단 고정 버튼(#mcta)이 대신합니다 */
+@media (max-width:960px){
+  .nav-right .btn{display:none!important}
+  .nav-in{justify-content:space-between}
+  .nav-right{margin-left:auto}
+}
+
+/* 6-1. 아코디언 아이콘 통일 (＋/− → FAQ 와 같은 화살표) */
+.notice-fold>summary::after{
+  content:""!important;display:block!important;width:11px!important;height:11px!important;min-width:11px!important;flex:0 0 11px!important;
+  font:inherit!important;background:none!important;margin:0 4px 0 0!important;
+  border:0!important;border-right:2px solid var(--muted)!important;border-bottom:2px solid var(--muted)!important;
+  transform:rotate(45deg) translate(-3px,-3px)!important;transition:transform .22s ease!important
+}
+.notice-fold[open]>summary::after{content:""!important;transform:rotate(225deg) translate(-3px,-3px)!important}
+
+/* 6-2. 오시는 길 버튼 통일 — 주소 복사도 지도 버튼과 같은 폭 */
+.map-side #copy-address{width:100%;margin-top:18px}
+main .map-side .mlinks{flex-direction:column;margin-top:10px}
+main .map-side .mlinks a{width:100%}
+#copy-address-status:empty{display:none}
+
+/* 7. 신청 폼 라벨·안내문 가독성 */
+.field label{font-size:13px!important;color:var(--ink,#141B2E)!important;font-weight:600}
+.field label .lab-note{color:var(--muted)!important;font-weight:400}
+.field-help{font-size:12.5px!important;line-height:1.6!important;color:var(--muted)}
+
+/* 8. 하단 부가 블록(게시판 · 가나 연습 · 제휴)을 같은 카드 스타일로 */
+.board-sec,.kana-sec{background:none!important;border:0!important;color:inherit!important}
+.board-sec{padding:clamp(72px,9vw,112px) 0 0!important}
+.kana-sec{padding:14px 0 0!important}
+main > section#sponsor{padding-top:14px!important;padding-bottom:clamp(72px,9vw,112px)!important}
+.board-band,.kana-strip,.sponsor{
+  background:var(--card,#fff)!important;border:1px solid var(--line)!important;border-radius:var(--r,18px)!important;
+  padding:32px 40px!important;box-shadow:none!important;gap:24px 32px!important;align-items:center!important
+}
+.bb-tag,.kana-strip .ks-tag,.sponsor .eyebrow{font-size:.68rem!important;font-weight:700!important;letter-spacing:.14em!important;text-transform:uppercase;color:#A97A19!important;margin-bottom:8px!important}
+.sponsor .eyebrow::after{display:none!important}
+.bb-title,.kana-strip .ks-title,.sponsor h3{font-size:1.25rem!important;font-weight:700!important;letter-spacing:-.02em!important;color:var(--ink,#141B2E)!important;margin-bottom:8px!important}
+.bb-desc,.kana-strip .ks-desc,.sponsor p:not(.eyebrow){font-size:var(--fs-sm)!important;color:var(--muted)!important;line-height:1.7!important;max-width:56ch}
+.kana-strip .btn{background:#fff!important;border-color:var(--navy)!important;color:var(--navy)!important}
+.kana-strip .btn:hover{background:#f0f1f6!important}
+.board-band .btn,.kana-strip .btn,.sponsor .btn{flex:none;min-width:150px}
+@media (max-width:760px){
+  .board-band,.kana-strip,.sponsor{padding:24px 22px!important}
+  .board-band .btn,.kana-strip .btn,.sponsor .btn{width:100%}
+}
+
+/* 푸터 링크가 글자 단위로 끊기지 않게 */
+footer .sns{display:flex;flex-wrap:wrap;gap:10px 22px}
+footer .sns a{white-space:nowrap}
+</style>
+<script>
+/* cf60: 선택지 문구를 현재 언어로 바꿉니다. value 는 건드리지 않습니다. */
+(function(){
+  function paint(){
+    var L=document.body.dataset.lang==='ja'?'ja':'ko';
+    document.querySelectorAll('option[data-ko]').forEach(function(o){ o.textContent=o.getAttribute('data-'+L); });
+  }
+  paint();
+  new MutationObserver(paint).observe(document.body,{attributes:true,attributeFilter:['data-lang']});
+})();
+</script>
 </body>
 </html>
