@@ -2052,8 +2052,8 @@ body.admin-on .gal-more{display:none!important}
             <p id="done-desc"><span class="ko">입력하신 이메일로 <b>음료비 6,000원 입금 계좌</b>를 보내드렸습니다. 입금이 확인되면 참가가 확정됩니다. 메일이 오지 않으면 스팸함을 확인해 주세요.</span><span class="ja">ご入力のメールアドレス宛に<b>ドリンク代6,000ウォンのお振込み先</b>をお送りしました。入金の確認をもってご参加が確定します。メールが届かない場合は迷惑メールフォルダをご確認ください。</span></p>
           </div>
           <div class="seat-help" style="margin:12px 0 18px;padding:15px 17px;background:#F7F8FC;border:1px solid #DEE4EF;border-radius:12px;line-height:1.8;font-size:13px">
-            <span class="ko"><b>당일 자리 확인</b><br>현장에 안내된 비밀번호(예: 9월 20일 → 0920)와 신청 시 입력한 이름을 사용해 <a href="seat.html">자리 조회 페이지</a>에서 확인해 주세요.</span>
-            <span class="ja"><b>当日のお席の確認</b><br>当日ご案内するパスワード（例：9月20日 → 0920）と申込時のお名前で、<a href="seat.html">お席の確認ページ</a>からご確認ください。</span>
+            <span class="ko"><b>당일 자리 확인</b><br>모임 당일 현장에서 안내하는 비밀번호와 신청 시 입력한 이름으로 <a href="seat.html">자리 조회 페이지</a>에서 확인해 주세요.</span>
+            <span class="ja"><b>当日のお席の確認</b><br>当日会場でご案内するパスワードと申込時のお名前で、<a href="seat.html">お席の確認ページ</a>からご確認ください。</span>
           </div>
           <div class="done-map">
             <div class="gmap" data-gmap style="min-height:280px">
@@ -2227,7 +2227,7 @@ body.admin-on .gal-more{display:none!important}
         <label><span>회차 수</span><input type="number" id="seat-rounds" min="1" max="6" value="3"></label>
         <label><span>배정 대상</span><select id="seat-paid"><option value="all">신청자 전체</option><option value="paid" selected>입금 확인만</option></select></label>
         <label><span>인원 배분</span><select id="seat-mode"><option value="auto" selected>자동 (고르게)</option><option value="manual">테이블별 직접 지정</option></select></label>
-        <label><span>좌석 확인 비밀번호 (직접 지정)</span><input type="text" id="seat-pass" maxlength="40" placeholder="예: 0906iro" autocomplete="off"></label>
+        <label><span>좌석 확인 비밀번호 (직접 지정)</span><input type="text" id="seat-pass" maxlength="40" placeholder="비워 두면 4자리 무작위 생성" autocomplete="off"></label>
         <div class="seat-actions">
           <button type="button" class="primary" id="seat-run">랜덤 배정</button>
           <button type="button" id="seat-reroll">다시 섞기</button>
@@ -3183,6 +3183,8 @@ window.IROLANG = (function(){
                        : '참가일을 선택해 주세요.',
           duplicate: ja ? '同じメールアドレスでこの日程にすでにお申し込み済みです。'
                         : '같은 이메일로 해당 날짜에 이미 신청되어 있습니다.',
+          too_many: ja ? '短時間に送信が集中しています。10分ほどおいて再度お試しください。'
+                       : '짧은 시간에 신청이 너무 많이 들어왔습니다. 10분 뒤 다시 시도해 주세요.',
           full: ja ? 'この回は定員に達し、キャンセル待ちも受け付けていません。'
                    : '이 회차는 정원이 마감되었고 대기 신청도 받지 않습니다.'
         };
@@ -5746,6 +5748,8 @@ window.IROLANG = (function(){
 
   function seatPublish(){
     var res=SEAT.result, st=$a('seat-state'), pass=($a('seat-pass').value||'').trim();
+    /* 날짜처럼 추측 가능한 값 대신, 비워 두면 4자리 무작위 번호를 만듭니다 */
+    if(!pass){ pass=String(1000+Math.floor(Math.random()*9000)); $a('seat-pass').value=pass; }
     if(!res){ alert('먼저 자리 배정을 해 주세요.'); return; }
     if(res.date!==$a('seat-date').value){ alert('현재 선택한 날짜로 다시 자리 배정을 해 주세요.'); return; }
     if(pass.length<3){ $a('seat-pass').focus(); alert('참가자 조회 비밀번호를 3자 이상 입력해 주세요.'); return; }
