@@ -1877,20 +1877,18 @@ body.admin-on .gal-more{display:none!important}
       <h2 class="ko" data-c="c51">참가 전에 확인해 주세요</h2>
       <h2 class="ja" data-c="c51">ご参加の前にお読みください</h2>
     </div>
-    <details class="notice-fold participation-fold"><summary><span class="ko">참가 조건 · 모임 이용 안내</span><span class="ja">参加条件・交流会のルール</span></summary>
-    <ul class="rules">
-      <li class="ko" data-c="c52">짧은 시간 안에 연락처를 주고받는 분위기는 삼가 주세요.</li>
-      <li class="ja" data-c="c52">短時間で連絡先を交換するような雰囲気づくりはご遠慮ください。</li>
+    <ul class="rules rules-open reveal">
       <li class="ko" data-c="c53">연애나 이성 만남을 목적으로 한 참가는 사양하고 있습니다.</li>
       <li class="ja" data-c="c53">恋愛・異性との出会いを目的としたご参加はお断りしています。</li>
       <li class="ko" data-c="c54">사전 신청 없이 당일 오시는 것은 받지 않습니다.</li>
       <li class="ja" data-c="c54">事前のお申し込みがない当日参加は受け付けておりません。</li>
-      <li class="ko" data-c="c55">모임 사진은 참가자 얼굴을 가린 뒤 SNS에 올립니다. 게재를 원하지 않으시면 당일 현장에서 말씀해 주세요.</li>
-      <li class="ja" data-c="c55">会の写真は、参加者のお顔を隠したうえでSNSに掲載しています。掲載を希望されない方は、当日お知らせください。</li>
       <li class="ko" data-c="c56">영업이나 권유를 목적으로 한 참가는 사양하고 있습니다.</li>
       <li class="ja" data-c="c56">勧誘・営業を目的としたご参加はお断りしています。</li>
+      <li class="ko" data-c="c52">짧은 시간 안에 연락처를 주고받는 분위기는 삼가 주세요.</li>
+      <li class="ja" data-c="c52">短時間で連絡先を交換するような雰囲気づくりはご遠慮ください。</li>
+      <li class="ko" data-c="c55">모임 사진은 참가자 얼굴을 가린 뒤 SNS에 올립니다. 게재를 원하지 않으시면 당일 현장에서 말씀해 주세요.</li>
+      <li class="ja" data-c="c55">会の写真は、参加者のお顔を隠したうえでSNSに掲載しています。掲載を希望されない方は、当日お知らせください。</li>
     </ul>
-    </details>
   </section>
 
   <!-- FAQ -->
@@ -7993,5 +7991,46 @@ body.lang-fade :is(main,.nav-links,footer){animation:iroLang .38s ease}
   },3600);
 })();
 </script>
+
+<style id="cf62-polish">
+/* ══ cf62 — 참가 조건 펼침 · 신청 폼 · 일본어 줄바꿈 · 대비 · 미세 정렬 ══ */
+
+/* 1. 참가 조건: 처음부터 펼친 카드 5장, 왼쪽 선은 참가자 색 */
+.rules.rules-open{margin:0}
+.rules.rules-open li:nth-child(1),.rules.rules-open li:nth-child(2){border-left-color:var(--iro-1,#F28B82)}
+.rules.rules-open li:nth-child(3),.rules.rules-open li:nth-child(4){border-left-color:var(--iro-2,#F6BF5B)}
+.rules.rules-open li:nth-child(5),.rules.rules-open li:nth-child(6){border-left-color:var(--iro-3,#7FCBA0)}
+.rules.rules-open li:nth-child(7),.rules.rules-open li:nth-child(8){border-left-color:var(--iro-4,#6FB3E0)}
+.rules.rules-open li:nth-child(9),.rules.rules-open li:nth-child(10){border-left-color:var(--iro-5,#A99BE3)}
+
+/* 2. 신청 폼: 760px 가운데 정렬 · 하단 세로 정리 · 신청 버튼 전체 폭 */
+@media(min-width:961px){
+  #apply .sec-head{max-width:760px;margin-left:auto;margin-right:auto;text-align:center}
+  #apply-form,#done{max-width:760px;margin-left:auto;margin-right:auto}
+}
+#apply-form > .field:first-child{grid-column:1/-1}
+#apply-form .form-foot{flex-direction:column!important;align-items:stretch!important;gap:16px!important}
+#apply-form .form-foot .draft{margin:0}
+#apply-form .consent{flex:none!important;width:100%;margin-top:0}
+#apply-form .consent details{border-bottom:0}
+#apply-form .consent details:not([open]) > p{display:none!important}
+#apply-form #submit{width:100%;align-self:stretch!important;justify-content:center;min-height:56px;font-size:17px}
+#apply-form .consent summary{padding:4px 0 0!important}
+#apply-form .consent details{margin-top:8px}
+#apply-form .consent{padding:16px 20px!important}
+#apply-form .form-foot .draft{max-width:none!important}
+#apply-form .field.full:has(> #date-count[hidden]){display:none}
+
+/* 3. 일본어는 구문 단위로 줄바꿈 (크롬·엣지 지원, 사파리는 기존 방식 유지) */
+html[lang="ja"] :is(header,main,footer),[lang="ja"]{word-break:auto-phrase}
+
+/* 4. 히어로 소개 문단을 한 단계 진하게 */
+.hero p.lead{color:var(--body,#4A5068)!important}
+
+/* 5-1. FAQ 화살표가 구분선 밖으로 나가지 않게 */
+#faq summary::after{margin-right:4px}
+/* 5-2. 주소 복사 버튼을 지도 버튼과 같은 크기로 */
+main .map-side #copy-address{min-height:48px;padding:11px 18px;font-size:14px;font-weight:600;line-height:1.5}
+</style>
 </body>
 </html>
