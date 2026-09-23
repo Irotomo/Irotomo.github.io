@@ -77,10 +77,10 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
 @media (prefers-reduced-motion:reduce){body.lang-swap main{animation:none}}
 </style>
 </head>
-<body data-lang="ja">
+<body data-design="editorial" data-lang="ja">
 
 <div class="nav"><div class="wrap nav-in">
-  <a class="brand" href="index.html"><span class="ko">이로토모</span><span class="ja">いろとも</span></a>
+  <a class="brand" href="index.html"><img src="logo.png" alt="" width="30" height="30"><span class="linked-brand-name"><span class="ko">이로토모</span><span class="ja">いろとも</span></span></a>
   <div class="lang">
     <button type="button" data-set="ko" aria-pressed="false">한국어</button>
     <button type="button" data-set="ja" aria-pressed="true">日本語</button>
@@ -105,11 +105,11 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
       <thead><tr><th>항목</th><th>이용 목적</th><th>필수</th></tr></thead>
       <tbody>
         <tr><td>이름</td><td>참가자 확인, 자리 배정</td><td>필수</td></tr>
-        <tr><td>국적</td><td><b>참가비 구분</b> (한국인 10,000원 / 일본인 무료)</td><td>필수</td></tr>
+        <tr><td>국적</td><td><b>참가비 구분 및 자리 배정</b> (참가비: 한국인 10,000원 / 일본인 무료, 음료비는 별도)</td><td>필수</td></tr>
         <tr><td>이메일</td><td>신청 확인 안내, 일정 변경 연락</td><td>필수</td></tr>
         <tr><td>참가 희망일</td><td>인원 관리, 자리 배정</td><td>필수</td></tr>
         <tr><td>SNS 계정</td><td>연락 수단 보조</td><td>선택</td></tr>
-        <tr><td>음료 선택</td><td>음료비로 준비하는 음료, 카페 발주</td><td>필수</td></tr>
+        <tr><td>음료 선택</td><td>음료 준비 및 카페 발주</td><td>필수</td></tr>
         <tr><td>음료비 입금 확인 여부</td><td>참가 확정 관리, 환불 처리</td><td>필수</td></tr>
         <tr><td>알게 된 경로</td><td>모임 운영 참고</td><td>선택</td></tr>
         <tr><td>문의 내용</td><td>문의 응대</td><td>선택</td></tr>
@@ -122,10 +122,10 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
         <tr><td>이메일</td><td>본인 확인용 인증코드 발송, 장난글 방지</td><td>비공개</td></tr>
         <tr><td>연락 방법</td><td>거래 당사자 간 연락</td><td><b>공개</b></td></tr>
         <tr><td>글 내용·사진</td><td>게시판 게시</td><td><b>공개</b></td></tr>
-        <tr><td>삭제 비밀번호</td><td>본인 확인 (암호화하여 보관)</td><td>비공개</td></tr>
+        <tr><td>삭제 비밀번호</td><td>본인 확인 (해시값으로 보관)</td><td>비공개</td></tr>
       </tbody>
     </table>
-    <p class="note">국적은 참가비를 구분하기 위해서만 사용하며, 그 외의 목적으로 이용하거나 공개하지 않습니다.
+    <p class="note">국적은 참가비 구분과 한국인·일본인 참가자의 비율을 고려한 자리 배정에 사용합니다.
       음료비는 모임 계좌로 직접 이체해 주시는 방식이라, <b>본인의 계좌번호나 카드 정보를 사이트에 입력하시는 일은 없습니다.</b>
       모임이 남기는 것은 입금이 확인되었는지 여부(예/아니오)뿐이며, 입금 내역 자체는 은행이 보관합니다.
       환불이 필요한 경우에 한해 돌려받으실 계좌를 여쭙고, 송금이 끝나면 지체 없이 지웁니다.</p>
@@ -137,11 +137,11 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
       <thead><tr><th>項目</th><th>利用目的</th><th>要否</th></tr></thead>
       <tbody>
         <tr><td>お名前</td><td>参加者の確認、席順の決定</td><td>必須</td></tr>
-        <tr><td>国籍</td><td><b>参加費の区分</b>（韓国の方10,000ウォン / 日本の方は無料）</td><td>必須</td></tr>
+        <tr><td>国籍</td><td><b>参加費の区分、席の割り振り</b>（参加費：韓国の方10,000ウォン / 日本の方は無料。ドリンク代は別途）</td><td>必須</td></tr>
         <tr><td>メールアドレス</td><td>お申し込みのご案内、日程変更のご連絡</td><td>必須</td></tr>
         <tr><td>ご参加日</td><td>人数の管理、席順の決定</td><td>必須</td></tr>
         <tr><td>SNSアカウント</td><td>連絡手段の補助</td><td>任意</td></tr>
-        <tr><td>お飲み物のご選択</td><td>ドリンク代でご用意するお飲み物、カフェへの発注</td><td>必須</td></tr>
+        <tr><td>お飲み物のご選択</td><td>お飲み物の準備、カフェへの発注</td><td>必須</td></tr>
         <tr><td>ドリンク代の入金確認の記録</td><td>ご参加確定の管理、返金対応</td><td>必須</td></tr>
         <tr><td>知ったきっかけ</td><td>運営の参考</td><td>任意</td></tr>
         <tr><td>ご質問・ご要望</td><td>お問い合わせへの対応</td><td>任意</td></tr>
@@ -154,10 +154,10 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
         <tr><td>メールアドレス</td><td>本人確認コードの送信、いたずら投稿の防止</td><td>非公開</td></tr>
         <tr><td>連絡方法</td><td>当事者間のご連絡</td><td><b>公開</b></td></tr>
         <tr><td>投稿内容・写真</td><td>掲示板への掲載</td><td><b>公開</b></td></tr>
-        <tr><td>削除用パスワード</td><td>本人確認（暗号化して保管）</td><td>非公開</td></tr>
+        <tr><td>削除用パスワード</td><td>本人確認（ハッシュ化して保管）</td><td>非公開</td></tr>
       </tbody>
     </table>
-    <p class="note">国籍は参加費を区分するためだけに使用し、それ以外の目的で利用したり公開したりすることはありません。
+    <p class="note">国籍は、参加費の区分と、韓国・日本の参加者のバランスを考慮した席の割り振りに使用します。
       ドリンク代は本会の口座へ直接お振込みいただく方式のため、<b>ご自身の口座番号やカード情報をサイトにご入力いただくことはありません。</b>
       本会が記録するのは入金が確認できたかどうか（はい／いいえ）のみで、入金明細そのものは銀行が保管します。
       返金が必要な場合に限りお振込み先をお伺いし、送金が完了しだい速やかに削除いたします。</p>
@@ -197,7 +197,7 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
     <ul>
       <li><b>Cloudflare, Inc. (미국)</b> — Workers·D1·KV. 신청 정보와 게시판 글·사진 보관</li>
         <li><b>Sendinblue SAS (Brevo · 프랑스)</b> — 신청 자동 회신 및 인증 메일 발송</li>
-      <li><b>소모임 (대한민국)</b> — 한국 거주 참가자의 참가 신청 접수 (음료 선택과 음료비는 이 사이트에서 함께 받습니다)</li>
+      <li><b>소모임 (대한민국)</b> — 한국인 참가자의 참가 신청 접수 (음료 선택과 음료비는 이 사이트에서 함께 받습니다)</li>
     </ul>
     <p>모임의 운영 주체는 대한민국에 있으며, 수집된 정보는 미국(Cloudflare 서버)과 유럽(Brevo 서버)에 보관됩니다. 신청서의 동의는 이러한 국외 이전에 대한 동의를 포함합니다.</p>
   </div>
@@ -206,7 +206,7 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
     <ul>
       <li><b>Cloudflare, Inc.（米国）</b> — Workers・D1・KV。お申し込み情報および掲示板の投稿・写真の保管</li>
         <li><b>Sendinblue SAS（Brevo・フランス）</b> — お申し込み自動返信および認証メールの送信</li>
-      <li><b>ソモイム / 소모임（韓国）</b> — 韓国在住の参加者からの参加お申し込み受付（お飲み物のご選択とドリンク代は本サイトで承ります）</li>
+      <li><b>ソモイム（韓国）</b> — 韓国人参加者からの参加お申し込み受付（お飲み物のご選択とドリンク代は本サイトで承ります）</li>
     </ul>
     <p>本会の運営者は大韓民国に所在し、お預かりした情報は米国（Cloudflare のサーバー）および欧州（Brevo のサーバー）に保管されます。お申し込みフォームでのご同意には、この国外への移転に対するご同意が含まれます。</p>
   </div>
@@ -222,26 +222,26 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
 <section>
   <h2><span class="ko">4-2. 음료비와 환불</span><span class="ja">4-2. ドリンク代と返金</span></h2>
   <div class="ko">
-    <p>참가를 신청하실 때 <b>음료비 6,000원</b>을 모임 계좌로 이체해 주시면 참가가 확정됩니다.
-    당일 드시는 음료 한 잔 값이며, 참가비(한국 거주 참가자 10,000원)와는 별도입니다.</p>
+    <p>신청 후 안내 메일에 따라 <b>음료비 6,000원</b>을 입금해 주세요. 입금 확인 후 참가가 확정되며, 한국인 참가자는 소모임 앱 신청도 필요합니다. 대기 신청인 경우에는 별도 안내를 기다려 주세요.
+    당일 드시는 음료 한 잔 값이며, 참가비(한국인 참가자 10,000원)와는 별도입니다.</p>
     <ul>
-      <li><b>모임 전 금요일 오후 3시까지</b> 인스타그램 DM 또는 info@irotomo.com 으로 알려주시면 음료비 전액을 돌려드립니다.</li>
+      <li><b>모임 전 금요일 정오 12시까지</b> 인스타그램 DM 또는 info@irotomo.com 으로 알려주시면 음료비 전액을 돌려드립니다.</li>
       <li>그 이후의 취소와 당일 불참은 환불해 드리기 어렵습니다. 카페에 음료 준비를 이미 요청한 뒤이기 때문입니다.</li>
       <li>모임이 열리지 않게 된 경우에는 사유를 불문하고 전액 돌려드립니다.</li>
       <li>환불은 알려주신 계좌로 <b>영업일 기준 3일 이내</b>에 보내드립니다.</li>
     </ul>
-    <p>더치커피와 밀크티도 같은 이유로 금요일 오후 3시에 선택이 마감됩니다. 그 이후에는 탄산수만 고르실 수 있습니다.</p>
+    <p>더치커피와 밀크티도 같은 이유로 모임 전 금요일 정오 12시에 선택이 마감됩니다. 마감 이후에도 신청 가능한 날짜에는 분다버그 라임·핑크자몽 중에서 선택하실 수 있습니다.</p>
   </div>
   <div class="ja">
-    <p>お申し込みの際に<b>ドリンク代6,000ウォン</b>を本会の口座へお振込みいただくと、ご参加が確定します。
-    当日お召し上がりいただくお飲み物1杯分で、参加費（韓国にお住まいの方は10,000ウォン）とは別のものです。</p>
+    <p>お申し込み後の案内メールに従って、<b>ドリンク代6,000ウォン</b>をお振り込みください。入金確認後に参加が確定します。韓国の方は「ソモイム」での申し込みも必要です。キャンセル待ちの方は、別途ご案内するまでお待ちください。
+    当日お召し上がりいただくお飲み物1杯分で、参加費（韓国の方は10,000ウォン）とは別のものです。</p>
     <ul>
-      <li><b>開催前の金曜15時まで</b>にInstagramのDMまたは info@irotomo.com へご連絡いただければ、ドリンク代を全額お返しします。</li>
+      <li><b>開催前の金曜12:00（正午）まで</b>にInstagramのDMまたは info@irotomo.com へご連絡いただければ、ドリンク代を全額お返しします。</li>
       <li>それ以降のキャンセルおよび当日のご欠席につきましては、返金いたしかねます。カフェへお飲み物のご用意をすでにお願いしているためです。</li>
       <li>本会の都合で開催しないことになった場合は、理由を問わず全額お返しします。</li>
       <li>返金は、お知らせいただいた口座へ<b>営業日3日以内</b>にお送りします。</li>
     </ul>
-    <p>ダッチコーヒーとミルクティーも同じ理由から、金曜15時でご選択を締め切ります。それ以降は炭酸水のみお選びいただけます。</p>
+    <p>ダッチコーヒーとミルクティーも同じ理由から、開催前の金曜12:00（正午）にご選択を締め切ります。締切後も申し込みを受け付けている日程では、バンダバーグのライム・ピンクグレープフルーツをお選びいただけます。</p>
   </div>
 </section>
 
@@ -255,13 +255,13 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
   <h2><span class="ko">6. 안전 관리</span><span class="ja">6. 安全管理</span></h2>
   <ul class="ko">
     <li>정보에 접근할 수 있는 사람을 운영자 본인으로 한정합니다</li>
-    <li>게시판 삭제 비밀번호는 암호화(해시)하여 저장하며, 운영자도 원문을 볼 수 없습니다</li>
+    <li>게시판 삭제 비밀번호는 해시값으로 저장하며, 운영자도 원문을 볼 수 없습니다</li>
     <li>게시판에 적으신 이메일 주소는 사이트에 표시되지 않습니다</li>
     <li>모임 사진을 SNS에 올릴 때는 참가자의 얼굴을 가린 뒤 게재합니다. 게재를 원하지 않으시면 당일 현장에서 말씀해 주세요</li>
   </ul>
   <ul class="ja">
     <li>情報にアクセスできる者を運営者本人に限定しています</li>
-    <li>掲示板の削除用パスワードは暗号化（ハッシュ化）して保管しており、運営者も元の文字列を見ることはできません</li>
+    <li>掲示板の削除用パスワードはハッシュ化して保管しており、運営者も元の文字列を見ることはできません</li>
     <li>掲示板にご入力いただいたメールアドレスがサイト上に表示されることはありません</li>
     <li>会の写真をSNSに掲載する際は、参加者のお顔を隠したうえで掲載します。掲載をご希望されない場合は、当日会場でお知らせください</li>
   </ul>
@@ -364,5 +364,77 @@ setLang(window.IROLANG.get());
   }).observe(document.body, {attributes:true, attributeFilter:['data-lang']});
 })();
 </script>
+
+<style id="linked-brand-shine">
+/* Same rainbow sweep as the index brand; images and body text remain unchanged. */
+@supports ((background-clip:text) or (-webkit-background-clip:text)){
+ .brand :is(.brand-name,.linked-brand-name){
+  display:inline-block;
+  background-image:linear-gradient(100deg,var(--ink,#141B2E) 0%,var(--ink,#141B2E) 38%,#F28B82 43%,#F6BF5B 47%,#7FCBA0 51%,#6FB3E0 55%,#A99BE3 59%,#F09EC4 63%,var(--ink,#141B2E) 69%,var(--ink,#141B2E) 100%);
+  background-size:320% 100%;background-position:100% 0;
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+ }
+ .brand .iro-shine{animation:linkedIroShine 1.9s cubic-bezier(.45,0,.2,1) 1}
+}
+@keyframes linkedIroShine{from{background-position:100% 0}to{background-position:0 0}}
+@media(prefers-reduced-motion:reduce){
+ .brand :is(.brand-name,.linked-brand-name){animation:none!important;background:none;color:var(--ink,#141B2E);-webkit-text-fill-color:currentColor}
+}
+@media(forced-colors:active){
+ .brand :is(.brand-name,.linked-brand-name){animation:none!important;background:none;color:LinkText;-webkit-text-fill-color:LinkText}
+}
+</style>
+<script id="linked-brand-shine-script">
+(function(){
+ var names=document.querySelectorAll('.brand .brand-name,.brand .linked-brand-name');
+ var reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+ function shine(){
+  if(reduced.matches||document.hidden)return;
+  names.forEach(function(n){n.classList.remove('iro-shine');void n.offsetWidth;n.classList.add('iro-shine');});
+ }
+ names.forEach(function(n){n.addEventListener('animationend',function(){n.classList.remove('iro-shine');});});
+ document.querySelectorAll('.brand').forEach(function(b){b.addEventListener('mouseenter',shine);b.addEventListener('focusin',shine);});
+ new MutationObserver(shine).observe(document.body,{attributes:true,attributeFilter:['data-lang']});
+ setTimeout(shine,700);
+ setInterval(shine,5000);
+})();
+</script>
+
+
+<style id="linked-editorial-design">
+/* Shared public-page visual language. Existing styles and photo treatment are preserved. */
+body[data-design="editorial"]{background:#F7F7F4;color:#141B2E;font-family:'Schibsted Grotesk','Zen Kaku Gothic New','IBM Plex Sans KR',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body[data-design="editorial"][data-lang="ko"]{font-family:'Schibsted Grotesk','IBM Plex Sans KR','Zen Kaku Gothic New',system-ui,sans-serif}
+body[data-design="editorial"] h1{font-weight:700;letter-spacing:-.035em;line-height:1.4}
+body[data-design="editorial"] .brand{font-size:16px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+body[data-design="editorial"] .brand>img{width:30px;height:30px;object-fit:contain}
+body[data-design="editorial"] .lang{background:#ECECE6;border:0;padding:3px;gap:2px}
+body[data-design="editorial"] .lang button{font-family:inherit;font-weight:500;font-size:12px;min-height:34px;padding:7px 10px;color:#656c7d}
+body[data-design="editorial"] .lang button.on,
+body[data-design="editorial"] .lang button[aria-pressed="true"]{background:#fff;color:#141B2E;box-shadow:0 1px 2px #141b2e12}
+body[data-design="editorial"] :is(.btn,.go,.refresh,.go-back,.more){border-radius:6px;min-height:46px;padding:11px 18px;font-family:inherit;font-weight:500;font-size:14px;line-height:1.5;box-shadow:none}
+body[data-design="editorial"] :is(.btn,.go-back,.more,.refresh):hover{transform:none}
+body[data-design="editorial"] :is(.btn-primary,.go,.more){background:#242D50;color:#fff}
+body[data-design="editorial"] :is(.btn-ghost,.refresh,.go-back){border:1px solid #cbd0d9;background:transparent;color:#242D50}
+body[data-design="editorial"] :is(.intro,.desc,.head .lead){font-size:16px;line-height:1.85;color:#565d6f}
+body[data-design="editorial"] :is(.eyebrow,.kicker){color:#7c7159;font-size:11px;font-weight:600;letter-spacing:.12em}
+body[data-design="editorial"] :is(input:not([type=checkbox]):not([type=radio]),select,textarea){font-family:inherit;font-size:16px}
+body[data-design="editorial"] :is(a,button,input,select,textarea,summary):focus-visible{outline:2px solid #37406B;outline-offset:3px}
+@media(max-width:600px){
+ body[data-design="editorial"] .brand{font-size:15px}
+ body[data-design="editorial"] h1{font-size:28px}
+ body[data-design="editorial"] :is(.intro,.desc,.head .lead){font-size:15px}
+ body[data-design="editorial"] .lang button{padding:7px 8px}
+}
+</style>
+<style id="privacy-editorial">
+.nav{background:rgba(247,247,244,.97)}.nav-in{min-height:68px;height:auto;padding-top:12px;padding-bottom:12px}
+.top{padding:56px 0 36px}.top h1{font-size:clamp(28px,3.2vw,40px)}
+.top p:not(.eyebrow){color:#565d6f;line-height:1.9}
+main section{padding:32px 0;border-top:1px solid #e3e3dd}
+main h2{font-size:21px;font-weight:600;line-height:1.6;letter-spacing:-.02em}
+main p,main li{color:#41495c;line-height:1.9}.box{border-radius:6px;box-shadow:none;background:#eeeee8}
+@media(max-width:600px){.top{padding:38px 0 28px}main h2{font-size:19px}}
+</style>
 </body>
 </html>

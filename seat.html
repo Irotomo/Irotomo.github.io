@@ -26,10 +26,10 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
 @media(max-width:420px){body{padding-left:13px;padding-right:13px}.card{padding:26px 20px}.title{font-size:25px}}
 </style>
 </head>
-<body data-lang="ko">
+<body data-design="editorial" data-lang="ko">
 <div class="wrap">
   <div class="top">
-    <a class="brand" href="/"><img src="logo.png" alt=""><span>いろとも 이로토모</span></a>
+    <a class="brand" href="/"><img src="logo.png" alt=""><span class="linked-brand-name"><span class="ko">이로토모</span><span class="ja">いろとも</span></span></a>
     <div class="lang"><button type="button" id="ko" class="on">한국어</button><button type="button" id="ja">日本語</button></div>
   </div>
 
@@ -38,9 +38,9 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
       <div class="kicker">TODAY'S SEAT</div>
       <h1 class="title"><span class="ko">오늘의 자리 확인</span><span class="ja">今日の席を確認</span></h1>
       <p class="desc ko">신청 시 입력한 이름과 오늘 안내받은 비밀번호로 현재 테이블을 확인해 주세요.</p>
-      <p class="desc ja block">お申し込み時のお名前と当日ご案内するパスワードで、現在のテーブルをご確認ください。</p>
+      <p class="desc ja block">お申し込み時のお名前と、当日会場でご案内するパスワードを入力すると、現在のお席を確認できます。</p>
       <form id="form" class="form">
-        <div class="field"><label for="name"><span class="ko">신청 이름</span><span class="ja">お申し込み時のお名前</span></label><input id="name" name="name" maxlength="60" autocomplete="name" required placeholder="" aria-describedby="name-help"><div id="name-help" class="seat-hint"><span class="ko">신청서에 적은 이름 그대로 입력해 주세요. <b>띄어쓰기 등 표기 확인</b></span><span class="ja">申込時のお名前をそのまま入力してください。<b>スペースなどの表記をご確認ください。</b></span></div></div>
+        <div class="field"><label for="name"><span class="ko">신청 이름</span><span class="ja">お申し込み時のお名前</span></label><input id="name" name="name" maxlength="60" autocomplete="name" required placeholder="" aria-describedby="name-help"><div id="name-help" class="seat-hint"><span class="ko">신청 확인 메일에 적힌 이름을 <b>띄어쓰기까지 동일하게</b> 입력해 주세요.</span><span class="ja">申込確認メールに記載されたお名前を、<b>スペースも含めて同じ表記で</b>入力してください。</span></div></div>
         <div class="field"><label for="pass"><span class="ko">오늘의 비밀번호</span><span class="ja">当日のパスワード</span></label><input id="pass" name="pass" type="password" inputmode="numeric" maxlength="40" autocomplete="off" required aria-describedby="pass-help"><div id="pass-help" class="seat-hint"><span class="ko">모임 당일 <b>현장에서 안내하는 비밀번호</b>를 입력해 주세요.</span><span class="ja">当日<b>会場でご案内するパスワード</b>を入力してください。</span></div></div>
         <button class="go" id="go" type="submit"><span class="ko">자리 확인</span><span class="ja">席を確認</span></button>
       </form>
@@ -65,10 +65,10 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
 <script>
 (function(){
   var API='https://api.irotomo.com';
-  var lang='ko', last=null, timer=null;
+  var lang='ja', last=null, timer=null, lastError=null;
   var $=function(id){return document.getElementById(id)};
-  function setLang(v){lang=v;document.body.dataset.lang=v;$('ko').classList.toggle('on',v==='ko');$('ja').classList.toggle('on',v==='ja');document.documentElement.lang=v;try{localStorage.setItem('irotomo-lang',v)}catch(e){}}
-  try{var saved=localStorage.getItem('irotomo-lang');if(saved==='ja'||saved==='ko')setLang(saved);else if((navigator.language||'').toLowerCase().startsWith('ja'))setLang('ja')}catch(e){}
+  function setLang(v){lang=v;document.body.dataset.lang=v;$('ko').classList.toggle('on',v==='ko');$('ja').classList.toggle('on',v==='ja');document.documentElement.lang=v;try{localStorage.setItem('irotomo-lang',v)}catch(e){};if(last&&$('result').classList.contains('show'))showResult(last);if(lastError&&$('msg').classList.contains('show'))showError(lastError);}
+  var saved='ja';try{saved=localStorage.getItem('irotomo-lang')||'ja';}catch(e){}setLang(saved==='ko'?'ko':'ja');
   $('ko').onclick=function(){setLang('ko')};$('ja').onclick=function(){setLang('ja')};
   function text(ko,ja){return lang==='ja'?ja:ko}
   function post(p){return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p)}).then(function(r){return r.json()})}
@@ -76,22 +76,22 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
     var m={
       missing:['이름과 비밀번호를 입력해 주세요.','お名前とパスワードを入力してください。'],
       wrong_password:['비밀번호가 맞지 않습니다. 현장에서 안내한 비밀번호를 다시 확인해 주세요.','パスワードが正しくありません。会場でご案内したパスワードをもう一度ご確認ください。'],
-      too_many:['조회 시도가 너무 많습니다. 잠시 후 다시 시도하거나 현장 스태프에게 문의해 주세요.','確認の試行回数が多すぎます。しばらくしてから再度お試しいただくか、スタッフまでお声がけください。'],
+      too_many:['조회 시도가 너무 많습니다. 잠시 후 다시 시도하거나 현장 스태프에게 문의해 주세요.','短時間に確認が繰り返されたため、一時的に制限されています。しばらく待ってからお試しいただくか、会場スタッフにお声がけください。'],
       not_today:['오늘 공개된 자리배정이 아닙니다. 당일 다시 확인해 주세요.','本日公開されている席順ではありません。当日にもう一度ご確認ください。'],
       not_found:['해당 이름으로 자리정보를 찾지 못했습니다. 신청 확인 메일의 이름(띄어쓰기 포함)을 확인해 주세요. 계속 조회되지 않으면 현장 스태프에게 문의해 주세요.','該当するお名前の席情報が見つかりません。申込確認メールのお名前（スペースを含む）をご確認ください。確認できない場合は会場スタッフへお声がけください。'],
       duplicate_name:['같은 이름의 참가자가 2명 이상 있어 자동 확인이 어렵습니다. 운영진에게 문의해 주세요.','同じお名前の参加者が複数いるため自動確認できません。スタッフまでお声がけください。'],
-      ended:['오늘 모임의 자리 조회 시간이 종료되었습니다.','本日の席確認時間は終了しました。'],
+      ended:['오늘 모임의 자리 조회 시간이 종료되었습니다.','本日の席の確認は終了しました。'],
       not_assigned:['아직 자리배정이 완료되지 않았습니다. 운영진에게 문의해 주세요.','まだ席順が確定していません。スタッフまでお声がけください。']
     };
     var a=m[code]||['확인하지 못했습니다. 잠시 후 다시 시도해 주세요.','確認できませんでした。しばらくしてからもう一度お試しください。'];
     return lang==='ja'?a[1]:a[0];
   }
-  function showError(code){var m=$('msg');m.textContent=message(code);m.className='msg show err'}
+  function showError(code){lastError=code;var m=$('msg');m.textContent=message(code);m.className='msg show err'}
   function showResult(d){
     last=d;$('lookup').style.display='none';$('result').classList.add('show');
     $('r-date').textContent=(d.date||'').replace(/-/g,'.');$('r-name').textContent=d.name||'';$('r-table').textContent='TABLE '+d.table;
-    $('r-round').textContent=text(d.round+'회차 · '+d.rounds+'회 중',d.round+'回目 / 全'+d.rounds+'回');
-    if(d.phase==='before') $('r-next').textContent=text('모임 시작 전입니다. 첫 자리입니다.','開始前です。最初の席です。');
+    $('r-round').textContent=text('전체 '+d.rounds+'회 중 '+d.round+'회차',d.round+'回目 / 全'+d.rounds+'回');
+    if(d.phase==='before') $('r-next').textContent=text('모임 시작 전입니다. 시작할 때 앉으실 자리입니다.','交流会の開始前です。最初にお座りいただく席をご案内しています。');
     else if(d.next_change) $('r-next').textContent=text('다음 자리 변경 '+d.next_change,'次の席替え '+d.next_change);
     else $('r-next').textContent=text('마지막 회차입니다.','最後の回です。');
     clearTimeout(timer);timer=setTimeout(function(){lookup(true)},65000);
@@ -114,5 +114,78 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
   document.addEventListener('visibilitychange',function(){if(!document.hidden&&$('result').classList.contains('show'))lookup(true)});
 })();
 </script>
+
+<style id="linked-brand-shine">
+/* Same rainbow sweep as the index brand; images and body text remain unchanged. */
+@supports ((background-clip:text) or (-webkit-background-clip:text)){
+ .brand :is(.brand-name,.linked-brand-name){
+  display:inline-block;
+  background-image:linear-gradient(100deg,var(--ink,#141B2E) 0%,var(--ink,#141B2E) 38%,#F28B82 43%,#F6BF5B 47%,#7FCBA0 51%,#6FB3E0 55%,#A99BE3 59%,#F09EC4 63%,var(--ink,#141B2E) 69%,var(--ink,#141B2E) 100%);
+  background-size:320% 100%;background-position:100% 0;
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+ }
+ .brand .iro-shine{animation:linkedIroShine 1.9s cubic-bezier(.45,0,.2,1) 1}
+}
+@keyframes linkedIroShine{from{background-position:100% 0}to{background-position:0 0}}
+@media(prefers-reduced-motion:reduce){
+ .brand :is(.brand-name,.linked-brand-name){animation:none!important;background:none;color:var(--ink,#141B2E);-webkit-text-fill-color:currentColor}
+}
+@media(forced-colors:active){
+ .brand :is(.brand-name,.linked-brand-name){animation:none!important;background:none;color:LinkText;-webkit-text-fill-color:LinkText}
+}
+</style>
+<script id="linked-brand-shine-script">
+(function(){
+ var names=document.querySelectorAll('.brand .brand-name,.brand .linked-brand-name');
+ var reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+ function shine(){
+  if(reduced.matches||document.hidden)return;
+  names.forEach(function(n){n.classList.remove('iro-shine');void n.offsetWidth;n.classList.add('iro-shine');});
+ }
+ names.forEach(function(n){n.addEventListener('animationend',function(){n.classList.remove('iro-shine');});});
+ document.querySelectorAll('.brand').forEach(function(b){b.addEventListener('mouseenter',shine);b.addEventListener('focusin',shine);});
+ new MutationObserver(shine).observe(document.body,{attributes:true,attributeFilter:['data-lang']});
+ setTimeout(shine,700);
+ setInterval(shine,5000);
+})();
+</script>
+
+
+<style id="linked-editorial-design">
+/* Shared public-page visual language. Existing styles and photo treatment are preserved. */
+body[data-design="editorial"]{background:#F7F7F4;color:#141B2E;font-family:'Schibsted Grotesk','Zen Kaku Gothic New','IBM Plex Sans KR',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body[data-design="editorial"][data-lang="ko"]{font-family:'Schibsted Grotesk','IBM Plex Sans KR','Zen Kaku Gothic New',system-ui,sans-serif}
+body[data-design="editorial"] h1{font-weight:700;letter-spacing:-.035em;line-height:1.4}
+body[data-design="editorial"] .brand{font-size:16px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+body[data-design="editorial"] .brand>img{width:30px;height:30px;object-fit:contain}
+body[data-design="editorial"] .lang{background:#ECECE6;border:0;padding:3px;gap:2px}
+body[data-design="editorial"] .lang button{font-family:inherit;font-weight:500;font-size:12px;min-height:34px;padding:7px 10px;color:#656c7d}
+body[data-design="editorial"] .lang button.on,
+body[data-design="editorial"] .lang button[aria-pressed="true"]{background:#fff;color:#141B2E;box-shadow:0 1px 2px #141b2e12}
+body[data-design="editorial"] :is(.btn,.go,.refresh,.go-back,.more){border-radius:6px;min-height:46px;padding:11px 18px;font-family:inherit;font-weight:500;font-size:14px;line-height:1.5;box-shadow:none}
+body[data-design="editorial"] :is(.btn,.go-back,.more,.refresh):hover{transform:none}
+body[data-design="editorial"] :is(.btn-primary,.go,.more){background:#242D50;color:#fff}
+body[data-design="editorial"] :is(.btn-ghost,.refresh,.go-back){border:1px solid #cbd0d9;background:transparent;color:#242D50}
+body[data-design="editorial"] :is(.intro,.desc,.head .lead){font-size:16px;line-height:1.85;color:#565d6f}
+body[data-design="editorial"] :is(.eyebrow,.kicker){color:#7c7159;font-size:11px;font-weight:600;letter-spacing:.12em}
+body[data-design="editorial"] :is(input:not([type=checkbox]):not([type=radio]),select,textarea){font-family:inherit;font-size:16px}
+body[data-design="editorial"] :is(a,button,input,select,textarea,summary):focus-visible{outline:2px solid #37406B;outline-offset:3px}
+@media(max-width:600px){
+ body[data-design="editorial"] .brand{font-size:15px}
+ body[data-design="editorial"] h1{font-size:28px}
+ body[data-design="editorial"] :is(.intro,.desc,.head .lead){font-size:15px}
+ body[data-design="editorial"] .lang button{padding:7px 8px}
+}
+</style>
+<style id="seat-editorial">
+.top{min-height:66px;margin-bottom:28px;border-bottom:1px solid #e3e3dd;padding-bottom:16px}
+.card{border-radius:8px;box-shadow:none;border-color:#dde1e5;padding:32px 28px}
+.title{font-size:30px}.field{gap:8px}.field label{font-size:13px;font-weight:500;color:#41495c}
+.field input{border-radius:5px;border-color:#cdd2d9;min-height:48px;background:#fafbf9}
+.seat-help{background:#f5f6f4;border-radius:6px;border:0;padding:16px;color:#565d6f}
+.seat-hint,.note{color:#697080;line-height:1.8}.go{width:100%;margin-top:8px}
+.r-name{padding-bottom:22px;border-bottom:1px solid #e3e3dd}.table{font-weight:700}
+@media(max-width:420px){body{padding-left:18px;padding-right:18px}.card{padding:26px 20px}}
+</style>
 </body>
 </html>

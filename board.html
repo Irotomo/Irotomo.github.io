@@ -263,7 +263,7 @@ body.lang-swap main,body.lang-swap .nav-in{animation:langIn .3s cubic-bezier(.2,
 
 </style>
 </head>
-<body data-lang="ja">
+<body data-design="editorial" data-lang="ja">
 
 <header class="nav" id="nav">
   <div class="wrap nav-in">
@@ -291,7 +291,7 @@ body.lang-swap main,body.lang-swap .nav-in{animation:langIn .3s cubic-bezier(.2,
   <div class="wrap head">
     <p class="eyebrow">Board</p>
     <h1 data-t="title">중고 · 나눔 게시판</h1>
-    <p class="lead" data-t="lead">이사나 귀국으로 두고 갈 물건, 다 본 교재, 몇 번 쓰지 않은 생활용품. 모임 날 직접 주고받으니 택배비도 들지 않습니다.</p>
+    <p class="lead" data-t="lead">이사나 귀국을 앞두고 정리할 물건, 다 읽은 교재, 사용하지 않는 생활용품을 나누거나 거래해 보세요. 서로 약속한 뒤 모임 당일 직접 주고받으실 수 있습니다.</p>
     <p class="caution" data-t="caution"></p>
   </div>
 
@@ -315,7 +315,7 @@ body.lang-swap main,body.lang-swap .nav-in{animation:langIn .3s cubic-bezier(.2,
 
 <footer>
   <div class="wrap foot">
-    <p class="foot-meta" data-t="foot">이로토모<br>매주 일요일 15:00 – 17:00</p>
+    <p class="foot-meta" data-t="foot">이로토모<br>매주 일요일 15:00 – 17:30</p>
     <div class="sns">
       <a href="https://instagram.com/irotomokr">Instagram</a>
       <a href="https://www.threads.net/@irotomokr">Threads</a>
@@ -381,7 +381,7 @@ body.lang-swap main,body.lang-swap .nav-in{animation:langIn .3s cubic-bezier(.2,
       <div class="field">
         <label for="w-contact" data-t="fContact">연락 방법</label>
         <input type="text" id="w-contact" maxlength="120" data-tp="contactPh" placeholder="인스타 @아이디 / 오픈카톡 링크 등">
-        <p class="hint" data-t="hContact">여기 적은 내용은 게시판에 그대로 공개됩니다. 전화번호는 권하지 않습니다.</p>
+        <p class="hint" data-t="hContact">입력한 연락 방법은 누구나 볼 수 있습니다. 전화번호 등 개인정보를 공개할 때는 주의해 주세요.</p>
       </div>
       <div class="field">
         <label data-t="fPhoto">사진 (최대 3장)</label>
@@ -395,7 +395,7 @@ body.lang-swap main,body.lang-swap .nav-in{animation:langIn .3s cubic-bezier(.2,
           <input type="email" id="w-email" data-tp="emailPh" placeholder="you@example.com" autocomplete="email">
           <button class="btn btn-ghost btn-sm" id="w-send" data-t="sendCode">코드 받기</button>
         </div>
-        <p class="hint" data-t="hEmail">주소는 공개되지 않습니다. 장난글을 막기 위해서만 씁니다.</p>
+        <p class="hint" data-t="hEmail">이메일 주소는 공개되지 않으며, 게시자 인증과 부정 게시 방지에 사용합니다.</p>
         <p class="ok" id="w-sent" data-t="sent">메일로 6자리 코드를 보냈습니다. 10분 안에 입력해 주세요.</p>
       </div>
       <div class="field">
@@ -480,7 +480,7 @@ var T = {
   ko:{
     navAbout:'모임 소개', navFee:'참가비', navPlace:'오시는 길', navBoard:'중고 · 나눔',
     write:'글쓰기', title:'중고 · 나눔 게시판',
-    lead:'이사나 귀국으로 두고 갈 물건, 다 본 교재, 몇 번 쓰지 않은 생활용품. 모임 날 직접 주고받으니 택배비도 들지 않습니다.',
+    lead:'이사나 귀국을 앞두고 정리할 물건, 다 읽은 교재, 사용하지 않는 생활용품을 나누거나 거래해 보세요. 서로 약속한 뒤 모임 당일 직접 주고받으실 수 있습니다.',
     caution:'이로토모는 게시판만 제공할 뿐 거래에는 관여하지 않으며, 문제가 생겨도 책임지지 않습니다. 되도록 모임 날 직접 만나서 주고받으시고, 물건을 받기 전에 돈부터 보내는 일은 피해 주세요.',
     fAll:'전체', fGive:'나눔', fSell:'팝니다', fBuy:'구합니다',
     search:'검색', loading:'불러오는 중…', empty:'아직 올라온 글이 없습니다.',
@@ -492,18 +492,18 @@ var T = {
     fPw:'삭제 비밀번호 (숫자 4자리)',
     pricePh:'예) 15,000원 / 협의 가능', contactPh:'인스타 @아이디 / 오픈카톡 링크 등',
     emailPh:'you@example.com', dropTxt:'사진 고르기', sendCode:'코드 받기',
-    hContact:'여기 적은 내용은 게시판에 그대로 공개됩니다. 전화번호는 권하지 않습니다.',
-    hEmail:'주소는 공개되지 않습니다. 장난글을 막기 위해서만 씁니다.',
+    hContact:'입력한 연락 방법은 누구나 볼 수 있습니다. 전화번호 등 개인정보를 공개할 때는 주의해 주세요.',
+    hEmail:'이메일 주소는 공개되지 않으며, 게시자 인증과 부정 게시 방지에 사용합니다.',
     hPw:'나중에 글을 지울 때 필요합니다. 꼭 기억해 주세요.',
     sent:'메일로 6자리 코드를 보냈습니다. 10분 안에 입력해 주세요.',
     post:'등록하기', posting:'등록 중…',
     wNote:'거래는 당사자 간 책임이며, 모임은 중개하지 않습니다.',
-    foot:'이로토모<br>매주 일요일 15:00 – 17:00',
+    foot:'이로토모<br>매주 일요일 15:00 – 17:30',
     eNoEmail:'이메일 주소를 입력해 주세요.',
     eSoon:'방금 보냈습니다. 1분 뒤에 다시 시도해 주세요.',
     eMail:'메일을 보내지 못했습니다. 주소를 확인해 주세요.',
     eFill:'제목, 내용, 연락 방법을 모두 채워 주세요.',
-    ePw:'삭제 비밀번호는 숫자 4자리입니다.',
+    ePw:'삭제 비밀번호는 숫자 4자리로 입력해 주세요.',
     eCode:'인증코드가 맞지 않거나 시간이 지났습니다.',
     eNet:'전송에 실패했습니다. 잠시 뒤 다시 시도해 주세요.',
     ePhoto:'사진은 3장까지 올릴 수 있습니다.',
@@ -518,8 +518,8 @@ var T = {
   ja:{
     navAbout:'交流会について', navFee:'参加費', navPlace:'アクセス', navBoard:'中古・おゆずり',
     write:'投稿する', title:'中古・おゆずり掲示板',
-    lead:'帰国のときに置いていくもの、読み終えた教材、数回しか使わなかった生活用品。会の当日に手渡しできるので、送料もかかりません。',
-    caution:'いろともは掲示板をご用意しているだけで、取引には関与せず、トラブルの責任も負いかねます。なるべく会の当日に直接お会いして、手渡しでのお受け渡しをおすすめします。品物を受け取る前のお振り込みはお控えください。',
+    lead:'引っ越しや帰国前に整理したい物、読み終えた教材、使わなくなった生活用品を譲ったり売買したりできる掲示板です。受け渡しは当事者同士で相談し、交流会当日に手渡しすることもできます。',
+    caution:'いろともは掲示板をご用意しているだけで、取引には関与せず、トラブルの責任も負いかねます。できるだけ交流会当日に直接会い、品物を確認してから受け渡すことをおすすめします。品物を受け取る前のお振り込みはお控えください。',
     fAll:'すべて', fGive:'ゆずります', fSell:'売ります', fBuy:'探しています',
     search:'検索', loading:'読み込み中…', empty:'まだ投稿がありません。',
     noResult:'条件に合う投稿はありません。',
@@ -529,19 +529,19 @@ var T = {
     fContact:'連絡方法', fPhoto:'写真（3枚まで）', fEmail:'メール認証', fCode:'認証コード',
     fPw:'削除用パスワード（数字4桁）',
     pricePh:'例）15,000ウォン / 応相談', contactPh:'Instagram @ID / オープンチャットのリンクなど',
-    emailPh:'you@example.com', dropTxt:'写真を選ぶ', sendCode:'コードを送る',
-    hContact:'ここに書いた内容はそのまま公開されます。電話番号はおすすめしません。',
-    hEmail:'メールアドレスは公開されません。いたずら投稿を防ぐためだけに使います。',
-    hPw:'あとで投稿を消すときに必要です。お忘れなく。',
+    emailPh:'you@example.com', dropTxt:'写真を選ぶ', sendCode:'認証コードを受け取る',
+    hContact:'入力した連絡方法は、どなたでも閲覧できます。電話番号などの個人情報の公開にはご注意ください。',
+    hEmail:'メールアドレスは公開せず、投稿者の認証と不正な投稿の防止に使用します。',
+    hPw:'投稿を削除するときに必要です。忘れないようにお控えください。',
     sent:'6桁のコードをメールでお送りしました。10分以内にご入力ください。',
     post:'投稿する', posting:'送信中…',
     wNote:'取引は当事者間の責任で行われ、交流会は仲介いたしません。',
-    foot:'いろとも<br>毎週日曜 15:00 – 17:00',
+    foot:'いろとも<br>毎週日曜 15:00 – 17:30',
     eNoEmail:'メールアドレスをご入力ください。',
     eSoon:'先ほど送信しました。1分後にもう一度お試しください。',
     eMail:'メールを送信できませんでした。アドレスをご確認ください。',
     eFill:'タイトル・内容・連絡方法をすべてご入力ください。',
-    ePw:'削除用パスワードは数字4桁です。',
+    ePw:'削除用パスワードは数字4桁で入力してください。',
     eCode:'認証コードが違うか、有効期限が切れています。',
     eNet:'送信に失敗しました。しばらくしてからお試しください。',
     ePhoto:'写真は3枚までです。',
@@ -865,5 +865,77 @@ load();
   }
 })();
 </script>
+
+<style id="linked-brand-shine">
+/* Same rainbow sweep as the index brand; images and body text remain unchanged. */
+@supports ((background-clip:text) or (-webkit-background-clip:text)){
+ .brand :is(.brand-name,.linked-brand-name){
+  display:inline-block;
+  background-image:linear-gradient(100deg,var(--ink,#141B2E) 0%,var(--ink,#141B2E) 38%,#F28B82 43%,#F6BF5B 47%,#7FCBA0 51%,#6FB3E0 55%,#A99BE3 59%,#F09EC4 63%,var(--ink,#141B2E) 69%,var(--ink,#141B2E) 100%);
+  background-size:320% 100%;background-position:100% 0;
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+ }
+ .brand .iro-shine{animation:linkedIroShine 1.9s cubic-bezier(.45,0,.2,1) 1}
+}
+@keyframes linkedIroShine{from{background-position:100% 0}to{background-position:0 0}}
+@media(prefers-reduced-motion:reduce){
+ .brand :is(.brand-name,.linked-brand-name){animation:none!important;background:none;color:var(--ink,#141B2E);-webkit-text-fill-color:currentColor}
+}
+@media(forced-colors:active){
+ .brand :is(.brand-name,.linked-brand-name){animation:none!important;background:none;color:LinkText;-webkit-text-fill-color:LinkText}
+}
+</style>
+<script id="linked-brand-shine-script">
+(function(){
+ var names=document.querySelectorAll('.brand .brand-name,.brand .linked-brand-name');
+ var reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+ function shine(){
+  if(reduced.matches||document.hidden)return;
+  names.forEach(function(n){n.classList.remove('iro-shine');void n.offsetWidth;n.classList.add('iro-shine');});
+ }
+ names.forEach(function(n){n.addEventListener('animationend',function(){n.classList.remove('iro-shine');});});
+ document.querySelectorAll('.brand').forEach(function(b){b.addEventListener('mouseenter',shine);b.addEventListener('focusin',shine);});
+ new MutationObserver(shine).observe(document.body,{attributes:true,attributeFilter:['data-lang']});
+ setTimeout(shine,700);
+ setInterval(shine,5000);
+})();
+</script>
+
+
+<style id="linked-editorial-design">
+/* Shared public-page visual language. Existing styles and photo treatment are preserved. */
+body[data-design="editorial"]{background:#F7F7F4;color:#141B2E;font-family:'Schibsted Grotesk','Zen Kaku Gothic New','IBM Plex Sans KR',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body[data-design="editorial"][data-lang="ko"]{font-family:'Schibsted Grotesk','IBM Plex Sans KR','Zen Kaku Gothic New',system-ui,sans-serif}
+body[data-design="editorial"] h1{font-weight:700;letter-spacing:-.035em;line-height:1.4}
+body[data-design="editorial"] .brand{font-size:16px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+body[data-design="editorial"] .brand>img{width:30px;height:30px;object-fit:contain}
+body[data-design="editorial"] .lang{background:#ECECE6;border:0;padding:3px;gap:2px}
+body[data-design="editorial"] .lang button{font-family:inherit;font-weight:500;font-size:12px;min-height:34px;padding:7px 10px;color:#656c7d}
+body[data-design="editorial"] .lang button.on,
+body[data-design="editorial"] .lang button[aria-pressed="true"]{background:#fff;color:#141B2E;box-shadow:0 1px 2px #141b2e12}
+body[data-design="editorial"] :is(.btn,.go,.refresh,.go-back,.more){border-radius:6px;min-height:46px;padding:11px 18px;font-family:inherit;font-weight:500;font-size:14px;line-height:1.5;box-shadow:none}
+body[data-design="editorial"] :is(.btn,.go-back,.more,.refresh):hover{transform:none}
+body[data-design="editorial"] :is(.btn-primary,.go,.more){background:#242D50;color:#fff}
+body[data-design="editorial"] :is(.btn-ghost,.refresh,.go-back){border:1px solid #cbd0d9;background:transparent;color:#242D50}
+body[data-design="editorial"] :is(.intro,.desc,.head .lead){font-size:16px;line-height:1.85;color:#565d6f}
+body[data-design="editorial"] :is(.eyebrow,.kicker){color:#7c7159;font-size:11px;font-weight:600;letter-spacing:.12em}
+body[data-design="editorial"] :is(input:not([type=checkbox]):not([type=radio]),select,textarea){font-family:inherit;font-size:16px}
+body[data-design="editorial"] :is(a,button,input,select,textarea,summary):focus-visible{outline:2px solid #37406B;outline-offset:3px}
+@media(max-width:600px){
+ body[data-design="editorial"] .brand{font-size:15px}
+ body[data-design="editorial"] h1{font-size:28px}
+ body[data-design="editorial"] :is(.intro,.desc,.head .lead){font-size:15px}
+ body[data-design="editorial"] .lang button{padding:7px 8px}
+}
+</style>
+<style id="board-editorial">
+.nav{background:rgba(247,247,244,.97);border-bottom:1px solid #e3e3dd}
+.nav-links a{font-size:14px;color:#565d6f}.head{padding:64px 0 36px}
+.head.wrap{padding-left:28px;padding-right:28px}.head h1{font-size:clamp(28px,3.2vw,40px)}
+.caution{background:#eeeee8;border:0;border-left:2px solid #c7bdab;border-radius:0;color:#565d6f;padding:16px 20px}
+.chip{border-radius:6px;font-weight:500;min-height:40px}.search{border-radius:6px;min-height:44px}
+body[data-design="editorial"] .search input{border:0;background:transparent;box-shadow:none;min-width:0;width:100%}
+@media(max-width:600px){.head.wrap{padding:38px 18px 28px}.caution{font-size:13px}.nav-in{gap:12px}}
+</style>
 </body>
 </html>
