@@ -1542,16 +1542,23 @@ body.admin-on .gal-more{display:none!important}
       <span class="brand-mark" role="img" aria-label="いろとも 로고"></span>
       <span class="brand-name ko" data-c="c01">이로토모</span><span class="brand-name ja" data-c="c01">いろとも</span>
     </a>
-    <nav class="nav-links">
-      <a href="#about" class="ko" data-c="c02">모임 소개</a><a href="#about" class="ja" data-c="c02">交流会について</a>
-      <a href="#flow" class="ko" data-c="c03">당일 흐름</a><a href="#flow" class="ja" data-c="c03">当日の流れ</a>
-      <a href="#fee" class="ko" data-c="c04">참가비</a><a href="#fee" class="ja" data-c="c04">参加費</a>
-      <a href="#place" class="ko" data-c="c05">오시는 길</a><a href="#place" class="ja" data-c="c05">アクセス</a>
-      <a href="#kana" class="ko" data-open-kana>가나 연습</a>
-      <a href="#faq" class="ko" data-c="c06">FAQ</a><a href="#faq" class="ja" data-c="c06">FAQ</a>
-      <a href="seat.html" class="ko seat-link">좌석 확인</a><a href="seat.html" class="ja seat-link">席の確認</a>
-      <a href="board.html" class="ko" data-c="c07">중고 · 나눔</a><a href="board.html" class="ja" data-c="c07">中古・おゆずり</a>
-    </nav>
+    <nav class="nav-links" aria-label="Menu">
+<a href="#about" class="ko" data-c="c02">모임 소개</a>
+<a href="#about" class="ja" data-c="c02">交流会について</a>
+<a href="#fee" class="ko" data-c="c04">참가비</a>
+<a href="#fee" class="ja" data-c="c04">参加費</a>
+<a href="#place" class="ko" data-c="c05">오시는 길</a>
+<a href="#place" class="ja" data-c="c05">アクセス</a>
+<details class="nav-more"><summary><span class="ko">더 보기</span><span class="ja">その他</span></summary><div class="nav-more-panel"><a href="#flow" class="ko" data-c="c03">당일 흐름</a>
+<a href="#flow" class="ja" data-c="c03">当日の流れ</a>
+<a href="#kana" class="ko" data-open-kana>가나 연습</a>
+<a href="#faq" class="ko" data-c="c06">FAQ</a>
+<a href="#faq" class="ja" data-c="c06">FAQ</a>
+<a href="seat.html" class="ko seat-link">좌석 확인</a>
+<a href="seat.html" class="ja seat-link">席の確認</a>
+<a href="board.html" class="ko" data-c="c07">중고 · 나눔</a>
+<a href="board.html" class="ja" data-c="c07">中古・おゆずり</a></div></details>
+</nav>
     <div class="nav-right">
       <div class="lang" role="group" aria-label="언어 선택">
         <button type="button" data-set="ko" aria-pressed="false">한국어</button>
@@ -1962,6 +1969,8 @@ body.admin-on .gal-more{display:none!important}
         
 
         <form class="form reveal" id="apply-form">
+<h3 class="form-section-title"><span class="form-step">01</span><span class="ko">참가 일정</span><span class="ja">ご参加日</span></h3>
+
           <div class="field">
             <label for="f-date-pick"><span class="ko">참가일 (일요일만)</span><span class="ja">ご参加日（日曜日のみ）</span></label>
             <select id="f-date-pick" required>
@@ -1970,6 +1979,7 @@ body.admin-on .gal-more{display:none!important}
             <input id="f-date" name="entry.274787881" type="hidden">
           </div>
 <div class="field full"><p id="date-count" class="date-count" hidden></p></div>
+<h3 class="form-section-title"><span class="form-step">02</span><span class="ko">참가자 정보</span><span class="ja">参加者情報</span></h3>
           <div class="field">
             <label for="f-name"><span class="ko">이름</span><span class="ja">お名前</span></label>
             <input id="f-name" name="entry.347162766" required type="text" autocomplete="name">
@@ -1999,16 +2009,7 @@ body.admin-on .gal-more{display:none!important}
           </div>
 
           <!-- 음료: Worker가 내려주는 목록으로 자동 갱신 (기본 4종 + 관리자 추가 상품) -->
-          <div class="field">
-            <label for="f-drink"><span class="ko">음료 <span class="lab-note">— 음료비 6,000원 (사전 결제)</span></span><span class="ja">お飲み物 <span class="lab-note">— ドリンク代6,000ウォン（事前払い）</span></span></label>
-            <select id="f-drink" required>
-              <option value="" disabled selected>—</option>
-              <option value="dutch"></option>
-              <option value="milk"></option>
-              <option value="lime"></option>
-              <option value="grape"></option>
-            </select>
-          </div>
+
           <div class="field">
             <label for="f-sns"><span class="ko">SNS 계정 (선택)</span><span class="ja">SNSアカウント（任意）</span></label>
             <input id="f-sns" name="entry.63495182" type="text" placeholder="@">
@@ -2026,6 +2027,18 @@ body.admin-on .gal-more{display:none!important}
             <label for="f-msg"><span class="ko">질문 · 요청 (선택)</span><span class="ja">ご質問・ご要望（任意）</span></label>
             <textarea id="f-msg" name="entry.1088686635"></textarea>
           </div>
+<h3 class="form-section-title"><span class="form-step">03</span><span class="ko">음료 선택</span><span class="ja">お飲み物の選択</span></h3>
+          <div class="field">
+            <label for="f-drink"><span class="ko">음료 <span class="lab-note">— 음료비 6,000원 (사전 결제)</span></span><span class="ja">お飲み物 <span class="lab-note">— ドリンク代6,000ウォン（事前払い）</span></span></label>
+            <select id="f-drink" required>
+              <option value="" disabled selected>—</option>
+              <option value="dutch"></option>
+              <option value="milk"></option>
+              <option value="lime"></option>
+              <option value="grape"></option>
+            </select>
+          </div>
+<h3 class="form-section-title"><span class="form-step">04</span><span class="ko">확인 및 동의</span><span class="ja">ご確認・同意</span></h3>
           <div class="form-foot">
             <p class="draft" id="note"><span class="ko">신청 후 안내 메일을 확인해 주세요. 사전 준비 음료 선택과 음료비 취소·환불 접수는 <b>금요일 정오 12시</b>에 마감합니다. 이후에는 선택 가능한 다른 음료로 신청할 수 있습니다.</span><span class="ja">お申し込み後の案内メールをご確認ください。事前準備が必要なお飲み物の選択、およびドリンク代のキャンセル・返金受付は<b>金曜12時（正午）まで</b>です。以降は選択可能な別のお飲み物をお選びください。</span></p>
             <div class="consent">
@@ -8032,5 +8045,97 @@ html[lang="ja"] :is(header,main,footer),[lang="ja"]{word-break:auto-phrase}
 /* 5-2. 주소 복사 버튼을 지도 버튼과 같은 크기로 */
 main .map-side #copy-address{min-height:48px;padding:11px 18px;font-size:14px;font-weight:600;line-height:1.5}
 </style>
+
+<style id="editorial-design-20260923">
+/* Public page refinement. Existing styles and image/logo controls are preserved. */
+.nav{background:rgba(247,247,244,.97);border-bottom:1px solid #e3e3dd}
+.nav .nav-in{gap:24px}
+.nav .nav-links{align-items:center;gap:24px;overflow:visible}
+.nav .nav-links a{color:#4a5068;font-size:14px}
+.nav-more{position:relative;border:0;margin:0;padding:0}
+.nav-more>summary{min-height:44px;display:flex;align-items:center;gap:9px;padding:0;font-size:14px;font-weight:500;color:#4a5068;list-style:none;cursor:pointer}
+.nav-more>summary::-webkit-details-marker{display:none}
+.nav-more>summary::after{content:'+';border:0;transform:none;width:auto;height:auto;font-size:18px}
+.nav-more[open]>summary::after{content:'−';transform:none}
+.nav-more-panel{position:absolute;right:0;top:calc(100% + 12px);width:220px;padding:10px;background:#fff;border:1px solid #e3e3dd;border-radius:8px;box-shadow:0 16px 36px #141b2e12;z-index:80}
+.nav .nav-more-panel a{display:block;padding:11px 13px;border-radius:4px;white-space:normal;line-height:1.5}
+.nav .nav-more-panel a:hover{background:#f3f3ef}.nav .nav-more-panel a::after{display:none}
+main .hero-copy h1{font-weight:700;letter-spacing:-.045em;line-height:1.3}
+main .hero-copy .pill{border:0;background:transparent;padding:0;color:#626879;font-weight:500;letter-spacing:.015em}
+main .hero-copy .lead{font-size:17px;line-height:1.9;max-width:38ch}
+main .hero-proof{border-top:1px solid #deded7;margin-top:26px;padding-top:4px}
+main .hero-proof .hero-stat{font-size:14px;font-weight:500;line-height:1.8}
+main .hero-proof .hero-note{font-size:13px;color:#656b7c}
+main .hero-bottom .next-meeting{background:#fff!important;border:1px solid #d9dce3!important;border-radius:8px!important;box-shadow:none!important;padding:26px!important}
+main .hero-bottom .next-meeting .eyebrow{color:#646b7b;font-size:12px!important;letter-spacing:.03em}
+main .hero-bottom #next-meeting-date{font-weight:700;font-size:30px!important;line-height:1.4!important}
+main .hero-bottom #next-meeting-time{color:#4a5068}
+main .hero-bottom .facts{background:transparent!important;box-shadow:none!important;border:0!important;border-radius:0!important}
+main .hero-bottom .facts>div{background:transparent!important}
+main .hero-bottom .facts dt{color:#6a7080!important;letter-spacing:.03em}
+main .hero-bottom .facts dd{font-weight:500!important}
+main .next-actions .next-seat-link{background:transparent!important;border-color:transparent!important;text-decoration:underline;text-underline-offset:5px;font-size:13px}
+main .next-actions .hero-photo-link{background:transparent;border-color:#c9cdd6;font-weight:500}
+main>section:not(#gallery){padding-top:88px;padding-bottom:88px}
+main .sec-head{max-width:640px;margin-bottom:40px}
+main .sec-head h2{font-size:clamp(28px,3.2vw,40px);font-weight:700;letter-spacing:-.035em;line-height:1.45}
+main .sec-head p:not(.eyebrow){font-size:16px;line-height:1.9;color:#565d6f}
+main .eyebrow{color:#7c7159;font-size:11px;letter-spacing:.13em;font-weight:600}
+main .eb-dual{display:none}
+#about .cards{gap:36px}#about .card::before{color:#858b99;font-size:12px;font-weight:500}
+#about .card h3{font-size:20px;font-weight:600;line-height:1.6}
+#about .card p{color:#565d6f;font-size:15px;line-height:1.9}
+#flow{padding-top:40px}#flow .step .t{font-weight:600;letter-spacing:-.02em}
+#fee .fee{border-radius:8px;box-shadow:none;border-color:#dcdedc}
+#fee .fee>div{padding:36px}#fee .fee .amt{font-weight:600;letter-spacing:-.035em}
+#fee .fee-guidance{border-radius:6px;background:#eeeee8}
+#place .map-side{box-shadow:none;border-radius:8px}
+#faq details{border-color:#deded7}#faq summary{font-size:17px;font-weight:500;padding-top:24px;padding-bottom:24px}
+#faq .answer{font-size:15px;line-height:1.9}
+:is(.nav,main,footer,#mcta) .btn{border-radius:6px;font-weight:500}
+main .mlinks a,main .hero-photo-link{border-radius:6px}
+#apply{background:#eef0f2;color:#242d50;border-top:1px solid #dde1e5}
+#apply h2{color:#242d50}#apply .sec-head p{color:#565d6f}
+#apply-form{max-width:800px;margin:0 auto;padding:40px!important;border:1px solid #dde1e5;border-radius:8px;box-shadow:none;background:#fff;gap:22px}
+#apply-form .form-section-title{grid-column:1/-1;display:flex;align-items:center;gap:14px;color:#242d50;font-size:18px;font-weight:600;line-height:1.5;margin:24px 0 2px;padding-top:26px;border-top:1px solid #e3e5e8}
+#apply-form .form-section-title:first-child{margin-top:0;padding-top:0;border-top:0}
+#apply-form .form-step{color:#7a8190;font-size:12px;letter-spacing:.08em;font-weight:500}
+#apply-form .field label{font-size:14px;color:#41495c;font-weight:500}
+#apply-form .field input,#apply-form .field select,#apply-form .field textarea{border-radius:5px;background:#fafbf9;border-color:#cdd2d9;min-height:48px;font-size:16px}
+#apply-form .field :is(input,select,textarea):focus-visible{outline:2px solid #37406b;outline-offset:2px;background:#fff}
+#apply-form .field-help{font-size:13px;line-height:1.8;color:#697080}
+#apply-form .field:has(#f-date-pick),#apply-form .field:has(#f-drink){grid-column:1/-1}
+#apply-form .lab-note{display:block;font-size:12px;margin-top:3px;color:#697080}
+#apply-form .consent{background:#f5f6f4;border-radius:6px;color:#41495c}
+#apply-form .draft{color:#565d6f;font-size:14px;line-height:1.9}
+#apply-form .form-foot{border-top:0;padding-top:0}
+main .board-band,main .kana-strip{box-shadow:none;border-radius:8px}
+@media(max-width:960px){
+ .nav .nav-in{padding-top:12px;gap:10px}.nav .nav-links{margin:0;padding:0 0 7px;justify-content:space-between;gap:12px}
+ .nav .nav-links a,.nav-more>summary{font-size:13px}.nav-more-panel{top:100%;width:205px}
+ main>section:not(#gallery){padding-top:60px;padding-bottom:60px}
+ main .sec-head{text-align:left;margin-left:0;margin-right:0;margin-bottom:30px}
+ main .hero-copy .lead{font-size:16px;max-width:none}
+ main .hero-bottom .next-meeting{padding:22px!important}
+ main .hero-bottom #next-meeting-date{font-size:28px!important}
+ #flow{padding-top:24px}#fee .fee>div{padding:26px}
+ #apply-form{padding:26px!important;gap:18px}#apply-form .form-section-title{margin-top:16px;font-size:17px}
+}
+@media(max-width:520px){
+ #apply-form{padding:22px 18px!important;grid-template-columns:minmax(0,1fr)!important}
+ #apply-form .field{grid-column:1/-1}
+ main .next-actions{grid-template-columns:minmax(0,1fr)!important}
+ main .sec-head h2{font-size:28px}#faq summary{font-size:16px}
+}
+</style>
+<script>
+(function(){
+ var menu=document.querySelector('.nav-more');
+ menu.addEventListener('click',function(e){if(e.target.closest('a'))menu.open=false;});
+ document.addEventListener('click',function(e){if(!menu.contains(e.target))menu.open=false;});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&menu.open){menu.open=false;menu.querySelector('summary').focus();}});
+})();
+</script>
+
 </body>
 </html>
