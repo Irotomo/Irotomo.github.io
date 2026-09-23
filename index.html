@@ -8190,5 +8190,37 @@ document.getElementById('mobile-top').addEventListener('click',function(){
  window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
 });
 </script>
+
+<style id="main-polish-0923">
+/* 히어로 아래 장소/신청: 다음 모임 카드와 같은 높이의 카드로 맞춤 (PC) */
+@media (min-width:961px){
+  body:not(.admin-on) main .hero-bottom .facts{
+    align-self:stretch!important;height:100%!important;
+    background:#fffdf8!important;border:1px solid var(--line)!important;border-radius:17px!important;
+    box-shadow:0 14px 34px -28px rgba(32,39,64,.30)!important;
+  }
+  body:not(.admin-on) main .hero-bottom .facts>div{
+    display:flex;flex-direction:column;justify-content:center;padding:24px 32px!important;
+  }
+  body:not(.admin-on) main .hero-bottom .facts dt{margin-bottom:12px!important}
+  body:not(.admin-on) main .hero-bottom .facts dd{font-size:clamp(16px,1.3vw,19px)!important;line-height:1.6!important}
+}
+
+/* 참가비 섹션: 옅은 띠 배경으로 흐름에 리듬을 줌 (전체 폭) */
+#fee{
+  position:relative;
+  background:#efeee8;box-shadow:0 0 0 100vmax #efeee8;clip-path:inset(0 -100vmax);
+}
+main > section#fee.wrap{padding-bottom:clamp(56px,7vw,88px)!important}
+main > section#fee.wrap + section.wrap{padding-top:clamp(64px,8vw,96px)!important}
+#fee .fee-guidance{background:#fffdf8;border:1px solid var(--line)}
+
+/* 이렇게 함께해요 카드: 위 선을 번호 색과 맞춤 (PC) */
+@media (min-width:961px){
+  #about .card:nth-child(1){border-top:2px solid var(--iro-1)}
+  #about .card:nth-child(2){border-top:2px solid var(--iro-3)}
+  #about .card:nth-child(3){border-top:2px solid var(--iro-4)}
+}
+</style>
 </body>
 </html>
