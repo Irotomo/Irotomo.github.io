@@ -7895,7 +7895,7 @@ body.lang-fade :is(main,.nav-links,footer){animation:iroLang .38s ease}
   var brand=document.querySelector('.nav .brand');
   if(brand)brand.addEventListener('mouseenter',shine);
   setTimeout(shine,700);
-  setInterval(function(){if(!document.hidden)shine();},20000);
+  setInterval(function(){if(!document.hidden)shine();},3000);
 
   /* ── 언어 전환 페이드 ── */
   new MutationObserver(function(){
