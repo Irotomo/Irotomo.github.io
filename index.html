@@ -8215,11 +8215,22 @@ main > section#fee.wrap{padding-bottom:clamp(56px,7vw,88px)!important}
 main > section#fee.wrap + section.wrap{padding-top:clamp(64px,8vw,96px)!important}
 #fee .fee-guidance{background:#fffdf8;border:1px solid var(--line)}
 
-/* 이렇게 함께해요 카드: 위 선을 번호 색과 맞춤 (PC) */
-@media (min-width:961px){
-  #about .card:nth-child(1){border-top:2px solid var(--iro-1)}
-  #about .card:nth-child(2){border-top:2px solid var(--iro-3)}
-  #about .card:nth-child(3){border-top:2px solid var(--iro-4)}
+/* 이렇게 함께해요 카드: 위 선을 번호 색과 맞춤 (PC·모바일) */
+#about .card:nth-child(1){border-top:2px solid var(--iro-1)}
+#about .card:nth-child(2){border-top:2px solid var(--iro-3)}
+#about .card:nth-child(3){border-top:2px solid var(--iro-4)}
+
+/* 히어로: 설명과 지난주 인원 사이 이중선 제거 (위쪽 .hero-proof 선 하나만 남김) */
+main .hero-proof .hero-stat{border-top:0}
+
+/* 모바일: 장소/신청도 다음 모임 카드와 같은 카드 모양으로 */
+@media (max-width:960px){
+  body:not(.admin-on) main .hero-bottom .facts{
+    background:#fffdf8!important;border:1px solid var(--line)!important;border-radius:14px!important;
+    box-shadow:0 14px 34px -28px rgba(32,39,64,.30)!important;
+  }
+  body:not(.admin-on) main .hero-bottom .facts>div{padding:16px 18px!important}
+  body:not(.admin-on) main .hero-bottom .facts dt{margin-bottom:8px!important}
 }
 </style>
 </body>
