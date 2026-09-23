@@ -37,15 +37,15 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
     <section id="lookup">
       <div class="kicker">TODAY'S SEAT</div>
       <h1 class="title"><span class="ko">오늘의 자리 확인</span><span class="ja">今日の席を確認</span></h1>
-      <p class="desc ko">신청 시 입력한 이름과 오늘 안내받은 비밀번호로 현재 테이블을 확인해 주세요.</p>
-      <p class="desc ja block">お申し込み時のお名前と、当日会場でご案内するパスワードを入力すると、現在のお席を確認できます。</p>
+      <p class="desc ko">신청할 때 적은 이름과 현장에서 안내받은 비밀번호를 입력해 주세요. 지금 앉을 테이블을 알려드려요.</p>
+      <p class="desc ja block">申し込み時のお名前と、会場でお伝えするパスワードを入力すると、今のお席が分かります。</p>
       <form id="form" class="form">
         <div class="field"><label for="name"><span class="ko">신청 이름</span><span class="ja">お申し込み時のお名前</span></label><input id="name" name="name" maxlength="60" autocomplete="name" required placeholder="" aria-describedby="name-help"><div id="name-help" class="seat-hint"><span class="ko">신청 확인 메일에 적힌 이름을 <b>띄어쓰기까지 동일하게</b> 입력해 주세요.</span><span class="ja">申込確認メールに記載されたお名前を、<b>スペースも含めて同じ表記で</b>入力してください。</span></div></div>
         <div class="field"><label for="pass"><span class="ko">오늘의 비밀번호</span><span class="ja">当日のパスワード</span></label><input id="pass" name="pass" type="password" inputmode="numeric" maxlength="40" autocomplete="off" required aria-describedby="pass-help"><div id="pass-help" class="seat-hint"><span class="ko">모임 당일 <b>현장에서 안내하는 비밀번호</b>를 입력해 주세요.</span><span class="ja">当日<b>会場でご案内するパスワード</b>を入力してください。</span></div></div>
         <button class="go" id="go" type="submit"><span class="ko">자리 확인</span><span class="ja">席を確認</span></button>
       </form>
       <div id="msg" class="msg" role="status" aria-live="polite"></div>
-      <div class="seat-help"><span class="ko"><strong>조회가 안 되나요?</strong> 신청 확인 메일의 이름과 현장에서 안내한 비밀번호를 다시 확인해 주세요. 같은 이름의 참가자가 있거나 계속 조회되지 않으면 현장 스태프에게 말씀해 주세요.</span><span class="ja"><strong>確認できない場合</strong> 申込確認メールのお名前と、会場でご案内したパスワードをご確認ください。同姓同名の方がいる場合や、確認できない場合は会場スタッフへお声がけください。</span></div>
+      <div class="seat-help"><span class="ko"><strong>자리가 안 나오나요?</strong> 신청 확인 메일의 이름과 현장에서 안내한 비밀번호를 다시 확인해 주세요. 이름이 같은 분이 있거나 계속 자리가 나오지 않으면 스태프에게 말씀해 주세요.</span><span class="ja"><strong>確認できない場合</strong> 申込確認メールのお名前と、会場でご案内したパスワードをご確認ください。同じお名前の方がいる場合や、それでも表示されない場合は、会場スタッフにお声がけください。</span></div>
     </section>
 
     <section id="result" class="result">
@@ -91,7 +91,7 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
     last=d;$('lookup').style.display='none';$('result').classList.add('show');
     $('r-date').textContent=(d.date||'').replace(/-/g,'.');$('r-name').textContent=d.name||'';$('r-table').textContent='TABLE '+d.table;
     $('r-round').textContent=text('전체 '+d.rounds+'회 중 '+d.round+'회차',d.round+'回目 / 全'+d.rounds+'回');
-    if(d.phase==='before') $('r-next').textContent=text('모임 시작 전입니다. 시작할 때 앉으실 자리입니다.','交流会の開始前です。最初にお座りいただく席をご案内しています。');
+    if(d.phase==='before') $('r-next').textContent=text('모임이 시작되면 이 자리에 앉아 주세요.','交流会が始まったら、こちらの席にお座りください。');
     else if(d.next_change) $('r-next').textContent=text('다음 자리 변경 '+d.next_change,'次の席替え '+d.next_change);
     else $('r-next').textContent=text('마지막 회차입니다.','最後の回です。');
     clearTimeout(timer);timer=setTimeout(function(){lookup(true)},65000);
