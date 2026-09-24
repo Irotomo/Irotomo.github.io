@@ -2798,6 +2798,7 @@ window.IROLANG = (function(){
      자리표시자가 든 «원본» 문장을 따로 들고 있어야
      숫자를 채워 넣은 뒤에도 다음 갱신 때 다시 쓸 수 있습니다. */
   var LAST = null, LAST_TPL = {};
+  grabLastTpl();   /* 관리자 저장 문구가 덮어쓰기 전에 HTML 의 {ja}{ko} 틀을 먼저 잡아 둡니다 */
 
   function grabLastTpl(){
     document.querySelectorAll('[data-c="c89"]').forEach(function(el){
@@ -7974,7 +7975,7 @@ body.lang-fade :is(main,.nav-links,footer){animation:iroLang .38s ease}
     var counted=false,visible=false;
     var run=function(){
       if(counted||stat.hidden)return;
-      var bs=[].slice.call(stat.querySelectorAll('b')).filter(function(b){return /^\d+$/.test(b.textContent.trim());});
+      var bs=[].slice.call(stat.querySelectorAll('b,.n')).filter(function(b){return /^\d+$/.test(b.textContent.trim());});
       if(!bs.length)return;
       counted=true;
       bs.forEach(function(b){
@@ -8389,7 +8390,86 @@ main .hero-proof .hero-stat{border-top:0}
 .cal-add .cal-btns a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 10px;border:1px solid #cbd0d9;border-radius:8px;background:#fff;color:var(--navy);font-size:13.5px;font-weight:600;text-align:center;text-decoration:none;line-height:1.4}
 .cal-add .cal-btns a:hover{background:#f3f3ef}
 @media (max-width:360px){.cal-add .cal-btns{grid-template-columns:1fr}}
+.seats-left b{margin:0 1px}
 </style>
+
+<style id="mobile-compact-0924">
+/* 게시판 버튼: 남색 채움은 신청 버튼 전용으로 두고, 옆 항목들처럼 테두리 버튼으로 */
+.board-band .btn.btn-primary{background:#fff!important;color:var(--navy)!important;border:1px solid var(--navy)!important;box-shadow:none!important}
+.board-band .btn.btn-primary:hover{background:#f0f1f6!important;color:var(--navy)!important}
+
+@media (max-width:960px){
+  /* 히어로 아래: 장소만 한 줄로 (신청 안내는 바로 위 문장과 중복이라 숨김). 누르면 오시는 길로 */
+  body:not(.admin-on) main .hero-bottom .facts{grid-template-columns:1fr!important}
+  body:not(.admin-on) main .hero-bottom .facts>div:nth-child(4){display:none!important}
+  body:not(.admin-on) main .hero-bottom .facts>div:nth-child(2){
+    display:grid!important;grid-template-columns:20px minmax(0,1fr) 12px;column-gap:12px;align-items:center;
+    border-right:0!important;padding:14px 16px!important;cursor:pointer;-webkit-tap-highlight-color:transparent
+  }
+  body:not(.admin-on) main .hero-bottom .facts>div:nth-child(2) dt{display:none!important}
+  body:not(.admin-on) main .hero-bottom .facts>div:nth-child(2) dd{grid-column:2;grid-row:1;font-size:15px!important;line-height:1.5!important}
+  body:not(.admin-on) main .hero-bottom .facts>div:nth-child(2)::before{
+    content:'';grid-column:1;grid-row:1;width:20px;height:20px;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23242D50' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z'/%3E%3Ccircle cx='12' cy='10' r='2.6'/%3E%3C/svg%3E") center/contain no-repeat
+  }
+  body:not(.admin-on) main .hero-bottom .facts>div:nth-child(2)::after{content:'›';grid-column:3;grid-row:1;font-size:22px;line-height:1;color:#8a90a0}
+  body:not(.admin-on) main .hero-bottom .facts>div:nth-child(2):focus-visible{outline:2px solid var(--navy);outline-offset:-2px;border-radius:14px}
+
+  /* 참가비: 한국인·일본인 나란히 */
+  main .fee{grid-template-columns:1fr 1fr!important}
+  main .fee>div{padding:20px 16px!important;border-bottom:0!important;border-right:0!important;min-width:0}
+  body[data-lang="ko"] main .fee>div:nth-child(1),body[data-lang="ja"] main .fee>div:nth-child(2){border-right:1px solid var(--line-2)!important}
+  main .fee .who{font-size:13px;margin-bottom:10px}
+  main .fee .amt{font-size:clamp(22px,6.6vw,30px)!important;letter-spacing:-.03em;white-space:nowrap}
+  main .fee .amt small{margin-left:.2em;font-size:12px}
+  main .fee .fee-included{font-size:12.5px;margin:8px 0 12px}
+  main .fee .calc{font-size:12.5px;line-height:1.6;padding-top:10px}
+
+  /* 이렇게 함께해요 카드: 간격 줄이기 */
+  #about .cards{gap:0!important}
+  #about .card{padding:18px 0!important}
+  #about .card:last-child{padding-bottom:0!important}
+
+  /* 오시는 길: 설명문은 아래 카드와 같은 내용이라 숨기고, 지도 버튼 둘은 나란히, 주소 복사는 작게 */
+  body:not(.admin-on) #place .sec-head p{display:none}
+  body:not(.admin-on) main .map-side #copy-address{width:auto;min-height:38px;margin-top:12px;padding:7px 14px;font-size:13px;border-color:#cbd0d9}
+  body:not(.admin-on) main .map-side .mlinks{flex-direction:row;gap:8px;margin-top:14px}
+  body:not(.admin-on) main .map-side .mlinks a{flex:1 1 0;width:auto;min-width:0;padding:10px 8px;font-size:13.5px;text-align:center;line-height:1.4}
+
+  /* 참가 전 확인: 카드 5개 → 한 장짜리 체크리스트 */
+  body:not(.admin-on) main .rules.rules-open{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 18px}
+  body:not(.admin-on) main .rules.rules-open li{
+    position:relative;background:transparent!important;border:0!important;border-top:1px solid var(--line-2)!important;
+    border-radius:0!important;box-shadow:none!important;padding:14px 0 14px 20px!important;font-size:15px;line-height:1.65
+  }
+  body[data-lang="ko"]:not(.admin-on) main .rules.rules-open li.ko:nth-child(1),
+  body[data-lang="ja"]:not(.admin-on) main .rules.rules-open li.ja:nth-child(2){border-top:0!important}
+  body:not(.admin-on) main .rules.rules-open li::before{content:'';position:absolute;left:0;top:23px;width:8px;height:8px;border-radius:50%;background:var(--iro-1,#F28B82)}
+  body:not(.admin-on) main .rules.rules-open li:nth-child(3)::before,body:not(.admin-on) main .rules.rules-open li:nth-child(4)::before{background:var(--iro-2,#F6BF5B)}
+  body:not(.admin-on) main .rules.rules-open li:nth-child(5)::before,body:not(.admin-on) main .rules.rules-open li:nth-child(6)::before{background:var(--iro-3,#7FCBA0)}
+  body:not(.admin-on) main .rules.rules-open li:nth-child(7)::before,body:not(.admin-on) main .rules.rules-open li:nth-child(8)::before{background:var(--iro-4,#6FB3E0)}
+  body:not(.admin-on) main .rules.rules-open li:nth-child(9)::before,body:not(.admin-on) main .rules.rules-open li:nth-child(10)::before{background:var(--iro-5,#A99BE3)}
+}
+</style>
+<script>
+(function(){
+ /* 모바일: 히어로 아래 장소 줄을 누르면 오시는 길로 이동 */
+ var cell=document.querySelector('.hero-bottom .facts>div:nth-child(2)'),place=document.getElementById('place');
+ if(!cell||!place||!window.matchMedia)return;
+ var mq=matchMedia('(max-width:960px)');
+ function active(){return mq.matches&&!document.body.classList.contains('admin-on');}
+ function sync(){
+  if(active()){cell.setAttribute('role','link');cell.tabIndex=0;}
+  else{cell.removeAttribute('role');cell.removeAttribute('tabindex');}
+ }
+ function go(){place.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
+ cell.addEventListener('click',function(){if(active())go();});
+ cell.addEventListener('keydown',function(e){if(active()&&(e.key==='Enter'||e.key===' ')){e.preventDefault();go();}});
+ if(mq.addEventListener)mq.addEventListener('change',sync);else if(mq.addListener)mq.addListener(sync);
+ new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
+ sync();
+})();
+</script>
 <script>
 (function(){
  function isJa(){return document.body.dataset.lang==='ja';}
@@ -8409,9 +8489,9 @@ main .hero-proof .hero-stat{border-top:0}
    line.classList.toggle('full',left===0);
    line.classList.toggle('few',left>0&&left<=5);
    var wait=+(S.capacity[date].waitlist_on||0)===1;
-   line.innerHTML=left===0
+   line.innerHTML='<span>'+(left===0
     ?(wait?(isJa()?'満席です（キャンセル待ち受付中）':'정원이 찼어요 (대기 신청 가능)'):(isJa()?'満席です':'정원이 찼어요'))
-    :(isJa()?'残り <b>'+left+'</b> 席':'남은 자리 <b>'+left+'</b>석');
+    :(isJa()?'残り<b>'+left+'</b>席':'남은 자리 <b>'+left+'</b>석'))+'</span>';
    line.hidden=false;
   };
   window.addEventListener('iro-content-ready',function(){setTimeout(paint,0);});
