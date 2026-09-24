@@ -25,6 +25,12 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
 .ja{display:none}body[data-lang="ja"] .ko{display:none}body[data-lang="ja"] .ja{display:inline}body[data-lang="ja"] .ja.block{display:block}body[data-lang="ko"] .ko.block{display:block}
 @media(max-width:420px){body{padding-left:13px;padding-right:13px}.card{padding:26px 20px}.title{font-size:25px}}
 </style>
+<style id="page-transition">
+/* 페이지 이동 시 부드럽게 전환 (지원 브라우저만, 동작 줄이기 설정 시 끔) */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.22s}
+@media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+</style>
 </head>
 <body data-design="editorial" data-lang="ko">
 <div class="wrap">

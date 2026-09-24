@@ -24,6 +24,12 @@ body[data-lang="ko"] .ja,body[data-lang="ja"] .ko{display:none!important}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style id="page-transition">
+/* 페이지 이동 시 부드럽게 전환 (지원 브라우저만, 동작 줄이기 설정 시 끔) */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.22s}
+@media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+</style>
 </head>
 <body data-design="editorial" data-lang="ko">
 <header><nav class="nav wrap"><a class="brand" href="index.html"><img src="logo.png" alt="" width="30" height="30"><span class="linked-brand-name"><span class="ko">이로토모</span><span class="ja">いろとも</span></span></a><a class="go-back" href="index.html#gallery"><span class="ko">← 홈페이지</span><span class="ja">← ホームページ</span></a><div class="lang" aria-label="언어 선택"><button type="button" data-language="ko" class="on">한국어</button><button type="button" data-language="ja">日本語</button></div></nav></header>

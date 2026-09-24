@@ -76,6 +76,12 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
 .btn:active{transform:translateY(1px)}
 @media (prefers-reduced-motion:reduce){body.lang-swap main{animation:none}}
 </style>
+<style id="page-transition">
+/* 페이지 이동 시 부드럽게 전환 (지원 브라우저만, 동작 줄이기 설정 시 끔) */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.22s}
+@media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+</style>
 </head>
 <body data-design="editorial" data-lang="ja">
 
