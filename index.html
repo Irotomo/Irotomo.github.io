@@ -2158,6 +2158,19 @@ body.admin-on .gal-more{display:none!important}
     </div>
   </section>
 
+  <!-- 마무리 신청 띠 -->
+  <section class="end-cta" id="end-cta">
+    <div class="wrap end-cta-in">
+      <img class="end-cta-logo" src="logo.png" alt="" width="60" height="60" loading="lazy" decoding="async">
+      <p class="end-cta-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></p>
+      <h2 class="ko" data-c="end-t">이번 일요일, 여의도에서 만나요</h2>
+      <h2 class="ja" data-c="end-t">日曜日、ヨイドでお待ちしています</h2>
+      <p class="end-cta-sub ko" data-c="end-d">매주 일요일 15:00–17:30 · 사전 신청제</p>
+      <p class="end-cta-sub ja" data-c="end-d">毎週日曜 15:00〜17:30・事前申込制</p>
+      <a class="btn end-cta-btn" href="#apply"><span class="ko">신청하기</span><span class="ja">申し込む</span></a>
+    </div>
+  </section>
+
 </main>
 
 <footer>
@@ -8468,6 +8481,175 @@ main .hero-proof .hero-stat{border-top:0}
  if(mq.addEventListener)mq.addEventListener('change',sync);else if(mq.addListener)mq.addListener(sync);
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
  sync();
+})();
+</script>
+
+<style id="design-iro-0924">
+/* ══ [1] 모바일 첫 화면: 색 점들이 천천히 떠다니는 배경 ══ */
+.iro-hero-dots{display:none}
+@media (max-width:960px){
+  body:not(.admin-on) .iro-hero-dots{display:block;position:absolute;left:0;right:0;top:0;height:var(--dots-h,420px);z-index:0;pointer-events:none;overflow:hidden}
+  .iro-hero-dots i{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+    border-radius:50%;background:var(--c);opacity:var(--o);animation:iroFloat var(--d) ease-in-out var(--dl) infinite alternate;will-change:transform}
+}
+@keyframes iroFloat{from{transform:translate(0,0)}to{transform:translate(var(--dx),var(--dy))}}
+
+/* ══ [2] 다음 모임 카드: 티켓 절취선 ══ */
+.ticket-cut{position:relative;height:0;border-top:1.5px dashed #D9D3C4;margin-top:16px;margin-bottom:16px}
+.ticket-cut::before,.ticket-cut::after{content:'';position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:var(--canvas);border:1px solid #DFD8C8;box-sizing:border-box}
+.ticket-cut::before{left:-10px;clip-path:inset(0 0 0 50%)}
+.ticket-cut::after{right:-10px;clip-path:inset(0 50% 0 0)}
+body.admin-on .ticket-cut{display:none}
+/* PC 카드는 폭이 좁아 버튼 두 개를 나란히 두면 일본어 «この日程で申し込む» 가 넘침 → 모바일처럼 위아래로 */
+@media (min-width:961px){main .hero-bottom .next-actions{grid-template-columns:minmax(0,1fr)!important}}
+
+/* ══ [3] 당일 흐름: 시간 막대 (선은 이것 하나만 — 아래 목록은 점·선 없이 설명만) ══ */
+.tbar{margin:10px 0 30px}
+.tbar-labels,.tbar-track{display:flex;gap:4px}
+.tbar-labels>span,.tbar-track>.seg{min-width:0}
+.tbar-labels .l1,.tbar-track .s1,.tbar-labels .l2,.tbar-track .s2,.tbar-labels .l3,.tbar-track .s3{flex:50}
+.tbar-labels .la,.tbar-track .after{flex:30}
+.tbar-labels>span{display:flex;flex-direction:column;gap:1px;padding:0 0 8px 2px;font-size:13px;font-weight:700;line-height:1.35;white-space:nowrap;
+  opacity:0;transform:translateY(6px);transition:opacity .45s ease,transform .45s ease}
+.tbar-labels small{font-size:11px;font-weight:500;color:#8a90a0}
+.tbar-labels .l1{color:var(--iro-1d,#D8584E)}.tbar-labels .l2{color:var(--iro-3d,#2F9463)}.tbar-labels .l3{color:var(--iro-4d,#2E7FB8)}.tbar-labels .la{color:#8a90a0}
+.tbar-track{position:relative;height:8px}
+.tbar-track .seg{height:8px;border-radius:999px;transform:scaleX(0);transform-origin:left center;transition:transform .6s cubic-bezier(.2,.7,.3,1)}
+.tbar-track .s1{background:var(--iro-1,#F28B82)}.tbar-track .s2{background:var(--iro-3,#7FCBA0)}.tbar-track .s3{background:var(--iro-4,#6FB3E0)}
+.tbar-track .after{background:repeating-linear-gradient(90deg,#CFCBBF 0 6px,transparent 6px 11px)}
+.tbar.in .tbar-labels>span{opacity:1;transform:none}
+.tbar.in .tbar-track .seg{transform:none}
+.tbar .l2,.tbar .s2{transition-delay:.35s}.tbar .l3,.tbar .s3{transition-delay:.7s}.tbar .la,.tbar .after{transition-delay:1.05s}
+.tbar-ticks{position:relative;height:20px;margin-top:9px;font-size:12px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;opacity:0;transition:opacity .5s ease 1.2s}
+.tbar.in .tbar-ticks{opacity:1}
+.tbar-ticks span{position:absolute;top:0;transform:translateX(-50%)}
+.tbar-ticks span:first-child{transform:none}
+.tbar-now{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--gold);border:2.5px solid #fff;box-sizing:border-box;animation:iroNowPulse 1.8s ease-out infinite;z-index:1}
+.tbar-now[hidden]{display:none}
+body.admin-on .tbar-labels>span,body.admin-on .tbar-track .seg,body.admin-on .tbar-ticks{opacity:1;transform:none;transition:none}
+/* 막대가 있으면 아래 목록의 점·연결선은 숨기고, 시각 글자를 구간 색으로 */
+body:not(.admin-on) #flow .flow.has-bar .timeline-dot,body:not(.admin-on) #flow .flow.has-bar .timeline-connector{display:none!important}
+body:not(.admin-on) #flow .flow.has-bar .step .t{margin-top:0!important}
+body:not(.admin-on) #flow .flow.has-bar .step:nth-child(1) .t{color:var(--iro-1d,#D8584E)}
+body:not(.admin-on) #flow .flow.has-bar .step:nth-child(2) .t{color:var(--iro-3d,#2F9463)}
+body:not(.admin-on) #flow .flow.has-bar .step:nth-child(3) .t{color:var(--iro-4d,#2E7FB8)}
+body:not(.admin-on) #flow .flow.has-bar .step:nth-child(4) .t{color:#6f7585}
+@media (max-width:960px){
+  body:not(.admin-on) #flow .flow.has-bar .step{padding:0 0 16px 0!important;min-height:0!important}
+  body:not(.admin-on) #flow .flow.has-bar .step:last-child{padding-bottom:0!important}
+}
+
+/* ══ [4] 마무리 신청 띠 ══ */
+main > .end-cta{background:var(--navy-900,#141B2E);color:#fff;padding:clamp(64px,9vw,104px) 0;text-align:center}
+.end-cta-in{display:flex;flex-direction:column;align-items:center}
+.end-cta-logo{width:60px;height:60px;border-radius:50%;background:#fff;padding:3px;margin-bottom:18px}
+.end-cta-dots{display:flex;gap:7px;margin:0 0 22px}
+.end-cta-dots i{width:8px;height:8px;border-radius:50%;background:var(--iro-1)}
+.end-cta-dots i:nth-child(2){background:var(--iro-2)}.end-cta-dots i:nth-child(3){background:var(--iro-3)}
+.end-cta-dots i:nth-child(4){background:var(--iro-4)}.end-cta-dots i:nth-child(5){background:var(--iro-5)}.end-cta-dots i:nth-child(6){background:var(--iro-6)}
+main > .end-cta h2{color:#fff;font-size:clamp(26px,4.2vw,40px);line-height:1.35;letter-spacing:-.02em;margin:0 0 12px}
+.end-cta-sub{color:#B9C0D6;font-size:15px;margin:0 0 30px}
+main > .end-cta .btn.end-cta-btn{background:#fff!important;color:var(--navy-900,#141B2E)!important;border:0!important;min-width:220px;justify-content:center;font-weight:700}
+main > .end-cta .btn.end-cta-btn:hover{background:#F3EBDD!important}
+body.admin-on main > .end-cta h2,body.admin-on main > .end-cta .end-cta-sub{color:#fff}
+
+/* ══ [5] 모바일 갤러리: 가운데 사진 강조 ══ */
+@media (max-width:700px){
+  body:not(.admin-on) #gallery .gal figure{transition:transform .35s ease,opacity .35s ease}
+  body:not(.admin-on) #gallery .gal.in figure:not(.is-active){transform:scale(.92);opacity:.55}
+}
+
+/* ══ [6] 섹션 제목 앞 색 점 ══ */
+main .sec-head h2::before{content:'';display:inline-block;width:.3em;height:.3em;border-radius:50%;margin-right:.32em;vertical-align:.2em;background:var(--dot,var(--iro-1))}
+#gallery{--dot:var(--iro-6)}#about{--dot:var(--iro-2)}#flow{--dot:var(--iro-3)}#fee{--dot:var(--iro-4)}
+#place{--dot:var(--iro-5)}#place + section{--dot:var(--iro-1)}#faq{--dot:var(--iro-2)}#apply{--dot:var(--iro-3)}
+
+@media (prefers-reduced-motion:reduce){
+  .iro-hero-dots i{animation:none}
+  .tbar-now{animation:none}
+  .tbar-labels>span,.tbar-track .seg,.tbar-ticks{transition:none!important}
+  body:not(.admin-on) #gallery .gal figure{transition:none}
+}
+</style>
+<script>
+(function(){
+ var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ var COLORS=['var(--iro-1)','var(--iro-2)','var(--iro-3)','var(--iro-4)','var(--iro-5)','var(--iro-6)'];
+
+ /* [1] 모바일 첫 화면 색 점: 격자처럼 고르게 흩어 두고 각자 천천히 조금씩 떠다님 */
+ var hero=document.querySelector('.hero'),copy=document.querySelector('.hero-copy');
+ if(hero&&copy){
+  var box=document.createElement('div');box.className='iro-hero-dots';box.setAttribute('aria-hidden','true');
+  var html='',rnd=function(a,b){return a+Math.random()*(b-a);};
+  for(var i=0;i<12;i++){
+   var col=i%4,row=Math.floor(i/4);                      /* 4열 × 3행 칸마다 하나씩 → 한쪽에 몰리지 않음 */
+   var x=col*25+rnd(4,21),y=row*31+rnd(4,25),s=Math.round(rnd(6,13));
+   var dx=Math.round(rnd(10,24))*(Math.random()<.5?-1:1),dy=Math.round(rnd(8,20))*(Math.random()<.5?-1:1);
+   html+='<i style="--c:'+COLORS[i%6]+';--x:'+x.toFixed(1)+'%;--y:'+y.toFixed(1)+'%;--s:'+s+'px;--o:'+rnd(.2,.36).toFixed(2)+
+    ';--dx:'+dx+'px;--dy:'+dy+'px;--d:'+rnd(9,16).toFixed(1)+'s;--dl:-'+rnd(0,12).toFixed(1)+'s"></i>';
+  }
+  box.innerHTML=html;hero.insertBefore(box,hero.firstChild);
+  var size=function(){box.style.setProperty('--dots-h',(copy.offsetTop+copy.offsetHeight)+'px');};
+  size();window.addEventListener('resize',size);if('ResizeObserver' in window)new ResizeObserver(size).observe(copy);
+ }
+
+ /* [2] 다음 모임 카드 절취선: 카드 안쪽 여백만큼 양옆으로 늘림 */
+ var card=document.getElementById('next-meeting');
+ if(card){
+  var cut=document.createElement('div');cut.className='ticket-cut';cut.setAttribute('aria-hidden','true');
+  var place=function(){
+   var anchor=card.querySelector('.seats-left:not([hidden])')||card.querySelector('.next-price');
+   if(anchor&&cut.nextSibling!==anchor)card.insertBefore(cut,anchor);
+   var cs=getComputedStyle(card),bl=parseFloat(cs.borderLeftWidth)||0,br=parseFloat(cs.borderRightWidth)||0;
+   cut.style.marginLeft=-(parseFloat(cs.paddingLeft)+bl)+'px';cut.style.marginRight=-(parseFloat(cs.paddingRight)+br)+'px';
+  };
+  place();window.addEventListener('resize',place);
+  window.addEventListener('iro-content-ready',function(){setTimeout(place,0);});
+  new MutationObserver(function(){setTimeout(place,0);}).observe(card,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
+ }
+
+ /* [3] 당일 흐름 시간 막대 */
+ var flow=document.querySelector('#flow .flow');
+ if(flow){
+  var bar=document.createElement('div');bar.className='tbar';bar.setAttribute('aria-hidden','true');
+  bar.innerHTML='<div class="tbar-labels">'+
+   '<span class="l1"><span class="ko">1회차</span><span class="ja">1回目</span><small class="ko">50분</small><small class="ja">50分</small></span>'+
+   '<span class="l2"><span class="ko">2회차</span><span class="ja">2回目</span><small class="ko">50분</small><small class="ja">50分</small></span>'+
+   '<span class="l3"><span class="ko">3회차</span><span class="ja">3回目</span><small class="ko">50분</small><small class="ja">50分</small></span>'+
+   '<span class="la"><span class="ko">2차</span><span class="ja">二次会</span><small class="ko">자유</small><small class="ja">自由参加</small></span></div>'+
+   '<div class="tbar-track"><span class="seg s1"></span><span class="seg s2"></span><span class="seg s3"></span><span class="seg after"></span>'+
+   '<span class="tbar-now" hidden></span></div>'+
+   '<div class="tbar-ticks"><span style="left:0">15:00</span><span style="left:27.6%">15:50</span><span style="left:55.4%">16:40</span><span style="left:83.2%">17:30</span></div>';
+  flow.parentNode.insertBefore(bar,flow);
+  flow.classList.add('has-bar');
+  /* 화면에 들어오면 1→2→3회차 순서로 채움 */
+  if(reduce||!('IntersectionObserver' in window))bar.classList.add('in');
+  else{var bio=new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;})){bar.classList.add('in');bio.disconnect();}},{threshold:.35});bio.observe(bar);}
+  var now=bar.querySelector('.tbar-now');
+  var mark=function(){
+   var p={};
+   new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Seoul',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});
+   var m=(+p.hour)*60+(+p.minute);
+   if(p.weekday==='Sun'&&m>=900&&m<1050){now.hidden=false;now.style.left=((m-900)/180*100).toFixed(2)+'%';}else now.hidden=true;
+  };
+  mark();setInterval(mark,60000);
+ }
+
+ /* [5] 모바일 갤러리: 가운데 사진 표시 */
+ var gal=document.querySelector('#gallery .gal');
+ if(gal){
+  var pick=function(){
+   var figs=[].filter.call(gal.querySelectorAll('figure'),function(f){return f.offsetWidth>0;});
+   var c=gal.scrollLeft+gal.clientWidth/2,best=null,bd=Infinity;
+   figs.forEach(function(f){var d=Math.abs(f.offsetLeft+f.offsetWidth/2-c);if(d<bd){bd=d;best=f;}});
+   figs.forEach(function(f){var want=f===best;if(f.classList.contains('is-active')!==want)f.classList.toggle('is-active',want);});
+  };
+  var later=function(){clearTimeout(gal._pickT);gal._pickT=setTimeout(pick,60);};
+  gal.addEventListener('scroll',pick,{passive:true});window.addEventListener('resize',later);
+  new MutationObserver(later).observe(gal,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden']});
+  if('ResizeObserver' in window)new ResizeObserver(later).observe(gal);
+  later();
+ }
 })();
 </script>
 <script>
