@@ -1291,6 +1291,9 @@ body.admin-on .gal figure .zoom{display:none}
 .drink-catalog-entry button{padding:4px 9px;border-radius:7px;border:1px solid #bfc7d6;background:#fff;cursor:pointer}
 .drink-catalog-entry .drink-delete{border-color:#e4c7c7;color:#9a4141}
 .drink-catalog-entry button:disabled{opacity:.5;cursor:default}
+.drink-rename-fields{display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:100%}
+.drink-rename-fields input{width:145px;max-width:100%;padding:5px 7px;border:1px solid #bfc7d6;border-radius:7px;font:inherit}
+.drink-rename-state{flex-basis:100%;color:#9a4141}
 .drink-add-form{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .drink-add-form input[type=text]{width:165px;max-width:100%;padding:8px;border:1px solid #d1d5e0;border-radius:8px;font:inherit}
 .drink-add-form button{border:0;border-radius:8px;background:#203654;color:white;padding:8px 12px;cursor:pointer}
@@ -2360,8 +2363,8 @@ body.admin-on .gal-more{display:none!important}
         맨 위 요약 카드의 「일시 / 日時」 아랫줄에 이 글자가 그대로 들어갑니다.
         고치는 즉시 뒤쪽 카드가 바뀌니 보면서 맞추시면 됩니다.</p>
       <div class="drinks-admin-card">
-        <h4 style="margin:0 0 5px">음료 종류 관리 · 추가 / 숨김 / 삭제</h4>
-        <p class="sg-dg-note">음료는 기본 4종을 포함해 최대 100종까지 등록할 수 있습니다. 추가·숨김·삭제는 모든 향후 회차에 적용됩니다. 기본 음료는 숨길 수 있고, 추가한 음료는 삭제·복구할 수 있습니다. 특정 날짜만 품절/재판매하려면 아래 날짜별 버튼을 눌러 주세요. 기존 신청 내역은 바뀌지 않습니다.</p>
+        <h4 style="margin:0 0 5px">음료 종류 관리 · 추가 / 이름 변경 / 숨김 / 삭제</h4>
+        <p class="sg-dg-note">음료는 기본 4종을 포함해 최대 100종까지 등록할 수 있습니다. 기본 음료도 이름 변경·숨김이 가능하고, 추가한 음료는 삭제·복구할 수 있습니다. 특정 날짜만 품절/재판매하려면 아래 날짜별 버튼을 눌러 주세요. 이름을 바꾸면 기존 신청 내역의 표시 이름도 바뀌지만, 이미 발송된 메일은 바뀌지 않습니다.</p>
         <div id="drink-catalog-list" class="drink-catalog-list"></div>
         <details id="drink-archive" hidden><summary>삭제한 음료 · 복구</summary><div id="drink-archive-list" class="drink-catalog-list"></div></details>
         <p style="font-size:12px;line-height:1.65;color:#626B80;margin:5px 0 14px">품절·신청 숨김은 <b>신규 신청에만 적용</b>됩니다. 기존 신청·발송된 메일은 자동으로 바뀌지 않습니다. 기존 참가자의 음료를 변경하려면 아래 신청 내역에서 수정하세요. 변경 시 안내 메일을 보냅니다.</p>
@@ -3596,6 +3599,38 @@ window.IROLANG = (function(){
         .catch(function(e){btn.disabled=false;alert('음료 상태를 변경하지 못했습니다: '+e.message);});
       });
       wrap.appendChild(label);wrap.appendChild(btn);
+      var edit=document.createElement('button');edit.type='button';edit.textContent='이름 변경';
+      edit.addEventListener('click',function(){
+        var controls=Array.prototype.slice.call(wrap.children);
+        controls.forEach(function(el){el.hidden=true;});
+        var fields=document.createElement('div');fields.className='drink-rename-fields';
+        var koInput=document.createElement('input');koInput.type='text';koInput.maxLength=45;
+        koInput.value=d.ko;koInput.setAttribute('aria-label','음료 이름 한국어');
+        var jaInput=document.createElement('input');jaInput.type='text';jaInput.maxLength=45;
+        jaInput.value=d.ja;jaInput.setAttribute('aria-label','음료 이름 일본어');
+        var save=document.createElement('button');save.type='button';save.textContent='저장';
+        var cancel=document.createElement('button');cancel.type='button';cancel.textContent='취소';
+        var state=document.createElement('span');state.className='drink-rename-state';state.setAttribute('role','status');
+        function closeEdit(){fields.remove();controls.forEach(function(el){el.hidden=false;});}
+        cancel.addEventListener('click',closeEdit);
+        save.addEventListener('click',function(){
+          var ko=koInput.value.trim(),ja=jaInput.value.trim();
+          if(!ko||!ja){state.textContent='한국어·일본어 이름을 모두 입력해 주세요.';return;}
+          if(ko===d.ko&&ja===d.ja){closeEdit();return;}
+          if(ADMIN_DRINK_CATALOG.some(function(other){return other.id!==d.id&&(other.ko===ko||other.ja===ja);})){state.textContent='같은 이름의 음료가 이미 있습니다.';return;}
+          save.disabled=true;cancel.disabled=true;state.textContent='저장 중…';
+          apiPost({action:'drink_update',token:ADMIN.token,id:d.id,ko:ko,ja:ja})
+          .then(function(x){if(!x||!x.ok) throw Error(x&&x.error||'fail');adminApplyCatalog(x.drinks);loadMeetups();if(SG.rows.length) paintSg();})
+          .catch(function(e){state.textContent='저장 실패: '+drinkAdminError(e);save.disabled=false;cancel.disabled=false;});
+        });
+        [koInput,jaInput].forEach(function(input){input.addEventListener('keydown',function(e){
+          if(e.key==='Enter'){e.preventDefault();save.click();}
+          if(e.key==='Escape'){e.preventDefault();cancel.click();}
+        });});
+        fields.appendChild(koInput);fields.appendChild(jaInput);fields.appendChild(save);fields.appendChild(cancel);fields.appendChild(state);
+        wrap.appendChild(fields);koInput.focus();koInput.select();
+      });
+      wrap.appendChild(edit);
       if(!d.builtin){
         var del=document.createElement('button');del.type='button';del.className='drink-delete';del.textContent='삭제';
         del.addEventListener('click',function(){
