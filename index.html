@@ -1289,6 +1289,8 @@ body.admin-on .gal figure .zoom{display:none}
 .drink-catalog-entry{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:#fff;border:1px solid #dbe0eb;border-radius:9px;padding:6px 9px;font-size:12px}
 .drink-catalog-entry.is-off{opacity:.66}
 .drink-catalog-entry button{padding:4px 9px;border-radius:7px;border:1px solid #bfc7d6;background:#fff;cursor:pointer}
+.drink-catalog-entry .drink-delete{border-color:#e4c7c7;color:#9a4141}
+.drink-catalog-entry button:disabled{opacity:.5;cursor:default}
 .drink-add-form{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .drink-add-form input[type=text]{width:165px;max-width:100%;padding:8px;border:1px solid #d1d5e0;border-radius:8px;font:inherit}
 .drink-add-form button{border:0;border-radius:8px;background:#203654;color:white;padding:8px 12px;cursor:pointer}
@@ -2358,9 +2360,10 @@ body.admin-on .gal-more{display:none!important}
         맨 위 요약 카드의 「일시 / 日時」 아랫줄에 이 글자가 그대로 들어갑니다.
         고치는 즉시 뒤쪽 카드가 바뀌니 보면서 맞추시면 됩니다.</p>
       <div class="drinks-admin-card">
-        <h4 style="margin:0 0 5px">음료 종류 관리 · 추가 / 숨김</h4>
-        <p class="sg-dg-note">음료 추가·숨김은 모든 향후 회차에 적용됩니다. 특정 날짜만 품절/재판매하려면 아래 날짜별 버튼을 눌러 주세요. 기존 신청 내역은 바뀌지 않습니다.</p>
+        <h4 style="margin:0 0 5px">음료 종류 관리 · 추가 / 숨김 / 삭제</h4>
+        <p class="sg-dg-note">음료는 기본 4종을 포함해 최대 100종까지 등록할 수 있습니다. 추가·숨김·삭제는 모든 향후 회차에 적용됩니다. 기본 음료는 숨길 수 있고, 추가한 음료는 삭제·복구할 수 있습니다. 특정 날짜만 품절/재판매하려면 아래 날짜별 버튼을 눌러 주세요. 기존 신청 내역은 바뀌지 않습니다.</p>
         <div id="drink-catalog-list" class="drink-catalog-list"></div>
+        <details id="drink-archive" hidden><summary>삭제한 음료 · 복구</summary><div id="drink-archive-list" class="drink-catalog-list"></div></details>
         <p style="font-size:12px;line-height:1.65;color:#626B80;margin:5px 0 14px">품절·신청 숨김은 <b>신규 신청에만 적용</b>됩니다. 기존 신청·발송된 메일은 자동으로 바뀌지 않습니다. 기존 참가자의 음료를 변경하려면 아래 신청 내역에서 수정하세요. 변경 시 안내 메일을 보냅니다.</p>
         <div class="drink-add-form">
           <input id="drink-add-ko" type="text" maxlength="45" placeholder="새 음료 이름 (한국어)" aria-label="새 음료 이름 한국어">
@@ -2795,10 +2798,10 @@ window.IROLANG = (function(){
     if(el){
       var old=el.value;
       while(el.options.length>1) el.remove(1);
-      items.filter(function(d){return d.enabled;}).forEach(function(d){
+      items.filter(function(d){return d.enabled && !d.archived;}).forEach(function(d){
         var o=document.createElement('option'); o.value=d.id; el.appendChild(o);
       });
-      if(items.some(function(d){return d.id===old && d.enabled;})) el.value=old;
+      if(items.some(function(d){return d.id===old && d.enabled && !d.archived;})) el.value=old;
       else el.value='';
       try {fillPicks();} catch(e) {try {syncDrinks();} catch(_) {}}
     }
@@ -3551,6 +3554,11 @@ window.IROLANG = (function(){
 
   var SG_DRINK = { dutch:'더치커피', milk:'밀크티', lime:'분다버그 라임', grape:'분다버그 핑크자몽' };
   var ADMIN_DRINK_CATALOG=[];
+  function drinkAdminError(e){
+    var code=e && e.message || String(e);
+    return code==='drink_limit' ? '등록 가능한 음료는 최대 100종입니다.'
+      : code==='duplicate_drink' ? '같은 이름의 음료가 이미 있습니다. 삭제한 음료라면 아래에서 복구해 주세요.' : code;
+  }
   function adminApplyCatalog(items){
     if (!Array.isArray(items) || !items.length) return;
     ADMIN_DRINK_CATALOG=items.slice(); SG_DRINK={};
@@ -3560,8 +3568,23 @@ window.IROLANG = (function(){
   }
   function paintCatalog(){
     var box=$a('drink-catalog-list'); if(!box) return;
-    box.textContent='';
+    var archive=$a('drink-archive'), archiveBox=$a('drink-archive-list');
+    box.textContent='';archiveBox.textContent='';
+    archive.hidden=!ADMIN_DRINK_CATALOG.some(function(d){return d.archived;});
     ADMIN_DRINK_CATALOG.forEach(function(d){
+      if(d.archived){
+        var oldWrap=document.createElement('div');oldWrap.className='drink-catalog-entry is-off';
+        var oldLabel=document.createElement('span');oldLabel.textContent=d.ko+' / '+d.ja;
+        var restore=document.createElement('button');restore.type='button';restore.textContent='복구';
+        restore.addEventListener('click',function(){
+          restore.disabled=true;
+          apiPost({action:'drink_restore',token:ADMIN.token,id:d.id})
+          .then(function(x){if(!x||!x.ok) throw Error(x&&x.error||'fail');adminApplyCatalog(x.drinks);loadMeetups();})
+          .catch(function(e){restore.disabled=false;alert('음료를 복구하지 못했습니다: '+drinkAdminError(e));});
+        });
+        oldWrap.appendChild(oldLabel);oldWrap.appendChild(restore);archiveBox.appendChild(oldWrap);
+        return;
+      }
       var wrap=document.createElement('div'); wrap.className='drink-catalog-entry'+(d.enabled?'':' is-off');
       var label=document.createElement('span');label.textContent=d.ko+' / '+d.ja+(d.preorder?' · 금 12시 마감':'');
       var btn=document.createElement('button');btn.type='button';
@@ -3572,7 +3595,19 @@ window.IROLANG = (function(){
         .then(function(x){if(!x||!x.ok) throw Error(x&&x.error||'fail');adminApplyCatalog(x.drinks);loadMeetups();})
         .catch(function(e){btn.disabled=false;alert('음료 상태를 변경하지 못했습니다: '+e.message);});
       });
-      wrap.appendChild(label);wrap.appendChild(btn);box.appendChild(wrap);
+      wrap.appendChild(label);wrap.appendChild(btn);
+      if(!d.builtin){
+        var del=document.createElement('button');del.type='button';del.className='drink-delete';del.textContent='삭제';
+        del.addEventListener('click',function(){
+          if(!confirm('「'+d.ko+'」 음료를 삭제할까요?\n새 신청에서는 사라지지만 기존 신청 내역은 유지됩니다. 나중에 복구할 수 있습니다.')) return;
+          del.disabled=true;btn.disabled=true;
+          apiPost({action:'drink_delete',token:ADMIN.token,id:d.id})
+          .then(function(x){if(!x||!x.ok) throw Error(x&&x.error||'fail');adminApplyCatalog(x.drinks);loadMeetups();})
+          .catch(function(e){del.disabled=false;btn.disabled=false;alert('음료를 삭제하지 못했습니다: '+e.message);});
+        });
+        wrap.appendChild(del);
+      }
+      box.appendChild(wrap);
     });
   }
   window.addEventListener('iro-drinks-updated',function(e){
@@ -3595,7 +3630,7 @@ window.IROLANG = (function(){
         adminApplyCatalog(x.drinks);loadMeetups();
         $a('drink-add-ko').value='';$a('drink-add-ja').value='';$a('drink-add-pre').checked=false;
         status.textContent='음료가 추가되었습니다.';
-      }).catch(function(e){status.textContent='추가 실패: '+e.message;}).finally(function(){btn.disabled=false;});
+      }).catch(function(e){status.textContent='추가 실패: '+drinkAdminError(e);}).finally(function(){btn.disabled=false;});
     });
   }
 
@@ -3735,7 +3770,7 @@ window.IROLANG = (function(){
          누르면 그 날짜의 신청 화면에서 «품절» 로 잠깁니다. */
       var shut = (m.closed || []).slice();
       var dbox = document.createElement('div'); dbox.className = 'mt-drinks';
-      ADMIN_DRINK_CATALOG.forEach(function(drinkItem){
+      ADMIN_DRINK_CATALOG.filter(function(d){return !d.archived;}).forEach(function(drinkItem){
         var p=[drinkItem.id,drinkItem.ko];
         var b = document.createElement('button');
         b.type = 'button';
@@ -4135,7 +4170,7 @@ window.IROLANG = (function(){
 
     var pick=document.createElement('select');
     var blank=document.createElement('option'); blank.value=''; blank.textContent='음료 없음'; pick.appendChild(blank);
-    Object.keys(SG_DRINK).forEach(function(id){
+    ADMIN_DRINK_CATALOG.filter(function(d){return !d.archived;}).forEach(function(d){var id=d.id;
       var o=document.createElement('option'); o.value=id; o.textContent=SG_DRINK[id]; pick.appendChild(o);
     });
 
@@ -4311,7 +4346,7 @@ window.IROLANG = (function(){
     var blank = document.createElement('option');
     blank.value = ''; blank.textContent = '음료 없음';
     pick.appendChild(blank);
-    Object.keys(SG_DRINK).forEach(function(id){
+    ADMIN_DRINK_CATALOG.filter(function(d){return !d.archived;}).forEach(function(d){var id=d.id;
       var o = document.createElement('option');
       o.value = id; o.textContent = SG_DRINK[id];
       pick.appendChild(o);
@@ -4348,7 +4383,7 @@ window.IROLANG = (function(){
     lab.className = 'so-lab'; lab.textContent = '품절 처리';
     box.appendChild(lab);
 
-    Object.keys(SG_DRINK).forEach(function(id){
+    ADMIN_DRINK_CATALOG.filter(function(d){return !d.archived;}).forEach(function(d){var id=d.id;
       var on = ((CLOSED[date] || []).indexOf(id) >= 0);
       var b = document.createElement('button');
       b.type = 'button';
@@ -4442,14 +4477,14 @@ window.IROLANG = (function(){
         Object.keys(SG_DRINK).forEach(function(k){
           var o = document.createElement('option');
           var def=ADMIN_DRINK_CATALOG.find(function(d){return d.id===k;});
-          var hidden=def && !def.enabled;
+          var hidden=def && (!def.enabled || def.archived);
           var soldout=((CLOSED[r.date]||[]).indexOf(k)>=0);
           var late=def && def.preorder && r.date && (function(){
             var t=Date.parse(r.date+'T15:00:00+09:00');return Number.isFinite(t) && t-Date.now()<51*3600000;
           })();
           var unavailable=hidden || soldout || late;
           o.value=k;
-          o.textContent=SG_DRINK[k]+(hidden?' · 신청 숨김':soldout?' · 품절':late?' · 접수 마감':'');
+          o.textContent=SG_DRINK[k]+(def && def.archived?' · 삭제됨':hidden?' · 신청 숨김':soldout?' · 품절':late?' · 접수 마감':'');
           /* 이미 선택한 음료는 품절 이후에도 기존 예약으로 유지하고, 다른 품절 음료로 변경하지는 못하도록 합니다. */
           o.disabled=(hidden || soldout) && k!==(r.drink||'');
           inp.appendChild(o);
