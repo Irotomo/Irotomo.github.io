@@ -1591,13 +1591,6 @@ body.admin-on .gal-more{display:none!important}
         <p class="lead ko" data-c="v2-c11">여의도 카페에서 일본인 참가자들과 편하게 이야기 나누는 모임이에요. 간단한 일본어로 대화할 수 있다면 충분해요. 혼자 오시는 분도 많고, 자리는 저희가 정해 드려요.</p>
         <p class="lead ja" data-c="v2-c11">ヨイドのカフェで、韓国の参加者と気軽におしゃべりする交流会です。留学・ワーホリ・旅行中の方も、おひとりの方も大歓迎。韓国語が話せなくても大丈夫です。</p>
 
-        <a class="btn btn-primary hero-first-cta" href="#apply"><span class="ko">신청하기</span><span class="ja">申し込む</span></a>
-
-        <div class="hero-proof">
-          <p class="hero-stat"><span class="ko" data-c="c89">지난주에는 일본인 {ja}명 · 한국인 {ko}명이 함께했습니다</span><span class="ja" data-c="c89">先週は日本人{ja}名・韓国人{ko}名の方にご参加いただきました</span></p>
-          <p class="hero-note ko" data-c="c14">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
-          <p class="hero-note ja" data-c="c14">事前申込制です。当日参加は受け付けておりません。</p>
-        </div>
       </div>
 
       <div class="hero-logo" id="hero-visual" role="img" aria-label="이로토모 한일교류회">
@@ -1649,6 +1642,11 @@ body.admin-on .gal-more{display:none!important}
             <a class="btn btn-gold ko seat-link next-seat-link" href="seat.html">좌석 확인</a>
             <a class="btn btn-gold ja seat-link next-seat-link" href="seat.html">席の確認</a>
           </div>
+        </div>
+        <div class="hero-proof">
+          <p class="hero-stat"><span class="ko" data-c="c89">지난주에는 일본인 {ja}명 · 한국인 {ko}명이 함께했습니다</span><span class="ja" data-c="c89">先週は日本人{ja}名・韓国人{ko}名の方にご参加いただきました</span></p>
+          <p class="hero-note ko" data-c="c14">사전 신청제입니다. 당일 참가는 받지 않습니다.</p>
+          <p class="hero-note ja" data-c="c14">事前申込制です。当日参加は受け付けておりません。</p>
         </div>
       </div>
 
@@ -8257,9 +8255,13 @@ main .board-band,main .kana-strip{box-shadow:none;border-radius:8px}
 }
 </style>
 <style id="mobile-entry-20260928">
-.hero-first-cta{display:none!important}
 @media(max-width:960px){
- main .hero-first-cta{display:inline-flex!important;align-items:center;justify-content:center;min-height:48px;margin-top:18px;padding:12px 24px}
+ .hero.wrap{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"copy" "meta" "visual" "facts";row-gap:18px}
+ .hero.wrap:not(:has(.hero-logo.has-hero)){grid-template-areas:"copy" "meta" "facts"}
+ .hero .hero-grid,.hero .hero-bottom{display:contents!important}
+ .hero .hero-copy{grid-area:copy!important}
+ .hero .hero-bottom .hero-meta{grid-area:meta!important}
+ .hero .hero-bottom .facts{grid-area:facts!important}
  .nav .nav-links>a{display:inline-flex;align-items:center;min-height:44px;min-width:44px}
  .nav .nav-more{flex:none}
  .nav .nav-more>summary{white-space:nowrap;min-width:44px}
