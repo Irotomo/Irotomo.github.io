@@ -3243,6 +3243,13 @@ body:not(.admin-on) .nav .nav-more[open]:not(.closing) .nav-more-panel a{animati
   .nav .nav-more-panel,.nav .nav-more-panel a{animation:none!important}
 }
 </style>
+<style id="details-motion-0930">
+/* 펼치기(FAQ · 입금 안내 · 추가 정보 · 동의 자세히 보기)를 모든 브라우저(아이폰 포함)에서 부드럽게.
+   스크립트가 켜지면 예전 CSS 방식(크롬 전용)은 끄고 스크립트 애니메이션 하나만 쓴다 */
+html.js-details details:not(.nav-more)::details-content{transition:none!important}
+details>summary::after{transition:transform .3s cubic-bezier(.2,.7,.3,1)}
+@media (prefers-reduced-motion:reduce){details>summary::after{transition:none}}
+</style>
 </head>
 <body data-lang="ja">
 
@@ -9177,6 +9184,47 @@ document.getElementById('mobile-top').addEventListener('click',function(){
   new MutationObserver(function(){place(!reduce);}).observe(g,{attributes:true,subtree:true,attributeFilter:['aria-pressed']});
   addEventListener('resize',function(){place(false);});
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){place(false);});
+ });
+})();
+</script>
+<script>
+(function(){
+ /* 펼치기 부드럽게: 높이를 늘이고 줄이며, 펼칠 때 내용이 살짝 떠오르듯 나타남 */
+ if(!('animate' in Element.prototype))return;
+ if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ document.documentElement.classList.add('js-details');
+ function skip(d){return d.classList.contains('nav-more')||d.id==='drink-archive'||!!d.closest('.adm-dim,#admin-bar,.sg-pane,.archive-admin');}
+ function edge(d){var c=getComputedStyle(d);return ['paddingTop','paddingBottom','borderTopWidth','borderBottomWidth'].reduce(function(s,p){return s+(parseFloat(c[p])||0);},0);}
+ [].forEach.call(document.querySelectorAll('details'),function(d){
+  if(skip(d))return;
+  var s=null;for(var i=0;i<d.children.length;i++){if(d.children[i].tagName==='SUMMARY'){s=d.children[i];break;}}
+  if(!s)return;
+  var anim=null,state='';
+  function kids(){return [].filter.call(d.children,function(c){return c!==s&&c.offsetParent!==null;});}
+  function finish(open){if(!open)d.open=false;anim=null;state='';d.style.overflow='';d.style.boxSizing='';}
+  function run(from,to,open){
+   d.style.overflow='hidden';d.style.boxSizing='border-box';
+   var dur=Math.max(220,Math.min(440,Math.abs(to-from)*0.9));
+   anim=d.animate({height:[from+'px',to+'px']},{duration:dur,easing:open?'cubic-bezier(.2,.7,.3,1)':'cubic-bezier(.4,0,.6,1)'});
+   state=open?'opening':'closing';
+   var a=anim;
+   anim.onfinish=function(){if(anim===a)finish(open);};
+   /* 화면이 가려져 완료 신호가 늦게 와도 상태가 어긋나지 않게 예비 마무리 */
+   setTimeout(function(){if(anim===a){a.onfinish=null;a.cancel();finish(open);}},dur+150);
+   if(open)kids().forEach(function(k){k.animate({opacity:[0,1],transform:['translateY(-6px)','none']},{duration:Math.min(380,dur+80),easing:'ease-out'});});
+  }
+  s.addEventListener('click',function(e){
+   if(document.body.classList.contains('admin-on'))return;
+   e.preventDefault();
+   var from=d.offsetHeight;
+   if(anim){anim.onfinish=null;anim.cancel();anim=null;}
+   if(state==='closing'||!d.open){
+    d.open=true;
+    run(from,d.offsetHeight,true);
+   }else{
+    run(from,s.offsetHeight+edge(d),false);
+   }
+  });
  });
 })();
 </script>
