@@ -47,7 +47,7 @@ switch ($Action) {
         $public = Join-Path $entry 'public'
         New-Item -ItemType Directory -Path $public | Out-Null
         # Explicit public allowlist. Add future public assets here.
-        foreach ($name in @('index.html','board.html','privacy.html','gallery.html','seat.html','kana.html','logo.png','og.png','robots.txt','sitemap.xml')) {
+        foreach ($name in @('index.html','board.html','privacy.html','gallery.html','seat.html','kana.html','logo.png','og.png','favicon.png','apple-touch-icon.png','robots.txt','sitemap.xml')) {
             Copy-Item -LiteralPath (Join-Path $source $name) -Destination $public
         }
         [IO.Compression.ZipFile]::CreateFromDirectory($public,(Join-Path $entry 'frontend.zip'))

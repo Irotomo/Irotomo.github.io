@@ -1,10 +1,10 @@
 # 이로토모(いろとも) 웹사이트 — irotomo.com
 
-서울 여의도에서 매주 일요일 열리는 한일교류회 '이로토모'의 소개·신청·운영 사이트다. 운영자(배상원)가 제품 오너이고, 구현은 Claude가 맡는다. 이 파일은 claude.ai 웹 대화에서 진행하던 작업을 Claude Code로 옮기면서 정리한 것이다.
+서울 여의도에서 매주 일요일 열리는 한일교류회 '이로토모'의 소개·신청·운영 사이트다. 운영자(배상원)가 제품 오너이고, 구현은 Codex가 맡는다. 이 파일은 Codex.ai 웹 대화에서 진행하던 작업을 Codex로 옮기면서 정리한 것이다.
 
 ## 구성
 
-프론트엔드는 빌드 도구 없는 정적 HTML이다. `index.html`(메인 + 관리자 기능 내장), `board.html`(중고 · 나눔 게시판), `privacy.html`(개인정보처리방침), `gallery.html`(지난 모임 사진, `gallery_archive_list` 호출), `seat.html`(참가자 자리 확인, `seat_lookup` 호출), `kana.html`(가나 쓰기 연습 — 예전엔 index.html 안에 base64로 들어 있었고, 2026-09-24 로딩 속도 개선 때 분리해 오버레이를 열 때만 불러온다)로 되어 있다. CSS와 JS는 각 파일 안에 인라인으로 들어 있다. `admin.html`은 Apps Script 시절 파일로 지금은 쓰지 않는다.
+프론트엔드는 빌드 도구 없는 정적 HTML이다. `index.html`(메인 + 관리자 기능 내장), `board.html`(중고 · 나눔 게시판), `privacy.html`(개인정보처리방침), `gallery.html`(지난 모임 사진, `gallery_archive_list` 호출), `seat.html`(참가자 자리 확인, `seat_lookup` 호출)로 되어 있다. CSS와 JS는 각 파일 안에 인라인으로 들어 있다. `admin.html`은 Apps Script 시절 파일로 지금은 쓰지 않는다.
 
 백엔드는 Cloudflare Worker 하나(`worker.js`)이며 `api.irotomo.com` 커스텀 도메인에 배포되어 있다. 바인딩은 D1 `DB`(데이터베이스 이름 irotomo)와 KV `PHOTOS`(irotomo-photos, 사진 저장 — R2 대신 사용)이고, 시크릿은 `ADMIN_ID`, `ADMIN_PW`, `BREVO_KEY`, `ANTHROPIC_KEY`(선택)이다. 메일 발송은 Brevo, 수신은 Cloudflare Email Routing으로 `info@irotomo.com`을 받는다. 명단 메일 등 정기 작업은 cron(`*/10 * * * *`)으로 돈다. 사진은 Worker가 `/photo/<키>`로 직접 내보낸다.
 
@@ -56,12 +56,12 @@ D1 스키마 변경은 기존 데이터를 지우지 않는 방식으로 한다.
 
 신청이 들어오면 국적에 따라 일본어 또는 한국어 자동 회신 메일이 나간다. 모임 시간·음료 정책이 바뀌면 Worker 안의 메일 본문과 `VENUE` 상수, `getContent()` 기본값도 같이 고쳐야 한다.
 
-## Claude Code로 옮긴 뒤 확인할 것
+## Codex로 옮긴 뒤 확인할 것
 
 2026-09-23에 확정한 내용이다.
 
 - 폴더는 git 저장소가 아니고 `wrangler.toml`·`CNAME`이 없다. `worker.js`는 최신본이 들어 있고, `VERSION`은 `cf-60-security-schema-once`로 배포본(ping 결과)과 같다. 다음 수정은 `cf-61-...`이다.
-- Worker 배포는 운영자가 Cloudflare 대시보드에 직접 붙여넣는다. Claude는 `worker.js`를 고치고 `VERSION`을 올린 뒤 붙여넣으라고 안내하며, 배포 뒤에는 ping으로 확인한다.
+- Worker 배포는 운영자가 Cloudflare 대시보드에 직접 붙여넣는다. Codex는 `worker.js`를 고치고 `VERSION`을 올린 뒤 붙여넣으라고 안내하며, 배포 뒤에는 ping으로 확인한다.
 - 프론트는 지금 GitHub Pages(`irotomokr.github.io`)에 있고, 그 앞에 Cloudflare 프록시가 붙어 `irotomo.com`으로 나간다. 프론트 배포는 GitHub Pages로 유지한다.
 - `admin.html`은 옛 Apps Script 주소를 쓰고 어디에서도 링크되지 않는다. 사용하지 않는 파일이다(삭제는 운영자 확인 후).
 
@@ -74,9 +74,7 @@ D1 스키마 변경은 기존 데이터를 지우지 않는 방식으로 한다.
 - 복구 방법과 데이터 백업 범위는 BACKUP.md를 따른다. 완료 보고에 백업 ID를 남긴다.
 
 ## 2026-09-24 메일 수정·디자인 롤백
-- 로컬 worker.js는 `cf-61-mail-copy-light-theme`로 수정했다. cf-61은 2026-09-24 ping으로 배포를 확인했다.
-- 2026-09-28에 `cf-62-drink-delete-limit`(관리자 음료 삭제·복구·이름 변경, 최대 100종)이 배포됐다(2026-09-29 ping 확인). 다음 Worker 수정 버전은 cf-63부터 사용한다. 같은 날 프론트에는 SEO(일본어 제목·설명, `robots.txt`, `sitemap.xml`)와 모바일 첫 화면 순서 변경이 들어갔다.
-- 2026-09-29: SNS 공유 카드는 다시 `og.png`(1200×630)를 쓴다. 예전 og.png의 틀린 정보(17:00, 선정릉)를 17:30·여의도로 고쳐 폴더와 release.ps1 배포 목록에 넣었다. 모임 시간·장소가 바뀌면 og.png도 다시 만들어야 한다. 관리자 사진 업로드(메인 갤러리·누적 갤러리)는 1280px·품질 0.8부터 약 190KB 이하로 줄여 올린다(기존 사진은 다시 올려야 줄어듦).
+- 로컬 worker.js는 `cf-61-mail-copy-light-theme`로 수정했다. 다음 Worker 수정 버전은 cf-62부터 사용한다. cf-61의 실제 배포 여부는 아직 확인하지 않았다.
 - 2026-09-30: 스타일 블록 27개가 페이지 끝(내용 뒤)에 붙어 있어 느린 회선에서 예전 모양이 먼저 보이던 문제를 고쳤다. 순서·내용 그대로 `</head>` 바로 앞으로 옮겼다(이동 전후 화면 계산값 비교로 동일 확인). **앞으로 새 `<style>` 블록은 body 끝이 아니라 `</head>` 바로 앞에 추가한다.** 스크립트는 지금처럼 body 끝에 둔다. 같은 날 회색 글씨 대비를 위해 `--muted`를 #5F6782로 덮어썼고, 사이트 아이콘은 정사각형 `favicon.png`(48px)·`apple-touch-icon.png`(180px)를 새로 만들어 배포 목록에 넣었다.
 - 자동 메일은 밝은 아이보리·흰색 테마다. 모든 메일 푸터에 카페 주소를 넣지 않는다. 실제 모임 장소 주소는 본문 안내에만 유지한다.
 - 네이비 강조를 포함한 9월 24일 디자인 변경은 운영자 요청으로 전부 롤백했다. 기존 5초 로고 반짝임은 유지한다.
