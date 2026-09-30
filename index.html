@@ -3199,23 +3199,49 @@ body.admin-on .share-btn{display:none}
 <style id="contrast-dates-0930">
 /* 작은 회색 글씨 대비: 배경 대비 4.2:1 → 5.2:1 (야외·햇빛에서도 읽히게) */
 :root{--muted:#5F6782}
+/* 다음 모임 카드의 «다른 날짜» 버튼은 운영자 판단으로 뺐다 (2026-09-30, 신청 폼에서 날짜 선택 가능) */
+</style>
+<style id="menu-lang-motion-0930">
+/* ══ ☰ 아이콘: 선 세 개로 다시 그림 (예전 ✕는 글자 칸과의 9px 간격 때문에 두 획이 어긋나 보였음) ══ */
+.nav .nav-more>summary .hb{display:none}
+@media (max-width:960px){
+  body:not(.admin-on) .nav .nav-more>summary{gap:0!important}
+  body:not(.admin-on) .nav .nav-more>summary::before,body:not(.admin-on) .nav .nav-more>summary::after{content:none!important;display:none!important}
+  body:not(.admin-on) .nav .nav-more>summary>span.ko,body:not(.admin-on) .nav .nav-more>summary>span.ja{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  body:not(.admin-on) .nav .nav-more>summary .hb{display:block;position:relative;width:20px;height:14px}
+  body:not(.admin-on) .nav .nav-more .hb i{position:absolute;left:0;width:20px;height:2px;border-radius:2px;background:currentColor;
+    transition:transform .2s cubic-bezier(.4,0,.2,1),top .18s ease .14s,opacity .12s ease .12s}
+  body:not(.admin-on) .nav .nav-more .hb i:nth-child(1){top:0}
+  body:not(.admin-on) .nav .nav-more .hb i:nth-child(2){top:6px}
+  body:not(.admin-on) .nav .nav-more .hb i:nth-child(3){top:12px}
+  body:not(.admin-on) .nav .nav-more[open]:not(.closing) .hb i:nth-child(1){top:6px;transform:rotate(45deg);transition:top .18s ease,transform .24s cubic-bezier(.3,1.4,.5,1) .15s}
+  body:not(.admin-on) .nav .nav-more[open]:not(.closing) .hb i:nth-child(2){opacity:0;transition:opacity .1s ease}
+  body:not(.admin-on) .nav .nav-more[open]:not(.closing) .hb i:nth-child(3){top:6px;transform:rotate(-45deg);transition:top .18s ease,transform .24s cubic-bezier(.3,1.4,.5,1) .15s}
+  body:not(.admin-on) .nav .nav-more.closing>summary{background:transparent}
+}
 
-/* 다음 모임 카드 아래: 다른 날짜 바로 고르기 */
-.more-dates{margin-top:14px;padding-top:12px;border-top:1px dashed #E3DDCF}
-.more-dates .md-t{margin:0 0 8px;font-size:12px;font-weight:600;color:var(--muted)}
-.more-dates .md-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -4px;padding:2px 4px}
-.more-dates .md-row::-webkit-scrollbar{display:none}
-.md-chip{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:84px;min-height:48px;justify-content:center;padding:7px 10px;
-  border:1px solid #DFD8C8;border-radius:10px;background:#fff;color:var(--navy);text-decoration:none;font-size:13px;line-height:1.3;
-  -webkit-tap-highlight-color:transparent;transition:transform .12s ease,background-color .15s ease}
-.md-chip b{font-weight:700;font-variant-numeric:tabular-nums}
-.md-chip small{font-size:11px;font-weight:600;color:#2F6B4F}
-.md-chip.wait small{color:#8A4A4A}
-.md-chip:hover{background:#F7F4EC}
-.md-chip:active{transform:scale(.96)}
-.md-chip:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
-body.admin-on .more-dates{display:none}
-@media (prefers-reduced-motion:reduce){.md-chip{transition:none}}
+/* ══ 메뉴 패널: 오른쪽 위에서 살짝 튕기며 펼쳐지고, 항목이 차례로 나타남. 닫을 때도 부드럽게 ══ */
+@keyframes navOpen{from{opacity:0;transform:translateY(-8px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes navClose{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-6px) scale(.96)}}
+@keyframes navItem{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+body:not(.admin-on) .nav .nav-more[open] .nav-more-panel{transform-origin:top right;animation:navOpen .3s cubic-bezier(.2,.9,.25,1.06) both}
+body:not(.admin-on) .nav .nav-more[open].closing .nav-more-panel{animation:navClose .18s ease-in both}
+body:not(.admin-on) .nav .nav-more[open]:not(.closing) .nav-more-panel a{animation:navItem .28s ease both;animation-delay:calc(.05s + var(--i,0) * .03s)}
+
+/* ══ 한국어 / 日本語 스위치: 흰 손잡이가 아이폰 스위치처럼 미끄러지듯 이동 ══ */
+.nav .lang.lang-slide{position:relative;isolation:isolate}
+.nav .lang.lang-slide::before{content:'';position:absolute;top:3px;bottom:3px;left:0;width:var(--lw,0);translate:var(--lx,0) 0;z-index:-1;
+  border-radius:999px;background:var(--card,#fff);box-shadow:0 1px 3px rgba(20,27,46,.16),0 1px 1px rgba(20,27,46,.06);
+  transition:translate .42s cubic-bezier(.34,1.45,.5,1),width .42s cubic-bezier(.34,1.45,.5,1),scale .18s ease}
+.nav .lang.lang-slide:active::before{scale:1.06 .94}
+.nav .lang.lang-noanim::before{transition:none!important}
+.nav .lang.lang-slide button{position:relative;transition:color .3s ease}
+.nav .lang.lang-slide button[aria-pressed="true"]{background:transparent!important;box-shadow:none!important}
+
+@media (prefers-reduced-motion:reduce){
+  .nav .nav-more .hb i,.nav .lang.lang-slide::before,.nav .lang.lang-slide button{transition:none!important}
+  .nav .nav-more-panel,.nav .nav-more-panel a{animation:none!important}
+}
 </style>
 </head>
 <body data-lang="ja">
@@ -9107,34 +9133,51 @@ document.getElementById('mobile-top').addEventListener('click',function(){
 </script>
 <script>
 (function(){
- var card=document.getElementById('next-meeting'),dp=document.getElementById('f-date-pick'),quick=document.getElementById('next-meeting-apply');
- if(!card||!dp)return;
- var box=document.createElement('div');box.className='more-dates';box.hidden=true;
- var actions=card.querySelector('.next-actions');
- card.insertBefore(box,actions?actions.nextSibling:null);
- function ja(){return document.body.dataset.lang==='ja';}
- function label(v){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v);if(!m)return v;return ja()?(+m[2])+'月'+(+m[3])+'日':(+m[2])+'월 '+(+m[3])+'일';}
- function paint(){
-  var opts=[].filter.call(dp.options,function(o){return o.value&&!o.disabled;});
-  var first=quick&&!quick.hidden?quick.dataset.date:'';
-  var rest=opts.filter(function(o){return o.value!==first;}).slice(0,3);
-  if(!first||!rest.length){box.hidden=true;box.innerHTML='';return;}
-  var S=window.IRO_SEATS||{},html='<p class="md-t"><span class="ko">다른 날짜</span><span class="ja">ほかの日程</span></p><div class="md-row">';
-  rest.forEach(function(o){
-   var d=o.value,cap=+((S.capacity&&S.capacity[d]&&S.capacity[d].capacity)||0),used=+((S.counts&&S.counts[d]&&S.counts[d].total)||0);
-   var wait=/대기|キャンセル待ち/.test(o.textContent),left=cap?Math.max(0,cap-used):null;
-   var sub=wait?(ja()?'キャンセル待ち':'대기 신청'):(left!==null?(ja()?'残り'+left+'席':'남은 '+left+'석'):'');
-   html+='<a class="md-chip'+(wait?' wait':'')+'" href="#apply" data-date="'+d+'"><b>'+label(d)+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</a>';
-  });
-  box.innerHTML=html+'</div>';box.hidden=false;
+ var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+ /* ── ☰ 메뉴: 선 세 개 아이콘 + 닫힐 때도 애니메이션 ── */
+ var menu=document.querySelector('.nav .nav-more');
+ if(menu){
+  var sum=menu.querySelector('summary'),panel=menu.querySelector('.nav-more-panel');
+  var hb=document.createElement('span');hb.className='hb';hb.setAttribute('aria-hidden','true');hb.innerHTML='<i></i><i></i><i></i>';sum.appendChild(hb);
+  var desc=Object.getOwnPropertyDescriptor(HTMLDetailsElement.prototype,'open');
+  var closing=false,timer;
+  function stagger(){var i=0;[].forEach.call(panel.querySelectorAll('a'),function(a){if(a.offsetParent!==null)a.style.setProperty('--i',i++);});}
+  function finish(){clearTimeout(timer);closing=false;menu.classList.remove('closing');desc.set.call(menu,false);}
+  function animateClose(){
+   if(closing)return;
+   if(reduce||document.body.classList.contains('admin-on')){desc.set.call(menu,false);return;}
+   closing=true;menu.classList.add('closing');timer=setTimeout(finish,190);
+  }
+  if(desc&&desc.set&&desc.get){
+   /* 기존 코드의 menu.open=false (링크 누름·바깥 누름·Esc)도 부드럽게 닫히도록 */
+   Object.defineProperty(menu,'open',{configurable:true,
+    get:function(){return desc.get.call(menu);},
+    set:function(v){if(v){if(closing)finish();desc.set.call(menu,true);}else if(desc.get.call(menu))animateClose();}});
+   sum.addEventListener('click',function(e){
+    if(closing){e.preventDefault();finish();desc.set.call(menu,true);stagger();return;}
+    if(desc.get.call(menu)){e.preventDefault();animateClose();}
+   },true);
+  }
+  menu.addEventListener('toggle',function(){if(menu.hasAttribute('open'))stagger();});
  }
- /* 누르면 그 날짜를 신청 폼에 넣고 신청하기로 이동 (기존 «이 날짜로 신청하기» 버튼과 같은 방식) */
- box.addEventListener('click',function(e){var a=e.target.closest('.md-chip');if(!a)return;dp.value=a.dataset.date;dp.dispatchEvent(new Event('change'));});
- new MutationObserver(paint).observe(dp,{childList:true,subtree:true,attributes:true,characterData:true});
- new MutationObserver(paint).observe(document.body,{attributes:true,attributeFilter:['data-lang']});
- if(quick)new MutationObserver(paint).observe(quick,{attributes:true,attributeFilter:['data-date','hidden']});
- addEventListener('iro-content-ready',function(){setTimeout(paint,0);});
- paint();
+
+ /* ── 한국어 / 日本語 스위치: 선택된 쪽으로 손잡이 이동 ── */
+ [].forEach.call(document.querySelectorAll('.nav .lang'),function(g){
+  var btns=g.querySelectorAll('button');if(btns.length<2)return;
+  function place(anim){
+   var a=g.querySelector('button[aria-pressed="true"]')||btns[0];
+   if(!a.offsetWidth)return;
+   if(!anim)g.classList.add('lang-noanim');
+   g.style.setProperty('--lx',a.offsetLeft+'px');g.style.setProperty('--lw',a.offsetWidth+'px');
+   g.classList.add('lang-slide');
+   if(!anim){void g.offsetWidth;setTimeout(function(){g.classList.remove('lang-noanim');},60);}
+  }
+  place(false);
+  new MutationObserver(function(){place(!reduce);}).observe(g,{attributes:true,subtree:true,attributeFilter:['aria-pressed']});
+  addEventListener('resize',function(){place(false);});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){place(false);});
+ });
 })();
 </script>
 </body>
