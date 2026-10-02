@@ -3250,6 +3250,47 @@ html.js-details details:not(.nav-more)::details-content{transition:none!importan
 details>summary::after{transition:transform .3s cubic-bezier(.2,.7,.3,1)}
 @media (prefers-reduced-motion:reduce){details>summary::after{transition:none}}
 </style>
+<style id="hero-gap-1001">
+/* 2026-10-01 모바일: 맨 윗줄(매주 일요일 … )과 큰 제목 사이 간격을 좁힘 (26px → 12px). 이 블록을 지우면 원래대로 */
+@media (max-width:960px){
+  main .hero-copy h1{margin-top:12px}
+}
+</style>
+<style id="roster-remind-1002">
+/* 2026-10-02 관리자: 날짜별 명단 보기 · 파일 다시 받기 링크 · 미입금 안내(독촉) 메일 */
+.sign-card .sg-tools select{padding:6px 10px;border:1px solid #dcd9e8;border-radius:9px;background:#fff;font:inherit;font-size:12.5px;color:var(--ink);max-width:100%}
+#sg-download-link{display:inline-flex;align-items:center;min-height:30px;padding:0 10px;border:1px solid #b9c0ce;border-radius:8px;background:#fff;color:#24304f;font-size:12px;font-weight:700;text-decoration:none}
+#sg-download-link[hidden]{display:none}
+.sg-remind{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;border:1px solid #EBCB97;background:#FFF8EC;color:#8A5A12;font:600 12px var(--font);cursor:pointer;white-space:nowrap}
+.sg-remind:hover{background:#FDF0D9}
+.sg-remind[hidden]{display:none}
+.sg-day-h .sg-day-remind{padding:5px 10px;border:1px solid #EBCB97;background:#FFF8EC;color:#8A5A12;border-radius:8px;font:600 12px var(--font);cursor:pointer;white-space:nowrap}
+.sg-day-h .sg-day-remind:hover{background:#FDF0D9}
+.remind-card{width:min(100%,680px);display:flex;flex-direction:column;gap:12px;padding:22px 24px}
+.remind-card .stats-head{padding:0 0 12px;margin:0}
+.remind-card>*{flex-shrink:0}   /* 창이 길면 목록 칸을 누르지 말고 창 전체를 스크롤 */
+.rm-sub{margin:0;font-size:13px;color:var(--muted);line-height:1.6}
+.rm-list{display:flex;flex-direction:column;gap:6px;max-height:190px;overflow:auto;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#FBFBF9}
+.rm-who{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.5;color:var(--ink);cursor:pointer;overflow-wrap:anywhere}
+.rm-who input,.rm-bank input{width:auto;padding:0;margin:3px 0 0;accent-color:#8A5A12;flex:none}
+.rm-who.sent{color:#2f6f4c}
+.rm-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.rm-tabs button{padding:7px 12px;border:1px solid #dcd9e8;border-radius:999px;background:#fff;font:600 12.5px var(--font);color:var(--muted);cursor:pointer}
+.rm-tabs button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.rm-f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+.rm-f input,.rm-f textarea{width:100%;padding:9px 11px;border:1px solid #dcd9e8;border-radius:9px;font:400 14px/1.7 var(--font);color:var(--ink);background:#fff}
+.rm-f textarea{resize:vertical;min-height:220px}
+.rm-hint{margin:0;font-size:12px;color:var(--muted);line-height:1.6}
+.rm-bank{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);cursor:pointer}
+.rm-bank input{margin:0}
+.rm-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rm-actions .rm-sp{flex:1}
+.rm-actions button{padding:9px 14px;border:1px solid #dcd9e8;border-radius:9px;background:#fff;font:600 13px var(--font);color:var(--ink);cursor:pointer}
+.rm-actions button.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+.rm-actions button:disabled{opacity:.5;cursor:not-allowed}
+.rm-state{margin:0;font-size:13px;line-height:1.6;color:var(--ink);min-height:1.6em;white-space:pre-line}
+@media (max-width:720px){.remind-card{padding:18px 16px}.rm-f textarea{min-height:260px}}
+</style>
 </head>
 <body data-lang="ja">
 
@@ -3955,9 +3996,11 @@ details>summary::after{transition:transform .3s cubic-bezier(.2,.7,.3,1)}
           <button type="button" data-f="soon" aria-pressed="true">다가오는 날짜</button>
           <button type="button" data-f="all" aria-pressed="false">전체</button>
         </span>
+        <select id="sg-day" aria-label="날짜별 명단 보기"><option value="">날짜별 보기 (지난 모임 포함)</option></select>
         <button type="button" id="sg-csv">원본 CSV</button>
         <a id="sg-roster" href="#" role="button">명단표</a>
         <button type="button" id="sg-reload">새로고침</button>
+        <a id="sg-download-link" hidden>다운로드 다시 클릭</a>
       </div>
       <div id="sg-body"><p class="st-empty">불러오는 중…</p></div>
     </section>
@@ -5216,7 +5259,8 @@ window.IROLANG = (function(){
     if (e.target.closest('#admin-bar') || e.target.closest('.adm-dim')) return;
     if (e.target.closest('summary') && e.target.closest('[data-c]')) e.preventDefault();
     var a = e.target.closest('a');
-    if (a && a.getAttribute('href')) e.preventDefault();
+    /* 파일 내려받기 링크(download)는 편집 중에도 막지 않습니다 — 원본 CSV·자리배정 파일이 저장되지 않던 문제 (2026-10-02) */
+    if (a && a.getAttribute('href') && !a.hasAttribute('download')) e.preventDefault();
   }, true);
   document.addEventListener('submit', function(e){ if (editing) e.preventDefault(); }, true);
   document.querySelectorAll('.lang button').forEach(function(b){
@@ -5845,7 +5889,7 @@ window.IROLANG = (function(){
       try { afterSeed(); } catch (e) {}
       if (d.closed) CLOSED = d.closed;   /* 품절 버튼 상태 */
       if (d.drinks) adminApplyCatalog(d.drinks);
-      fillDigest(d.digest); paintSg(); seatFillDates(); checkinFillDates(); checkinPaint(); loadDashboard(true);
+      fillDigest(d.digest); sgFillDays(); paintSg(); seatFillDates(); checkinFillDates(); checkinPaint(); loadDashboard(true);
     }).catch(function(e){
       $a('sg-body').innerHTML = '<p class="st-empty">불러오지 못했습니다 (' + e.message + ')</p>';
     });
@@ -5857,6 +5901,7 @@ window.IROLANG = (function(){
       if (SG.filter === 'soon' && r.date) {
         if (new Date(r.date + 'T00:00:00') < today) return false;
       }
+      if (SG.filter === 'day' && r.date !== SG.day) return false;
       if (!SG.q) return true;
       return SG_COLS.some(function(c){
         return String(r[c[0]] || '').toLowerCase().indexOf(SG.q) >= 0;
@@ -5969,6 +6014,7 @@ window.IROLANG = (function(){
       groups[k].push(r);
     });
     order.sort();
+    if (SG.filter === 'all') order.reverse();   /* 전체 보기는 최근 모임부터 */
 
     var WD = ['일','월','화','수','목','금','토'];
     order.forEach(function(k){
@@ -6003,6 +6049,15 @@ window.IROLANG = (function(){
         rb.setAttribute('role', 'button');
         prepareRosterLink(rb, k, list.slice());
         h.appendChild(rb);
+        /* 미입금 안내(독촉) 메일 — 다가오는 모임에 입금·현장지불 처리가 안 된 사람이 있을 때만 (2026-10-02) */
+        var unpaid = list.filter(remindEligible);
+        if (unpaid.length) {
+          var rmb = document.createElement('button');
+          rmb.type = 'button'; rmb.className = 'sg-day-remind';
+          rmb.textContent = '미입금 ' + unpaid.length + '명 안내 메일';
+          rmb.addEventListener('click', function(){ remindOpen(unpaid, k); });
+          h.appendChild(rmb);
+        }
       }
       wrap.appendChild(h);
 
@@ -6361,6 +6416,14 @@ window.IROLANG = (function(){
     var pt = document.createElement('span');
     var onsite = document.createElement('button'); onsite.type = 'button'; onsite.className = 'sg-onsite';
 
+    /* 미입금 안내(독촉) 메일 — 입금·현장지불이 아닌 다가오는 모임 참가자만 보입니다 (2026-10-02) */
+    var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'sg-remind';
+    rm.addEventListener('click', function(){ remindOpen([r], r.date); });
+    function paintRemindBtn(){
+      rm.hidden = !remindEligible(r);
+      rm.textContent = +r.remind_n > 0 ? ('독촉 다시 · ' + r.remind_n + '회') : '독촉 메일';
+      rm.title = +r.remind_n > 0 ? ('마지막 발송 ' + sgCreatedText(r.remind_at)) : '미입금 안내 메일 보내기';
+    }
     function paintPaymentState(){
       cb.checked = +r.paid === 1;
       cb.disabled = +r.waitlisted === 1;
@@ -6369,6 +6432,7 @@ window.IROLANG = (function(){
       onsite.classList.toggle('on', +r.onsite === 1);
       onsite.textContent = +r.onsite === 1 ? '현장지불 ✓' : '현장지불';
       onsite.disabled = +r.waitlisted === 1;
+      paintRemindBtn();
     }
     paintPaymentState();
 
@@ -6390,7 +6454,7 @@ window.IROLANG = (function(){
 
     onsite.addEventListener('click', function(){
       var turningOn = +r.onsite !== 1;
-      if(turningOn && !confirm((r.name||'이 참가자')+' 님을 「현장지불」로 확정할까요?\\n현장지불 안내 메일이 자동 발송됩니다.')) return;
+      if(turningOn && !confirm((r.name||'이 참가자')+' 님을 「현장지불」로 확정할까요?\n현장지불 안내 메일이 자동 발송됩니다.')) return;
       cb.disabled=true; onsite.disabled=true;
       apiPost({action:'signup_save', token:ADMIN.token, id:r.id, onsite:turningOn?1:0, paid:turningOn?0:r.paid})
         .then(function(d){
@@ -6405,7 +6469,7 @@ window.IROLANG = (function(){
         .catch(function(e){ paintPaymentState(); alert('현장지불 상태를 저장하지 못했습니다. ('+fail(e)+')'); });
     });
 
-    pay.appendChild(cb); pay.appendChild(pt); row.appendChild(pay); row.appendChild(onsite);
+    pay.appendChild(cb); pay.appendChild(pt); row.appendChild(pay); row.appendChild(onsite); row.appendChild(rm);
 
     /* 실제 출석 여부 — 현장에서 체크하면 D1에 바로 저장됩니다. */
     var att = document.createElement('label'); att.className = 'sg-att';
@@ -7403,7 +7467,15 @@ window.IROLANG = (function(){
   }
 
   function seatOfferDownload(blob,filename){
-    var link=$a('seat-download-link');
+    /* 아이폰·아이패드는 공유 시트(파일 앱에 저장·카톡 전송)로, 공유를 못 열면 아래 링크 방식으로 (2026-10-02) */
+    var shared=iroShareFile(blob,filename);
+    if(shared){ shared.catch(function(err){ if(!err || err.name!=='AbortError') seatOfferLink(blob,filename); }); return; }
+    seatOfferLink(blob,filename);
+  }
+  function seatOfferLink(blob,filename){
+    /* «다운로드 다시 클릭» 링크는 지금 보고 있는 탭(신청 내역/자리 배정)에 띄웁니다 */
+    var listPane=$a('sg-body') && $a('sg-body').closest('.sg-pane');
+    var link=$a(listPane && !listPane.hidden ? 'sg-download-link' : 'seat-download-link');
     var url=URL.createObjectURL(blob);
 
     if(link){
@@ -7422,7 +7494,8 @@ window.IROLANG = (function(){
     a.download=filename;
     a.rel='noopener';
     a.style.display='none';
-    document.body.appendChild(a);
+    /* 편집 모드의 «링크 막기»에 걸리지 않도록 열려 있는 관리자 창 안에서 누릅니다 */
+    (document.querySelector('.adm-dim.on') || document.body).appendChild(a);
     a.click();
     setTimeout(function(){try{a.remove();}catch(e){}},300);
   }
@@ -7811,17 +7884,327 @@ window.IROLANG = (function(){
     var lines = [head.map(q).join(',')];
     rows.forEach(function(r){
       lines.push([r.date, (+r.staff === 1 ? '스탭' : '참가자'), r.name, r.nat, r.email,
-        SG_DRINK[r.drink] || '', (+r.paid === 1 ? '입금' : '미입금'),
+        SG_DRINK[r.drink] || '', (+r.paid === 1 ? '입금' : (+r.onsite === 1 ? '현장지불' : '미입금')),
         (+r.attended === 1 ? '출석' : '미출석'), r.sns, r.src, r.memo,
         new Date(r.createdAt).toLocaleString('ko-KR')].map(q).join(','));
     });
     /* BOM 을 붙여야 엑셀에서 한글이 깨지지 않습니다 */
     triggerCsvDownload(
-      'irotomo-signups-' + new Date().toISOString().slice(0,10) + '.csv',
+      'irotomo-signups-' + (SG.filter === 'day' ? SG.day : new Date().toISOString().slice(0,10)) + '.csv',
       lines.join('\r\n')
     );
   });
 
+
+
+  /* ══ 2026-10-02 명단 날짜별 보기 · 파일 받기 보완 · 미입금 안내(독촉) 메일 ══ */
+
+  /* 오늘(한국 시각) — 서버의 «지난 모임» 판단과 같은 기준입니다 */
+  function kstToday(){ return new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10); }
+
+  /* ── 날짜별 명단 보기 (지난 모임 포함) ──────────────────── */
+  function sgPressFilter(f){
+    document.querySelectorAll('#sg-filter button').forEach(function(x){
+      x.setAttribute('aria-pressed', String(x.dataset.f === f));
+    });
+  }
+  function sgFillDays(){
+    var sel = $a('sg-day'); if (!sel) return;
+    var cur = sel.value, days = {}, today = kstToday();
+    (SG.rows || []).forEach(function(r){
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(String(r.date || ''))) return;
+      var d = days[r.date] || (days[r.date] = { n: 0 });
+      if (+r.staff !== 1) d.n++;
+    });
+    var keys = Object.keys(days).sort().reverse();
+    sel.innerHTML = '';
+    var first = document.createElement('option');
+    first.value = ''; first.textContent = '날짜별 보기 (지난 모임 포함)';
+    sel.appendChild(first);
+    keys.forEach(function(k){
+      var o = document.createElement('option');
+      o.value = k;
+      o.textContent = opsDateLabel(k) + (k >= today ? ' · 예정' : '') + ' · ' + days[k].n + '명';
+      sel.appendChild(o);
+    });
+    if (cur && days[cur]) sel.value = cur;
+    else if (SG.filter === 'day') { SG.filter = 'soon'; sgPressFilter('soon'); }
+  }
+  on('sg-day', 'change', function(){
+    if (this.value) { SG.filter = 'day'; SG.day = this.value; sgPressFilter(''); }
+    else { SG.filter = 'soon'; sgPressFilter('soon'); }
+    paintSg();
+  });
+  document.querySelectorAll('#sg-filter button').forEach(function(b){
+    b.addEventListener('click', function(){ var s = $a('sg-day'); if (s) s.value = ''; });
+  });
+
+  /* ── 아이폰·아이패드: <a download> 가 잘 안 되므로 공유 시트로 저장(파일 앱·카톡 등) ── */
+  function iroIsIOS(){
+    return /iP(hone|ad|od)/.test(navigator.userAgent || '') ||
+           (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+  function iroShareFile(blob, filename){
+    try {
+      if (!iroIsIOS() || !navigator.share || !navigator.canShare || typeof File !== 'function') return false;
+      var f = new File([blob], filename, { type: blob.type || 'text/csv' });
+      if (!navigator.canShare({ files: [f] })) return false;
+      return navigator.share({ files: [f], title: filename });
+    } catch (e) { return false; }
+  }
+  /* 명단표 링크(data: 주소)도 아이폰에서는 공유 시트로 넘깁니다 */
+  on('adm-signups', 'click', function(e){
+    var a = e.target.closest && e.target.closest('a[download]');
+    if (!a || e.defaultPrevented || !iroIsIOS()) return;
+    var href = a.getAttribute('href') || '';
+    if (href.indexOf('data:text/csv') !== 0) return;
+    var name = a.getAttribute('download') || 'irotomo.csv';
+    var text = decodeURIComponent(href.slice(href.indexOf(',') + 1));
+    var shared = iroShareFile(new Blob([text], { type: 'text/csv;charset=utf-8' }), name);
+    if (!shared) return;
+    e.preventDefault();
+    shared.catch(function(err){
+      if (err && err.name === 'AbortError') return;
+      var t = document.createElement('a'); t.href = href; t.download = name; t.style.display = 'none';
+      (document.querySelector('.adm-dim.on') || document.body).appendChild(t); t.click(); t.remove();
+    });
+  });
+
+  /* ── 미입금 안내(독촉) 메일 ──────────────────────────────
+     입금·현장지불 처리가 안 된 «다가오는 모임» 참가자에게 보냅니다.
+     문구는 보내기 전에 고칠 수 있고, 고친 문구는 이 기기(브라우저)에 저장됩니다.
+     {name} → 참가자 이름, {date} → 모임 날짜. 일본인은 일본어, 그 외는 한국어 메일이 나갑니다.
+     서버(remind_unpaid, Worker cf-63)가 입금·현장지불·스탭·대기·지난 모임을 한 번 더 걸러 냅니다. */
+  var REMIND_KEY = 'irotomo-remind-tpl-v1';
+  var REMIND_DEFAULT = {
+    ja: {
+      subject: '【いろとも】参加費のお振込みについて（{date}）',
+      body: [
+        '{name}様',
+        'お世話になっております。',
+        '日韓交流会いろともです。',
+        '',
+        'この度は、交流会にお申し込みいただきありがとうございます。',
+        '',
+        '現在、参加費のご入金がまだ確認できていないため、ご連絡いたしました。',
+        '恐れ入りますが、お申し込み時の自動返信メールに記載されている口座へ、参加費のお振込みをお願いいたします。',
+        '',
+        'なお、ご入金後のキャンセル・返金につきましては、金曜日12:00までとさせていただいております。',
+        'それ以降のキャンセルにつきましては、返金ができませんので、あらかじめご了承ください。',
+        '',
+        'また、韓国の口座をお持ちでないなど、お振込みが難しい場合は、別途このメールにご返信ください。',
+        '当日、現金でのお支払いも可能です。',
+        '',
+        '会場のカフェは週末は通常営業を行っておらず、参加人数に合わせて事前に準備をお願いしておりますため、当日現金でお支払いいただく場合も、予約確定後のキャンセルはできる限りお控えいただけますと幸いです。',
+        '',
+        'お手数をおかけいたしますが、何卒よろしくお願いいたします。',
+        '',
+        '日韓交流会いろとも'
+      ].join('\n')
+    },
+    ko: {
+      subject: '[이로토모] 음료비 입금 안내 ({date})',
+      body: [
+        '{name}님',
+        '안녕하세요, 한일교류회 이로토모입니다.',
+        '',
+        '이번 교류회에 신청해 주셔서 감사합니다.',
+        '',
+        '현재 음료비 입금이 아직 확인되지 않아 연락드립니다.',
+        '번거로우시겠지만 신청 시 받으신 자동 회신 메일에 안내된 계좌로 음료비를 입금해 주세요.',
+        '',
+        '입금 후 취소·환불은 금요일 12:00까지 가능합니다.',
+        '그 이후의 취소는 환불이 어려운 점 미리 양해 부탁드립니다.',
+        '',
+        '입금이 어려우신 경우에는 이 메일에 답장으로 알려 주세요.',
+        '당일 현금 결제도 가능합니다.',
+        '',
+        '모임 장소인 카페는 주말에 일반 영업을 하지 않고, 참가 인원에 맞춰 미리 준비를 부탁드리고 있습니다. 당일 현금으로 결제하시는 경우에도 예약 확정 후 취소는 가급적 삼가 주시면 감사하겠습니다.',
+        '',
+        '번거롭게 해 드려 죄송합니다. 잘 부탁드립니다.',
+        '',
+        '한일교류회 이로토모'
+      ].join('\n')
+    }
+  };
+  var REMIND_CHUNK = 25;   /* Worker 의 REMIND_MAX 와 같게 */
+  var RM = { rows: [], date: '', lang: 'ja', tpl: null };
+
+  function remindIsJa(r){ return /日本|일본|japan/i.test(String(r.nat || '')); }
+  function remindEligible(r){
+    return +r.staff !== 1 && +r.waitlisted !== 1 && +r.paid !== 1 && +r.onsite !== 1 &&
+      /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(r.email || '').trim()) &&
+      /^\d{4}-\d{2}-\d{2}$/.test(String(r.date || '')) && r.date >= kstToday();
+  }
+  function remindLoadTpl(){
+    try {
+      var t = JSON.parse(localStorage.getItem(REMIND_KEY) || 'null');
+      if (t && t.ja && t.ko && t.ja.body && t.ko.body) return t;
+    } catch (e) {}
+    return JSON.parse(JSON.stringify(REMIND_DEFAULT));
+  }
+  function remindBox(){
+    var box = $a('adm-remind'); if (box) return box;
+    box = document.createElement('div');
+    box.className = 'adm-dim'; box.id = 'adm-remind';
+    box.innerHTML =
+      '<div class="adm-card remind-card" role="dialog" aria-modal="true" aria-labelledby="rm-title">' +
+        '<div class="stats-head"><h3 id="rm-title">미입금 안내 메일</h3>' +
+          '<button class="x" type="button" data-rm-close aria-label="닫기" style="margin-left:auto">&#10005;</button></div>' +
+        '<p class="rm-sub" id="rm-sub"></p>' +
+        '<div class="rm-list" id="rm-list"></div>' +
+        '<div class="rm-tabs" id="rm-tabs">' +
+          '<button type="button" data-l="ja" aria-pressed="true">일본어 메일</button>' +
+          '<button type="button" data-l="ko" aria-pressed="false">한국어 메일</button></div>' +
+        '<label class="rm-f"><span>제목</span><input type="text" id="rm-subj" maxlength="150"></label>' +
+        '<label class="rm-f"><span>본문</span><textarea id="rm-body" rows="14"></textarea></label>' +
+        '<p class="rm-hint">{name} 은 참가자 이름, {date} 는 모임 날짜로 바뀝니다. 고친 문구는 이 기기에 저장되어 다음에도 그대로 나옵니다.</p>' +
+        '<label class="rm-bank"><input type="checkbox" id="rm-bank"> 입금 계좌 안내 상자도 메일 아래에 함께 넣기</label>' +
+        '<div class="rm-actions"><button type="button" id="rm-reset">기본 문구로</button><span class="rm-sp"></span>' +
+          '<button type="button" data-rm-close>닫기</button>' +
+          '<button type="button" class="primary" id="rm-send">보내기</button></div>' +
+        '<p class="rm-state" id="rm-state" role="status"></p>' +
+      '</div>';
+    document.body.appendChild(box);
+    box.addEventListener('click', function(e){
+      if (e.target === box || (e.target.closest && e.target.closest('[data-rm-close]'))) closeDim(box);
+    });
+    box.querySelectorAll('#rm-tabs button').forEach(function(b){
+      b.addEventListener('click', function(){ remindKeep(); RM.lang = b.dataset.l; remindPaintText(); });
+    });
+    $a('rm-reset').addEventListener('click', function(){
+      if (!confirm('일본어·한국어 메일 문구를 기본 문구로 되돌릴까요?')) return;
+      RM.tpl = JSON.parse(JSON.stringify(REMIND_DEFAULT));
+      try { localStorage.removeItem(REMIND_KEY); } catch (e) {}
+      remindPaintText();
+    });
+    $a('rm-list').addEventListener('change', remindPaintCount);
+    $a('rm-send').addEventListener('click', remindSend);
+    return box;
+  }
+  function remindKeep(){
+    if (!RM.tpl) return;
+    RM.tpl[RM.lang] = { subject: $a('rm-subj').value, body: $a('rm-body').value };
+  }
+  function remindPaintText(){
+    $a('rm-subj').value = RM.tpl[RM.lang].subject;
+    $a('rm-body').value = RM.tpl[RM.lang].body;
+    document.querySelectorAll('#rm-tabs button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.l === RM.lang));
+    });
+  }
+  function remindChecked(){
+    var ids = {};
+    document.querySelectorAll('#rm-list input[type=checkbox]').forEach(function(c){
+      if (c.checked && !c.disabled) ids[c.value] = 1;
+    });
+    return RM.rows.filter(function(r){ return ids[String(r.id)]; });
+  }
+  function remindPaintCount(){
+    var sel = remindChecked(), ja = sel.filter(remindIsJa).length;
+    var tabs = document.querySelectorAll('#rm-tabs button');
+    tabs[0].textContent = '일본어 메일 · ' + ja + '명';
+    tabs[1].textContent = '한국어 메일 · ' + (sel.length - ja) + '명';
+    var b = $a('rm-send');
+    b.textContent = sel.length + '명에게 보내기';
+    b.disabled = !sel.length;
+  }
+  function remindOpen(rows, date){
+    var box = remindBox();
+    RM.rows = (rows || []).filter(remindEligible);
+    RM.date = date || '';
+    RM.tpl = remindLoadTpl();
+    RM.lang = (RM.rows.length && !RM.rows.some(remindIsJa)) ? 'ko' : 'ja';
+    $a('rm-sub').textContent = (date ? opsDateLabel(date) + ' 모임 · ' : '') +
+      '입금·현장지불 처리가 안 된 참가자에게 보냅니다. 받을 사람을 확인해 주세요.';
+    var list = $a('rm-list');
+    list.innerHTML = '';
+    if (!RM.rows.length) list.innerHTML = '<p class="st-empty">보낼 대상이 없습니다.</p>';
+    RM.rows.forEach(function(r){
+      var lab = document.createElement('label'); lab.className = 'rm-who';
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = true; cb.value = String(r.id);
+      var t = document.createElement('span');
+      t.textContent = (r.name || '(이름 없음)') + ' · ' + (remindIsJa(r) ? '일본어' : '한국어') + ' · ' + String(r.email || '').trim() +
+        (+r.remind_n > 0 ? ' · 이미 ' + r.remind_n + '회 보냄 (' + sgCreatedText(r.remind_at) + ')' : '');
+      lab.appendChild(cb); lab.appendChild(t); list.appendChild(lab);
+    });
+    $a('rm-bank').checked = false;
+    $a('rm-state').textContent = '';
+    remindPaintText(); remindPaintCount();
+    openDim(box);
+  }
+  function remindSend(){
+    remindKeep();
+    var sel = remindChecked();
+    if (!sel.length) return;
+    var jaN = sel.filter(remindIsJa).length, koN = sel.length - jaN;
+    var miss = [];
+    if (jaN && (!String(RM.tpl.ja.subject).trim() || !String(RM.tpl.ja.body).trim())) miss.push('일본어');
+    if (koN && (!String(RM.tpl.ko.subject).trim() || !String(RM.tpl.ko.body).trim())) miss.push('한국어');
+    if (miss.length) return alert(miss.join('·') + ' 메일의 제목과 본문을 채워 주세요.');
+    if (!confirm(sel.length + '명에게 미입금 안내 메일을 보낼까요?\n(일본어 ' + jaN + '명 · 한국어 ' + koN + '명)')) return;
+    try { localStorage.setItem(REMIND_KEY, JSON.stringify(RM.tpl)); } catch (e) {}
+
+    var btn = $a('rm-send'), st = $a('rm-state');
+    btn.disabled = true; st.textContent = '보내는 중…';
+    var ids = sel.map(function(r){ return r.id; }), chunks = [];
+    for (var i = 0; i < ids.length; i += REMIND_CHUNK) chunks.push(ids.slice(i, i + REMIND_CHUNK));
+    var res = { sent: [], skipped: [], failed: [], at: Date.now() };
+    var base = {
+      action: 'remind_unpaid', token: ADMIN.token, bank: $a('rm-bank').checked,
+      ja: { subject: RM.tpl.ja.subject, body: RM.tpl.ja.body },
+      ko: { subject: RM.tpl.ko.subject, body: RM.tpl.ko.body }
+    };
+    var WHY = { gone: '삭제된 신청', staff: '스탭', waitlisted: '대기', paid: '이미 입금·현장지불',
+                past: '지난 모임', no_email: '이메일 없음', no_text: '문구 비어 있음' };
+    function apply(){
+      var sent = {};
+      res.sent.forEach(function(id){ sent[String(id)] = 1; });
+      (SG.rows || []).forEach(function(r){
+        if (sent[String(r.id)]) { r.remind_at = res.at; r.remind_n = (+r.remind_n || 0) + 1; }
+      });
+      document.querySelectorAll('#rm-list .rm-who').forEach(function(lab){
+        var c = lab.querySelector('input');
+        if (c && sent[c.value]) {
+          c.checked = false; c.disabled = true; lab.classList.add('sent');
+          if (!/보냄 ✓$/.test(lab.lastChild.textContent)) lab.lastChild.textContent += ' · 보냄 ✓';
+        }
+      });
+      remindPaintCount();
+      try { paintSg(); } catch (e) {}
+    }
+    chunks.reduce(function(p, part){
+      return p.then(function(){
+        var payload = {}; for (var k in base) payload[k] = base[k];
+        payload.ids = part;
+        return apiPost(payload).then(function(d){
+          if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+          res.sent = res.sent.concat(d.sent || []);
+          res.skipped = res.skipped.concat(d.skipped || []);
+          res.failed = res.failed.concat(d.failed || []);
+          if (d.at) res.at = d.at;
+        });
+      });
+    }, Promise.resolve()).then(function(){
+      apply();
+      var msg = '보냄 ' + res.sent.length + '명';
+      if (res.skipped.length) {
+        var why = [];
+        res.skipped.forEach(function(x){ var w = WHY[x.why] || x.why; if (why.indexOf(w) < 0) why.push(w); });
+        msg += ' · 건너뜀 ' + res.skipped.length + '명 (' + why.join(', ') + ')';
+      }
+      if (res.failed.length) msg += '\n실패 ' + res.failed.length + '명 — 메일 서버 오류입니다. 잠시 뒤 다시 보내 주세요.';
+      st.textContent = msg;
+    }).catch(function(e){
+      apply();
+      var m = String((e && e.message) || e);
+      st.textContent =
+        m === 'unknown_action' ? 'Worker 가 아직 이전 버전입니다. worker.js(cf-63)를 Cloudflare 에 먼저 배포해 주세요.' :
+        m === 'mail_off' ? 'BREVO_KEY 가 설정되지 않아 메일을 보낼 수 없습니다.' :
+        m === 'auth' ? '로그인이 만료되었습니다. 새로고침한 뒤 다시 로그인해 주세요.' :
+        '보내지 못했습니다 (' + m + ')' + (res.sent.length ? '\n그 전에 ' + res.sent.length + '명에게는 보냈습니다.' : '');
+    }).then(function(){ btn.disabled = !remindChecked().length; });
+  }
 
   /* ── PC 메인 대표 이미지 ───────────────────────────────────
      모바일(960px 이하)에서는 CSS에서 숨겨 갤러리와 중복되지 않게 합니다. */
