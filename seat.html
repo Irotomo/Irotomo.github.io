@@ -31,6 +31,49 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.22s}
 @media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
 </style>
+<style id="seat-wow-1002">
+/* 2026-10-02 자리 확인 결과: 테이블 번호를 이로(色) 색 동그라미로 크게 · 회차 점 · 자리 바뀜 알림 */
+.result{--tc:#7FCBA0}
+.result[data-tc="1"]{--tc:#F28B82}.result[data-tc="2"]{--tc:#F6BF5B}.result[data-tc="3"]{--tc:#7FCBA0}
+.result[data-tc="4"]{--tc:#6FB3E0}.result[data-tc="5"]{--tc:#A99BE3}.result[data-tc="6"]{--tc:#F09EC4}
+.t-wrap{position:relative;display:flex;justify-content:center;margin:12px 0 20px}
+.result .table{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:min(56vw,196px);aspect-ratio:1;margin:0;border-radius:50%;
+  background:var(--tc);color:#141B2E;font-size:16px;letter-spacing:0;
+  box-shadow:0 22px 40px -24px var(--tc),inset 0 -12px 26px rgba(255,255,255,.28),inset 0 10px 22px rgba(20,27,46,.05)}
+.t-cap{font-size:12px;font-weight:800;letter-spacing:.24em;opacity:.7;margin-right:-.24em}
+.t-num{font-size:clamp(70px,22vw,104px);font-weight:800;line-height:.95;letter-spacing:-.05em}
+.result .table.pop{animation:seatPop .7s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes seatPop{0%{transform:scale(.55);opacity:0}100%{transform:scale(1);opacity:1}}
+.t-burst{position:absolute;left:50%;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;pointer-events:none;
+  animation:seatBurst .95s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes seatBurst{0%{transform:translate(0,0) scale(.3);opacity:0}20%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1);opacity:0}}
+.r-changed{display:inline-block;margin:2px 0 4px;padding:6px 13px;border-radius:999px;background:#141B2E;color:#fff;font-size:12.5px;font-weight:700;animation:seatPop .5s both}
+.r-changed[hidden]{display:none}
+.r-dots{display:flex;justify-content:center;gap:8px;margin:2px 0 8px}
+.r-dots i{width:10px;height:10px;border-radius:50%;background:#E3E3DD}
+.r-dots i.on{background:var(--tc)}
+.result .round{margin-top:4px}
+.result .next{display:block;width:fit-content;margin:12px auto 0;padding:8px 15px;border-radius:999px;background:#F3F1EA;color:#141B2E;font-weight:600}
+@media(prefers-reduced-motion:reduce){.result .table.pop,.r-changed{animation:none}.t-burst{display:none}}
+</style>
+<style id="subpage-unify-1002">
+/* 2026-10-02 하위 페이지를 메인과 같게 — 이 블록과 아래 언어 스위치 스크립트만 지우면 원래대로 */
+/* 언어 스위치: 선택된 쪽으로 흰 손잡이가 미끄러지듯 이동 (메인 index.html 과 같은 움직임) */
+.lang.lang-slide{position:relative;isolation:isolate}
+.lang.lang-slide::before{content:'';position:absolute;left:0;top:var(--lt,3px);height:var(--lh,calc(100% - 6px));width:var(--lw,0);translate:var(--lx,0) 0;z-index:-1;
+  border-radius:999px;background:#fff;box-shadow:0 1px 3px rgba(20,27,46,.16),0 1px 1px rgba(20,27,46,.06);
+  transition:translate .42s cubic-bezier(.34,1.45,.5,1),width .42s cubic-bezier(.34,1.45,.5,1),scale .18s ease}
+.lang.lang-slide:active::before{scale:1.06 .94}
+.lang.lang-noanim::before{transition:none!important}
+.lang.lang-slide button{position:relative;transition:color .3s ease}
+html body .lang.lang-slide button.on,html body .lang.lang-slide button[aria-pressed="true"]{background:transparent!important;box-shadow:none!important}
+@media (prefers-reduced-motion:reduce){.lang.lang-slide::before,.lang.lang-slide button{transition:none!important}}
+/* 자리 확인: 화면이 가로 정렬이라 폭 전체 푸터 대신 같은 남색의 작은 카드 */
+.seat-foot{margin:26px 0 0;padding:20px 22px;border-radius:8px;background:#141B2E;color:#B9C0D6;font-size:13px;line-height:1.85;text-align:center}
+.seat-foot a{color:#DDE2EF;text-decoration:none;font-weight:600}
+.seat-foot a:hover{color:#DFA53A}
+.seat-foot .sf-brand{display:inline-block;margin-bottom:2px;color:#fff;font-size:15px;font-weight:800}
+</style>
 </head>
 <body data-design="editorial" data-lang="ko">
 <div class="wrap">
@@ -58,7 +101,9 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
       <div id="r-date" class="r-date"></div>
       <div id="r-name" class="r-name"></div>
       <div class="r-label"><span class="ko">현재 자리</span><span class="ja">現在の席</span></div>
-      <div id="r-table" class="table">TABLE 1</div>
+      <div id="r-changed" class="r-changed" hidden><span class="ko">자리가 바뀌었어요</span><span class="ja">席が変わりました</span></div>
+      <div class="t-wrap"><div id="r-table" class="table">TABLE 1</div></div>
+      <div id="r-dots" class="r-dots" aria-hidden="true"></div>
       <div id="r-round" class="round"></div>
       <div id="r-next" class="next"></div>
       <button type="button" id="refresh" class="refresh"><span class="ko">현재 자리 새로고침</span><span class="ja">現在の席を更新</span></button>
@@ -67,6 +112,11 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
   </main>
   <p class="note ko">전체 참가자 명단은 표시되지 않습니다. 동명이인이 있는 경우 운영진에게 문의해 주세요.</p>
   <p class="note ja block">参加者全体の名簿は表示されません。同姓同名の方がいる場合はスタッフまでお声がけください。</p>
+  <footer class="seat-foot">
+    <a class="sf-brand" href="index.html"><span class="ko">이로토모</span><span class="ja">いろとも</span></a><br>
+    <span class="ko">매주 일요일 15:00–17:30 · 서울 여의도</span><span class="ja">毎週日曜 15:00–17:30 · ソウル・ヨイド</span><br>
+    <a href="https://instagram.com/irotomokr">Instagram</a>&nbsp;·&nbsp;<a href="mailto:info@irotomo.com">Contact</a>
+  </footer>
 </div>
 <script>
 (function(){
@@ -93,9 +143,34 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
     return lang==='ja'?a[1]:a[0];
   }
   function showError(code){lastError=code;var m=$('msg');m.textContent=message(code);m.className='msg show err'}
+  /* 자리 번호를 이로(色) 색 동그라미로 크게 — 테이블마다 색이 다르고, 자리가 바뀌면 다시 톡 튀어나옵니다 (2026-10-02) */
+  var shownTable=null,IRO=['#F28B82','#F6BF5B','#7FCBA0','#6FB3E0','#A99BE3','#F09EC4'];
+  function paintSeat(d){
+    var el=$('r-table'),n=String(d.table==null?'':d.table),k=((parseInt(n,10)||1)-1)%6+1;
+    el.textContent='';
+    var cap=document.createElement('span');cap.className='t-cap';cap.textContent='TABLE';
+    var num=document.createElement('span');num.className='t-num';num.textContent=n;
+    el.appendChild(cap);el.appendChild(num);el.setAttribute('aria-label','TABLE '+n);
+    $('result').setAttribute('data-tc',String(k));
+    var changed=shownTable!==null&&shownTable!==n,first=shownTable===null;shownTable=n;
+    $('r-changed').hidden=!changed;
+    if(first||changed){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');seatBurst(el.parentNode);}
+    var dots=$('r-dots');dots.textContent='';
+    for(var i=1;i<=(+d.rounds||0);i++){var b=document.createElement('i');if(i<=(+d.round||0))b.className='on';dots.appendChild(b);}
+  }
+  function seatBurst(wrap){
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    for(var i=0;i<10;i++){
+      var a=(Math.PI*2*i/10)+(Math.random()-.5)*.4,r=118+Math.random()*34,b=document.createElement('i');
+      b.className='t-burst';b.style.background=IRO[i%6];
+      b.style.setProperty('--dx',(Math.cos(a)*r).toFixed(1)+'px');b.style.setProperty('--dy',(Math.sin(a)*r).toFixed(1)+'px');
+      b.style.animationDelay=(.08+Math.random()*.08).toFixed(2)+'s';
+      wrap.appendChild(b);(function(x){setTimeout(function(){x.remove()},1300)})(b);
+    }
+  }
   function showResult(d){
     last=d;$('lookup').style.display='none';$('result').classList.add('show');
-    $('r-date').textContent=(d.date||'').replace(/-/g,'.');$('r-name').textContent=d.name||'';$('r-table').textContent='TABLE '+d.table;
+    $('r-date').textContent=(d.date||'').replace(/-/g,'.');$('r-name').textContent=d.name||'';paintSeat(d);
     $('r-round').textContent=text('전체 '+d.rounds+'회 중 '+d.round+'회차',d.round+'回目 / 全'+d.rounds+'回');
     if(d.phase==='before') $('r-next').textContent=text('모임이 시작되면 이 자리에 앉아 주세요.','交流会が始まったら、こちらの席にお座りください。');
     else if(d.next_change) $('r-next').textContent=text('다음 자리 변경 '+d.next_change,'次の席替え '+d.next_change);
@@ -116,7 +191,7 @@ body{padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inse
   }
   $('form').addEventListener('submit',function(e){e.preventDefault();lookup(false)});
   $('refresh').onclick=function(){lookup(true)};
-  $('change').onclick=function(){clearTimeout(timer);$('result').classList.remove('show');$('lookup').style.display='block';$('pass').focus()};
+  $('change').onclick=function(){clearTimeout(timer);shownTable=null;$('result').classList.remove('show');$('lookup').style.display='block';$('pass').focus()};
   document.addEventListener('visibilitychange',function(){if(!document.hidden&&$('result').classList.contains('show'))lookup(true)});
 })();
 </script>
@@ -193,5 +268,29 @@ body[data-design="editorial"] :is(a,button,input,select,textarea,summary):focus-
 .r-name{padding-bottom:22px;border-bottom:1px solid #e3e3dd}.table{font-weight:700}
 @media(max-width:420px){body{padding-left:18px;padding-right:18px}.card{padding:26px 20px}}
 </style>
+<script>
+/* 2026-10-02 메인과 같은 언어 스위치: 선택된 쪽으로 손잡이가 미끄러지듯 이동.
+   aria-pressed 방식과 .on 방식을 모두 알아봅니다. 이 블록만 지워도 원래대로 돌아갑니다. */
+(function(){
+ var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ [].forEach.call(document.querySelectorAll('.lang'),function(g){
+  var btns=g.querySelectorAll('button');if(btns.length<2)return;
+  function active(){for(var i=0;i<btns.length;i++){var b=btns[i];if(b.getAttribute('aria-pressed')==='true'||b.classList.contains('on'))return b;}return btns[0];}
+  function place(anim){
+   var a=active();if(!a.offsetWidth)return;
+   if(!anim)g.classList.add('lang-noanim');
+   g.style.setProperty('--lx',a.offsetLeft+'px');g.style.setProperty('--lw',a.offsetWidth+'px');
+   g.style.setProperty('--lt',a.offsetTop+'px');g.style.setProperty('--lh',a.offsetHeight+'px');
+   g.classList.add('lang-slide');
+   if(!anim){void g.offsetWidth;setTimeout(function(){g.classList.remove('lang-noanim');},60);}
+  }
+  place(false);
+  var mo=new MutationObserver(function(){place(!reduce);});
+  [].forEach.call(btns,function(b){mo.observe(b,{attributes:true,attributeFilter:['aria-pressed','class']});});
+  addEventListener('resize',function(){place(false);});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){place(false);});
+ });
+})();
+</script>
 </body>
 </html>

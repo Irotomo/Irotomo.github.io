@@ -82,6 +82,24 @@ body.lang-swap main{animation:langIn .3s cubic-bezier(.2,.7,.3,1) both}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.22s}
 @media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
 </style>
+<style id="subpage-unify-1002">
+/* 2026-10-02 하위 페이지를 메인과 같게 — 이 블록과 아래 언어 스위치 스크립트만 지우면 원래대로 */
+/* 언어 스위치: 선택된 쪽으로 흰 손잡이가 미끄러지듯 이동 (메인 index.html 과 같은 움직임) */
+.lang.lang-slide{position:relative;isolation:isolate}
+.lang.lang-slide::before{content:'';position:absolute;left:0;top:var(--lt,3px);height:var(--lh,calc(100% - 6px));width:var(--lw,0);translate:var(--lx,0) 0;z-index:-1;
+  border-radius:999px;background:#fff;box-shadow:0 1px 3px rgba(20,27,46,.16),0 1px 1px rgba(20,27,46,.06);
+  transition:translate .42s cubic-bezier(.34,1.45,.5,1),width .42s cubic-bezier(.34,1.45,.5,1),scale .18s ease}
+.lang.lang-slide:active::before{scale:1.06 .94}
+.lang.lang-noanim::before{transition:none!important}
+.lang.lang-slide button{position:relative;transition:color .3s ease}
+html body .lang.lang-slide button.on,html body .lang.lang-slide button[aria-pressed="true"]{background:transparent!important;box-shadow:none!important}
+@media (prefers-reduced-motion:reduce){.lang.lang-slide::before,.lang.lang-slide button{transition:none!important}}
+/* 푸터: 메인처럼 남색 마감 */
+html body footer{background:#141B2E!important;border-top:1px solid rgba(255,255,255,.08)!important;color:#B9C0D6!important}
+html body footer .foot-meta{color:#B9C0D6!important}
+html body footer a{color:#DDE2EF!important}
+html body footer a:hover{color:#DFA53A!important}
+</style>
 </head>
 <body data-design="editorial" data-lang="ja">
 
@@ -442,5 +460,29 @@ main h2{font-size:21px;font-weight:600;line-height:1.6;letter-spacing:-.02em}
 main p,main li{color:#41495c;line-height:1.9}.box{border-radius:6px;box-shadow:none;background:#eeeee8}
 @media(max-width:600px){.top{padding:38px 0 28px}main h2{font-size:19px}}
 </style>
+<script>
+/* 2026-10-02 메인과 같은 언어 스위치: 선택된 쪽으로 손잡이가 미끄러지듯 이동.
+   aria-pressed 방식과 .on 방식을 모두 알아봅니다. 이 블록만 지워도 원래대로 돌아갑니다. */
+(function(){
+ var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ [].forEach.call(document.querySelectorAll('.lang'),function(g){
+  var btns=g.querySelectorAll('button');if(btns.length<2)return;
+  function active(){for(var i=0;i<btns.length;i++){var b=btns[i];if(b.getAttribute('aria-pressed')==='true'||b.classList.contains('on'))return b;}return btns[0];}
+  function place(anim){
+   var a=active();if(!a.offsetWidth)return;
+   if(!anim)g.classList.add('lang-noanim');
+   g.style.setProperty('--lx',a.offsetLeft+'px');g.style.setProperty('--lw',a.offsetWidth+'px');
+   g.style.setProperty('--lt',a.offsetTop+'px');g.style.setProperty('--lh',a.offsetHeight+'px');
+   g.classList.add('lang-slide');
+   if(!anim){void g.offsetWidth;setTimeout(function(){g.classList.remove('lang-noanim');},60);}
+  }
+  place(false);
+  var mo=new MutationObserver(function(){place(!reduce);});
+  [].forEach.call(btns,function(b){mo.observe(b,{attributes:true,attributeFilter:['aria-pressed','class']});});
+  addEventListener('resize',function(){place(false);});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){place(false);});
+ });
+})();
+</script>
 </body>
 </html>
