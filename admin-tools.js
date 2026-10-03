@@ -1721,7 +1721,8 @@
   /* ── 자리 설정 저장 ───────────────────────────────────────
      테이블 구성은 몇 주씩 그대로인 경우가 많습니다.
      본 모임과 2차를 따로 저장해 두고 매주 불러 씁니다.
-     이 브라우저에만 저장되며 서버로는 나가지 않습니다. */
+     2026-10-03부터 서버(D1 meta 'seat_preset')에 저장해 다른 기기에서도 불러옵니다.
+     서버에 닿지 않을 때를 대비해 이 브라우저에도 같이 적어 둡니다. */
   var SEAT_KEY = 'irotomo-seat-preset';
 
   function seatPresetRead(){
@@ -1739,15 +1740,35 @@
       paid:   $a('seat-paid') ? $a('seat-paid').value : 'paid',
       sizes:  seatManualSizesRaw()
     };
-    try { localStorage.setItem(SEAT_KEY, JSON.stringify(all)); }
-    catch (e) { alert('저장하지 못했습니다.'); return; }
-    var st = $a('seat-state');
-    if (st) { st.classList.remove('err');
-      st.textContent = (scope === 'after' ? '2차' : '본 모임') + ' 설정을 저장했습니다.'; }
+    var localOk = true;
+    try { localStorage.setItem(SEAT_KEY, JSON.stringify(all)); } catch (e) { localOk = false; }
+    var st = $a('seat-state'), label = (scope === 'after' ? '2차' : '본 모임');
+    if (st) { st.classList.remove('err'); st.textContent = label + ' 설정을 저장하는 중…'; }
+    apiPost({ action:'seat_preset_save', token: ADMIN.token, scope: scope, preset: all[scope] })
+      .then(function(d){
+        if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+        if (st) { st.classList.remove('err'); st.textContent = label + ' 설정을 서버에 저장했습니다. 다른 기기에서도 불러올 수 있습니다.'; }
+      })
+      .catch(function(){
+        if (!st) return;
+        st.textContent = localOk ? '서버에 저장하지 못해 이 기기에만 저장했습니다. 잠시 뒤 다시 눌러 주세요.' : '저장하지 못했습니다.';
+        st.classList.add('err');
+      });
   }
   function seatPresetLoad(){
     var scope = seatPickOn() ? 'after' : 'main';
-    var p = seatPresetRead()[scope];
+    var st = $a('seat-state');
+    if (st) { st.classList.remove('err'); st.textContent = '설정을 불러오는 중…'; }
+    /* 서버 값을 먼저 쓰고, 서버에 없거나 닿지 않으면 이 기기에 남은 값을 씁니다 */
+    apiPost({ action:'seat_preset_get', token: ADMIN.token })
+      .then(function(d){
+        var p = d && d.ok && d.preset && d.preset[scope];
+        if (p) seatPresetApply(scope, p, '서버');
+        else seatPresetApply(scope, seatPresetRead()[scope], '이 기기');
+      })
+      .catch(function(){ seatPresetApply(scope, seatPresetRead()[scope], '이 기기'); });
+  }
+  function seatPresetApply(scope, p, from){
     var st = $a('seat-state');
     if (!p) {
       if (st) { st.textContent = '저장해 둔 ' + (scope === 'after' ? '2차' : '본 모임') + ' 설정이 없습니다.'; st.classList.add('err'); }
@@ -1766,7 +1787,7 @@
     }
     SEAT.result = null; seatPaint();
     if (st) { st.classList.remove('err');
-      st.textContent = (scope === 'after' ? '2차' : '본 모임') + ' 설정을 불러왔습니다.'; }
+      st.textContent = (scope === 'after' ? '2차' : '본 모임') + ' 설정을 불러왔습니다' + (from ? ' (' + from + ')' : '') + '.'; }
   }
 
   /* ── 2차 참가자 고르기 ────────────────────────────────────
