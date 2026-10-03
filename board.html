@@ -533,7 +533,8 @@ var T = {
     ePhoto:'사진은 3장까지 올릴 수 있습니다.',
     posted:'글이 올라갔습니다.',
     askPw:'삭제 비밀번호 4자리를 입력하세요.',
-    deleted:'글을 삭제했습니다.', eDelPw:'비밀번호가 맞지 않습니다.',
+    deleted:'글을 삭제했습니다.', eTooMany:'시도 횟수가 너무 많습니다. 10분 뒤에 다시 시도해 주세요.',
+eDelPw:'비밀번호가 맞지 않습니다.',
     reportSubj:'[이로토모 게시판] 신고',
     privacy:'개인정보처리방침',
     agree:'<b>개인정보 수집·이용에 동의합니다</b> <span class="req">[필수]</span><br>이메일은 본인 확인에만 쓰이며 공개되지 않습니다. 글 내용·연락 방법·사진은 게시판에 공개됩니다. 자세한 내용은 <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>을 확인해 주세요.',
@@ -571,7 +572,8 @@ var T = {
     ePhoto:'写真は3枚までです。',
     posted:'投稿しました。',
     askPw:'削除用パスワード（4桁）をご入力ください。',
-    deleted:'投稿を削除しました。', eDelPw:'パスワードが違います。',
+    deleted:'投稿を削除しました。', eTooMany:'試行回数が多すぎます。10分ほど経ってから、もう一度お試しください。',
+eDelPw:'パスワードが違います。',
     reportSubj:'【いろとも掲示板】通報',
     privacy:'プライバシーポリシー',
     agree:'<b>個人情報の取得・利用に同意します</b> <span class="req">[必須]</span><br>メールアドレスは本人確認にのみ使用し、公開されません。投稿内容・連絡方法・写真は掲示板に公開されます。詳しくは<a href="privacy.html#ja" target="_blank" rel="noopener">プライバシーポリシー</a>をご覧ください。',
@@ -754,7 +756,7 @@ $('#d-del').addEventListener('click', function(){
   var pw = prompt(t('askPw'));
   if (!pw) return;
   api({action:'delete', id: current.id, pw: pw}).then(function(d){
-    if (!d.ok) return toast(t('eDelPw'));
+    if (!d.ok) return toast(t(d.error === 'too_many' ? 'eTooMany' : 'eDelPw'));
     toast(t('deleted'));
     closeSheet($('#detail'));
     posts = posts.filter(function(p){ return p.id !== current.id; });
