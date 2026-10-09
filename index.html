@@ -3296,6 +3296,76 @@ details>summary::after{transition:transform .3s cubic-bezier(.2,.7,.3,1)}
 .bk-row{margin-top:18px;padding-top:14px;border-top:1px solid var(--line-2,#EFEFEA);align-items:center}
 .bk-row b{font-size:13px;margin-right:4px}
 </style>
+<style id="faq-bot-1009">
+/* 2026-10-09 자동 답변 도우미(FAQ 챗봇) — 이 블록과 body 끝 #iro-bot-btn·#iro-bot·스크립트만 지우면 원래대로 */
+#iro-bot-btn{position:fixed;right:24px;bottom:24px;z-index:72;width:56px;height:56px;padding:0;border:0;border-radius:50%;
+  background:#fff;box-shadow:0 10px 26px -10px rgba(20,27,46,.45),0 0 0 1px rgba(20,27,46,.08);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:transform .2s ease,box-shadow .2s ease}
+#iro-bot-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px -12px rgba(20,27,46,.5),0 0 0 1px rgba(20,27,46,.1)}
+#iro-bot-btn:focus-visible{outline:2px solid var(--navy,#141B2E);outline-offset:3px}
+#iro-bot-btn .ib-badge{position:absolute;right:-2px;top:-2px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#141B2E;color:#fff;
+  font:700 12px/20px var(--font,system-ui);text-align:center;box-shadow:0 0 0 2px #fff}
+#iro-bot-btn.open{transform:scale(.9);opacity:0;pointer-events:none}
+.ib-face{display:block;width:40px;height:40px}
+.ib-face img,.ib-face svg{display:block;width:100%;height:100%;object-fit:contain}
+#iro-bot{position:fixed;right:24px;bottom:24px;z-index:80;width:min(372px,calc(100vw - 48px));height:min(560px,calc(100vh - 48px));
+  display:flex;flex-direction:column;overflow:hidden;border-radius:16px;background:#FBFAF6;
+  box-shadow:0 24px 60px -20px rgba(20,27,46,.5),0 0 0 1px rgba(20,27,46,.08);
+  transform-origin:100% 100%;animation:ibIn .22s cubic-bezier(.2,.7,.3,1)}
+#iro-bot[hidden]{display:none}
+@keyframes ibIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+.ib-head{display:flex;align-items:center;gap:10px;padding:12px 12px 12px 14px;background:#141B2E;color:#fff}
+.ib-head .ib-face{width:38px;height:38px;flex:0 0 auto;border-radius:50%;background:#fff;padding:3px;box-sizing:border-box}
+.ib-head b{display:block;font-size:15px;line-height:1.3}
+.ib-head small{display:block;margin-top:1px;font-size:12px;line-height:1.4;color:#B9C0D6}
+.ib-x{margin-left:auto;flex:0 0 auto;width:40px;height:40px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:22px;line-height:1;cursor:pointer}
+.ib-x:hover{background:rgba(255,255,255,.1)}
+.ib-x:focus-visible{outline:2px solid #fff;outline-offset:-2px}
+.ib-log{flex:1 1 auto;overflow-y:auto;padding:16px 14px 8px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain}
+.ib-msg{max-width:86%;padding:10px 13px;border-radius:14px;font-size:14.5px;line-height:1.65;white-space:pre-line;word-break:keep-all;overflow-wrap:anywhere}
+.ib-bot{align-self:flex-start;background:#fff;color:#141B2E;border:1px solid #E6E4DC;border-bottom-left-radius:4px}
+.ib-me{align-self:flex-end;background:#141B2E;color:#fff;border-bottom-right-radius:4px}
+.ib-msg a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.ib-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ib-acts a{display:inline-block;padding:6px 12px;border-radius:999px;background:#F6BF5B;color:#141B2E;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap}
+.ib-typing{display:inline-flex;gap:4px;align-items:center;height:22px}
+.ib-typing i{width:6px;height:6px;border-radius:50%;background:#9AA0B4;animation:ibDot 1s infinite ease-in-out}
+.ib-typing i:nth-child(2){animation-delay:.15s}.ib-typing i:nth-child(3){animation-delay:.3s}
+@keyframes ibDot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.ib-chips{display:flex;gap:6px;padding:8px 14px 10px;overflow-x:auto;scrollbar-width:none;border-top:1px solid #ECEAE2}
+.ib-chips::-webkit-scrollbar{display:none}
+/* 창 높이가 낮을 때 머리·질문 버튼 줄·입력칸이 눌려 찌그러지지 않게 — 줄어드는 건 대화 칸만 */
+#iro-bot .ib-head,#iro-bot .ib-chips,#iro-bot .ib-form{flex-shrink:0}
+#iro-bot .ib-log{min-height:0}
+/* 낱말 단위 줄바꿈(keep-all)은 한국어에만 — 일본어는 글자 단위로 자연스럽게 */
+#iro-bot .ib-msg .ja{word-break:normal}
+/* 캐릭터(흰 고양이) — 버튼·머리·말풍선 앞 표정 */
+#iro-bot-btn .ib-face{width:46px;height:46px}
+.ib-head .ib-face{padding:2px}
+.ib-row{display:flex;align-items:flex-end;gap:6px;align-self:flex-start;max-width:94%}
+.ib-row .ib-msg{max-width:none;min-width:0}
+.ib-av{flex:0 0 34px;width:34px;height:34px;object-fit:contain}
+/* 이어서 물어보기 — 답 아래 세부 질문 버튼 */
+.ib-subs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:9px;border-top:1px dashed #E3E1D8}
+.ib-subs-t{width:100%;margin:0 0 1px;font-size:11.5px;font-weight:700;color:#5F6782}
+.ib-subs button{padding:6px 11px;border:1px solid #141B2E;border-radius:999px;background:#fff;color:#141B2E;font:600 12.5px/1.3 var(--font,system-ui);white-space:nowrap;cursor:pointer}
+.ib-subs button:hover{background:#141B2E;color:#fff}
+.ib-subs button:focus-visible{outline:2px solid #141B2E;outline-offset:2px}
+.ib-chips button{flex:0 0 auto;padding:7px 12px;border:1px solid #D9D6CC;border-radius:999px;background:#fff;color:#141B2E;font:600 13px/1.3 var(--font,system-ui);white-space:nowrap;cursor:pointer}
+.ib-chips button:hover{border-color:#141B2E}
+.ib-form{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #ECEAE2}
+.ib-form input{flex:1 1 auto;min-width:0;height:44px;padding:0 14px;border:1px solid #D9D6CC;border-radius:999px;background:#FBFAF6;font:16px var(--font,system-ui);color:#141B2E}
+.ib-form input:focus{outline:none;border-color:#141B2E;background:#fff}
+.ib-form button{flex:0 0 auto;height:44px;padding:0 16px;border:0;border-radius:999px;background:#141B2E;color:#fff;font:700 14px var(--font,system-ui);white-space:nowrap;cursor:pointer}
+.ib-note{padding:0 14px 6px;font-size:11.5px;color:#5F6782;text-align:center}
+body.admin-on #iro-bot-btn,body.admin-on #iro-bot{display:none!important}
+@media(max-width:960px){
+  #iro-bot-btn{right:auto;left:16px;bottom:calc(var(--ib-cta,0px) + 12px + env(safe-area-inset-bottom));width:52px;height:52px}
+  .ib-face{width:38px;height:38px}
+  #iro-bot{left:0;right:0;bottom:0;width:100%;height:min(78vh,620px);height:min(78dvh,620px);border-radius:18px 18px 0 0;transform-origin:50% 100%}
+}
+@media(prefers-reduced-motion:reduce){#iro-bot,.ib-typing i{animation:none}#iro-bot-btn{transition:none}}
+</style>
 </head>
 <body data-lang="ja">
 
@@ -3585,12 +3655,12 @@ details>summary::after{transition:transform .3s cubic-bezier(.2,.7,.3,1)}
         <summary><span class="ko">입금 · 음료 선택 · 환불 안내</span><span class="ja">お支払い・ドリンク選択・返金のご案内</span></summary>
         <div class="notice-body">
 <p class="fee-note ko" data-c="v2-c44">음료비 6,000원은 신청 후 받으신 안내 메일을 확인하고 미리 입금해 주세요. 한국인 참가비 10,000원은 모임 당일 현장에서 받습니다.
-• 더치커피·밀크티 선택 마감: 모임 전 금요일 정오 12시
-• 음료비 환불 요청 마감: 모임 전 금요일 정오 12시
+• 더치커피·밀크티 선택 마감: 모임 전 금요일 정오 12시 (금요일이 공휴일이면 목요일 정오 12시)
+• 음료비 환불 요청 마감: 모임 전 금요일 정오 12시 (금요일이 공휴일이면 목요일 정오 12시)
 • 마감 이후에도 신청 가능한 날짜에는 분다버그 라임·핑크자몽 중에서 선택하실 수 있습니다.</p>
 <p class="fee-note ja" data-c="v2-c44">ドリンク代6,000ウォンは、お申し込み後の案内メールをご確認のうえ、事前にお振り込みください。韓国の方の参加費10,000ウォンは、当日会場でお支払いください。
-• ダッチコーヒー・ミルクティーの選択期限：開催前の金曜12:00（正午）
-• ドリンク代の返金受付期限：開催前の金曜12:00（正午）
+• ダッチコーヒー・ミルクティーの選択期限：開催前の金曜12:00（正午）※金曜が祝日の場合は木曜12:00
+• ドリンク代の返金受付期限：開催前の金曜12:00（正午）※金曜が祝日の場合は木曜12:00
 • 締切後も申し込みを受け付けている日程では、バンダバーグのライム・ピンクグレープフルーツをお選びいただけます。</p>
         </div>
       </details>
@@ -3696,8 +3766,13 @@ details>summary::after{transition:transform .3s cubic-bezier(.2,.7,.3,1)}
       </details>
       <details>
         <summary><span class="ko" data-c="c68">못 가게 되면 어떻게 하나요?</span><span class="ja" data-c="c68">行けなくなった場合はどうすればいいですか？</span></summary>
-        <div class="answer ko" data-c="c69">인스타그램 DM이나 info@irotomo.com으로 알려주세요. 모임 전 금요일 낮 12시까지 연락 주시면 음료비 6,000원을 전액 돌려드려요. 이후에는 음료 준비 때문에 환불이 어려워요. 환불 마감이 지났더라도 못 오시게 되면 꼭 알려주세요.</div>
-        <div class="answer ja" data-c="c69">InstagramのDMか info@irotomo.com へご連絡ください。開催前の金曜12時（正午）までなら、ドリンク代6,000ウォンを全額返金します。それ以降は、お飲み物の準備があるため返金できません。締切後でも、参加できなくなった場合はお知らせください。</div>
+        <div class="answer ko" data-c="c69">인스타그램 DM이나 info@irotomo.com으로 알려주세요. 모임 전 금요일 낮 12시(금요일이 공휴일이면 목요일 낮 12시)까지 연락 주시면 음료비 6,000원을 전액 돌려드려요. 이후에는 음료 준비 때문에 환불이 어려워요. 환불 마감이 지났더라도 못 오시게 되면 꼭 알려주세요.</div>
+        <div class="answer ja" data-c="c69">InstagramのDMか info@irotomo.com へご連絡ください。開催前の金曜12時（正午）（金曜が祝日の場合は木曜12時）までなら、ドリンク代6,000ウォンを全額返金します。それ以降は、お飲み物の準備があるため返金できません。締切後でも、参加できなくなった場合はお知らせください。</div>
+      </details>
+      <details>
+        <summary><span class="ko" data-c="c90">자리는 어떻게 확인하나요?</span><span class="ja" data-c="c90">席はどうやって確認しますか？</span></summary>
+        <div class="answer ko" data-c="c91">자리 배정이 공개되면 «좌석 확인» 페이지에서 볼 수 있어요. 이름은 신청할 때 입력한 이름(띄어쓰기까지 똑같이), 비밀번호는 참가 날짜 4자리예요. 예) 10월 12일 → 1012</div>
+        <div class="answer ja" data-c="c91">席の割り振りが公開されると、「席の確認」ページで確認できます。お名前はお申し込み時に入力したもの（スペースも同じように）、パスワードは参加日の4桁の数字です。例）10月12日 → 1012</div>
       </details>
     </div>
   </section>
@@ -3808,7 +3883,7 @@ details>summary::after{transition:transform .3s cubic-bezier(.2,.7,.3,1)}
           </div>
 <h3 class="form-section-title"><span class="form-step">04</span><span class="ko">확인 및 동의</span><span class="ja">ご確認・同意</span></h3>
           <div class="form-foot">
-            <p class="draft" id="note"><span class="ko">신청 후 안내 메일을 확인해 주세요. 사전 준비 음료 선택과 음료비 취소·환불 접수는 <b>금요일 정오 12시</b>에 마감합니다. 이후에는 선택 가능한 다른 음료로 신청할 수 있습니다.</span><span class="ja">お申し込み後の案内メールをご確認ください。事前準備が必要なお飲み物の選択、およびドリンク代のキャンセル・返金受付は<b>金曜12時（正午）まで</b>です。以降は選択可能な別のお飲み物をお選びください。</span></p>
+            <p class="draft" id="note"><span class="ko">신청 후 안내 메일을 확인해 주세요. 사전 준비 음료 선택과 음료비 취소·환불 접수는 <b>금요일 정오 12시</b>(금요일이 공휴일이면 목요일 정오)에 마감합니다. 이후에는 선택 가능한 다른 음료로 신청할 수 있습니다.</span><span class="ja">お申し込み後の案内メールをご確認ください。事前準備が必要なお飲み物の選択、およびドリンク代のキャンセル・返金受付は<b>金曜12時（正午）まで</b>です（金曜が祝日の場合は木曜12時まで）。以降は選択可能な別のお飲み物をお選びください。</span></p>
             <div class="consent">
               <label>
                 <input type="checkbox" id="f-agree" required>
@@ -4028,7 +4103,7 @@ details>summary::after{transition:transform .3s cubic-bezier(.2,.7,.3,1)}
         <label><span>회차 수</span><input type="number" id="seat-rounds" min="1" max="6" value="3"></label>
         <label><span>배정 대상</span><select id="seat-paid"><option value="all">신청자 전체</option><option value="paid" selected>입금 확인만</option></select></label>
         <label><span>인원 배분</span><select id="seat-mode"><option value="auto" selected>자동 (고르게)</option><option value="manual">테이블별 직접 지정</option></select></label>
-        <label><span>좌석 확인 비밀번호 (직접 지정)</span><input type="text" id="seat-pass" maxlength="40" placeholder="비워 두면 4자리 무작위 생성" autocomplete="off"></label>
+        <label><span>좌석 확인 비밀번호 (참가자는 참가 날짜 4자리로 조회)</span><input type="text" id="seat-pass" maxlength="40" placeholder="비워 두면 참가 날짜 (예: 1012)" autocomplete="off"></label>
         <div class="seat-actions">
           <button type="button" class="primary" id="seat-run">랜덤 배정</button>
           <button type="button" id="seat-reroll">다시 섞기</button>
@@ -4484,6 +4559,9 @@ window.IROLANG = (function(){
   var PREORDER_DRINKS = ['dutch', 'milk'];
   var DRINK_CATALOG = []; // 서버에서 불러온 전체 목록 (종류별 신청 가능 여부 포함)
   var PREORDER_LEAD_HOURS = 51;
+  /* cf-67: 모임 전 금요일이 공휴일인 회차 { '2026-10-04': 1 } — 하루 당겨 목요일 정오에 마감합니다 (관리자 «모임 날짜 관리») */
+  var EARLY = {};
+  function preorderLeadHours(ymd){ return PREORDER_LEAD_HOURS + (EARLY[ymd] ? 24 : 0); }
 
   function meetStartMs(ymd){
     var a = String(ymd || '').split('-');
@@ -4495,7 +4573,7 @@ window.IROLANG = (function(){
   function preorderOpen(ymd){
     var t = meetStartMs(ymd);
     if (isNaN(t)) return true;
-    return (t - Date.now()) >= PREORDER_LEAD_HOURS * 3600000;
+    return (t - Date.now()) >= preorderLeadHours(ymd) * 3600000;
   }
 
   /* 고른 날짜에 따라 음료 선택지를 여닫습니다 */
@@ -4526,8 +4604,8 @@ window.IROLANG = (function(){
            고르기 전에 알아야 나중에 당황하지 않습니다. */
         var mark = off
           ? (L === 'ko' ? ' — 신청 마감' : ' — 受付終了')
-          : (pre ? (L === 'ko' ? ' (금 12시 이후 선택 불가)'
-                               : '（金曜12時以降は選択不可）') : '');
+          : (pre ? (L === 'ko' ? ' (' + (EARLY[date] ? '목' : '금') + ' 12시 이후 선택 불가)'
+                               : '（' + (EARLY[date] ? '木曜' : '金曜') + '12時以降は選択不可）') : '');
         o.textContent = t[L] + mark;
       }
       if (off && dr.value === o.value) blocked = true;
@@ -4542,8 +4620,14 @@ window.IROLANG = (function(){
     }
     if (date && !open) {
       note.textContent = L === 'ko'
-        ? '사전 준비 음료 선택과 음료비 취소·환불 접수는 금요일 정오 12시에 마감했습니다. 현재 선택 가능한 다른 음료를 골라 주세요.'
-        : '事前準備が必要なお飲み物の選択、およびドリンク代のキャンセル・返金受付は金曜12時（正午）に終了しました。現在お選びいただける別のお飲み物をご選択ください。';
+        ? '사전 준비 음료 선택과 음료비 취소·환불 접수는 ' + (EARLY[date] ? '목요일' : '금요일') + ' 정오 12시에 마감했습니다. 현재 선택 가능한 다른 음료를 골라 주세요.'
+        : '事前準備が必要なお飲み物の選択、およびドリンク代のキャンセル・返金受付は' + (EARLY[date] ? '木曜' : '金曜') + '12時（正午）に終了しました。現在お選びいただける別のお飲み物をご選択ください。';
+      note.hidden = false;
+    } else if (date && EARLY[date]) {
+      /* cf-67: 금요일이 공휴일인 회차는 미리 알려 둡니다 */
+      note.textContent = L === 'ko'
+        ? '이 회차는 금요일이 공휴일이라, 사전 준비 음료 선택과 음료비 취소·환불 접수를 목요일 정오 12시에 마감합니다.'
+        : 'この回は金曜が祝日のため、事前準備が必要なお飲み物の選択とドリンク代のキャンセル・返金受付は木曜12時（正午）で締め切ります。';
       note.hidden = false;
     } else {
       note.hidden = true;
@@ -4941,6 +5025,7 @@ window.IROLANG = (function(){
       if (d.capacity) CAPACITY = d.capacity;
       try { seatLinkCheck(); } catch (e) {}
       if (d.drinks) applyDrinkCatalog(d.drinks);
+      EARLY = d.early || {}; window.IRO_EARLY = EARLY;
       if (d.closed) { CLOSED = d.closed; try { syncDrinks(); } catch (e) {} }
       if (d.last) LAST = d.last;
       paintLast();
@@ -5015,8 +5100,8 @@ window.IROLANG = (function(){
           closed:   ja ? 'この回はお申し込みを締め切りました。次の回をお選びください。'
                        : '이 회차는 신청이 마감되었습니다. 다음 회차를 선택해 주세요.',
           no_drink: ja ? 'お飲み物をお選びください。' : '음료를 선택해 주세요.',
-          drink_closed: ja ? 'そのお飲み物は金曜12時（正午）で締め切りました。別のお飲み物をお選びください。'
-                           : '해당 음료는 금요일 정오 12시에 마감되었습니다. 다른 음료를 선택해 주세요.',
+          drink_closed: ja ? 'そのお飲み物は受付を締め切りました。別のお飲み物をお選びください。'
+                           : '해당 음료는 선택이 마감되었습니다. 다른 음료를 선택해 주세요.',
           drink_soldout: ja ? 'そのお飲み物は完売しました。他のものをお選びください。'
                             : '해당 음료는 품절되었습니다. 다른 음료를 선택해 주세요.',
           drink_unavailable: ja ? 'そのお飲み物は現在お申し込みいただけません。別のお飲み物をお選びください。'
@@ -5035,7 +5120,7 @@ window.IROLANG = (function(){
         if (MSG[code]) {
           if(code==='drink_soldout'||code==='drink_closed'||code==='drink_unavailable'){
             fetch(API+'?action=content&t='+Date.now()).then(function(r){return r.json();}).then(function(d){
-              if(d&&d.ok){if(d.drinks)applyDrinkCatalog(d.drinks);if(d.closed)CLOSED=d.closed;syncDrinks();}
+              if(d&&d.ok){if(d.drinks)applyDrinkCatalog(d.drinks);if(d.closed)CLOSED=d.closed;if(d.early){EARLY=d.early;window.IRO_EARLY=EARLY;}syncDrinks();}
             }).catch(function(){});
           }
           alert(MSG[code]); return;
@@ -6002,6 +6087,388 @@ document.getElementById('mobile-top').addEventListener('click',function(){
    }
   });
  });
+})();
+</script>
+<!-- 2026-10-09 자동 답변 도우미 — 사이트 안의 정해진 답만 보여 주며 서버로 질문을 보내지 않습니다.
+     캐릭터: bot-smile · bot-wave · bot-thinking · bot-sorry .webp (원본은 assets-src/character, 배포하지 않음) -->
+<button type="button" id="iro-bot-btn" aria-haspopup="dialog" aria-controls="iro-bot">
+  <span class="ib-face" aria-hidden="true"><img src="bot-smile.webp" alt="" width="44" height="44" decoding="async"></span>
+  <span class="ib-badge" aria-hidden="true">?</span>
+  <span class="ko" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">궁금한 점 물어보기</span><span class="ja" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">よくある質問に答えます</span>
+</button>
+<div id="iro-bot" role="dialog" aria-labelledby="ib-title" hidden>
+  <div class="ib-head">
+    <span class="ib-face" aria-hidden="true"><img src="bot-smile.webp" alt="" width="38" height="38" decoding="async"></span>
+    <div><b id="ib-title"><span class="ko">이로토모 도우미</span><span class="ja">いろとも案内係</span></b>
+      <small><span class="ko">자주 묻는 질문에 바로 답해 드려요</span><span class="ja">よくあるご質問にすぐお答えします</span></small></div>
+    <button type="button" class="ib-x" aria-label="닫기 / 閉じる">×</button>
+  </div>
+  <div class="ib-log" aria-live="polite"></div>
+  <div class="ib-chips"></div>
+  <form class="ib-form" autocomplete="off">
+    <input type="text" maxlength="120" enterkeyhint="send" aria-label="질문 / ご質問">
+    <button type="submit"><span class="ko">보내기</span><span class="ja">送信</span></button>
+  </form>
+</div>
+<script>
+/* 2026-10-09 자동 답변 도우미.
+   · 자주 묻는 질문(#faq)은 화면에 실제로 나와 있는 문구를 그대로 읽습니다 — 관리자에서 FAQ 를 고치면 답도 같이 바뀝니다.
+   · 시간·장소·참가비 같은 기본 안내는 아래 BASE 에 적혀 있습니다. 모임 정보가 바뀌면 여기도 고칩니다.
+   · 답 아래에 «이어서 물어보기»(subs) 버튼을 달아, 주차 → 신청 방법 / 가능 시간처럼 가지를 쳐서 고를 수 있습니다.
+   · 금요일이 공휴일인 회차(관리자 «모임 날짜 관리»의 «금 휴일»)는 마감 관련 답에 목요일 정오 안내를 덧붙입니다.
+   · 질문은 이 기기 안에서만 비교하며 어디에도 보내지 않습니다. */
+(function(){
+  var btn = document.getElementById('iro-bot-btn'), box = document.getElementById('iro-bot');
+  if (!btn || !box) return;
+  var log = box.querySelector('.ib-log'), chips = box.querySelector('.ib-chips');
+  var form = box.querySelector('.ib-form'), input = form.querySelector('input');
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function L(){ return document.body.getAttribute('data-lang') === 'ko' ? 'ko' : 'ja'; }
+
+  var APPLY = { href:'#apply', ko:'신청하러 가기', ja:'申し込みへ' };
+  var MAIL = { href:'mailto:info@irotomo.com', ko:'메일 보내기', ja:'メールを送る' };
+  var SEAT = { href:'seat.html', ko:'좌석 확인', ja:'席の確認' };
+  var HOLI_KO = '금요일이 공휴일이면 목요일 정오', HOLI_JA = '金曜が祝日の場合は木曜12時（正午）';
+  /* 이어서 물어보기 버튼 — [이동할 답 id, 한국어 버튼, 일본어 버튼] */
+  function S(id, ko, ja){ return { to:id, ko:ko, ja:ja }; }
+
+  /* 구체적인 질문을 위에 둡니다 — 점수가 같으면 위쪽이 답이 됩니다 */
+  var BASE = [
+    /* ── 가지(세부 질문) ── */
+    { id:'park-how', kw:['주차신청','차량번호','차번호','ナンバー','車両番号','駐車の申し込み'],
+      ko:'신청할 때 «질문·요청» 칸에 차량 번호를 적어 주세요. 확인 후 반영해 드릴게요.',
+      ja:'お申し込みの際に「ご質問・ご要望」欄へ車両ナンバーをご記入ください。確認のうえ手配いたします。',
+      acts:[APPLY], subs:[S('park-time','주차 가능 시간','駐車できる時間')] },
+    { id:'park-time', kw:['주차시간','주차몇시간','몇시간주차','주차는몇','주차가능시간','駐車時間','駐車は何時間','何時間駐車'],
+      ko:'주차는 3시간까지 할 수 있어요.',
+      ja:'駐車は3時間までご利用いただけます。',
+      subs:[S('park-how','주차 신청 방법','駐車の申し込み方法')] },
+    { id:'swap', kw:['자리바꾸','자리바꿈','자리바꿔','자리바뀌','자리교체','席替え'],
+      ko:'50분씩 세 타임으로 나누고, 15:50과 16:40에 자리를 바꿔요.',
+      ja:'50分ずつ3回に分け、15:50と16:40に席替えをします。',
+      subs:[S('seat-how','자리 정하는 방식','席の決め方'), S('faq-c90','자리 확인 방법','席の確認方法')] },
+    { id:'seat-how', kw:['배정방식','자리정하','랜덤','몇명씩','席の決め方','ランダム'],
+      ko:'한 테이블은 4~6명이고, 국적이 고르게 섞이도록 랜덤으로 정해요.',
+      ja:'1テーブル4〜6人で、国籍のバランスを見ながらランダムに決めます。',
+      subs:[S('swap','자리 바꾸는 시간','席替えの時間'), S('faq-c90','자리 확인 방법','席の確認方法')] },
+    { id:'seat-name', kw:['이름입력','이름이안','이름을어떻게','名前の入力','名前が'],
+      ko:'신청할 때 입력한 이름을 띄어쓰기까지 똑같이 넣어 주세요.\n같은 이름인 분이 있거나 계속 안 나오면 현장 스태프에게 말씀해 주세요.',
+      ja:'お申し込み時に入力したお名前を、スペースも含めて同じようにご入力ください。\n同じお名前の方がいる場合や表示されない場合は、会場スタッフにお声がけください。',
+      acts:[SEAT], subs:[S('seat-pass','비밀번호','パスワード')] },
+    { id:'seat-pass', kw:['비밀번호','패스워드','パスワード','暗証番号'],
+      ko:'비밀번호는 참가 날짜예요. 월·일 숫자 4자리로 넣어 주세요.\n예) 10월 12일 → 1012',
+      ja:'パスワードは参加日です。月・日の4桁の数字でご入力ください。\n例）10月12日 → 1012',
+      acts:[SEAT], subs:[S('seat-name','이름 입력','お名前の入力')] },
+    { id:'refund', holi:true, kw:['환불마감','환불기한','환불언제','언제까지환불','返金期限','返金の締め切り','いつまで返金'],
+      ko:'음료비 환불은 모임 전 금요일 정오(' + HOLI_KO + ')까지 요청해 주세요. 그 뒤에는 음료 준비 때문에 환불이 어려워요.\n못 오시게 되면 마감 뒤라도 꼭 알려 주세요.',
+      ja:'ドリンク代の返金は、開催前の金曜12時（正午）までにお申し出ください（' + HOLI_JA + '）。それ以降はお飲み物の準備のため返金できません。\n締切後でも、参加できなくなった場合は必ずご連絡ください。',
+      acts:[MAIL], subs:[S('change','음료 변경','ドリンクの変更')] },
+    { id:'drink-dl', holi:true, kw:['음료마감','선택마감','언제까지고르','언제까지선택','選択期限','締め切り','締切'],
+      ko:'직접 만드는 음료는 모임 전 금요일 정오(' + HOLI_KO + ')에 선택이 마감돼요.\n마감 뒤에도 신청을 받는 날짜에는 분다버그 중에서 고를 수 있어요.',
+      ja:'手作りのドリンクは、開催前の金曜12時（正午）で受付を締め切ります（' + HOLI_JA + '）。\n締切後も申し込みを受け付けている日程では、バンダバーグからお選びいただけます。',
+      subs:[S('drink','음료 종류','ドリンクの種類'), S('change','음료 변경','ドリンクの変更')] },
+    { id:'fee-ko', kw:['한국인참가비','한국인은얼마','韓国人の参加費','韓国の方の参加費'],
+      ko:'한국인 참가비는 10,000원이고, 모임 당일 현장에서 받아요.\n음료비 6,000원은 따로 미리 입금해 주세요.',
+      ja:'韓国の方の参加費は10,000ウォンで、当日会場でお支払いいただきます。\nドリンク代6,000ウォンは別途、事前にお振込みください。',
+      subs:[S('pay-how','음료비 입금 방법','ドリンク代の振込方法')] },
+    { id:'fee-ja', kw:['일본인참가비','일본인은얼마','日本人の参加費','日本の方の参加費','日本人は無料'],
+      ko:'일본인은 참가비가 무료예요. 음료비 6,000원만 미리 입금해 주세요.',
+      ja:'日本の方は参加費無料です。ドリンク代6,000ウォンのみ、事前にお振込みください。',
+      subs:[S('pay-how','음료비 입금 방법','ドリンク代の振込方法'), S('payfail','입금이 어려워요','振込が難しい')] },
+    { id:'pay-how', kw:['입금방법','어떻게입금','입금계좌','계좌번호','振込方法','振込先','口座番号'],
+      ko:'음료비 6,000원은 신청 후 받으신 안내 메일에 적힌 계좌로 미리 입금해 주세요.',
+      ja:'ドリンク代6,000ウォンは、お申し込み後の案内メールに記載の口座へ事前にお振込みください。',
+      subs:[S('paycheck','입금 확인','入金の確認'), S('payfail','입금이 어려워요','振込が難しい'), S('refund','환불 마감','返金の期限')] },
+    { id:'apply-ko', kw:['한국인신청','소모임','韓国人の申し込み','ソモイム'],
+      ko:'한국인 참가자는 소모임 앱에서 신청하고, 이 사이트에서도 음료를 골라 신청해 주세요. 둘 다 해야 참가가 확정돼요.',
+      ja:'韓国の方は「ソモイム」アプリでのお申し込みに加えて、このサイトでもお飲み物を選んでお申し込みいただく必要があります。',
+      acts:[APPLY] },
+    { id:'apply-ja', kw:['일본인신청','日本人の申し込み','日本の方の申し込み'],
+      ko:'일본인 참가자는 이 사이트에서만 신청하면 돼요.',
+      ja:'日本の方は、このサイトからお申し込みいただくだけで大丈夫です。',
+      acts:[APPLY] },
+
+    /* ── 주제 ── */
+    { id:'payfail', chip:{ko:'입금이 어려워요', ja:'振込が難しい'},
+      kw:['입금이어려','입금어려','입금못','입금이안','입금을못','송금이어려','송금못','계좌가없','계좌없','한국계좌','현장결제','현장에서결제','현금','振込できない','振り込めない','振込が難しい','振り込みが難しい','口座がない','口座を持っていない','口座なし','韓国の口座','現金','当日払い','現地払い','会場で払','当日支払'],
+      ko:'입금이 어려우시면 당일 현장에서 결제하셔도 돼요. 신청 후 받으신 안내 메일에 답장으로 알려 주세요.\n다만 음료는 참가 인원에 맞춰 미리 준비하기 때문에, 신청 후 취소는 가급적 삼가 주세요.',
+      ja:'韓国の口座をお持ちでないなど、お振込みが難しい場合は、当日会場でのお支払いも可能です。お申し込み後の案内メールにご返信のうえ、お知らせください。\nなお、お飲み物は参加人数に合わせて事前に準備しておりますので、お申し込み後のキャンセルはできるだけお控えください。',
+      acts:[MAIL], subs:[S('paycheck','입금 확인','入金の確認'), S('faq-c68','취소·환불','キャンセル・返金')] },
+    { id:'paycheck',
+      kw:['입금확인','입금했','입금완료','입금했는데','송금했','확인메일','振込確認','入金確認','振り込みました','振込しました','振り込んだ','確認メール'],
+      ko:'입금이 확인되면 입금 확인 메일을 보내 드려요.',
+      ja:'ご入金を確認しましたら、確認のメールをお送りします。',
+      subs:[S('refund','환불 마감','返金の期限')] },
+    { id:'change',
+      kw:['음료변경','음료바꾸','음료바꿀','변경','바꾸','바꿀','바꿔','変更','変えたい','変えられ','替えたい'],
+      ko:'신청 후 음료를 바꾸고 싶으시면 info@irotomo.com 으로 메일 주세요. 확인 후 대응해 드릴게요.',
+      ja:'お申し込み後にお飲み物を変更したい場合は、info@irotomo.com までメールでご連絡ください。確認のうえ対応いたします。',
+      acts:[MAIL], subs:[S('drink-dl','음료 선택 마감','ドリンクの選択期限')] },
+    { id:'waitlist',
+      kw:['정원','대기','꽉','마감됐','자리가없','満席','定員','キャンセル待ち','空き','いっぱい'],
+      ko:'정원이 다 차면 자리가 빌 때까지 기다려 주셔야 해요.',
+      ja:'定員に達した場合は、空きが出るまでお待ちいただくことになります。',
+      subs:[S('faq-c66','신청 방법','申し込み方法')] },
+    { id:'parking', chip:{ko:'주차', ja:'駐車'},
+      kw:['주차','자동차','차량','운전','차가져','駐車','自動車','マイカー','車を停','車を止','パーキング'],
+      ko:'네, 주차할 수 있어요. 아래에서 궁금한 걸 골라 주세요.',
+      ja:'はい、駐車できます。知りたい内容を下からお選びください。',
+      subs:[S('park-how','주차 신청 방법','駐車の申し込み方法'), S('park-time','주차 가능 시간','駐車できる時間')] },
+    { id:'age',
+      kw:['나이','연령','몇살','나이제한','연령대','생까지','년생','年齢','年代','何歳','年齢制限','歳'],
+      ko:'주로 20~30대 분들이 오시고, 그 밖의 연령대 분들도 참가하고 있어요.\n다만 한국인 참가자는 1988년생 이후 출생자만 받고 있어요.',
+      ja:'主に20〜30代の方が参加していますが、それ以外の年代の方も参加されています。\nなお、韓国の方は1988年以降に生まれた方のみ受け付けております。' },
+    { id:'nation',
+      kw:['국적','외국인','다른나라','그외','중국','대만','미국','외국','国籍','外国人','他の国','その他','台湾','中国','アメリカ'],
+      ko:'네, 한국·일본 외 다른 국적의 분도 참가하실 수 있어요. 신청서 국적에서 «그 외»를 골라 주세요.',
+      ja:'はい、韓国・日本以外の国籍の方もご参加いただけます。お申し込みフォームの国籍で「その他」をお選びください。',
+      acts:[APPLY] },
+    { id:'time', chip:{ko:'시간', ja:'時間'},
+      kw:['시간','몇시','언제','요일','일요일','끝나','시작','時間','何時','いつ','曜日','日曜','終わ','始ま'],
+      ko:'매주 일요일 15:00~17:30이에요.',
+      ja:'毎週日曜日の15:00〜17:30です。',
+      subs:[S('swap','자리 바꾸는 시간','席替えの時間'), S('after','2차','二次会'), S('sameday','당일 참가','当日参加')] },
+    { id:'place', chip:{ko:'장소', ja:'場所'},
+      kw:['장소','어디','위치','카페','여의도','주소','지하철','역','오시는','場所','どこ','住所','カフェ','ヨイド','駅','地下鉄','行き方','電車','バス','버스','가는길','가는방법'],
+      ko:'카페희다 여의도점이에요.\n서울 영등포구 국제금융로8길 31, SK증권빌딩 1층\n여의도역에서 걸어서 5분이에요.',
+      ja:'カフェ・ヒダ ヨイド店です。\n住所：서울 영등포구 국제금융로8길 31, SK증권빌딩 1층\nヨイド駅から徒歩5分です。',
+      acts:[{ href:'#place', ko:'지도 보기', ja:'地図を見る' }], subs:[S('parking','주차','駐車')] },
+    { id:'fee', chip:{ko:'참가비', ja:'参加費'},
+      kw:['참가비','가격','비용','얼마','요금','회비','돈','무료','음료비','입금','계좌','송금','参加費','料金','いくら','費用','無料','ドリンク代','振込','振り込み','口座','お金'],
+      ko:'참가비는 한국인 10,000원(당일 현장 결제), 일본인은 무료예요.\n이와 별도로 음료비 6,000원을 모두 미리 입금해 주세요.',
+      ja:'参加費は、韓国の方は10,000ウォン（当日会場でお支払い）、日本の方は無料です。\n別途、ドリンク代6,000ウォンを皆さま事前にお振込みください。',
+      subs:[S('pay-how','음료비 입금 방법','ドリンク代の振込方法'), S('payfail','입금이 어려워요','振込が難しい'), S('paycheck','입금 확인','入金の確認'), S('refund','환불 마감','返金の期限')] },
+    { id:'drink', chip:{ko:'음료', ja:'お飲み物'},
+      kw:['음료','메뉴','커피','더치','밀크티','분다버그','마실','음료수','우유','飲み物','ドリンク','メニュー','コーヒー','ミルクティー','ダッチ','バンダバーグ','ミルク'],
+      ko:'신청할 때 더치커피 · 밀크티 · 분다버그 라임 · 분다버그 핑크자몽 중에서 골라 주세요.',
+      ja:'お申し込みの際に、ダッチコーヒー・ミルクティー・バンダバーグ ライム・バンダバーグ ピンクグレープフルーツからお選びください。',
+      acts:[APPLY], subs:[S('drink-dl','선택 마감','選択期限'), S('change','음료 변경','ドリンクの変更'), S('fee','음료비','ドリンク代')] },
+    { id:'sameday',
+      kw:['당일','오늘','바로','그냥가','예약없이','현장참가','当日','今日','飛び込み','予約なし','直接行'],
+      ko:'사전 신청제라 당일 참가는 받지 않아요.\n참가하실 날짜를 골라 미리 신청해 주세요.',
+      ja:'事前申込制のため、当日参加は受け付けておりません。\nご希望の日を選んで、事前にお申し込みください。',
+      acts:[APPLY] },
+    { id:'after',
+      kw:['2차','이차','뒤풀이','저녁','회식','끝나고','二次会','夕食','打ち上げ','終わった後'],
+      ko:'모임이 끝난 뒤 2차(저녁)가 있어요. 참가는 자유예요.',
+      ja:'会のあとに二次会（夕食）があります。参加は自由です。' },
+    { id:'contact', chip:{ko:'문의하기', ja:'お問い合わせ'},
+      kw:['문의','연락','메일','이메일','인스타','dm','질문','사람','운영자','問い合わせ','連絡','メール','インスタ','質問','スタッフ'],
+      ko:'info@irotomo.com 이나 인스타그램 @irotomokr DM으로 편하게 연락 주세요.',
+      ja:'info@irotomo.com または Instagram（@irotomokr）のDMからお気軽にご連絡ください。',
+      acts:[MAIL] },
+    { id:'hello', kw:['안녕','하이','hello','hi','こんにちは','こんばんは','はじめまして'], mood:'wave',
+      ko:'안녕하세요! 궁금한 점을 적어 주시거나 아래 버튼을 눌러 보세요.',
+      ja:'こんにちは！気になることを入力するか、下のボタンを押してみてください。' },
+    { id:'thanks', kw:['고마','감사','땡큐','thank','ありがと','助かり'], mood:'wave',
+      ko:'천만에요! 일요일에 만나요.', ja:'どういたしまして！日曜日にお会いしましょう。' }
+  ];
+  /* 관리자에서 음료를 바꾸면 서버 목록(iro-drinks-updated)으로 음료 답을 새로 만듭니다 */
+  window.addEventListener('iro-drinks-updated', function(ev){
+    var items = (ev.detail || []).filter(function(d){ return d && d.enabled && !d.archived; });
+    if (!items.length) return;
+    var e = byId('drink'), dl = byId('drink-dl');
+    var pre = items.filter(function(d){ return d.preorder; });
+    e.ko = '신청할 때 ' + items.map(function(d){ return d.ko; }).join(' · ') + ' 중에서 골라 주세요.';
+    e.ja = 'お申し込みの際に、' + items.map(function(d){ return d.ja; }).join('・') + 'からお選びください。';
+    if (pre.length) {
+      dl.ko = '직접 만드는 음료(' + pre.map(function(d){ return d.ko; }).join(' · ') + ')는 모임 전 금요일 정오(' + HOLI_KO + ')에 선택이 마감돼요.\n마감 뒤에도 신청을 받는 날짜에는 다른 음료 중에서 고를 수 있어요.';
+      dl.ja = '手作りのドリンク（' + pre.map(function(d){ return d.ja; }).join('・') + '）は、開催前の金曜12時（正午）で受付を締め切ります（' + HOLI_JA + '）。\n締切後も申し込みを受け付けている日程では、ほかのお飲み物からお選びいただけます。';
+    }
+  });
+  /* 화면 FAQ 항목에 붙는 검색어·이어서 물어보기 (data-c 키 기준) */
+  var FAQ_KW = {
+    c58:['일본어','한국어','실력','수준','레벨','초급','못해','회화','日本語','韓国語','レベル','話せ','初級','会話'],
+    c60:['혼자','친구','같이','ひとり','一人','友達','友人'],
+    c62:['처음','어색','걱정','긴장','낯가','初めて','不安','緊張','人見知り'],
+    c64:['먼저','중간','일찍','조퇴','늦게','지각','途中','早退','帰','遅れ','遅刻'],
+    c66:['신청','예약','가입','어떻게참가','申し込み','申込','予約','参加方法','参加したい'],
+    c68:['취소','환불','못가','불참','캔슬','キャンセル','返金','行けなく','欠席'],
+    c90:['자리','좌석','테이블','몇번','자리확인','좌석확인','席','テーブル','席の確認','席確認']
+  };
+  var FAQ_ACTS = { c66:[APPLY], c90:[SEAT] };
+  var FAQ_HOLI = { c68:true };
+  var FAQ_SUBS = {
+    c58:[S('faq-c60','혼자 참가','ひとり参加'), S('faq-c62','처음이라 걱정돼요','初めてで不安')],
+    c60:[S('faq-c62','처음이라 걱정돼요','初めてで不安'), S('seat-how','자리 정하는 방식','席の決め方')],
+    c62:[S('faq-c58','어학 실력','語学レベル'), S('faq-c60','혼자 참가','ひとり参加')],
+    c66:[S('apply-ko','한국인 신청','韓国の方の申し込み'), S('apply-ja','일본인 신청','日本の方の申し込み'), S('sameday','당일 참가','当日参加'), S('waitlist','정원이 찼을 때','満席のとき'), S('nation','다른 국적','その他の国籍')],
+    c68:[S('refund','환불 마감','返金の期限'), S('change','음료 변경','ドリンクの変更'), S('payfail','입금이 어려워요','振込が難しい')],
+    c90:[S('seat-name','이름 입력','お名前の入力'), S('seat-pass','비밀번호','パスワード'), S('seat-how','자리 정하는 방식','席の決め方'), S('swap','자리 바꾸는 시간','席替えの時間')]
+  };
+
+  function faqItems(){
+    var out = [];
+    document.querySelectorAll('#faq details').forEach(function(d){
+      var s = d.querySelector('summary');
+      var sk = s && s.querySelector('.ko'), sj = s && s.querySelector('.ja');
+      var ak = d.querySelector('.answer.ko'), aj = d.querySelector('.answer.ja');
+      if (!sk || !ak) return;
+      var key = sk.getAttribute('data-c') || '';
+      out.push({ id:'faq-' + key, faq:true, qko:sk.textContent.trim(), qja:(sj ? sj.textContent : '').trim(),
+        kw: FAQ_KW[key] || [], acts: FAQ_ACTS[key], holi: !!FAQ_HOLI[key], subs: FAQ_SUBS[key],
+        ko: ak.textContent.trim(), ja: (aj ? aj.textContent : ak.textContent).trim() });
+    });
+    return out;
+  }
+  function all(){ return BASE.concat(faqItems()); }
+  function byId(id){ return all().filter(function(x){ return x.id === id; })[0]; }
+  function norm(s){ return String(s || '').toLowerCase().replace(/[\s?？!！。、,.~〜・·「」()（）'"]/g, ''); }
+  function grams(s){ var g = {}, n = 0; for (var i = 0; i < s.length - 1; i++){ var k = s.substr(i, 2); if (!g[k]) { g[k] = 1; n++; } } return { g:g, n:n }; }
+  function find(q){
+    var nq = norm(q); if (!nq) return null;
+    var best = null, bs = 0;
+    /* 가장 길게 맞은 검색어가 이깁니다(구체적인 질문 우선). 같으면 맞은 개수, 그래도 같으면 위쪽 항목 */
+    all().forEach(function(e){
+      var top = 0, hits = 0;
+      (e.kw || []).forEach(function(k){ var nk = norm(k); if (nk && nq.indexOf(nk) >= 0) { hits++; if (nk.length > top) top = nk.length; } });
+      var s = top * 10 + hits;
+      if (s > bs) { bs = s; best = e; }
+    });
+    if (best) return best;
+    /* 검색어가 하나도 안 맞으면 FAQ 질문 문장과 글자 겹침으로 고릅니다 */
+    var a = grams(nq), pick = null, ts = 0;
+    faqItems().forEach(function(e){
+      var b = grams(norm(e.qko + e.qja)), hit = 0;
+      for (var k in a.g) if (b.g[k]) hit++;
+      var sc = a.n ? hit / a.n : 0;
+      if (sc > ts) { ts = sc; pick = e; }
+    });
+    return ts >= 0.34 ? pick : null;
+  }
+  /* 금요일이 공휴일로 표시된 가장 가까운 회차 — 해당 답에 한 줄 덧붙입니다 */
+  function holidayNote(){
+    var e = window.IRO_EARLY || {}, kst = new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10);
+    var ds = Object.keys(e).filter(function(d){ return d >= kst; }).sort();
+    if (!ds.length) return null;
+    var a = ds[0].split('-'), t = new Date(Date.UTC(+a[0], +a[1] - 1, +a[2] - 3));
+    var md = (+a[1]) + '/' + (+a[2]), th = (t.getUTCMonth() + 1) + '/' + t.getUTCDate();
+    return { ko:'\n\n※ ' + md + ' 모임은 금요일이 공휴일이라 ' + th + '(목) 정오에 마감해요.',
+             ja:'\n\n※ ' + md + 'の回は金曜が祝日のため、' + th + '（木）12時（正午）に締め切ります。' };
+  }
+
+  function scrollEnd(){ log.scrollTop = log.scrollHeight; }
+  function dual(ko, ja){
+    var f = document.createDocumentFragment();
+    var a = document.createElement('span'); a.className = 'ko'; a.textContent = ko;
+    var b = document.createElement('span'); b.className = 'ja'; b.textContent = ja;
+    f.appendChild(a); f.appendChild(b); return f;
+  }
+  /* 도우미 말풍선 앞에 표정 — smile(답) · wave(인사) · thinking(찾는 중) · sorry(답 없음) */
+  function row(mood){
+    var r = document.createElement('div'); r.className = 'ib-row';
+    var f = document.createElement('img'); f.className = 'ib-av'; f.alt = ''; f.width = 34; f.height = 34;
+    f.src = 'bot-' + (mood || 'smile') + '.webp'; f.setAttribute('aria-hidden', 'true');
+    r.appendChild(f); return r;
+  }
+  function addMe(t){
+    var m = document.createElement('div'); m.className = 'ib-msg ib-me'; m.textContent = t;
+    log.appendChild(m); scrollEnd();
+  }
+  function addBot(ko, ja, acts, subs, mood){
+    var r = row(mood);
+    var m = document.createElement('div'); m.className = 'ib-msg ib-bot';
+    m.appendChild(dual(ko, ja));
+    if (acts && acts.length) {
+      var w = document.createElement('div'); w.className = 'ib-acts';
+      acts.forEach(function(x){
+        var a = document.createElement('a'); a.href = x.href; a.appendChild(dual(x.ko, x.ja));
+        if (x.href.charAt(0) === '#') a.addEventListener('click', function(){ close(); });
+        w.appendChild(a);
+      });
+      m.appendChild(w);
+    }
+    if (subs && subs.length) {
+      var sw = document.createElement('div'); sw.className = 'ib-subs';
+      var cap = document.createElement('p'); cap.className = 'ib-subs-t'; cap.appendChild(dual('이어서 물어보기', 'あわせて聞く'));
+      sw.appendChild(cap);
+      subs.forEach(function(s){
+        var b = document.createElement('button'); b.type = 'button'; b.appendChild(dual(s.ko, s.ja));
+        b.addEventListener('click', function(){ var e = byId(s.to); if (e) answer(L() === 'ko' ? s.ko : s.ja, e); });
+        sw.appendChild(b);
+      });
+      m.appendChild(sw);
+    }
+    r.appendChild(m); log.appendChild(r); scrollEnd();
+  }
+  function reply(fn){
+    if (reduce) { fn(); return; }
+    var r = row('thinking'), t = document.createElement('div'); t.className = 'ib-msg ib-bot';
+    t.innerHTML = '<span class="ib-typing" aria-hidden="true"><i></i><i></i><i></i></span>';
+    r.appendChild(t); log.appendChild(r); scrollEnd();
+    setTimeout(function(){ r.remove(); fn(); }, 560);
+  }
+  function answer(q, entry){
+    addMe(q);
+    var e = entry || find(q);
+    reply(function(){
+      if (e) {
+        var h = e.holi ? holidayNote() : null;
+        addBot(e.ko + (h ? h.ko : ''), e.ja + (h ? h.ja : ''), e.acts, e.subs, e.mood || 'smile');
+      }
+      else addBot('죄송해요, 그 질문은 아직 답을 몰라요.\n아래 버튼에서 골라 보시거나 info@irotomo.com 으로 물어봐 주세요.',
+                  'すみません、そのご質問にはまだお答えできません。\n下のボタンから選ぶか、info@irotomo.com へお問い合わせください。',
+                  [{ href:'mailto:info@irotomo.com', ko:'메일로 문의', ja:'メールで問い合わせ' }], null, 'sorry');
+    });
+  }
+  /* 아래 줄 버튼 — 많이 묻는 주제만. 세부 질문은 답 아래 «이어서 물어보기»로 이어집니다 */
+  var CHIPS = [
+    ['time'], ['place'], ['fee'], ['drink'],
+    ['faq-c66', '신청 방법', '申し込み方法'], ['faq-c68', '취소·환불', 'キャンセル・返金'],
+    ['faq-c90', '자리 확인', '席の確認'], ['payfail'], ['parking'], ['contact']
+  ];
+  function paintChips(){
+    chips.textContent = '';
+    CHIPS.forEach(function(c){
+      var e = byId(c[0]);
+      if (!e) return;
+      var ko = c[1] || (e.chip && e.chip.ko), ja = c[2] || (e.chip && e.chip.ja);
+      var b = document.createElement('button'); b.type = 'button';
+      b.appendChild(dual(ko, ja));
+      b.addEventListener('click', function(){ answer(L() === 'ko' ? ko : ja, byId(c[0]) || e); });
+      chips.appendChild(b);
+    });
+  }
+  function placeholder(){ input.placeholder = L() === 'ko' ? '예: 주차 돼요? / 나이 제한 있어요?' : '例：駐車できますか？／年齢制限は？'; }
+
+  var started = false, lastFocus = null;
+  function open(){
+    lastFocus = document.activeElement;
+    box.hidden = false; btn.classList.add('open'); btn.setAttribute('aria-expanded', 'true');
+    placeholder();
+    if (!started) {
+      started = true; paintChips();
+      /* 표정 그림을 미리 받아 둡니다(각 8KB 안팎) */
+      ['thinking', 'sorry', 'wave'].forEach(function(n){ var i = new Image(); i.src = 'bot-' + n + '.webp'; });
+      addBot('안녕하세요! 이로토모 도우미예요.\n시간·장소·참가비처럼 자주 묻는 질문에 바로 답해 드려요. 아래 버튼을 누르거나, 주차·나이·대기처럼 궁금한 점을 적어 주세요.',
+             'こんにちは！いろとも案内係です。\n時間・場所・参加費など、よくあるご質問にすぐお答えします。下のボタンを押すか、駐車・年齢・キャンセル待ちなど気になることを入力してください。',
+             null, null, 'wave');
+    }
+    if (window.matchMedia && matchMedia('(min-width: 961px)').matches) setTimeout(function(){ input.focus(); }, 60);
+  }
+  function close(){
+    box.hidden = true; btn.classList.remove('open'); btn.setAttribute('aria-expanded', 'false');
+    if (lastFocus && lastFocus.focus && lastFocus !== document.body) { try { lastFocus.focus({ preventScroll:true }); } catch (e) {} }
+  }
+  btn.setAttribute('aria-expanded', 'false');
+  btn.addEventListener('click', open);
+  box.querySelector('.ib-x').addEventListener('click', close);
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !box.hidden) close(); });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var q = input.value.trim(); if (!q) return;
+    input.value = ''; answer(q);
+  });
+  new MutationObserver(placeholder).observe(document.body, { attributes:true, attributeFilter:['data-lang'] });
+
+  /* 모바일: 아래 «신청하기» 띠가 올라오면 그 위로 비켜 앉습니다 */
+  var mcta = document.getElementById('mcta');
+  function lift(){
+    var h = (mcta && mcta.classList.contains('on') && getComputedStyle(mcta).display !== 'none') ? mcta.offsetHeight : 0;
+    btn.style.setProperty('--ib-cta', h + 'px');
+  }
+  if (mcta) new MutationObserver(lift).observe(mcta, { attributes:true, attributeFilter:['class', 'style'] });
+  addEventListener('resize', lift); lift();
 })();
 </script>
 </body>

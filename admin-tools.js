@@ -535,6 +535,23 @@
       wait.addEventListener('click',function(){m.waitlist_on=(+m.waitlist_on===0?1:0);paintWait();saveMeetup(m.date,m.off,note.value,false,shut,m.capacity,m.waitlist_on);});
       row.appendChild(wait);
 
+      /* cf-67: 모임 전 금요일이 공휴일이면 켭니다 — 사전 준비 음료 선택·음료비 환불이 목요일 정오에 마감됩니다 */
+      var hol=document.createElement('button');hol.type='button';hol.className='mt-wait mt-hol';
+      function paintHol(){var on=+m.fri_holiday===1;hol.textContent=on?'목 정오 마감 (금 휴일)':'금 정오 마감';hol.classList.toggle('on',on);
+        hol.title=on?'누르면 금요일 정오 마감으로 되돌립니다':'모임 전 금요일이 공휴일이면 누르세요 (목요일 정오 마감)';}
+      paintHol();
+      hol.addEventListener('click',function(){
+        var next=+m.fri_holiday===1?0:1;hol.disabled=true;$a('mt-state').textContent='저장 중…';
+        apiPost({action:'meetup_save',token:ADMIN.token,date:m.date,fri_holiday:next}).then(function(x){
+          if(!x||!x.ok) throw Error(x&&x.error||'fail');
+          m.fri_holiday=next;paintHol();
+          if(next) EARLY[m.date]=1; else delete EARLY[m.date];
+          window.IRO_EARLY=EARLY;try{syncDrinks();}catch(e){}
+          $a('mt-state').textContent='저장했습니다';
+        }).catch(function(e){$a('mt-state').textContent='저장하지 못했습니다 ('+e.message+')';}).finally(function(){hol.disabled=false;});
+      });
+      row.appendChild(hol);
+
       var tog = document.createElement('button');
       tog.type = 'button'; tog.className = 'mt-tog';
       tog.textContent = m.off ? '휴무' : '진행';
@@ -667,14 +684,14 @@
   function opsPct(a,b){ return b > 0 ? Math.round(a * 1000 / b) / 10 : null; }
 
   /* ── 남은 시간 ────────────────────────────────────────────
-     모임까지 며칠인지, 음료 마감(금요일 정오)까지 몇 시간인지.
+     모임까지 며칠인지, 음료 마감(금요일 정오 · 금 휴일 회차는 목요일 정오)까지 몇 시간인지.
      기준 시각은 SCHED.time 과 PREORDER_LEAD_HOURS 를 그대로 씁니다. */
   function opsCountdown(date){
     var start = (typeof meetStartMs === 'function') ? meetStartMs(date) : NaN;
     if (isNaN(start)) return null;
     var now = Date.now();
     var toMeet = start - now;
-    var toPre  = start - (PREORDER_LEAD_HOURS * 3600000) - now;
+    var toPre  = start - (preorderLeadHours(date) * 3600000) - now;
     /* 남은 «시간»이 아니라 «날짜»로 셉니다.
        50시간 남았을 때 D-3 이 되면 하루를 더 있는 것처럼 보입니다. */
     var kst = new Date(Date.now() + 9 * 3600000);
@@ -2628,8 +2645,8 @@
 
   function seatPublish(){
     var res=SEAT.result, st=$a('seat-state'), pass=($a('seat-pass').value||'').trim();
-    /* 날짜처럼 추측 가능한 값 대신, 비워 두면 4자리 무작위 번호를 만듭니다 */
-    if(!pass){ pass=String(1000+Math.floor(Math.random()*9000)); $a('seat-pass').value=pass; }
+    /* cf-67: 참가자 비밀번호는 참가 날짜(월일 4자리, 예 1012)로 고정합니다. 서버도 날짜를 그대로 받아 줍니다. */
+    if(!pass && res && res.date){ pass=res.date.slice(5).replace('-',''); $a('seat-pass').value=pass; }
     if(!res){ alert('먼저 자리 배정을 해 주세요.'); return; }
     if(res.date!==$a('seat-date').value){ alert('현재 선택한 날짜로 다시 자리 배정을 해 주세요.'); return; }
     if(pass.length<3){ $a('seat-pass').focus(); alert('참가자 조회 비밀번호를 3자 이상 입력해 주세요.'); return; }
@@ -2945,7 +2962,7 @@
         '現在、ドリンク代のご入金がまだ確認できていないため、ご連絡いたしました。',
         '恐れ入りますが、お申し込み時の自動返信メールに記載されている口座へ、ドリンク代のお振込みをお願いいたします。',
         '',
-        'なお、ご入金後のキャンセル・返金につきましては、金曜日12:00までとさせていただいております。',
+        'なお、ご入金後のキャンセル・返金につきましては、{deadline}までとさせていただいております。',
         'それ以降のキャンセルにつきましては、返金ができませんので、あらかじめご了承ください。',
         '',
         'また、韓国の口座をお持ちでないなど、お振込みが難しい場合は、別途このメールにご返信ください。',
@@ -2969,7 +2986,7 @@
         '현재 음료비 입금이 아직 확인되지 않아 연락드립니다.',
         '번거로우시겠지만 신청 시 받으신 자동 회신 메일에 안내된 계좌로 음료비를 입금해 주세요.',
         '',
-        '입금 후 취소·환불은 금요일 12:00까지 가능합니다.',
+        '입금 후 취소·환불은 {deadline}까지 가능합니다.',
         '그 이후의 취소는 환불이 어려운 점 미리 양해 부탁드립니다.',
         '',
         '입금이 어려우신 경우에는 이 메일에 답장으로 알려 주세요.',
@@ -3014,7 +3031,7 @@
           '<button type="button" data-l="ko" aria-pressed="false">한국어 메일</button></div>' +
         '<label class="rm-f"><span>제목</span><input type="text" id="rm-subj" maxlength="150"></label>' +
         '<label class="rm-f"><span>본문</span><textarea id="rm-body" rows="14"></textarea></label>' +
-        '<p class="rm-hint">{name} 은 참가자 이름, {date} 는 모임 날짜로 바뀝니다. 고친 문구는 이 기기에 저장되어 다음에도 그대로 나옵니다.</p>' +
+        '<p class="rm-hint">{name} 은 참가자 이름, {date} 는 모임 날짜, {deadline} 은 환불 마감(금요일 12:00 · 금 휴일 회차는 목요일 12:00)으로 바뀝니다. 고친 문구는 이 기기에 저장되어 다음에도 그대로 나옵니다.</p>' +
         '<label class="rm-bank"><input type="checkbox" id="rm-bank"> 입금 계좌 안내 상자도 메일 아래에 함께 넣기</label>' +
         '<div class="rm-actions"><button type="button" id="rm-reset">기본 문구로</button><span class="rm-sp"></span>' +
           '<button type="button" data-rm-close>닫기</button>' +
