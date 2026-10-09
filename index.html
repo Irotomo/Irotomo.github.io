@@ -3366,6 +3366,52 @@ body.admin-on #iro-bot-btn,body.admin-on #iro-bot{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){#iro-bot,.ib-typing i{animation:none}#iro-bot-btn{transition:none}}
 </style>
+<style id="checkin-mobile-1009">
+/* 2026-10-09 체크인 전용 화면(현장 휴대폰용) — admin-tools.js 의 ckOpen() 이 띄웁니다. 이 블록과 그 함수만 지우면 원래대로 */
+.ck{position:fixed;inset:0;z-index:160;display:flex;flex-direction:column;background:#F7F7F4;color:#141B2E;font-family:var(--font)}
+.ck[hidden]{display:none}
+html.ck-on,html.ck-on body{overflow:hidden}
+.ck-top{flex:0 0 auto;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;background:#141B2E;color:#fff;box-shadow:0 6px 18px -12px rgba(20,27,46,.6)}
+.ck-r1{display:flex;gap:8px;align-items:center}
+.ck-x{flex:0 0 44px;height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;font-size:18px;cursor:pointer}
+.ck-r1 select{flex:1 1 auto;min-width:0;height:44px;padding:0 12px;border:0;border-radius:12px;background:#fff;color:#141B2E;font:700 16px var(--font)}
+.ck-ref{flex:0 0 auto;height:44px;padding:0 14px;border:1px solid rgba(255,255,255,.3);border-radius:12px;background:transparent;color:#fff;font:700 14px var(--font);white-space:nowrap;cursor:pointer}
+.ck-prog{display:flex;align-items:center;gap:12px;margin:12px 2px 10px}
+.ck-num{flex:0 0 auto;font-size:14px;color:#B9C0D6;white-space:nowrap}
+.ck-num b{margin-right:2px;font-size:30px;line-height:1;color:#fff;font-variant-numeric:tabular-nums}
+.ck-bar{flex:1 1 auto;height:10px;border-radius:999px;background:rgba(255,255,255,.14);overflow:hidden}
+.ck-bar i{display:block;width:0;height:100%;border-radius:inherit;background:#7FCBA0;transition:width .3s ease}
+#ck-q{display:block;box-sizing:border-box;width:100%;height:46px;padding:0 14px;border:0;border-radius:12px;background:#fff;color:#141B2E;font:16px var(--font)}
+.ck-f{display:flex;gap:6px;margin-top:10px;overflow-x:auto;scrollbar-width:none}
+.ck-f::-webkit-scrollbar{display:none}
+.ck-f button{flex:0 0 auto;height:36px;padding:0 13px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:transparent;color:#DDE2EF;font:700 13.5px var(--font);white-space:nowrap;cursor:pointer}
+.ck-f button[aria-pressed="true"]{background:#fff;color:#141B2E;border-color:#fff}
+.ck-f button em{margin-left:4px;font-style:normal;opacity:.7}
+.ck-list{flex:1 1 auto;min-height:0;overflow-y:auto;padding:4px 12px calc(96px + env(safe-area-inset-bottom));overscroll-behavior:contain}
+.ck-sec{margin:14px 4px 6px;font-size:12.5px;font-weight:800;color:#5F6782}
+.ck-p{display:flex;align-items:center;gap:12px;width:100%;min-height:62px;margin:0 0 6px;padding:10px 12px 10px 14px;border:1px solid #E3E1D8;border-radius:14px;background:#fff;color:#141B2E;text-align:left;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s,border-color .15s}
+.ck-p:active{transform:scale(.99)}
+.ck-p:focus-visible{outline:2px solid #141B2E;outline-offset:2px}
+.ck-c{flex:0 0 30px;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:30px;height:30px;border:2px solid #C9C6BB;border-radius:50%}
+.ck-p[aria-pressed="true"]{background:#EEF8F2;border-color:#BFE0CC}
+.ck-p[aria-pressed="true"] .ck-c{background:#327654;border-color:#327654}
+.ck-p[aria-pressed="true"] .ck-c::after{content:'';width:12px;height:7px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:translateY(-2px) rotate(-45deg)}
+.ck-nm{flex:1 1 auto;min-width:0;font-size:17px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}
+.ck-nm small{display:block;margin-top:2px;font-size:13px;font-weight:600;color:#5F6782}
+.ck-b{flex:0 0 auto;padding:5px 10px;border-radius:999px;font-size:12.5px;font-weight:800;white-space:nowrap}
+.ck-b.paid{background:#EEF8F2;color:#327654}
+.ck-b.unpaid{background:#FBE9E7;color:#A33B2E}
+.ck-b.onsite{background:#EEF4FB;color:#315E92}
+.ck-b.staff{background:#F0EFEA;color:#5F6782}
+.ck-empty{padding:40px 12px;text-align:center;color:#5F6782;font-size:14px}
+.ck-toast{position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:161;display:flex;align-items:center;gap:10px;padding:12px 12px 12px 16px;border-radius:14px;background:#141B2E;color:#fff;font-size:14.5px;font-weight:700;box-shadow:0 12px 30px -10px rgba(20,27,46,.6)}
+.ck-toast[hidden]{display:none}
+.ck-toast span{flex:1 1 auto;min-width:0}
+.ck-toast button{flex:0 0 auto;height:38px;padding:0 14px;border:0;border-radius:10px;background:#F6BF5B;color:#141B2E;font:800 14px var(--font);white-space:nowrap;cursor:pointer}
+.ck-open{display:block;width:100%;min-height:48px;margin:0 0 12px;border:0;border-radius:12px;background:#141B2E;color:#fff;font:800 15px var(--font);cursor:pointer}
+@media(min-width:700px){.ck-top,.ck-list{padding-left:calc(50% - 320px);padding-right:calc(50% - 320px)}.ck-toast{left:50%;right:auto;width:420px;transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ck-bar i,.ck-p{transition:none}}
+</style>
 </head>
 <body data-lang="ja">
 
@@ -4087,6 +4133,7 @@ body.admin-on #iro-bot-btn,body.admin-on #iro-bot{display:none!important}
 
 
     <section class="sg-pane" data-p="checkin" hidden>
+      <button type="button" id="ck-open" class="ck-open">체크인 전용 화면으로 크게 보기 (휴대폰용)</button>
       <div class="checkin-tools">
         <label><span>모임 날짜</span><select id="checkin-date"></select></label>
         <label style="flex:1;min-width:220px"><span>이름 검색</span><input type="search" id="checkin-q" placeholder="이름 입력"></label>
@@ -4266,6 +4313,7 @@ body.admin-on #iro-bot-btn,body.admin-on #iro-bot{display:none!important}
   <span class="sp">
     <button type="button" id="adm-stats-open">통계</button>
     <button type="button" id="adm-signups-open">신청자</button>
+    <button type="button" id="adm-ck-open">체크인</button>
     <button type="button" id="adm-reset" disabled title="페이지에서 초기화할 문구를 먼저 눌러 주세요">선택 문구 초기화</button>
     <button type="button" class="pri" id="adm-save">저장</button>
     <button type="button" id="adm-exit">종료</button>
@@ -5189,8 +5237,11 @@ window.IROLANG = (function(){
 
   /* 숨은 진입로 ─ ① 주소 끝에 #irotomo-admin  ② 푸터의 모임 이름을 5번 연속 탭 (PC 는 Shift + 클릭 한 번) */
   function openLoginLazy(){ adminLoad(function(){ ADMIN_JS.api.openLogin(); }); }
-  if ((location.hash || '').toLowerCase() === '#irotomo-admin') {
+  var adminHash = (location.hash || '').toLowerCase();
+  if (adminHash === '#irotomo-admin' || adminHash === '#irotomo-checkin') {
     if (history.replaceState) history.replaceState(null, '', location.pathname);
+    /* #irotomo-checkin — 로그인하면 바로 체크인 전용 화면 (현장 휴대폰 즐겨찾기용) */
+    if (adminHash === '#irotomo-checkin') ADMIN_JS.after = 'checkin';
     openLoginLazy();
   }
   (function(){

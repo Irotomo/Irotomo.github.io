@@ -42,6 +42,7 @@
       $a('adm-id').value = ''; $a('adm-pw').value = '';
       startEdit();
       checkDeploy();
+      if (ADMIN_JS.after === 'checkin') { ADMIN_JS.after = null; ckOpen(); }
       if (d.weakPw) warnBar('⚠ 관리자 비밀번호가 짧습니다 — Code.gs 의 ADMIN_PW 를 12자 이상으로 바꿔 주세요');
     }).catch(function(){
       $a('adm-msg').textContent = '서버에 연결하지 못했습니다.';
@@ -1515,6 +1516,175 @@
   }
   on('checkin-date','change',checkinPaint);
   on('checkin-q','input',checkinPaint);
+
+  /* ── 체크인 전용 화면 (현장 휴대폰용) — 2026-10-09 ───────────────
+     출석표에 체크하는 것만: 이름 · 음료 · 입금 상태. 이름 줄 전체를 누르면 출석, 다시 누르면 취소.
+     누른 줄은 자리를 옮기지 않고 색만 바뀌며, 아래 «되돌리기»로 바로 취소할 수 있습니다.
+     검색은 한글 초성(ㅎㄱㄷ)·히라가나/가타카나 구분 없이 됩니다. 저장은 기존 signup_save(attended) 그대로.
+     진입: 관리자 막대 «체크인» · 신청자 창 체크인 탭의 큰 버튼 · 주소 끝 #irotomo-checkin (로그인 후 바로) */
+  var CK = { f:'all', pending:0, timer:null, toastT:null };
+  var CK_CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+  function ckCho(s){ return String(s || '').replace(/[가-힣]/g, function(c){ return CK_CHO.charAt(Math.floor((c.charCodeAt(0) - 0xAC00) / 588)); }); }
+  function ckNorm(s){ return String(s || '').toLowerCase().replace(/\s+/g, '').replace(/[\u30A1-\u30F6]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 0x60); }); }
+  function ckMatch(r, q){
+    q = String(q || '').replace(/\s+/g, ''); if (!q) return true;
+    var n = ckNorm(r.name);
+    if (n.indexOf(ckNorm(q)) >= 0) return true;
+    return /^[ㄱ-ㅎ]+$/.test(q) && ckCho(n).indexOf(q) >= 0;
+  }
+  function ckPay(r){
+    if (+r.staff === 1) return ['staff', '스탭'];
+    if (+r.paid === 1) return ['paid', '입금'];
+    if (+r.onsite === 1) return ['onsite', '현장지불'];
+    return ['unpaid', '미입금'];
+  }
+  function ckDrink(r){
+    var d = (ADMIN_DRINK_CATALOG || []).filter(function(x){ return x.id === r.drink; })[0];
+    return d ? d.ko : (r.drink ? String(r.drink) : '음료 없음');
+  }
+  function ckBuild(){
+    if ($a('ck')) return;
+    var el = document.createElement('div');
+    el.id = 'ck'; el.className = 'ck'; el.hidden = true;
+    el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', '체크인');
+    el.innerHTML =
+      '<div class="ck-top">' +
+        '<div class="ck-r1"><button type="button" class="ck-x" id="ck-x" aria-label="닫기">✕</button>' +
+        '<select id="ck-date" aria-label="모임 날짜"></select>' +
+        '<button type="button" class="ck-ref" id="ck-ref">새로고침</button></div>' +
+        '<div class="ck-prog"><div class="ck-num"><b id="ck-n">0</b><span id="ck-all">/0 출석</span></div><div class="ck-bar"><i id="ck-bar"></i></div></div>' +
+        '<input type="search" id="ck-q" placeholder="이름 검색 · 초성(ㅎㄱㄷ)도 돼요" autocomplete="off" enterkeyhint="search">' +
+        '<div class="ck-f" id="ck-f">' +
+          '<button type="button" data-f="all" aria-pressed="true">전체<em></em></button>' +
+          '<button type="button" data-f="todo" aria-pressed="false">미출석<em></em></button>' +
+          '<button type="button" data-f="done" aria-pressed="false">출석<em></em></button>' +
+          '<button type="button" data-f="unpaid" aria-pressed="false">미입금<em></em></button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ck-list" id="ck-list"></div>' +
+      '<div class="ck-toast" id="ck-toast" hidden><span id="ck-toast-t"></span><button type="button" id="ck-undo">되돌리기</button></div>';
+    document.body.appendChild(el);
+    $a('ck-x').addEventListener('click', ckClose);
+    $a('ck-ref').addEventListener('click', function(){ ckRefresh(true); });
+    $a('ck-date').addEventListener('change', function(){ $a('ck-q').value = ''; ckPaint(); $a('ck-list').scrollTop = 0; });
+    $a('ck-q').addEventListener('input', ckPaint);
+    $a('ck-f').addEventListener('click', function(e){
+      var b = e.target.closest('button[data-f]'); if (!b) return;
+      CK.f = b.dataset.f;
+      $a('ck-f').querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+      ckPaint(); $a('ck-list').scrollTop = 0;
+    });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && $a('ck') && !$a('ck').hidden) ckClose(); });
+  }
+  function ckFillDates(){
+    var sel = $a('ck-date'), cur = sel.value, days = {};
+    (SG.rows || []).forEach(function(r){ if (r.date && +r.waitlisted !== 1) days[r.date] = 1; });
+    var arr = Object.keys(days).sort(), WD = ['일','월','화','수','목','금','토'];
+    sel.innerHTML = '';
+    arr.forEach(function(d){
+      var o = document.createElement('option'); o.value = d;
+      o.textContent = d.replace(/-/g, '.') + ' (' + WD[new Date(d + 'T00:00:00').getDay()] + ')';
+      sel.appendChild(o);
+    });
+    if (cur && days[cur]) { sel.value = cur; return; }
+    var today = kstToday();
+    var t = arr.filter(function(d){ return d >= today; })[0];
+    if (t) sel.value = t; else if (arr.length) sel.value = arr[arr.length - 1];
+  }
+  function ckPaint(){
+    var box = $a('ck-list'); if (!box) return;
+    var d = $a('ck-date').value, q = $a('ck-q').value;
+    var all = (SG.rows || []).filter(function(r){ return r.date === d && +r.waitlisted !== 1; });
+    var done = all.filter(function(r){ return +r.attended === 1; }).length;
+    var unpaid = all.filter(function(r){ return ckPay(r)[0] === 'unpaid'; }).length;
+    $a('ck-n').textContent = done;
+    $a('ck-all').textContent = '/' + all.length + ' 출석';
+    $a('ck-bar').style.width = (all.length ? Math.round(done * 100 / all.length) : 0) + '%';
+    var cnt = { all:all.length, todo:all.length - done, done:done, unpaid:unpaid };
+    $a('ck-f').querySelectorAll('button').forEach(function(b){ b.querySelector('em').textContent = cnt[b.dataset.f]; });
+    var list = all.filter(function(r){
+      if (CK.f === 'todo' && +r.attended === 1) return false;
+      if (CK.f === 'done' && +r.attended !== 1) return false;
+      if (CK.f === 'unpaid' && ckPay(r)[0] !== 'unpaid') return false;
+      return ckMatch(r, q);
+    });
+    box.innerHTML = '';
+    if (!all.length) { box.innerHTML = '<p class="ck-empty">이 날짜에 신청자가 없습니다.</p>'; return; }
+    if (!list.length) { box.innerHTML = '<p class="ck-empty">찾는 이름이 없습니다.</p>'; return; }
+    /* 일본 → 한국 → 스탭 묶음, 각 묶음 안은 이름순(순서는 출석해도 바뀌지 않음) */
+    var groups = [
+      ['일본', nameSort(list.filter(function(r){ return +r.staff !== 1 && seatIsJa(r); }), true)],
+      ['한국', nameSort(list.filter(function(r){ return +r.staff !== 1 && !seatIsJa(r); }), false)],
+      ['스탭', nameSort(list.filter(function(r){ return +r.staff === 1; }), false)]
+    ];
+    groups.forEach(function(g){
+      if (!g[1].length) return;
+      var h = document.createElement('p'); h.className = 'ck-sec'; h.textContent = g[0] + ' · ' + g[1].length + '명';
+      box.appendChild(h);
+      g[1].forEach(function(r){
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'ck-p';
+        b.setAttribute('aria-pressed', String(+r.attended === 1));
+        var c = document.createElement('span'); c.className = 'ck-c'; c.setAttribute('aria-hidden', 'true');
+        var nm = document.createElement('span'); nm.className = 'ck-nm'; nm.textContent = r.name || '이름 없음';
+        var sm = document.createElement('small'); sm.textContent = ckDrink(r); nm.appendChild(sm);
+        var p = ckPay(r), bd = document.createElement('span'); bd.className = 'ck-b ' + p[0]; bd.textContent = p[1];
+        b.appendChild(c); b.appendChild(nm); b.appendChild(bd);
+        b.addEventListener('click', function(){ ckToggle(r); });
+        box.appendChild(b);
+      });
+    });
+  }
+  function ckToast(r, v){
+    var t = $a('ck-toast'); clearTimeout(CK.toastT);
+    $a('ck-toast-t').textContent = (r.name || '') + (v ? ' 출석' : ' 출석 취소');
+    $a('ck-undo').onclick = function(){ t.hidden = true; ckToggle(r, true); };
+    t.hidden = false;
+    CK.toastT = setTimeout(function(){ t.hidden = true; }, 5000);
+  }
+  function ckToggle(r, quiet){
+    var prev = +r.attended === 1 ? 1 : 0, v = prev ? 0 : 1;
+    r.attended = v; ckPaint(); try { checkinPaint(); } catch (e) {}
+    if (navigator.vibrate) { try { navigator.vibrate(v ? 18 : 8); } catch (e) {} }
+    if (!quiet) ckToast(r, v); else $a('ck-toast').hidden = true;
+    CK.pending++;
+    apiPost({ action:'signup_save', token: ADMIN.token, id: r.id, attended: v }).then(function(x){
+      if (!x || !x.ok) throw new Error((x && x.error) || 'fail');
+    }).catch(function(){
+      r.attended = prev; ckPaint(); try { checkinPaint(); } catch (e) {}
+      alert((r.name || '') + ' 출석을 저장하지 못했습니다. 와이파이를 확인하고 다시 눌러 주세요.');
+    }).then(function(){ CK.pending--; });
+  }
+  /* 여러 스탭이 각자 휴대폰으로 체크할 수 있도록 서버 명단을 다시 받아 옵니다 (저장 중일 때는 건너뜀) */
+  function ckRefresh(manual){
+    if (CK.pending) return;
+    var b = $a('ck-ref'); if (manual && b) { b.disabled = true; b.textContent = '불러오는 중…'; }
+    apiPost({ action:'signups', token: ADMIN.token }).then(function(d){
+      if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+      if (CK.pending) return;
+      SG.rows = d.rows || [];
+      if (d.drinks) adminApplyCatalog(d.drinks);
+      ckFillDates(); ckPaint(); try { checkinPaint(); } catch (e) {}
+    }).catch(function(e){ if (manual) alert('명단을 불러오지 못했습니다 (' + e.message + ')'); })
+      .then(function(){ if (b) { b.disabled = false; b.textContent = '새로고침'; } });
+  }
+  function ckOpen(){
+    ckBuild();
+    var el = $a('ck');
+    el.hidden = false; document.documentElement.classList.add('ck-on');
+    if ((SG.rows || []).length) { ckFillDates(); ckPaint(); }
+    ckRefresh(false);
+    clearInterval(CK.timer);
+    CK.timer = setInterval(function(){ if (!$a('ck').hidden && !document.hidden) ckRefresh(false); }, 45000);
+  }
+  function ckClose(){
+    var el = $a('ck'); if (!el) return;
+    el.hidden = true; $a('ck-toast').hidden = true;
+    document.documentElement.classList.remove('ck-on');
+    clearInterval(CK.timer);
+    try { loadDashboard(true); } catch (e) {}
+  }
+  on('adm-ck-open', 'click', ckOpen);
+  on('ck-open', 'click', ckOpen);
 
   /* ── 자리 배정 ─────────────────────────────────────────────
      국적 비율을 최대한 일정하게 유지하고, 스탭을 먼저 흩어 놓은 뒤
