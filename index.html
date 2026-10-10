@@ -3306,6 +3306,27 @@ details>summary::after{transition:transform .3s cubic-bezier(.2,.7,.3,1)}
 #iro-bot-btn .ib-badge{position:absolute;right:-2px;top:-2px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#141B2E;color:#fff;
   font:700 12px/20px var(--font,system-ui);text-align:center;box-shadow:0 0 0 2px #fff}
 #iro-bot-btn.open{transform:scale(.9);opacity:0;pointer-events:none}
+/* 안내 말풍선 (2026-10-10) — 방문 중 한 번, 스크롤을 멈추면 고양이 옆에 페이드인 */
+.ib-tip{position:fixed;right:92px;bottom:30px;z-index:72;display:flex;align-items:flex-start;gap:2px;max-width:min(280px,calc(100vw - 120px));
+  padding:11px 6px 11px 14px;border:1px solid #E3E1D8;border-radius:16px;background:#fff;color:#141B2E;
+  box-shadow:0 14px 34px -14px rgba(20,27,46,.45);opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+.ib-tip.on{opacity:1;transform:none;pointer-events:auto}
+.ib-tip[hidden]{display:none}
+.ib-tip::after{content:'';position:absolute;right:-7px;bottom:18px;width:12px;height:12px;background:#fff;border-right:1px solid #E3E1D8;border-top:1px solid #E3E1D8;transform:rotate(45deg)}
+.ib-tip-go{flex:1 1 auto;min-width:0;padding:0;border:0;background:none;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.ib-tip-go b{display:block;font-size:14px;font-weight:800;line-height:1.4}
+.ib-tip-go small{display:block;margin-top:2px;font-size:12px;font-weight:600;color:#5F6782;line-height:1.45}
+.ib-tip-go .ko{word-break:keep-all}
+.ib-tip-x{flex:0 0 auto;width:28px;height:28px;margin:-4px 0 0;border:0;border-radius:50%;background:none;color:#8a86a0;font-size:16px;line-height:1;cursor:pointer}
+.ib-tip-x:hover{background:#F3F1EA}
+body.admin-on .ib-tip{display:none!important}
+@media(max-width:960px){
+  .ib-tip{right:auto;left:78px;bottom:calc(var(--ib-cta,0px) + 16px + env(safe-area-inset-bottom))}
+  .ib-tip::after{right:auto;left:-7px;border-right:0;border-top:0;border-left:1px solid #E3E1D8;border-bottom:1px solid #E3E1D8}
+}
+/* 휴대폰은 아래 버튼을 덜 가리도록 한 줄만 (2026-10-10) */
+@media(max-width:960px){.ib-tip{padding:10px 4px 10px 13px}.ib-tip-go small{display:none}.ib-tip-x{margin:-3px 0 -3px}}
+@media(prefers-reduced-motion:reduce){.ib-tip{transition:none;transform:none}}
 .ib-face{display:block;width:40px;height:40px}
 .ib-face img,.ib-face svg{display:block;width:100%;height:100%;object-fit:contain}
 #iro-bot{position:fixed;right:24px;bottom:24px;z-index:80;width:min(372px,calc(100vw - 48px));height:min(560px,calc(100vh - 48px));
@@ -6221,6 +6242,10 @@ document.getElementById('mobile-top').addEventListener('click',function(){
   <span class="ib-badge" aria-hidden="true">?</span>
   <span class="ko" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">궁금한 점 물어보기</span><span class="ja" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">よくある質問に答えます</span>
 </button>
+<div id="iro-bot-tip" class="ib-tip" hidden>
+  <button type="button" class="ib-tip-go"><b><span class="ko">궁금한 건 여기서 물어보세요!</span><span class="ja">ご質問は、ここからどうぞ！</span></b><small><span class="ko">참가비·주차·자리 확인 등 바로 알려 드려요</span><span class="ja">参加費・駐車・席の確認など、すぐにお答えします</span></small></button>
+  <button type="button" class="ib-tip-x" aria-label="닫기 / 閉じる">×</button>
+</div>
 <div id="iro-bot" role="dialog" aria-labelledby="ib-title" hidden>
   <div class="ib-head">
     <span class="ib-face" aria-hidden="true"><img src="bot-smile.webp" alt="" width="38" height="38" decoding="async"></span>
@@ -6570,6 +6595,7 @@ document.getElementById('mobile-top').addEventListener('click',function(){
   var started = false, lastFocus = null;
   function open(){
     ev('열기');
+    try { localStorage.setItem('iro-bot-opened', '1'); } catch (e) {}   /* 연 적 있는 기기에는 안내 말풍선을 다시 띄우지 않음 */
     lastFocus = document.activeElement;
     box.hidden = false; btn.classList.add('open'); btn.setAttribute('aria-expanded', 'true');
     placeholder();
@@ -6589,6 +6615,49 @@ document.getElementById('mobile-top').addEventListener('click',function(){
   }
   btn.setAttribute('aria-expanded', 'false');
   btn.addEventListener('click', open);
+
+  /* ── 안내 말풍선 ── 페이지에 8초 이상 있고 스크롤을 2.5초 멈추면 페이드인, 6초 뒤 저절로 사라집니다.
+     도우미를 한 번이라도 열어 본 기기에는 다시 띄우지 않고, 안 열어 본 기기도 하루(한국 시각) 한 번까지만.
+     기억은 이 기기(localStorage)에만 두며 서버로 보내지 않습니다. 입력 중·관리자 모드에도 띄우지 않습니다. */
+  var tip = document.getElementById('iro-bot-tip'), TIP_DAY = 'iro-bot-tip-day', BOT_USED = 'iro-bot-opened', tipT = null, idleT = null, since = Date.now();
+  function kstDay(){ return new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10); }
+  var faceImg = btn.querySelector('.ib-face img');
+  function tipSeen(){
+    try { return localStorage.getItem(BOT_USED) === '1' || localStorage.getItem(TIP_DAY) === kstDay(); }
+    catch (e) { return true; }   /* 기억할 수 없는 환경이면 매번 뜨지 않도록 아예 띄우지 않음 */
+  }
+  function tipMark(){ try { localStorage.setItem(TIP_DAY, kstDay()); } catch (e) {} }
+  function tipHide(){
+    if (!tip || tip.hidden) return;
+    tip.classList.remove('on'); clearTimeout(tipT);
+    if (faceImg) faceImg.src = 'bot-smile.webp';
+    setTimeout(function(){ if (!tip.classList.contains('on')) tip.hidden = true; }, 460);
+  }
+  function tipShow(){
+    if (!tip || tipSeen() || started || document.body.classList.contains('admin-on')) return;
+    var a = document.activeElement;
+    if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return;          /* 신청서 입력 중에는 방해하지 않음 */
+    if (getComputedStyle(btn).display === 'none' || btn.classList.contains('open')) return;
+    tipMark(); ev('말풍선 표시');
+    if (faceImg) faceImg.src = 'bot-wave.webp';
+    tip.hidden = false; void tip.offsetWidth; tip.classList.add('on');
+    tipT = setTimeout(tipHide, 6000);
+  }
+  function tipIdle(){
+    clearTimeout(idleT);
+    if (tipSeen() || started) return;
+    idleT = setTimeout(function(){
+      if (Date.now() - since < 8000) { tipIdle(); return; }
+      tipShow();
+    }, 2500);
+  }
+  if (tip && !tipSeen()) {
+    addEventListener('scroll', tipIdle, { passive:true });
+    tipIdle();
+    tip.querySelector('.ib-tip-go').addEventListener('click', function(){ tipHide(); open(); });
+    tip.querySelector('.ib-tip-x').addEventListener('click', tipHide);
+    btn.addEventListener('click', tipHide);
+  }
   box.querySelector('.ib-x').addEventListener('click', close);
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !box.hidden) close(); });
   form.addEventListener('submit', function(e){
@@ -6603,6 +6672,7 @@ document.getElementById('mobile-top').addEventListener('click',function(){
   function lift(){
     var h = (mcta && mcta.classList.contains('on') && getComputedStyle(mcta).display !== 'none') ? mcta.offsetHeight : 0;
     btn.style.setProperty('--ib-cta', h + 'px');
+    var tp = document.getElementById('iro-bot-tip'); if (tp) tp.style.setProperty('--ib-cta', h + 'px');
   }
   if (mcta) new MutationObserver(lift).observe(mcta, { attributes:true, attributeFilter:['class', 'style'] });
   addEventListener('resize', lift); lift();
