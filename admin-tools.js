@@ -4010,7 +4010,10 @@
         '<div><h4>유입 경로</h4>' + barRows(d.ref, d.total) + '</div>' +
         '<div><h4>기기</h4>' + barRows(d.device, d.total) + '</div>' +
         '<div><h4>페이지</h4>' + barRows(d.page, d.total) + '</div>' +
-        '<div><h4>버튼 클릭</h4>' + barRows(d.event, 0) + '</div>' +
+        '<div><h4>버튼 클릭</h4>' + barRows((d.event || []).filter(function(x){ return !/^도우미/.test(x.k); }), 0) + '</div>' +
+        /* 자동 답변 도우미 — 열기 · 직접 입력 · 고른 주제 · 답 없음 (2026-10-10) */
+        '<div><h4>도우미 (열기 · 고른 질문)</h4>' + barRows((d.event || []).filter(function(x){ return /^도우미/.test(x.k); })
+          .map(function(x){ return { k: x.k.replace(/^도우미:?\s*/, '') || x.k, n: x.n }; }), 0) + '</div>' +
         '<div><h4>요일</h4>' + barRows(dowList, d.total) + '</div>' +
         '<div><h4>시간대</h4>' + barRows(hourList, d.total) + '</div>' +
       '</div>' +

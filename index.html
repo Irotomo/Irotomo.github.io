@@ -4600,6 +4600,9 @@ window.IROLANG = (function(){
     } catch (e) {}
   }
 
+  /* 자동 답변 도우미가 «어떤 주제를 골랐는지»만 같은 방문 기록에 남깁니다 (질문 글자는 보내지 않음, 2026-10-10) */
+  window.IRO_TRACK = track;
+
   document.addEventListener('click', function(e){
     var a = e.target.closest && e.target.closest('a,button');
     if (!a) return;
@@ -6238,9 +6241,18 @@ document.getElementById('mobile-top').addEventListener('click',function(){
    · 시간·장소·참가비 같은 기본 안내는 아래 BASE 에 적혀 있습니다. 모임 정보가 바뀌면 여기도 고칩니다.
    · 답 아래에 «이어서 물어보기»(subs) 버튼을 달아, 주차 → 신청 방법 / 가능 시간처럼 가지를 쳐서 고를 수 있습니다.
    · 금요일이 공휴일인 회차(관리자 «모임 날짜 관리»의 «금 휴일»)는 마감 관련 답에 목요일 정오 안내를 덧붙입니다.
-   · 질문은 이 기기 안에서만 비교하며 어디에도 보내지 않습니다. */
+   · 질문은 이 기기 안에서만 비교하며 어디에도 보내지 않습니다.
+     사용 통계로는 «도우미 열기 · 고른 주제 이름 · 답 없음 · 직접 입력» 횟수만 방문 기록(ev)에 남깁니다(관리자 «통계»의 도우미 칸).
+     주제 이름에 «신청»이 들어가면 신청 전환율에 잘못 세이므로 EV 이름에는 쓰지 않습니다. */
 (function(){
   var btn = document.getElementById('iro-bot-btn'), box = document.getElementById('iro-bot');
+  var EV = { time:'시간', place:'장소', fee:'참가비', drink:'음료', payfail:'입금 어려움', paycheck:'입금 확인', change:'음료 변경',
+    waitlist:'정원·대기', parking:'주차', 'park-how':'주차 방법', 'park-time':'주차 시간', age:'나이', nation:'국적', sameday:'당일 참가',
+    after:'2차', contact:'문의', hello:'인사', thanks:'감사', swap:'자리 교체 시간', 'seat-how':'자리 정하는 방식', 'seat-name':'자리 확인·이름',
+    'seat-pass':'자리 확인·비밀번호', refund:'환불 마감', 'drink-dl':'음료 마감', 'fee-ko':'한국인 참가비', 'fee-ja':'일본인 참가비',
+    'pay-how':'입금 방법', 'apply-ko':'한국인 참가 방법', 'apply-ja':'일본인 참가 방법', 'faq-c58':'어학 실력', 'faq-c60':'혼자 참가',
+    'faq-c62':'처음이라 걱정', 'faq-c64':'중간에 귀가', 'faq-c66':'참가 방법', 'faq-c68':'취소·환불', 'faq-c90':'자리 확인' };
+  function ev(name){ try { if (window.IRO_TRACK) window.IRO_TRACK('도우미: ' + name); } catch (e) {} }
   if (!btn || !box) return;
   var log = box.querySelector('.ib-log'), chips = box.querySelector('.ib-chips');
   var form = box.querySelector('.ib-form'), input = form.querySelector('input');
@@ -6523,6 +6535,8 @@ document.getElementById('mobile-top').addEventListener('click',function(){
   function answer(q, entry){
     addMe(q);
     var e = entry || find(q);
+    if (!entry) ev('직접 입력');
+    ev(e ? (EV[e.id] || String(e.id).replace(/신청/g, '참가')) : '답 없음');
     reply(function(){
       if (e) {
         var h = e.holi ? holidayNote() : null;
@@ -6555,6 +6569,7 @@ document.getElementById('mobile-top').addEventListener('click',function(){
 
   var started = false, lastFocus = null;
   function open(){
+    ev('열기');
     lastFocus = document.activeElement;
     box.hidden = false; btn.classList.add('open'); btn.setAttribute('aria-expanded', 'true');
     placeholder();
