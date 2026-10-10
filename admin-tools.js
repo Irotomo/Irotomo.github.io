@@ -395,6 +395,7 @@
       if (t === 'dash') { loadDashboard(); }
       if (t === 'dates' && !loaded.dates) { loaded.dates = true; loadMeetups(); }
       if (t === 'checkin') { checkinFillDates(); checkinPaint(); }
+      if (t === 'black') { blLoad(); }
       if (t === 'seat') { seatFillDates(); seatLoadStatus(); }
       if (t === 'after') { afterFillDates(); afterPaint(); afterLoadOrder(afterDate()); }
     });
@@ -990,7 +991,8 @@
                   + '</span><span>입금 ' + paidN + '/' + gN
                   + (onsiteN ? ' · 현장 ' + onsiteN : '')
                   + ' · 출석 ' + attN + '/' + gN
-                  + (sN ? ' · 스탭 ' + sN : '') + '</span>';
+                  + (sN ? ' · 스탭 ' + sN : '')
+                  + (list.some(function(x){ return x.absence; }) ? ' · 불참 ' + list.filter(function(x){ return x.absence; }).length : '') + '</span>';
 
       /* 주 2회 이상 운영해도 날짜별 명단이 섞이지 않도록
          각 날짜 제목에서 바로 그 날짜 명단표를 받을 수 있게 합니다. */
@@ -1000,6 +1002,8 @@
         rb.textContent = '명단표';
         rb.setAttribute('role', 'button');
         prepareRosterLink(rb, k, list.slice());
+        /* 체크인에서 출석을 바꾼 뒤 바로 받아도 최신 ✓/불참이 들어가도록 누르는 순간 다시 만듭니다 */
+        (function(rb, k, list){ rb.addEventListener('click', function(){ prepareRosterLink(rb, k, list); }); })(rb, k, list.slice());
         h.appendChild(rb);
         /* 미입금 안내(독촉) 메일 — 다가오는 모임에 입금·현장지불 처리가 안 된 사람이 있을 때만 (2026-10-02) */
         var unpaid = list.filter(remindEligible);
@@ -1339,6 +1343,22 @@
         ? '이 모임 날짜보다 앞선 신청 기록이 ' + prior + '회 있습니다.'
         : '이 모임 날짜보다 앞선 신청 기록이 없습니다.';
       row.appendChild(vc);
+      /* 기한 후 취소 · 무단 불참 (2026-10-10) — 이 날짜 표시와 그 사람의 누적 횟수 */
+      var absTotal = absPrev(r) + (r.absence ? 1 : 0);
+      if (r.absence || absTotal) {
+        var abg = document.createElement('span'); abg.className = 'sg-abs' + (r.absence ? ' on' : '');
+        abg.textContent = (r.absence ? ABS_LABEL[r.absence] + ' · ' : '') + '취소·불참 누적 ' + absTotal + '회';
+        abg.title = '기한 후 취소 ' + (+r.late_count || 0) + '회 · 무단 불참 ' + (+r.noshow_count || 0) + '회 (서버에서 불러온 시점 기준)';
+        row.appendChild(abg);
+      }
+      /* 블랙리스트 (2026-10-10) — 표시만, 신청은 그대로 받음 */
+      if (r.black || +r.black_name === 1) {
+        var blb = document.createElement('span');
+        blb.className = 'sg-bl ' + (r.black || 'name');
+        blb.textContent = r.black ? BL_LABEL[r.black] : '블랙리스트와 같은 이름';
+        blb.title = r.black ? ('사유: ' + (r.black_reason || '없음')) : '이메일은 다르지만 블랙리스트에 같은 이름이 있습니다. 같은 사람인지 확인해 주세요.';
+        row.appendChild(blb);
+      }
       if (sgSameNameCount(r) > 1) {
         var dup=document.createElement('span'); dup.className='sg-dup'; dup.textContent='동명이인/중복 확인';
         dup.title='같은 날짜에 같은 이름이 2명 이상 있습니다. 이메일을 확인해 주세요.';
@@ -1445,6 +1465,14 @@
     });
     att.appendChild(acb); att.appendChild(at); row.appendChild(att);
 
+    if (+r.staff !== 1) {
+      var blBtn = document.createElement('button');
+      blBtn.type = 'button'; blBtn.className = 'sg-bl-btn'; blBtn.textContent = r.black ? '블랙 수정' : '블랙';
+      blBtn.title = '블랙리스트(주의 인물 · 참가 거부 필요) 지정';
+      blBtn.addEventListener('click', function(){ blOpen({ id: r.id, name: r.name, email: r.email, level: r.black, reason: r.black_reason }); });
+      row.appendChild(blBtn);
+    }
+
     var del = document.createElement('button');
     del.type = 'button'; del.className = 'sg-del'; del.textContent = '삭제';
     del.addEventListener('click', function(){
@@ -1526,11 +1554,33 @@
   var CK_CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
   function ckCho(s){ return String(s || '').replace(/[가-힣]/g, function(c){ return CK_CHO.charAt(Math.floor((c.charCodeAt(0) - 0xAC00) / 588)); }); }
   function ckNorm(s){ return String(s || '').toLowerCase().replace(/\s+/g, '').replace(/[\u30A1-\u30F6]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 0x60); }); }
+  /* 로마자 검색(2026-10-10): 가나로 적은 이름은 로마자로 바꿔 비교합니다(たなか ↔ tanaka).
+     shi/si · tsu/tu · ou/o 같은 표기 차이는 맞춰서 봅니다. 한자 이름은 읽는 법을 알 수 없어 로마자로는 찾지 못합니다. */
+  var CK_RO = (function(){
+    var s = 'あa いi うu えe おo かka きki くku けke こko さsa しshi すsu せse そso たta ちchi つtsu てte とto なna にni ぬnu ねne のno はha ひhi ふfu へhe ほho まma みmi むmu めme もmo やya ゆyu よyo らra りri るru れre ろro わwa をo んn がga ぎgi ぐgu げge ごgo ざza じji ずzu ぜze ぞzo だda ぢji づzu でde どdo ばba びbi ぶbu べbe ぼbo ぱpa ぴpi ぷpu ぺpe ぽpo ゃya ゅyu ょyo ぁa ぃi ぅu ぇe ぉo ゔvu';
+    var m = {}; s.split(' ').forEach(function(x){ m[x.charAt(0)] = x.slice(1); }); return m;
+  })();
+  function ckRoma(name){
+    return ckNorm(name).replace(/[\u3041-\u3096]/g, function(c){ return CK_RO[c] || ''; });
+  }
+  function ckRoCanon(s){
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z]/g, '').replace(/sh/g, 's').replace(/ch/g, 't').replace(/ts/g, 't').replace(/f/g, 'h')
+      .replace(/j/g, 'z').replace(/y/g, '').replace(/ou|oo|oh/g, 'o').replace(/uu/g, 'u').replace(/(.)\1+/g, '$1');
+  }
   function ckMatch(r, q){
     q = String(q || '').replace(/\s+/g, ''); if (!q) return true;
     var n = ckNorm(r.name);
     if (n.indexOf(ckNorm(q)) >= 0) return true;
+    if (/^[a-zA-Z]+$/.test(q)) { var cq = ckRoCanon(q); return !!cq && ckRoCanon(ckRoma(r.name)).indexOf(cq) >= 0; }
     return /^[ㄱ-ㅎ]+$/.test(q) && ckCho(n).indexOf(q) >= 0;
+  }
+  /* 불참(2026-10-10): '' 없음 · late 기한 후(당일) 취소 · noshow 연락 없이 불참.
+     absPrev — 이 날짜를 뺀 그 사람의 이전 취소·불참 횟수(서버에서 받은 값 기준, 처음 볼 때 한 번 계산) */
+  var ABS_LABEL = { late:'기한 후 취소', noshow:'무단 불참' };
+  function absPrev(r){
+    if (r._ap === undefined) r._ap = Math.max(0, (+r.late_count || 0) + (+r.noshow_count || 0) - (r.absence ? 1 : 0));
+    return r._ap;
   }
   function ckPay(r){
     if (+r.staff === 1) return ['staff', '스탭'];
@@ -1547,6 +1597,7 @@
     var el = document.createElement('div');
     el.id = 'ck'; el.className = 'ck'; el.hidden = true;
     el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', '체크인');
+    (SG.rows || []).forEach(absPrev);
     el.innerHTML =
       '<div class="ck-top">' +
         '<div class="ck-r1"><button type="button" class="ck-x" id="ck-x" aria-label="닫기">✕</button>' +
@@ -1559,12 +1610,26 @@
           '<button type="button" data-f="todo" aria-pressed="false">미출석<em></em></button>' +
           '<button type="button" data-f="done" aria-pressed="false">출석<em></em></button>' +
           '<button type="button" data-f="unpaid" aria-pressed="false">미입금<em></em></button>' +
+          '<button type="button" data-f="abs" aria-pressed="false">불참<em></em></button>' +
         '</div>' +
       '</div>' +
       '<div class="ck-list" id="ck-list"></div>' +
-      '<div class="ck-toast" id="ck-toast" hidden><span id="ck-toast-t"></span><button type="button" id="ck-undo">되돌리기</button></div>';
+      '<div class="ck-toast" id="ck-toast" hidden><span id="ck-toast-t"></span><button type="button" id="ck-undo">되돌리기</button></div>' +
+      '<div class="ck-sheet" id="ck-sheet" hidden><div class="ck-sheet-in" role="dialog" aria-labelledby="ck-sheet-t">' +
+        '<p class="ck-sheet-t" id="ck-sheet-t"></p>' +
+        '<button type="button" data-a="late">기한 후 취소<small>당일·환불 마감 뒤에 취소 연락</small></button>' +
+        '<button type="button" data-a="noshow">무단 불참<small>연락 없이 오지 않음</small></button>' +
+        '<button type="button" data-a="" class="ck-sheet-clear">불참 표시 지우기</button>' +
+        '<button type="button" data-a="x" class="ck-sheet-x">닫기</button>' +
+      '</div></div>';
     document.body.appendChild(el);
     $a('ck-x').addEventListener('click', ckClose);
+    $a('ck-sheet').addEventListener('click', function(e){
+      if (e.target === this) { ckSheetClose(); return; }
+      var b = e.target.closest('button[data-a]'); if (!b) return;
+      var r = CK.sheetRow; ckSheetClose();
+      if (b.dataset.a !== 'x' && r) ckAbsence(r, b.dataset.a);
+    });
     $a('ck-ref').addEventListener('click', function(){ ckRefresh(true); });
     $a('ck-date').addEventListener('change', function(){ $a('ck-q').value = ''; ckPaint(); $a('ck-list').scrollTop = 0; });
     $a('ck-q').addEventListener('input', ckPaint);
@@ -1574,7 +1639,7 @@
       $a('ck-f').querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
       ckPaint(); $a('ck-list').scrollTop = 0;
     });
-    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && $a('ck') && !$a('ck').hidden) ckClose(); });
+    document.addEventListener('keydown', function(e){ if (e.key !== 'Escape' || !$a('ck') || $a('ck').hidden) return; if (!$a('ck-sheet').hidden) ckSheetClose(); else ckClose(); });
   }
   function ckFillDates(){
     var sel = $a('ck-date'), cur = sel.value, days = {};
@@ -1597,13 +1662,16 @@
     var all = (SG.rows || []).filter(function(r){ return r.date === d && +r.waitlisted !== 1; });
     var done = all.filter(function(r){ return +r.attended === 1; }).length;
     var unpaid = all.filter(function(r){ return ckPay(r)[0] === 'unpaid'; }).length;
+    var absN = all.filter(function(r){ return !!r.absence; }).length;
+    all.forEach(absPrev);
     $a('ck-n').textContent = done;
     $a('ck-all').textContent = '/' + all.length + ' 출석';
     $a('ck-bar').style.width = (all.length ? Math.round(done * 100 / all.length) : 0) + '%';
-    var cnt = { all:all.length, todo:all.length - done, done:done, unpaid:unpaid };
+    var cnt = { all:all.length, todo:all.length - done - absN, done:done, unpaid:unpaid, abs:absN };
     $a('ck-f').querySelectorAll('button').forEach(function(b){ b.querySelector('em').textContent = cnt[b.dataset.f]; });
     var list = all.filter(function(r){
-      if (CK.f === 'todo' && +r.attended === 1) return false;
+      if (CK.f === 'todo' && (+r.attended === 1 || r.absence)) return false;
+      if (CK.f === 'abs' && !r.absence) return false;
       if (CK.f === 'done' && +r.attended !== 1) return false;
       if (CK.f === 'unpaid' && ckPay(r)[0] !== 'unpaid') return false;
       return ckMatch(r, q);
@@ -1622,15 +1690,23 @@
       var h = document.createElement('p'); h.className = 'ck-sec'; h.textContent = g[0] + ' · ' + g[1].length + '명';
       box.appendChild(h);
       g[1].forEach(function(r){
+        var wrap = document.createElement('div'); wrap.className = 'ck-r' + (r.absence ? ' abs' : '');
         var b = document.createElement('button'); b.type = 'button'; b.className = 'ck-p';
         b.setAttribute('aria-pressed', String(+r.attended === 1));
         var c = document.createElement('span'); c.className = 'ck-c'; c.setAttribute('aria-hidden', 'true');
         var nm = document.createElement('span'); nm.className = 'ck-nm'; nm.textContent = r.name || '이름 없음';
-        var sm = document.createElement('small'); sm.textContent = ckDrink(r); nm.appendChild(sm);
+        var sm = document.createElement('small'); sm.textContent = ckDrink(r);
+        if (r.absence) { var ab = document.createElement('b'); ab.className = 'ck-abs'; ab.textContent = ' · ' + ABS_LABEL[r.absence]; sm.appendChild(ab); }
+        /* 블랙리스트 · 이전 취소·불참 횟수는 참가자 앞에서 보이지 않도록 체크인에는 넣지 않습니다 — 신청 내역에서만 (2026-10-10) */
+        nm.appendChild(sm);
         var p = ckPay(r), bd = document.createElement('span'); bd.className = 'ck-b ' + p[0]; bd.textContent = p[1];
         b.appendChild(c); b.appendChild(nm); b.appendChild(bd);
         b.addEventListener('click', function(){ ckToggle(r); });
-        box.appendChild(b);
+        var mb = document.createElement('button'); mb.type = 'button'; mb.className = 'ck-m';
+        mb.textContent = r.absence ? '불참 ✓' : '불참'; mb.setAttribute('aria-label', (r.name || '') + ' 불참 표시');
+        mb.addEventListener('click', function(){ ckSheetOpen(r); });
+        wrap.appendChild(b); wrap.appendChild(mb);
+        box.appendChild(wrap);
       });
     });
   }
@@ -1642,16 +1718,43 @@
     CK.toastT = setTimeout(function(){ t.hidden = true; }, 5000);
   }
   function ckToggle(r, quiet){
-    var prev = +r.attended === 1 ? 1 : 0, v = prev ? 0 : 1;
-    r.attended = v; ckPaint(); try { checkinPaint(); } catch (e) {}
+    var prev = +r.attended === 1 ? 1 : 0, v = prev ? 0 : 1, prevAbs = r.absence || '';
+    r.attended = v; if (v) r.absence = ''; ckPaint(); try { checkinPaint(); } catch (e) {}
     if (navigator.vibrate) { try { navigator.vibrate(v ? 18 : 8); } catch (e) {} }
     if (!quiet) ckToast(r, v); else $a('ck-toast').hidden = true;
     CK.pending++;
-    apiPost({ action:'signup_save', token: ADMIN.token, id: r.id, attended: v }).then(function(x){
+    var body = { action:'signup_save', token: ADMIN.token, id: r.id, attended: v };
+    if (v && prevAbs) body.absence = '';
+    apiPost(body).then(function(x){
       if (!x || !x.ok) throw new Error((x && x.error) || 'fail');
     }).catch(function(){
-      r.attended = prev; ckPaint(); try { checkinPaint(); } catch (e) {}
+      r.attended = prev; r.absence = prevAbs; ckPaint(); try { checkinPaint(); } catch (e) {}
       alert((r.name || '') + ' 출석을 저장하지 못했습니다. 와이파이를 확인하고 다시 눌러 주세요.');
+    }).then(function(){ CK.pending--; });
+  }
+  function ckSheetOpen(r){
+    CK.sheetRow = r;
+    $a('ck-sheet-t').textContent = (r.name || '') + ' — 불참 표시';
+    $a('ck-sheet').querySelector('.ck-sheet-clear').hidden = !r.absence;
+    $a('ck-sheet').hidden = false;
+  }
+  function ckSheetClose(){ $a('ck-sheet').hidden = true; CK.sheetRow = null; }
+  function ckAbsence(r, a){
+    a = a || ''; absPrev(r);
+    var prevA = r.absence || '', prevAt = +r.attended === 1 ? 1 : 0;
+    if (a === prevA) return;
+    r.absence = a; if (a) r.attended = 0;
+    ckPaint(); try { checkinPaint(); } catch (e) {}
+    var t = $a('ck-toast'); clearTimeout(CK.toastT);
+    $a('ck-toast-t').textContent = (r.name || '') + (a ? ' ' + ABS_LABEL[a] : ' 불참 표시 지움');
+    $a('ck-undo').onclick = function(){ t.hidden = true; ckAbsence(r, prevA); if (prevAt && !r.attended) ckToggle(r, true); };
+    t.hidden = false; CK.toastT = setTimeout(function(){ t.hidden = true; }, 5000);
+    CK.pending++;
+    apiPost({ action:'signup_save', token: ADMIN.token, id: r.id, absence: a, attended: a ? 0 : prevAt }).then(function(x){
+      if (!x || !x.ok) throw new Error((x && x.error) || 'fail');
+    }).catch(function(e){
+      r.absence = prevA; r.attended = prevAt; ckPaint(); try { checkinPaint(); } catch (er) {}
+      alert((r.name || '') + ' 불참 표시를 저장하지 못했습니다 (' + e.message + ')');
     }).then(function(){ CK.pending--; });
   }
   /* 여러 스탭이 각자 휴대폰으로 체크할 수 있도록 서버 명단을 다시 받아 옵니다 (저장 중일 때는 건너뜀) */
@@ -1678,12 +1781,113 @@
   }
   function ckClose(){
     var el = $a('ck'); if (!el) return;
-    el.hidden = true; $a('ck-toast').hidden = true;
+    el.hidden = true; $a('ck-toast').hidden = true; ckSheetClose();
     document.documentElement.classList.remove('ck-on');
     clearInterval(CK.timer);
     try { loadDashboard(true); } catch (e) {}
   }
   on('adm-ck-open', 'click', ckOpen);
+
+  /* ── 블랙리스트 (2026-10-10) ─────────────────────────────────
+     단계: watch 주의 인물 · deny 참가 거부 필요. 신청은 그대로 받고 관리자 화면(신청 목록·체크인·자리 배정)에만 표시합니다.
+     사람 기준은 이메일(없으면 이름). 이메일이 달라도 이름이 같으면 «블랙리스트와 같은 이름»으로 알려 줍니다. */
+  var BL_LABEL = { watch:'주의 인물', deny:'참가 거부 필요' };
+  var BL = { target:null, rows:[] };
+  function blBuild(){
+    if ($a('bl-dlg')) return;
+    var el = document.createElement('div'); el.id = 'bl-dlg'; el.className = 'bl-dlg'; el.hidden = true;
+    el.innerHTML =
+      '<div class="bl-in" role="dialog" aria-labelledby="bl-t">' +
+        '<p class="bl-t" id="bl-t"></p><p class="bl-sub" id="bl-sub"></p>' +
+        '<div class="bl-lv">' +
+          '<label class="watch"><input type="radio" name="bl-lv" value="watch"><span>주의 인물<small>지켜볼 필요가 있음</small></span></label>' +
+          '<label class="deny"><input type="radio" name="bl-lv" value="deny"><span>참가 거부 필요<small>다음 신청은 받지 않는 것이 좋음</small></span></label>' +
+        '</div>' +
+        '<textarea id="bl-reason" maxlength="300" rows="3" placeholder="사유 (운영자만 봅니다)"></textarea>' +
+        '<div class="bl-btns"><button type="button" class="pri" id="bl-save">저장</button><button type="button" id="bl-del">해제</button><button type="button" id="bl-close">닫기</button></div>' +
+        '<p class="bl-note">신청은 그대로 받습니다. 신청 내역에만 표시되며(체크인 화면에는 나오지 않음), 같은 이메일로 신청한 기록 모두에 표시됩니다.</p>' +
+      '</div>';
+    document.body.appendChild(el);
+    el.addEventListener('click', function(e){ if (e.target === el) blClose(); });
+    $a('bl-close').addEventListener('click', function(){ blClose(); });
+    $a('bl-save').addEventListener('click', blSave);
+    $a('bl-del').addEventListener('click', blDel);
+  }
+  function blOpen(t){
+    blBuild(); BL.target = t;
+    $a('bl-t').textContent = (t.name || '이름 없음') + ' — 블랙리스트';
+    $a('bl-sub').textContent = t.email || '(이메일 없음 · 이름으로 구분)';
+    var lv = t.level || 'watch';
+    document.querySelectorAll('#bl-dlg input[name="bl-lv"]').forEach(function(x){ x.checked = (x.value === lv); });
+    $a('bl-reason').value = t.reason || '';
+    $a('bl-del').hidden = !t.level;
+    $a('bl-dlg').hidden = false;
+  }
+  /* 창을 닫아도 대상(BL.target)은 지우지 않습니다 — 앞선 저장이 늦게 끝나며 다음 대상을 지우는 일이 없도록 */
+  function blClose(t){ if (t && BL.target !== t) return; if ($a('bl-dlg')) $a('bl-dlg').hidden = true; }
+  function blBody(t){ t = t || {}; return t.id ? { id: t.id } : { pkey: t.pkey }; }
+  function blSave(){
+    var lvEl = document.querySelector('#bl-dlg input[name="bl-lv"]:checked');
+    var tg = BL.target; if (!tg) return;
+    var body = blBody(tg); body.action = 'blacklist_save'; body.token = ADMIN.token;
+    body.level = lvEl ? lvEl.value : 'watch'; body.reason = $a('bl-reason').value;
+    $a('bl-save').disabled = true;
+    apiPost(body).then(function(x){
+      if (!x || !x.ok) throw new Error((x && x.error) || 'fail');
+      blClose(tg); blAfterChange();
+    }).catch(function(e){ alert('저장하지 못했습니다 (' + e.message + ')'); })
+      .then(function(){ $a('bl-save').disabled = false; });
+  }
+  function blDel(){
+    var t = BL.target; if (!t) return;
+    if (!confirm((t.name || '') + ' — 블랙리스트에서 해제할까요?')) return;
+    var body = blBody(t); body.action = 'blacklist_del'; body.token = ADMIN.token;
+    apiPost(body).then(function(x){
+      if (!x || !x.ok) throw new Error((x && x.error) || 'fail');
+      blClose(t); blAfterChange();
+    }).catch(function(e){ alert('해제하지 못했습니다 (' + e.message + ')'); });
+  }
+  /* 같은 사람의 다른 날짜 신청에도 표시가 바뀌므로 명단을 다시 받아 옵니다 */
+  function blAfterChange(){
+    apiPost({ action:'signups', token: ADMIN.token }).then(function(d){
+      if (!d || !d.ok) return;
+      SG.rows = d.rows || [];
+      try { paintSg(); } catch (e) {}
+      try { checkinPaint(); } catch (e) {}
+      try { if ($a('ck') && !$a('ck').hidden) { ckFillDates(); ckPaint(); } } catch (e) {}
+      try { seatPaint(); } catch (e) {}
+    });
+    if ($a('bl-list') && !$a('bl-list').closest('.sg-pane').hidden) blLoad();
+  }
+  function blLoad(){
+    var box = $a('bl-list'); if (!box) return;
+    box.innerHTML = '<p class="seat-empty">불러오는 중…</p>';
+    apiPost({ action:'blacklist_list', token: ADMIN.token }).then(function(d){
+      if (!d || !d.ok) throw new Error((d && d.error) || 'fail');
+      BL.rows = d.rows || []; blPaint();
+    }).catch(function(e){ box.innerHTML = '<p class="seat-empty">불러오지 못했습니다 (' + e.message + ')</p>'; });
+  }
+  function blPaint(){
+    var box = $a('bl-list'); if (!box) return;
+    var deny = BL.rows.filter(function(x){ return x.level === 'deny'; }).length;
+    $a('bl-count').textContent = '참가 거부 필요 ' + deny + '명 · 주의 인물 ' + (BL.rows.length - deny) + '명';
+    box.innerHTML = '';
+    if (!BL.rows.length) { box.innerHTML = '<p class="seat-empty">블랙리스트에 올린 사람이 없습니다. 신청 목록이나 체크인 화면에서 지정할 수 있습니다.</p>'; return; }
+    BL.rows.slice().sort(function(a, b){ return (a.level === 'deny' ? 0 : 1) - (b.level === 'deny' ? 0 : 1) || (+b.updatedAt - +a.updatedAt); })
+    .forEach(function(x){
+      var row = document.createElement('div'); row.className = 'bl-row ' + x.level;
+      var info = document.createElement('div'); info.className = 'bl-info';
+      var nm = document.createElement('b'); nm.textContent = x.name || '이름 없음';
+      var lv = document.createElement('span'); lv.className = 'sg-bl ' + x.level; lv.textContent = BL_LABEL[x.level] || x.level;
+      var em = document.createElement('small'); em.textContent = (x.email || '이메일 없음') + ' · ' + (x.updatedAt ? new Date(+x.updatedAt).toLocaleDateString('ko-KR') : '');
+      var rs = document.createElement('p'); rs.className = 'bl-reason'; rs.textContent = x.reason || '사유 없음';
+      info.appendChild(nm); info.appendChild(lv); info.appendChild(em); info.appendChild(rs);
+      var ed = document.createElement('button'); ed.type = 'button'; ed.className = 'sg-bl-btn'; ed.textContent = '수정';
+      ed.addEventListener('click', function(){ blOpen({ pkey: x.pkey, name: x.name, email: x.email, level: x.level, reason: x.reason }); });
+      row.appendChild(info); row.appendChild(ed); box.appendChild(row);
+    });
+  }
+  on('bl-reload', 'click', blLoad);
   on('ck-open', 'click', ckOpen);
 
   /* ── 자리 배정 ─────────────────────────────────────────────
@@ -1735,6 +1939,8 @@
     var paidOnly=$a('seat-paid') && $a('seat-paid').value==='paid';
     return (SG.rows||[]).filter(function(r){
       if (r.date!==d || +r.waitlisted===1) return false;
+      /* 기한 후 취소 · 무단 불참으로 표시한 사람은 자리 배정에서 뺍니다 (2026-10-10) */
+      if (r.absence) return false;
       if (!paidOnly) return true;
       return +r.staff===1 || +r.paid===1 || +r.onsite===1;
     });
@@ -2277,7 +2483,8 @@
     sm.innerHTML='<span>총 '+rows.length+'명</span><span>일본 '+ja+'명</span><span>한국 '+(rows.length-ja)+'명</span>'+
       '<span>스탭 '+staff+'명</span>'+
       '<span>신규 '+rows.filter(function(r){return +r.staff!==1 && +r.prior_visit_count===0;}).length+'명</span>'+
-      '<span>'+res.rounds[0].length+'테이블</span><span>'+res.rounds.length+'회차</span>';
+      '<span>'+res.rounds[0].length+'테이블</span><span>'+res.rounds.length+'회차</span>'+
+      ((function(){ var n=(SG.rows||[]).filter(function(r){ return r.date===res.date && r.absence; }).length; return n ? '<span>불참 표시 '+n+'명 제외</span>' : ''; })());
     box.innerHTML='';
     res.rounds.forEach(function(tables,ri){
       var sec=document.createElement('section'); sec.className='seat-round';
@@ -2934,7 +3141,7 @@
           SG_DRINK[r.drink] || '',
           (+r.paid === 1 ? '입금' : (+r.onsite === 1 ? '현장지불' : '미입금')),
           r.memo || '',
-          (+r.attended === 1 ? '출석' : '')
+          (+r.attended === 1 ? '✓' : (r.absence ? '불참' : ''))
         ].map(csvQuote).join(','));
       });
 
@@ -3021,13 +3228,13 @@
   on('sg-csv', 'click', function(){
     var rows = sgVisible();
     if (!rows.length) return alert('내려받을 신청이 없습니다.');
-    var head = ['날짜','구분','이름','국적','이메일','음료','입금','출석','SNS','경로','메모','신청시각'];
+    var head = ['날짜','구분','이름','국적','이메일','음료','입금','출석','불참','취소·불참 누적','블랙리스트','SNS','경로','메모','신청시각'];
     var q = function(v){ return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
     var lines = [head.map(q).join(',')];
     rows.forEach(function(r){
       lines.push([r.date, (+r.staff === 1 ? '스탭' : '참가자'), r.name, r.nat, r.email,
         SG_DRINK[r.drink] || '', (+r.paid === 1 ? '입금' : (+r.onsite === 1 ? '현장지불' : '미입금')),
-        (+r.attended === 1 ? '출석' : '미출석'), r.sns, r.src, r.memo,
+        (+r.attended === 1 ? '출석' : '미출석'), (ABS_LABEL[r.absence] || ''), (absPrev(r) + (r.absence ? 1 : 0)), (BL_LABEL[r.black] || ''), r.sns, r.src, r.memo,
         new Date(r.createdAt).toLocaleString('ko-KR')].map(q).join(','));
     });
     /* BOM 을 붙여야 엑셀에서 한글이 깨지지 않습니다 */

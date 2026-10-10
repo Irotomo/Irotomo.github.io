@@ -3408,9 +3408,75 @@ html.ck-on,html.ck-on body{overflow:hidden}
 .ck-toast[hidden]{display:none}
 .ck-toast span{flex:1 1 auto;min-width:0}
 .ck-toast button{flex:0 0 auto;height:38px;padding:0 14px;border:0;border-radius:10px;background:#F6BF5B;color:#141B2E;font:800 14px var(--font);white-space:nowrap;cursor:pointer}
+.ck-r{display:flex;gap:6px;margin:0 0 6px}
+.ck-r .ck-p{margin:0}
+.ck-m{flex:0 0 auto;min-width:58px;padding:0 10px;border:1px solid #E3E1D8;border-radius:14px;background:#fff;color:#5F6782;font:700 13px var(--font);white-space:nowrap;cursor:pointer}
+.ck-r.abs .ck-p{background:#FBF6F5;border-color:#EBD3CF}
+.ck-r.abs .ck-c{border-color:#C9665A;background:#fff}
+.ck-r.abs .ck-c::after{content:'×';color:#C9665A;font-size:20px;font-weight:800;line-height:1}
+.ck-r.abs .ck-m{background:#C9665A;border-color:#C9665A;color:#fff}
+.ck-abs{color:#A33B2E;font-weight:800;white-space:nowrap}
+.ck-hist{display:block;color:#A33B2E;font-weight:700}
+.ck-sheet{position:fixed;inset:0;z-index:162;display:flex;align-items:flex-end;justify-content:center;background:rgba(20,27,46,.45)}
+.ck-sheet[hidden]{display:none}
+.ck-sheet-in{width:100%;max-width:480px;box-sizing:border-box;padding:16px 14px calc(14px + env(safe-area-inset-bottom));border-radius:18px 18px 0 0;background:#fff}
+.ck-sheet-t{margin:2px 4px 12px;font-size:15px;font-weight:800;color:#141B2E}
+.ck-sheet-in button{display:block;width:100%;min-height:54px;margin:0 0 8px;padding:10px 14px;border:1px solid #E3E1D8;border-radius:12px;background:#fff;color:#141B2E;text-align:left;font:800 15.5px var(--font);cursor:pointer}
+.ck-sheet-in button small{display:block;margin-top:2px;font-size:12.5px;font-weight:600;color:#5F6782}
+.ck-sheet-in button[data-a="late"]{border-color:#F0D8A6;background:#FFF8E8}
+.ck-sheet-in button[data-a="noshow"]{border-color:#EBC4BE;background:#FBEDEB}
+.ck-sheet-in .ck-sheet-clear{color:#5F6782}
+.ck-sheet-in .ck-sheet-x{margin:0;border:0;background:#F0EFEA;text-align:center}
+.sg-abs{padding:4px 8px;border-radius:999px;background:#FBEDEB;color:#A33B2E;font-size:11px;font-weight:800}
+.sg-abs.on{background:#C9665A;color:#fff}
 .ck-open{display:block;width:100%;min-height:48px;margin:0 0 12px;border:0;border-radius:12px;background:#141B2E;color:#fff;font:800 15px var(--font);cursor:pointer}
 @media(min-width:700px){.ck-top,.ck-list{padding-left:calc(50% - 320px);padding-right:calc(50% - 320px)}.ck-toast{left:50%;right:auto;width:420px;transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.ck-bar i,.ck-p{transition:none}}
+</style>
+<style id="blacklist-1010">
+/* 2026-10-10 블랙리스트 — 주의 인물(주황) · 참가 거부 필요(빨강). 표시만 */
+.sg-bl{padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
+.sg-bl.watch{background:#FFF1DC;color:#9A5B0F}
+.sg-bl.deny{background:#8E2A20;color:#fff}
+.sg-bl.name{background:#fff;color:#8E2A20;border:1px dashed #C9665A}
+.sg-bl-btn{padding:6px 9px;border:1px solid #E3C9C4;background:#fff;border-radius:8px;color:#8E2A20;font:700 11.5px var(--font);cursor:pointer;white-space:nowrap}
+.ck-bl{display:block;font-weight:800}
+.ck-bl.watch{color:#9A5B0F}
+.ck-bl.deny{color:#8E2A20}
+.ck-sheet-in .ck-sheet-bl{color:#8E2A20}
+.seat-bl{margin-left:4px;padding:1px 6px;border-radius:999px;font-size:10.5px;font-weight:800}
+.seat-bl.watch{background:#FFF1DC;color:#9A5B0F}
+.seat-bl.deny{background:#8E2A20;color:#fff}
+.bl-dlg{position:fixed;inset:0;z-index:170;display:flex;align-items:flex-end;justify-content:center;background:rgba(20,27,46,.5)}
+.bl-dlg[hidden]{display:none}
+.bl-in{width:100%;max-width:460px;box-sizing:border-box;padding:18px 16px calc(16px + env(safe-area-inset-bottom));border-radius:18px 18px 0 0;background:#fff;color:#141B2E}
+@media(min-width:700px){.bl-dlg{align-items:center}.bl-in{border-radius:16px}}
+.bl-t{margin:0;font-size:16px;font-weight:800}
+.bl-sub{margin:2px 0 12px;font-size:12.5px;color:#5F6782;overflow-wrap:anywhere}
+.bl-lv{display:grid;gap:8px;margin-bottom:10px}
+.bl-lv label{display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 12px;border:1px solid #E3E1D8;border-radius:12px;cursor:pointer}
+.bl-lv label.watch:has(input:checked){border-color:#E9B66B;background:#FFF8EC}
+.bl-lv label.deny:has(input:checked){border-color:#C9665A;background:#FBEDEB}
+.bl-lv input{width:20px;height:20px;margin:0;accent-color:#8E2A20}
+.bl-lv span{font-size:15px;font-weight:800}
+.bl-lv small{display:block;font-size:12px;font-weight:600;color:#5F6782}
+#bl-reason{display:block;box-sizing:border-box;width:100%;padding:10px 12px;border:1px solid #E3E1D8;border-radius:12px;font:15px var(--font);resize:vertical}
+.bl-btns{display:flex;gap:8px;margin-top:12px}
+.bl-btns button{flex:1 1 0;min-height:46px;border:1px solid #E3E1D8;border-radius:12px;background:#fff;color:#141B2E;font:800 14.5px var(--font);cursor:pointer}
+.bl-btns .pri{background:#141B2E;border-color:#141B2E;color:#fff}
+.bl-btns #bl-del{color:#8E2A20}
+.bl-note{margin:10px 2px 0;font-size:12px;color:#5F6782}
+.bl-head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.bl-head p{margin:0;font-size:13px;color:#5F6782}
+.bl-head b{color:#141B2E;font-size:15px}
+.bl-head button{flex:0 0 auto;padding:8px 12px;border:1px solid #dedbe8;border-radius:10px;background:#fff;font:700 12.5px var(--font);cursor:pointer}
+.bl-list{display:grid;gap:8px}
+.bl-row{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid #E7E4EF;border-radius:12px;background:#fff}
+.bl-row.deny{border-color:#E6C2BC;background:#FFF9F8}
+.bl-info{flex:1 1 auto;min-width:0}
+.bl-info b{margin-right:6px;font-size:15px}
+.bl-info small{display:block;margin-top:4px;font-size:12px;color:#5F6782;overflow-wrap:anywhere}
+.bl-reason{margin:6px 0 0;font-size:13px;color:#3c3a4a;white-space:pre-line}
 </style>
 </head>
 <body data-lang="ja">
@@ -4093,6 +4159,7 @@ html.ck-on,html.ck-on body{overflow:hidden}
         <button type="button" data-t="dash"  aria-pressed="true">운영 현황</button>
         <button type="button" data-t="list"  aria-pressed="false">신청 내역</button>
         <button type="button" data-t="checkin" aria-pressed="false">체크인</button>
+        <button type="button" data-t="black" aria-pressed="false">블랙리스트</button>
         <button type="button" data-t="seat"  aria-pressed="false">자리 배정</button>
         <button type="button" data-t="after" aria-pressed="false">2차</button>
         <button type="button" data-t="dates" aria-pressed="false">모임 날짜</button>
@@ -4132,6 +4199,10 @@ html.ck-on,html.ck-on body{overflow:hidden}
     </section>
 
 
+    <section class="sg-pane" data-p="black" hidden>
+      <div class="bl-head"><p><b>블랙리스트</b> <span id="bl-count"></span><br><small>신청은 그대로 받고, 신청 내역에만 표시합니다(체크인 · 자리 배정 화면에는 나오지 않음). 지정은 신청 목록의 «블랙» 버튼에서 합니다.</small></p><button type="button" id="bl-reload">새로고침</button></div>
+      <div id="bl-list" class="bl-list"><p class="seat-empty">불러오는 중…</p></div>
+    </section>
     <section class="sg-pane" data-p="checkin" hidden>
       <button type="button" id="ck-open" class="ck-open">체크인 전용 화면으로 크게 보기 (휴대폰용)</button>
       <div class="checkin-tools">
