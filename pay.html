@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F7F7F4">
+<meta name="robots" content="noindex,nofollow">
+<meta name="format-detection" content="telephone=no">
+<title>입금 안내 — いろとも 이로토모</title>
+<meta name="description" content="이로토모 음료비·참가비와 입금 계좌 안내. いろとも ドリンク代・参加費とお振込先のご案内。">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* 2026-10-10 입금 안내 페이지 — 자동 회신·독촉 메일의 «계좌번호 복사하기» 버튼과 현장 QR 에서 엽니다.
+   운영자 템플릿(payment-template.html)을 사이트 디자인(seat.html 과 같은 남색·금색)과 지금 규칙(음료비 선입금 · 일본인 참가비 무료)에 맞춘 것.
+   계좌가 바뀌면 아래 스크립트의 ACCOUNT 와 worker.js 의 BANK 를 같이 고칩니다. */
+:root{--navy:#242D50;--gold:#DFA53A;--bg:#F7F7F4;--card:#fff;--ink:#141B2E;--muted:#5F6782;--line:#E3E3DD;--ok:#1C7A50;
+  --font:'Schibsted Grotesk','IBM Plex Sans KR','Zen Kaku Gothic New',system-ui,sans-serif}
+body[data-lang="ja"]{--font:'Schibsted Grotesk','Zen Kaku Gothic New','IBM Plex Sans KR',system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--font)}
+body{padding:max(22px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom));display:flex;justify-content:center;-webkit-text-size-adjust:100%}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+[hidden]{display:none!important}
+.ja{display:none}body[data-lang="ja"] .ko{display:none}body[data-lang="ja"] .ja{display:inline}
+body[data-lang="ja"] .ja.block{display:block}body[data-lang="ko"] .ko.block{display:block}
+.wrap{width:min(100%,480px)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-weight:800}
+.brand img{width:34px;height:34px;object-fit:contain}
+.lang{display:flex;gap:3px;background:#ECECE6;border-radius:999px;padding:3px}
+.lang button{border:0;background:transparent;border-radius:999px;padding:7px 10px;font:700 12px var(--font);color:var(--muted)}
+.lang button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(20,27,46,.08)}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.13em;color:var(--gold);margin:0 0 8px}
+.title{font-size:28px;line-height:1.25;letter-spacing:-.04em;margin:0 0 6px}
+.lead{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.7}
+.dots{display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle}
+.dots i{width:7px;height:7px;border-radius:50%}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#ECECE6;border-radius:14px;margin-bottom:14px}
+.tab{border:0;background:transparent;color:var(--muted);border-radius:11px;padding:11px 6px;min-height:46px;font-weight:700;font-size:14px;white-space:nowrap}
+.tab[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(20,27,46,.1)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 20px;box-shadow:0 18px 50px -36px rgba(20,27,46,.35)}
+.card + .card{margin-top:12px}
+.amount-card{background:#141B2E;border-color:#141B2E;color:#fff}
+.eyebrow{margin:0;font-size:13px;font-weight:700;color:#B9C0D6}
+.amount{margin:8px 0 6px;font-size:46px;line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.amount .unit{font-size:20px;margin-left:4px;letter-spacing:0}
+.cond{margin:0;font-size:13px;color:#DDE2EF;line-height:1.6}
+.break{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;margin-top:14px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.25);font-size:12.5px;color:#B9C0D6}
+.break b{color:#fff}
+.opts{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.opts li{padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#FBFBF9}
+.opts .tag{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:3px}
+.opts .pay{margin:0;font-size:20px;font-weight:800;color:var(--ink)}
+.opts .ex{margin:4px 0 0;font-size:12.5px;color:var(--muted);line-height:1.6}
+.sec-t{margin:0 0 14px;font-size:18px;font-weight:800;letter-spacing:-.02em}
+.bank{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+.bank i{font-style:normal;background:#FBEBC4;color:#7a5a12;border-radius:6px;padding:2px 6px;font-size:11px;font-weight:800}
+.acct{display:block;margin:8px 0 4px;font-size:clamp(24px,7vw,30px);font-weight:800;letter-spacing:.01em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;user-select:all;-webkit-user-select:all}
+.owner{margin:0 0 16px;font-size:13px;color:var(--muted)}
+.owner b{color:var(--ink);margin-left:6px;font-size:15px}
+.copy{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:58px;border:0;border-radius:14px;background:var(--navy);color:#fff;font-weight:800;font-size:16px;white-space:nowrap;box-shadow:0 3px 0 #141B2E}
+.copy:active{transform:translateY(1px);box-shadow:0 2px 0 #141B2E}
+.copy svg{width:20px;height:20px;flex:none}
+.copy.done{background:var(--ok);box-shadow:0 3px 0 #11553a}
+.status{min-height:20px;margin:9px 0 0;text-align:center;font-size:12.5px;color:var(--ok);font-weight:600}
+.manual{margin-top:10px}
+.manual label{display:block;font-size:12.5px;color:#7a4b2b;margin-bottom:6px}
+.manual input{width:100%;padding:12px;font-size:18px;border:1px solid #C9C6BB;border-radius:10px;background:#fff;color:var(--ink)}
+.notes{margin:16px 0 0;padding:14px 0 0;border-top:1px solid var(--line);font-size:13px;line-height:1.75;color:#3c3a4a}
+.notes p{margin:0 0 6px}
+.notes p:last-child{margin:0}
+.notes b{color:var(--ink)}
+.seat-link{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:14px 16px;min-height:54px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);text-decoration:none;font-weight:700;font-size:14px}
+.seat-link small{display:block;font-weight:500;font-size:12px;color:var(--muted);margin-top:1px}
+.seat-link svg{width:18px;height:18px;flex:none}
+.foot{margin:22px 0 0;padding:18px 20px;border-radius:8px;background:#141B2E;color:#B9C0D6;font-size:13px;line-height:1.85;text-align:center}
+.foot a{color:#DDE2EF;text-decoration:none;font-weight:600}
+.foot .fb{display:inline-block;margin-bottom:2px;color:#fff;font-size:15px;font-weight:800}
+@media(max-width:360px){.title{font-size:25px}.amount{font-size:40px}.tab{font-size:13px}}
+@media print{body{background:#fff}.lang,.tabs,.copy,.status,.manual,.seat-link,.foot{display:none!important}.panel[hidden]{display:block!important}}
+</style>
+</head>
+<body data-lang="ko">
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/"><img src="logo.png" alt=""><span><span class="ko">이로토모</span><span class="ja">いろとも</span></span></a>
+    <div class="lang"><button type="button" id="ko" class="on">한국어</button><button type="button" id="ja">日本語</button></div>
+  </div>
+
+  <p class="kicker">PAYMENT<span class="dots" aria-hidden="true"><i style="background:#F28B82"></i><i style="background:#F6BF5B"></i><i style="background:#7FCBA0"></i></span></p>
+  <h1 class="title"><span class="ko">입금 안내</span><span class="ja">お支払いのご案内</span></h1>
+  <p class="lead"><span class="ko">음료비 6,000원은 미리 계좌로 보내 주세요. 한국인 참가비 10,000원은 모임 당일 받습니다.</span><span class="ja">ドリンク代6,000ウォンは事前にお振込みください。日本の方の参加費は無料です。</span> <a href="#account" style="color:var(--navy);font-weight:700;white-space:nowrap"><span class="ko">계좌번호 바로 복사 ↓</span><span class="ja">口座番号をコピー ↓</span></a></p>
+
+  <div class="tabs" role="tablist" aria-label="참가자 구분 / 参加者区分">
+    <button type="button" class="tab" id="tab-ko" role="tab" aria-selected="true" aria-controls="panel-ko"><span class="ko">한국인 참가자</span><span class="ja">韓国の方</span></button>
+    <button type="button" class="tab" id="tab-ja" role="tab" aria-selected="false" aria-controls="panel-ja"><span class="ko">일본인 참가자</span><span class="ja">日本の方</span></button>
+  </div>
+
+  <!-- 한국인 참가자 -->
+  <section class="panel" id="panel-ko" role="tabpanel" aria-labelledby="tab-ko">
+    <div class="card amount-card">
+      <p class="eyebrow"><span class="ko">모임 당일 낼 금액</span><span class="ja">当日のお支払い</span></p>
+      <p class="amount">10,000<span class="unit"><span class="ko">원</span><span class="ja">ウォン</span></span></p>
+      <p class="cond"><span class="ko">음료비 6,000원을 미리 입금하신 경우</span><span class="ja">ドリンク代6,000ウォンをお振込み済みの場合</span></p>
+      <div class="break"><span><span class="ko">총 </span><span class="ja">合計 </span><b><span class="ko">16,000원</span><span class="ja">16,000ウォン</span></b></span><span><span class="ko">음료비 6,000 (사전 입금) + 참가비 10,000 (당일)</span><span class="ja">ドリンク代6,000（事前）＋参加費10,000（当日）</span></span></div>
+    </div>
+    <div class="card">
+      <ul class="opts">
+        <li><span class="tag"><span class="ko">음료비를 미리 입금하셨다면</span><span class="ja">ドリンク代をお振込み済みの方</span></span><p class="pay"><span class="ko">당일 참가비 10,000원</span><span class="ja">当日の参加費 10,000ウォン</span></p><p class="ex"><span class="ko">현장에서 현금이나 아래 계좌 이체로 내 주세요.</span><span class="ja">会場で現金、または下記口座へのお振込みでお支払いください。</span></p></li>
+        <li><span class="tag"><span class="ko">음료비를 아직 못 보내셨다면</span><span class="ja">ドリンク代がまだの方</span></span><p class="pay"><span class="ko">당일 16,000원</span><span class="ja">当日 16,000ウォン</span></p><p class="ex"><span class="ko">음료비 6,000원 + 참가비 10,000원을 현장에서 함께 내 주세요.</span><span class="ja">ドリンク代6,000ウォンと参加費10,000ウォンを、会場でまとめてお支払いください。</span></p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 일본인 참가자 -->
+  <section class="panel" id="panel-ja" role="tabpanel" aria-labelledby="tab-ja" hidden>
+    <div class="card amount-card">
+      <p class="eyebrow"><span class="ko">일본인 참가자</span><span class="ja">日本の方</span></p>
+      <p class="amount">6,000<span class="unit"><span class="ko">원</span><span class="ja">ウォン</span></span></p>
+      <p class="cond"><span class="ko">음료비만 내시면 돼요 · 참가비는 무료</span><span class="ja">ドリンク代のみ · 参加費は無料です</span></p>
+    </div>
+    <div class="card">
+      <ul class="opts">
+        <li><span class="tag"><span class="ko">음료비를 미리 입금하셨다면</span><span class="ja">ドリンク代をお振込み済みの方</span></span><p class="pay"><span class="ko">당일 0원</span><span class="ja">当日のお支払い 0ウォン</span></p><p class="ex"><span class="ko">접수에서 이름만 알려 주세요.</span><span class="ja">受付でお名前をお伝えください。追加のお支払いはありません。</span></p></li>
+        <li><span class="tag"><span class="ko">입금이 어려우셨다면</span><span class="ja">お振込みが難しかった方</span></span><p class="pay"><span class="ko">당일 현금 6,000원</span><span class="ja">当日、現金で 6,000ウォン</span></p><p class="ex"><span class="ko">신청 후 받은 메일에 답장으로 미리 알려 주시고, 현금을 준비해 와 주세요.</span><span class="ja">お申し込み後の案内メールにご返信のうえお知らせいただき、現金をご用意ください。</span></p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 입금 계좌 (공통) -->
+  <div class="card" id="account">
+    <h2 class="sec-t"><span class="ko">입금 계좌</span><span class="ja">お振込先</span></h2>
+    <div class="bank"><i aria-hidden="true">BANK</i><span class="ko">카카오뱅크</span><span class="ja">カカオバンク（카카오뱅크）</span></div>
+    <span class="acct" id="acct">3333-30-1973145</span>
+    <p class="owner"><span class="ko">예금주</span><span class="ja">口座名義</span><b><span class="ko">배상원</span><span class="ja">ペ・サンウォン（배상원）</span></b></p>
+    <button type="button" class="copy" id="copy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2.5"/><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"/></svg>
+      <span id="copy-t"><span class="ko">계좌번호 복사</span><span class="ja">口座番号をコピー</span></span>
+    </button>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+    <div class="manual" id="manual" hidden>
+      <label for="manual-in"><span class="ko">아래 번호를 길게 눌러 복사해 주세요.</span><span class="ja">番号を長押ししてコピーしてください。</span></label>
+      <input id="manual-in" readonly inputmode="numeric" value="3333301973145" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="notes">
+      <p><span class="ko"><b>입금자명은 신청하신 이름</b>으로 해 주세요. 다르면 신청 후 받은 메일에 답장으로 알려 주세요.</span><span class="ja"><b>お申し込み時のお名前</b>でお振込みください。名義が異なる場合は、案内メールにご返信ください。</span></p>
+      <p><span class="ko">입금이 확인되면 확인 메일을 보내 드려요. 현장에서 이체하셨다면 접수 스태프에게 알려 주세요.</span><span class="ja">ご入金を確認しましたら、確認メールをお送りします。会場でお振込みの場合は、受付スタッフにお知らせください。</span></p>
+      <p><span class="ko">음료비 환불은 모임 전 금요일 정오(금요일이 공휴일이면 목요일 정오)까지 가능해요.</span><span class="ja">ドリンク代の返金は、開催前の金曜12時（正午）まで承ります（金曜が祝日の場合は木曜12時）。</span></p>
+    </div>
+  </div>
+
+  <a class="seat-link" href="seat.html"><span><span class="ko">모임 당일, 내 자리 확인</span><span class="ja">当日、自分の席を確認</span><small><span class="ko">이름 + 참가 날짜 4자리</span><span class="ja">お名前＋参加日の4桁</span></small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+
+  <footer class="foot">
+    <a class="fb" href="/"><span class="ko">이로토모</span><span class="ja">いろとも</span></a><br>
+    <span class="ko">매주 일요일 15:00–17:30 · 서울 여의도</span><span class="ja">毎週日曜 15:00–17:30 · ソウル・ヨイド</span><br>
+    <a href="https://instagram.com/irotomokr">Instagram</a>&nbsp;·&nbsp;<a href="mailto:info@irotomo.com">Contact</a>
+  </footer>
+</div>
+<script>
+(function(){
+  'use strict';
+  /* 계좌가 바뀌면 이 값, 위 화면 표시(#acct)·수동 복사 칸(#manual-in), worker.js 의 BANK 를 같이 고칩니다 */
+  var ACCOUNT = '3333301973145';
+  var $ = function(id){ return document.getElementById(id); };
+  var lang = 'ja';
+  function setLang(v){
+    lang = v; document.body.dataset.lang = v; document.documentElement.lang = v;
+    $('ko').classList.toggle('on', v === 'ko'); $('ja').classList.toggle('on', v === 'ja');
+    try { localStorage.setItem('irotomo-lang', v); } catch (e) {}
+  }
+  var params = new URLSearchParams(location.search);
+  var saved = 'ja';
+  try { saved = localStorage.getItem('irotomo-lang') || 'ja'; } catch (e) {}
+  /* 메일 링크는 ?lang=ja|ko 를 붙여 옵니다. 그 밖에는 사이트에서 고른 언어를 따릅니다 */
+  var want = params.get('lang') || (location.hash === '#ja' ? 'ja' : (location.hash === '#ko' ? 'ko' : saved));
+  setLang(want === 'ko' ? 'ko' : 'ja');
+  $('ko').onclick = function(){ setLang('ko'); };
+  $('ja').onclick = function(){ setLang('ja'); };
+
+  /* 참가자 구분 탭 — ?who=ko|ja, 없으면 화면 언어(일본어면 일본인 참가자)로 */
+  var tabs = [$('tab-ko'), $('tab-ja')];
+  function pick(tab, focus){
+    tabs.forEach(function(t){
+      var on = t === tab;
+      t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1;
+      $(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (focus) tab.focus();
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ pick(t); });
+    t.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); pick(tabs[(i + 1) % 2], true); }
+    });
+  });
+  var who = params.get('who');
+  pick(who === 'ko' ? tabs[0] : who === 'ja' ? tabs[1] : (lang === 'ja' ? tabs[1] : tabs[0]));
+
+  /* 계좌번호 복사 — 클립보드 → 예전 방식 → 직접 복사 칸 순서로 시도 */
+  function legacyCopy(){
+    var ta = document.createElement('textarea');
+    ta.value = ACCOUNT; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:-9999px;font-size:16px';
+    document.body.appendChild(ta);
+    var ok = false;
+    try { ta.focus(); ta.select(); ta.setSelectionRange(0, ACCOUNT.length); ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    ta.remove(); $('copy').focus({ preventScroll:true });
+    return ok;
+  }
+  $('copy').addEventListener('click', function(){
+    var btn = this;
+    if (btn.disabled) return;
+    btn.disabled = true;
+    var done = function(ok){
+      btn.disabled = false;
+      if (ok) {
+        $('manual').hidden = true; btn.classList.add('done');
+        $('copy-t').innerHTML = '<span class="ko">복사했어요</span><span class="ja">コピーしました</span>';
+        $('status').textContent = lang === 'ja' ? '口座番号 ' + ACCOUNT + ' をコピーしました。銀行アプリに貼り付けてください。' : '계좌번호 ' + ACCOUNT + ' 복사 완료 · 은행 앱에 붙여 넣어 주세요.';
+        setTimeout(function(){ btn.classList.remove('done'); $('copy-t').innerHTML = '<span class="ko">계좌번호 복사</span><span class="ja">口座番号をコピー</span>'; }, 4000);
+      } else {
+        $('status').textContent = lang === 'ja' ? '下の番号を直接コピーしてください。' : '아래 번호를 직접 복사해 주세요.';
+        $('manual').hidden = false;
+        var f = $('manual-in'); f.focus({ preventScroll:true }); f.select(); f.setSelectionRange(0, f.value.length);
+      }
+    };
+    if (window.isSecureContext && navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ACCOUNT).then(function(){ done(true); }, function(){ done(legacyCopy()); });
+    } else done(legacyCopy());
+  });
+})();
+</script>
+</body>
+</html>
