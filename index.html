@@ -6595,7 +6595,6 @@ document.getElementById('mobile-top').addEventListener('click',function(){
   var started = false, lastFocus = null;
   function open(){
     ev('열기');
-    try { localStorage.setItem('iro-bot-opened', '1'); } catch (e) {}   /* 연 적 있는 기기에는 안내 말풍선을 다시 띄우지 않음 */
     lastFocus = document.activeElement;
     box.hidden = false; btn.classList.add('open'); btn.setAttribute('aria-expanded', 'true');
     placeholder();
@@ -6616,17 +6615,13 @@ document.getElementById('mobile-top').addEventListener('click',function(){
   btn.setAttribute('aria-expanded', 'false');
   btn.addEventListener('click', open);
 
-  /* ── 안내 말풍선 ── 페이지에 8초 이상 있고 스크롤을 2.5초 멈추면 페이드인, 6초 뒤 저절로 사라집니다.
-     도우미를 한 번이라도 열어 본 기기에는 다시 띄우지 않고, 안 열어 본 기기도 하루(한국 시각) 한 번까지만.
-     기억은 이 기기(localStorage)에만 두며 서버로 보내지 않습니다. 입력 중·관리자 모드에도 띄우지 않습니다. */
-  var tip = document.getElementById('iro-bot-tip'), TIP_DAY = 'iro-bot-tip-day', BOT_USED = 'iro-bot-opened', tipT = null, idleT = null, since = Date.now();
-  function kstDay(){ return new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10); }
+  /* ── 안내 말풍선 ── 페이지에 5초 이상 있고 스크롤을 2.5초 멈추면 페이드인, 6초 뒤 저절로 사라집니다.
+     페이지를 열 때마다 한 번 띄웁니다(2026-10-11 운영자 요청으로 «도우미를 연 적 있으면 안 띄움» · «하루 한 번» 규칙은 뺌).
+     같은 페이지에서는 한 번만 — 스크롤을 멈출 때마다 다시 뜨지 않게 합니다. 지금 도우미가 열려 있거나 입력 중·관리자 모드에는 띄우지 않습니다. */
+  var tip = document.getElementById('iro-bot-tip'), tipDone = false, tipT = null, idleT = null, since = Date.now();
   var faceImg = btn.querySelector('.ib-face img');
-  function tipSeen(){
-    try { return localStorage.getItem(BOT_USED) === '1' || localStorage.getItem(TIP_DAY) === kstDay(); }
-    catch (e) { return true; }   /* 기억할 수 없는 환경이면 매번 뜨지 않도록 아예 띄우지 않음 */
-  }
-  function tipMark(){ try { localStorage.setItem(TIP_DAY, kstDay()); } catch (e) {} }
+  function tipSeen(){ return tipDone; }
+  function tipMark(){ tipDone = true; }
   function tipHide(){
     if (!tip || tip.hidden) return;
     tip.classList.remove('on'); clearTimeout(tipT);
@@ -6647,7 +6642,7 @@ document.getElementById('mobile-top').addEventListener('click',function(){
     clearTimeout(idleT);
     if (tipSeen() || started) return;
     idleT = setTimeout(function(){
-      if (Date.now() - since < 8000) { tipIdle(); return; }
+      if (Date.now() - since < 5000) { tipIdle(); return; }
       tipShow();
     }, 2500);
   }
